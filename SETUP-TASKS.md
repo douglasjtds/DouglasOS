@@ -24,35 +24,38 @@ Working checklist for the foundation phase (see `/instructions/MVP-SCOPE.md`). W
 
 ## Task 2 — shadcn/ui init (before adding our tokens)
 
-- [ ] `npx shadcn@latest init` (Tailwind v4 / React 19, dark base, CSS variables).
-- [ ] Verify `components.json` + `lib/utils.ts` (`cn`) exist.
-- [ ] Add `button` as a smoke-test component.
-- **Done when:** a shadcn Button renders.
+- [x] `npx shadcn@latest init -b radix -p nova -y` (CLI v4.11; `nova` preset = Lucide/Geist; Tailwind v4 auto-detected, CSS variables).
+- [x] Verify `components.json` + `lib/utils.ts` (`cn`) exist.
+- [x] Add `button` as a smoke-test component.
+- [x] Fix shadcn's font self-reference in `globals.css` (`--font-sans`/`--font-heading` → `var(--font-geist-sans)`).
+- [x] Pin `turbopack.root` in `next.config.ts` (stray home-dir lockfile was mis-rooting the build).
+- **Done when:** a shadcn Button renders. ✅ build + lint green.
 
 ## Task 3 — Design tokens in `@theme`
 
-- [ ] Translate `DESIGN-GUIDELINES.md` palette/shadows/radii into `app/globals.css` (`@theme` + CSS vars): `base-0..4`, `accent*`, `text-*`, semantic, glass, shadows/glows, radii, blur.
-- [ ] Reconcile shadcn semantic tokens with the palette (background→base-0, primary→accent, foreground→text-primary, …).
-- [ ] Set `body` to `base-0` / `text-primary`; force dark.
-- [ ] Add global `prefers-reduced-motion: reduce` handling.
-- **Done when:** `bg-base-0` / `text-accent` / `shadow-glow-accent` render; shadcn Button is cyan accent.
+- [x] Translate `DESIGN-GUIDELINES.md` palette/shadows/radii into `app/globals.css` (`@theme` + CSS vars): `base-0..4`, `accent*`, `text-*`, semantic, glass, shadows/glows, radii, blur.
+- [x] Reconcile shadcn semantic tokens with the palette (background→base-0, primary→accent, foreground→text-primary, …).
+- [x] Set `body` to `base-0` / `text-primary`; force dark.
+- [x] Add global `prefers-reduced-motion: reduce` handling.
+- **Done when:** `bg-base-0` / `text-accent` / `shadow-glow-accent` render; shadcn Button is cyan accent. ✅ build + lint green; verified in compiled CSS.
 
 ## Task 4 — next-intl + locale routing (`/en`, `/pt`, EN default)
 
-- [ ] `npm i next-intl`; confirm Next 16 App Router support.
-- [ ] Wrap `next.config.ts` with `createNextIntlPlugin()`.
-- [ ] Add `i18n/routing.ts`, `i18n/request.ts`, `middleware.ts` (localePrefix `always`).
-- [ ] Move layout/page under `app/[locale]/`; provider + `setRequestLocale`; `<html lang={locale}>`.
-- [ ] Add `messages/en.json` + `messages/pt.json` with seed keys.
-- **Done when:** `/en` and `/pt` load localized seed text, `/` redirects to default, no hydration errors.
+- [x] `npm i next-intl` (v4.13); confirmed Next 16 App Router support (peer dep `^16.0.0`).
+- [x] Wrap `next.config.ts` with `createNextIntlPlugin()` (loads `i18n/request.ts`).
+- [x] Add `i18n/routing.ts`, `i18n/request.ts`, `proxy.ts` (localePrefix `always`). **Note:** Next 16 renamed Middleware → Proxy, so the handler lives in `proxy.ts`, not `middleware.ts` (next-intl's `createMiddleware` is filename-agnostic).
+- [x] Set `localeDetection: false` so the root (`/`) always redirects to EN (EN-first decision); PT is opt-in via `/pt` or the future toggle.
+- [x] Move layout/page under `app/[locale]/`; `NextIntlClientProvider` + `setRequestLocale`; `<html lang={locale}>`; `generateStaticParams` + `hasLocale` 404 guard.
+- [x] Add `messages/en.json` + `messages/pt.json` with seed keys (`home.*`).
+- **Done when:** `/en` and `/pt` load localized seed text, `/` redirects to default, no hydration errors. ✅ `/` → 307 `/en`; `/en`+`/pt` render localized seed + correct `<html lang>`; dev log clean.
 
 ## Task 5 — Verify & document
 
-- [ ] `npm run lint` passes.
-- [ ] `npm run build` passes.
-- [ ] Manual `npm run dev` check on `/en` + `/pt`.
-- [ ] Tracker reflects reality; deferred items noted.
-- **Done when:** lint + build green and this tracker is fully checked.
+- [x] `npm run lint` passes.
+- [x] `npm run build` passes (`/en` + `/pt` prerendered SSG; Proxy registered).
+- [x] Manual `npm run dev` check on `/en` + `/pt` (+ `/` redirect).
+- [x] Tracker reflects reality; deferred items noted.
+- **Done when:** lint + build green and this tracker is fully checked. ✅
 
 ---
 

@@ -1,16 +1,185 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * shadcn semantic token mappings (kept var-referenced so values can be
+ * swapped from :root). The DouglasOS palette below feeds these.
+ */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
 }
 
 /*
- * Design tokens (DESIGN-GUIDELINES.md) are added in Task 3.
- * Dark-mode only for v1.
+ * DouglasOS design tokens — source of truth: instructions/DESIGN-GUIDELINES.md.
+ * Defined as real theme tokens so Tailwind both generates utilities
+ * (e.g. bg-base-0, text-accent, shadow-glow-accent, rounded-window,
+ * backdrop-blur-glass) AND emits matching CSS vars on :root for var() access.
+ * v1 is dark-mode only.
  */
-body {
-  background: #0a0a0f; /* base-0 — replaced by token in Task 3 */
-  color: #f5f5f7; /* text-primary — replaced by token in Task 3 */
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+@theme {
+  /* Base / neutrals */
+  --color-base-0: #0a0a0f;
+  --color-base-1: #13131a;
+  --color-base-2: #1c1c26;
+  --color-base-3: #2a2a36;
+  --color-base-4: #3d3d4a;
+
+  /* Accent (primary = electric cyan) */
+  --color-accent: #00d9ff;
+  --color-accent-bright: #33e1ff;
+  --color-accent-muted: #0099b8;
+  --color-accent-glow: rgb(0 217 255 / 0.4);
+
+  /* Accent (secondary — sparing use) */
+  --color-accent-purple: #7c3aed;
+  --color-accent-purple-glow: rgb(124 58 237 / 0.4);
+
+  /* Text */
+  --color-text-primary: #f5f5f7;
+  --color-text-secondary: #c7c7cc;
+  --color-text-muted: #8a8a93;
+  --color-text-disabled: #5a5a63;
+
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* Window control buttons (muted vs. macOS) */
+  --color-win-close: #ff5f57;
+  --color-win-close-hover: #ff7b73;
+  --color-win-minimize: #ffbd2e;
+  --color-win-minimize-hover: #ffcc4d;
+  --color-win-maximize: #28c840;
+  --color-win-maximize-hover: #3fd651;
+
+  /* Glassmorphism surface fills (pair with backdrop-blur-glass*) */
+  --color-glass-window: rgb(20 20 30 / 0.65);
+  --color-glass-chrome: rgb(15 15 22 / 0.75);
+  --color-glass-card: rgb(28 28 38 / 0.5);
+
+  /* Shadows & glows */
+  --shadow-window: 0 25px 50px -12px rgb(0 0 0 / 0.6);
+  --shadow-window-inactive: 0 15px 30px -8px rgb(0 0 0 / 0.4);
+  --shadow-dock: 0 10px 30px -8px rgb(0 0 0 / 0.5);
+  --shadow-card: 0 4px 12px rgb(0 0 0 / 0.3);
+  --shadow-glow-accent: 0 0 24px rgb(0 217 255 / 0.4);
+  --shadow-glow-subtle: 0 0 16px rgb(0 217 255 / 0.2);
+
+  /* Border radius */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.25rem; /* 20px */
+  --radius-window: 0.75rem; /* 12px */
+  --radius-dock: 1rem; /* 16px */
+
+  /* Backdrop blur (glassmorphism) */
+  --blur-glass: 20px;
+  --blur-glass-strong: 24px;
+}
+
+/*
+ * shadcn semantic tokens reconciled with the DouglasOS palette.
+ * Dark-only, so a single :root holds the values; .dark is forced on <html>
+ * for any dark: variants the shadcn components rely on.
+ */
+:root {
+  color-scheme: dark;
+
+  --background: var(--color-base-0);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-base-2);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-base-2);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-accent);
+  --primary-foreground: var(--color-base-0);
+  --secondary: var(--color-base-3);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-base-2);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-base-0);
+  --destructive: var(--color-danger);
+  --border: var(--color-base-3);
+  --input: var(--color-base-3);
+  --ring: var(--color-accent);
+
+  --chart-1: var(--color-accent);
+  --chart-2: var(--color-accent-purple);
+  --chart-3: var(--color-accent-bright);
+  --chart-4: var(--color-accent-muted);
+  --chart-5: var(--color-base-4);
+
+  --sidebar: var(--color-base-1);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: var(--color-base-0);
+  --sidebar-accent: var(--color-base-3);
+  --sidebar-accent-foreground: var(--color-text-primary);
+  --sidebar-border: var(--color-base-3);
+  --sidebar-ring: var(--color-accent);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Reduced-motion: respected globally (see DESIGN-GUIDELINES.md). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
