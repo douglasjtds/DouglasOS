@@ -1,7 +1,127 @@
 {
-  "home": {
-    "booting": "DouglasOS — booting…",
-    "accent": "accent cyan",
-    "cta": "shadcn ready"
+  "menu": {
+    "closeAll": "Close all windows"
+  },
+  "apps": {
+    "about": {
+      "title": "about.app",
+      "label": "About",
+      "name": "Douglas Tertuliano",
+      "headline": "AI-First Fullstack Developer",
+      "location": "Brazil",
+      "summary": "Fullstack developer working AI-first across the stack.",
+      "stats": [
+        { "label": "Experience", "value": "TODO_YEARS" },
+        { "label": "Current role", "value": "Fullstack @ Serasa Experian" },
+        { "label": "Focus", "value": "AI-first delivery" }
+      ]
+    },
+    "experience": {
+      "title": "experience.app",
+      "label": "Experience",
+      "currentBadge": "Current",
+      "roles": [
+        {
+          "period": "2025.09 — Present",
+          "company": "Serasa Experian",
+          "role": "Mid-level Fullstack Developer",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["C#/.NET", "React", "Next.js", "AWS"],
+          "current": true
+        },
+        {
+          "period": "—",
+          "company": "ClearSale",
+          "role": "Mid-level .NET Developer",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["C#/.NET", "SQL"]
+        },
+        {
+          "period": "—",
+          "company": "Zup IT Innovation",
+          "role": "Mid-level .NET Developer",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["C#/.NET"]
+        },
+        {
+          "period": "—",
+          "company": "DTI Digital",
+          "role": "Junior .NET Developer",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["C#/.NET"]
+        },
+        {
+          "period": "—",
+          "company": "Rumo IT Solutions",
+          "role": "Junior Developer / Intern",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["C#/.NET"]
+        }
+      ]
+    },
+    "projects": {
+      "title": "projects.app",
+      "label": "Projects",
+      "items": [
+        {
+          "name": "Gasolinha",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["TODO"],
+          "status": "In progress",
+          "repo": "",
+          "demo": ""
+        },
+        {
+          "name": "The Wedding Post",
+          "description": "TODO_DESCRIPTION",
+          "tags": ["TODO"],
+          "status": "In progress",
+          "repo": "",
+          "demo": ""
+        }
+      ]
+    },
+    "skills": {
+      "title": "skills.app",
+      "label": "Skills",
+      "categories": [
+        { "name": "Backend", "items": ["C# / .NET", "Node.js"] },
+        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui"] },
+        { "name": "Databases", "items": ["SQL", "MongoDB"] },
+        { "name": "Cloud / DevOps", "items": ["AWS", "Vercel", "CI/CD"] },
+        { "name": "AI Tooling", "items": ["Claude Code", "GitHub Copilot", "MCP servers"] },
+        { "name": "Methodology", "items": ["Agile", "Scrum", "API design"] }
+      ]
+    },
+    "how-i-work-with-ai": {
+      "title": "how-i-work-with-ai.app",
+      "label": "How I Work with AI",
+      "intro": "TODO_INTRO",
+      "sections": [
+        { "heading": "Daily tooling", "body": "TODO_BODY" },
+        { "heading": "Discovery-first workflow", "body": "TODO_BODY" },
+        { "heading": "Productivity multipliers", "body": "TODO_BODY" },
+        { "heading": "What AI doesn't replace", "body": "TODO_BODY" }
+      ]
+    },
+    "contact": {
+      "title": "contact.app",
+      "label": "Contact",
+      "heading": "Let's talk",
+      "availability": "Open to remote opportunities.",
+      "copy": "Copy",
+      "copied": "Copied!"
+    }
+  },
+  "resume": { "title": "resume.pdf", "label": "Resume", "download": "Download CV" },
+  "window": {
+    "close": "Close",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore"
+  },
+  "mobile": {
+    "title": "Best experienced on desktop",
+    "body": "DouglasOS is an interactive desktop interface. Open it on a larger screen to explore the full experience."
   }
 }

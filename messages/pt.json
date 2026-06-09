@@ -1,7 +1,131 @@
 {
-  "home": {
-    "booting": "DouglasOS — inicializando…",
-    "accent": "ciano de destaque",
-    "cta": "shadcn pronto"
+  "menu": {
+    "closeAll": "Fechar todas as janelas"
+  },
+  "apps": {
+    "about": {
+      "title": "about.app",
+      "label": "Sobre",
+      "name": "Douglas Tertuliano",
+      "headline": "Desenvolvedor Fullstack AI-First",
+      "location": "Brasil",
+      "summary": "Desenvolvedor fullstack que trabalha AI-first em toda a stack.",
+      "stats": [
+        { "label": "Experiência", "value": "TODO_ANOS" },
+        { "label": "Cargo atual", "value": "Fullstack @ Serasa Experian" },
+        { "label": "Foco", "value": "Entrega AI-first" }
+      ]
+    },
+    "experience": {
+      "title": "experience.app",
+      "label": "Experiência",
+      "currentBadge": "Atual",
+      "roles": [
+        {
+          "period": "2025.09 — Presente",
+          "company": "Serasa Experian",
+          "role": "Desenvolvedor Fullstack Pleno",
+          "description": "TODO_DESCRICAO",
+          "tags": ["C#/.NET", "React", "Next.js", "AWS"],
+          "current": true
+        },
+        {
+          "period": "—",
+          "company": "ClearSale",
+          "role": "Desenvolvedor .NET Pleno",
+          "description": "TODO_DESCRICAO",
+          "tags": ["C#/.NET", "SQL"]
+        },
+        {
+          "period": "—",
+          "company": "Zup IT Innovation",
+          "role": "Desenvolvedor .NET Pleno",
+          "description": "TODO_DESCRICAO",
+          "tags": ["C#/.NET"]
+        },
+        {
+          "period": "—",
+          "company": "DTI Digital",
+          "role": "Desenvolvedor .NET Júnior",
+          "description": "TODO_DESCRICAO",
+          "tags": ["C#/.NET"]
+        },
+        {
+          "period": "—",
+          "company": "Rumo IT Solutions",
+          "role": "Desenvolvedor Júnior / Estagiário",
+          "description": "TODO_DESCRICAO",
+          "tags": ["C#/.NET"]
+        }
+      ]
+    },
+    "projects": {
+      "title": "projects.app",
+      "label": "Projetos",
+      "items": [
+        {
+          "name": "Gasolinha",
+          "description": "TODO_DESCRICAO",
+          "tags": ["TODO"],
+          "status": "Em andamento",
+          "repo": "",
+          "demo": ""
+        },
+        {
+          "name": "The Wedding Post",
+          "description": "TODO_DESCRICAO",
+          "tags": ["TODO"],
+          "status": "Em andamento",
+          "repo": "",
+          "demo": ""
+        }
+      ]
+    },
+    "skills": {
+      "title": "skills.app",
+      "label": "Habilidades",
+      "categories": [
+        { "name": "Backend", "items": ["C# / .NET", "Node.js"] },
+        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui"] },
+        { "name": "Bancos de dados", "items": ["SQL", "MongoDB"] },
+        { "name": "Cloud / DevOps", "items": ["AWS", "Vercel", "CI/CD"] },
+        { "name": "Ferramentas de IA", "items": ["Claude Code", "GitHub Copilot", "Servidores MCP"] },
+        { "name": "Metodologia", "items": ["Agile", "Scrum", "Design de API"] }
+      ]
+    },
+    "how-i-work-with-ai": {
+      "title": "how-i-work-with-ai.app",
+      "label": "Como trabalho com IA",
+      "intro": "TODO_INTRO",
+      "sections": [
+        { "heading": "Ferramentas do dia a dia", "body": "TODO_CORPO" },
+        { "heading": "Fluxo discovery-first", "body": "TODO_CORPO" },
+        { "heading": "Multiplicadores de produtividade", "body": "TODO_CORPO" },
+        { "heading": "O que a IA não substitui", "body": "TODO_CORPO" }
+      ]
+    },
+    "contact": {
+      "title": "contact.app",
+      "label": "Contato",
+      "heading": "Vamos conversar",
+      "availability": "Aberto a oportunidades remotas.",
+      "copy": "Copiar",
+      "copied": "Copiado!"
+    }
+  },
+  "resume": {
+    "title": "resume.pdf",
+    "label": "Currículo",
+    "download": "Baixar CV"
+  },
+  "window": {
+    "close": "Fechar",
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "restore": "Restaurar"
+  },
+  "mobile": {
+    "title": "Melhor no desktop",
+    "body": "O DouglasOS é uma interface de desktop interativa. Abra em uma tela maior para explorar a experiência completa."
   }
 }
