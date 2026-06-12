@@ -28,6 +28,7 @@ A live, self-referential example: the portfolio that argues "AI-First Fullstack"
 - Claude Code as the primary build agent for DouglasOS (docs-first reads, plan mode, task execution).
 - GitHub Copilot for inline completion in day-to-day work.
 - Internal MCP servers at work (e.g., at Serasa Experian) wiring company context/tools into the AI loop.
+- Automated testing stack: Vitest + Testing Library (unit/integration, jsdom), Playwright (cross-browser e2e), GitHub Actions CI running lint + build + unit + e2e on every push/PR.
 - *Add: specific commands, skills, and integrations as they're used.*
 
 ### 2. Discovery-first workflow
@@ -49,6 +50,7 @@ A live, self-referential example: the portfolio that argues "AI-First Fullstack"
 - Judgment on scope (what belongs in the MVP vs v1.5/v2) — driven by the product's golden rule, decided by a human.
 - Architectural decisions and the fixed-stack guardrails (the human sets the constraints; the AI works within them).
 - Production debugging and real-world tradeoffs.
+- Whether to invest in a testing layer at all: automated tests are explicitly out of MVP v1, so adopting a full unit + e2e suite was a deliberate human call, not an AI default.
 - *Add: concrete moments where human judgment overrode or steered the AI.*
 
 ---
@@ -81,6 +83,14 @@ A live, self-referential example: the portfolio that argues "AI-First Fullstack"
 - Human integrity call the AI deferred to: rather than fabricate a real person's employment dates, project descriptions, or bio, the human chose "draft + clearly-marked placeholders." The AI wrote layout and spec-confirmed facts only (real roles, companies, skills, email) and left `TODO_*` markers for everything unverifiable. (Bucket: what AI doesn't replace — judgment about the truthfulness of a portfolio.)
 - Scope discipline straight from the spec: `MVP-SCOPE.md` lists keyboard shortcuts (Tab window-cycling, Cmd+W) as v1.1, so I deliberately didn't over-build them — implemented only `Esc`-to-close and spent the effort on first-class accessibility instead (focus moves into a window on open, returns to its dock launcher on close, ARIA roles/labels throughout). (Bucket: what AI doesn't replace — scope judgment.)
 - *Next: OS shell complete (boot screen, menu bar, dock, window manager + Zustand, 7 apps with real-but-placeholder content). Remaining here: fill real content (employment dates, project details, bio, social URLs, `public/resume.pdf`, avatar). Later phases: 3D ambient background, full mobile linear page, SEO/OG, deploy.*
+
+### 2026-06-12 — Testing infrastructure (Vitest + Playwright + CI)
+
+- **The decision to test at all was a human scope call, surfaced not assumed.** Automated tests are explicitly *out* of MVP v1 — `MVP-SCOPE.md` centers manual QA + Lighthouse + cross-browser smoke, and `CLAUDE.md` says "confirm the framework choice first." Rather than silently honor the spec or silently add a runner, the AI raised the conflict; the human chose to stand up the full unit + e2e suite now. A deliberate, documented exception to the golden rule — the same pattern as the resize/persist entry below. (Bucket: what AI doesn't replace — scope judgment.)
+- **Discovery-first: framework choices made up front, with trade-offs.** Ambition (full suite vs foundation-only), runner (Vitest + Testing Library vs Jest), e2e tool (Playwright vs Cypress), and CI strategy (run everything; coverage as a *report*, no hard gate) were each put as explicit questions with recommended defaults *before* anything was installed. (Bucket: discovery-first.)
+- **Leaned on the codebase's own testability seams instead of refactoring.** `lib/store/geometry.ts` and `desktopGrid.ts` were already written as pure, viewport-injected helpers (the file comment literally says "trivially testable"), and the Zustand stores isolate state transitions — so the unit layer tested real logic directly, no production rework. Strongest coverage lives in `lib/store/*` by design. (Bucket: productivity multipliers.)
+- **Verify-don't-assume, three times.** (a) This jsdom build ships a non-functional `localStorage`, which broke the Zustand `persist` middleware — diagnosed from the actual failure, then fixed by installing an in-memory `Storage` in `test/setup.ts` rather than guessing. (b) The boot wordmark "DouglasOS" collided with the menu-bar logo under text selectors → added a stable `data-testid="boot-screen"` instead of brittle text matching. (c) Firefox rejects `isMobile` in its context options → the mobile spec drives the breakpoint via `viewport` alone, since the shell only keys off the width media query. (Bucket: AI catching inconsistencies before they cost time.)
+- **The resulting shape.** Two layers: Vitest + Testing Library (jsdom, co-located `*.test.ts(x)`) and Playwright (`e2e/`, boot → desktop-shell flows across Chromium/Firefox/WebKit — directly serving the MVP's cross-browser requirement). Two CI jobs (`verify` + `e2e`) in `.github/workflows/ci.yml`; coverage reported, not gated, to avoid friction while the base grows. E2E prefers resilient selectors (roles, `data-*`) over app copy, which is still placeholder. This is the foundation the resize/persist work below then built on with real TDD.
 
 ### 2026-06-12 — Resizable windows + persisted session
 
