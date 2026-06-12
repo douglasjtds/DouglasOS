@@ -35,13 +35,22 @@ export function DockItem({ launcher }: { launcher: LauncherConfig }) {
   }
 
   return (
-    <li className="relative flex flex-col items-center">
+    <li className="group relative flex flex-col items-center">
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute bottom-full left-1/2 mb-4 -translate-x-1/2 whitespace-nowrap rounded-md",
+          "border border-white/[0.08] bg-glass-chrome px-2 py-1 text-xs text-text-primary shadow-dock backdrop-blur-glass-strong",
+          "opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100",
+        )}
+      >
+        {label}
+      </span>
       <motion.button
         type="button"
         onClick={handleClick}
         aria-label={label}
         aria-pressed={isOpen}
-        title={label}
         data-dock-app={launcher.kind === "window" ? launcher.id : undefined}
         whileHover={{ scale: 1.25, y: -6 }}
         whileTap={{ scale: 1.1 }}

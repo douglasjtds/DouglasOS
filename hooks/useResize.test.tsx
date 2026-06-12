@@ -1,0 +1,90 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useResize } from "@/hooks/useResize";
+import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
+
+function resetStore() {
+  useWindowStore.setState({
+    windows: {},
+    order: [],
+    focusedId: null,
+    topZ: Z_BASE,
+    openCount: 0,
+  });
+}
+
+/** Build a pointer-event-ish object with the capture API the hook touches. */
+function pointerEvent(
+  overrides: Partial<{
+    button: number;
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+  }> = {},
+) {
+  const captured = new Set<number>();
+  const target = { closest: () => null };
+  return {
+    button: 0,
+    pointerId: 1,
+    clientX: 0,
+    clientY: 0,
+    target,
+    currentTarget: {
+      setPointerCapture: (id: number) => captured.add(id),
+      releasePointerCapture: (id: number) => captured.delete(id),
+      hasPointerCapture: (id: number) => captured.has(id),
+    },
+    ...overrides,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
+}
+
+describe("useResize", () => {
+  beforeEach(resetStore);
+
+  it("focuses the window and resizes by the pointer delta from a corner", () => {
+    useWindowStore.getState().openWindow("about");
+    const origin = { ...useWindowStore.getState().windows.about.rect };
+
+    const { result } = renderHook(() => useResize("about", false));
+    const handlers = result.current("se");
+
+    handlers.onPointerDown(pointerEvent({ clientX: 100, clientY: 100 }));
+    handlers.onPointerMove(pointerEvent({ clientX: 150, clientY: 130 }));
+
+    const { rect } = useWindowStore.getState().windows.about;
+    expect(rect.width).toBe(origin.width + 50);
+    expect(rect.height).toBe(origin.height + 30);
+    // anchored corner: top-left stays put when dragging the SE corner
+    expect(rect.x).toBe(origin.x);
+    expect(rect.y).toBe(origin.y);
+    expect(useWindowStore.getState().focusedId).toBe("about");
+  });
+
+  it("does nothing when disabled", () => {
+    useWindowStore.getState().openWindow("about");
+    const origin = { ...useWindowStore.getState().windows.about.rect };
+
+    const { result } = renderHook(() => useResize("about", true));
+    const handlers = result.current("se");
+
+    handlers.onPointerDown(pointerEvent({ clientX: 0, clientY: 0 }));
+    handlers.onPointerMove(pointerEvent({ clientX: 200, clientY: 200 }));
+
+    expect(useWindowStore.getState().windows.about.rect).toEqual(origin);
+  });
+
+  it("ignores non-primary mouse buttons", () => {
+    useWindowStore.getState().openWindow("about");
+    const origin = { ...useWindowStore.getState().windows.about.rect };
+
+    const { result } = renderHook(() => useResize("about", false));
+    const handlers = result.current("e");
+
+    handlers.onPointerDown(pointerEvent({ button: 2, clientX: 0 }));
+    handlers.onPointerMove(pointerEvent({ clientX: 200 }));
+
+    expect(useWindowStore.getState().windows.about.rect).toEqual(origin);
+  });
+});

@@ -2,12 +2,20 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import type { RefObject } from "react";
 import { useWindowStore } from "@/lib/store/windowStore";
 import { downloadFile } from "@/lib/download";
 import type { LauncherConfig } from "@/lib/apps/registry";
 import { cn } from "@/lib/utils";
 
-export function DesktopIcon({ launcher }: { launcher: LauncherConfig }) {
+export function DesktopIcon({
+  launcher,
+  wasDragged,
+}: {
+  launcher: LauncherConfig;
+  /** When set, a press that turned into a drag suppresses the activating click. */
+  wasDragged?: RefObject<boolean>;
+}) {
   const t = useTranslations();
   const Icon = launcher.icon;
   const openWindow = useWindowStore((s) => s.openWindow);
@@ -19,6 +27,8 @@ export function DesktopIcon({ launcher }: { launcher: LauncherConfig }) {
       : t(`apps.${launcher.id}.title`);
 
   function handleClick() {
+    // A drag just ended on this icon — don't also open/download it.
+    if (wasDragged?.current) return;
     if (launcher.kind === "download") {
       downloadFile(launcher.href, launcher.download);
     } else {

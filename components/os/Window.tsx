@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useWindowStore } from "@/lib/store/windowStore";
 import { getApp, type AppId } from "@/lib/apps/registry";
 import { WindowChrome } from "@/components/os/window/WindowChrome";
+import { ResizeHandles } from "@/components/os/window/ResizeHandles";
 import { cn } from "@/lib/utils";
 
 export function Window({ id }: { id: AppId }) {
@@ -24,7 +25,7 @@ export function Window({ id }: { id: AppId }) {
   }, []);
 
   if (!instance) return null;
-  const { rect, z, minimized } = instance;
+  const { rect, z, minimized, maximized } = instance;
 
   return (
     <motion.section
@@ -60,6 +61,7 @@ export function Window({ id }: { id: AppId }) {
           <Content />
         </Suspense>
       </div>
+      <ResizeHandles id={id} maximized={maximized} />
     </motion.section>
   );
 }
