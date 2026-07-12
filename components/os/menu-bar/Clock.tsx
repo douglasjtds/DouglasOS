@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { useMounted } from "@/hooks/useMounted";
 
 export function Clock() {
   const mounted = useMounted();
+  const locale = useLocale();
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -33,7 +35,12 @@ export function Clock() {
     );
   }
 
-  const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  // PT uses the 24h clock convention; EN keeps 12h with AM/PM.
+  const time = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: locale !== "pt",
+  });
   return (
     <span className="font-mono text-xs tabular-nums text-text-secondary">
       {time}
