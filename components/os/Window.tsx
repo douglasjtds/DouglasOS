@@ -50,8 +50,10 @@ export function Window({ id }: { id: AppId }) {
         zIndex: z,
       }}
       className={cn(
-        "absolute flex flex-col overflow-hidden rounded-window border border-white/[0.08] bg-glass-window backdrop-blur-glass focus:outline-none",
-        isActive ? "shadow-window" : "shadow-window-inactive",
+        "absolute flex flex-col overflow-hidden rounded-window border bg-glass-window backdrop-blur-glass focus:outline-none",
+        isActive
+          ? "border-accent/25 shadow-window"
+          : "border-white/[0.08] shadow-window-inactive",
         minimized && "pointer-events-none",
       )}
     >

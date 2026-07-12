@@ -57,8 +57,11 @@ export function DockItem({ launcher }: { launcher: LauncherConfig }) {
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className={cn(
           "flex size-11 items-center justify-center rounded-xl border border-white/[0.06] bg-base-2/60 text-text-secondary",
-          "hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          launcher.kind === "download" && "text-accent",
+          "hover:text-accent hover:shadow-glow-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          launcher.tint === "purple" &&
+            "text-accent-purple hover:text-accent-purple hover:shadow-[0_0_16px_var(--color-accent-purple-glow)]",
+          launcher.tint === "accent" &&
+            "bg-accent/15 text-accent ring-1 ring-accent/25",
         )}
       >
         <Icon className="size-6" aria-hidden />

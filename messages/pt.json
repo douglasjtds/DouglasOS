@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "DouglasOS — Douglas Tertuliano, Desenvolvedor Fullstack AI-First",
+    "description": "O portfólio interativo de Douglas Tertuliano — Desenvolvedor Fullstack AI-First com 8 anos nos ecossistemas .NET, Node.js e React, especializado em Threat Intelligence e detecção de fraude. Explore o DouglasOS, baixe o CV, entre em contato."
+  },
   "menu": {
     "closeAll": "Fechar todas as janelas"
   },
@@ -8,12 +12,15 @@
       "label": "Sobre",
       "name": "Douglas Tertuliano",
       "headline": "Desenvolvedor Fullstack AI-First",
-      "location": "Brasil",
-      "summary": "Desenvolvedor fullstack que trabalha AI-first em toda a stack.",
+      "location": "Lagoa Santa, MG, Brasil · Remoto",
+      "summary": [
+        "Desenvolvedor fullstack com 8 anos de experiência nos ecossistemas .NET, Node.js e React, construindo soluções robustas e escaláveis para os setores financeiro e de e-commerce.",
+        "Sou especializado em APIs para domínios críticos como Threat Intelligence e detecção de fraude — da arquitetura de backend à implementação de frontend — com foco em performance, segurança e práticas de CI/CD na AWS. Hoje trabalho AI-first: ferramentas como Claude Code e GitHub Copilot fazem parte de como eu projeto, construo e entrego software todos os dias."
+      ],
       "stats": [
-        { "label": "Experiência", "value": "TODO_ANOS" },
+        { "label": "Experiência", "value": "8 anos" },
         { "label": "Cargo atual", "value": "Fullstack @ Serasa Experian" },
-        { "label": "Foco", "value": "Entrega AI-first" }
+        { "label": "Foco", "value": "Threat Intelligence e fraude" }
       ]
     },
     "experience": {
@@ -25,37 +32,37 @@
           "period": "2025.09 — Presente",
           "company": "Serasa Experian",
           "role": "Desenvolvedor Fullstack Pleno",
-          "description": "TODO_DESCRICAO",
-          "tags": ["C#/.NET", "React", "Next.js", "AWS"],
+          "description": "Desenvolvo features de frontend em React para o ThreatX, o produto de Threat Intelligence da Serasa Experian — dando continuidade à plataforma criada originalmente na ClearSale após a aquisição. Contribuo nos backends em Node.js e .NET que sustentam os fluxos de detecção de fraude e ameaças, e uso ferramentas de IA como Claude Code e GitHub Copilot com MCPs internos para acelerar entregas em tarefas complexas.",
+          "tags": ["React", "Node.js", ".NET", "Ferramentas de IA"],
           "current": true
         },
         {
-          "period": "—",
-          "company": "ClearSale",
+          "period": "2022.08 — 2025.09",
+          "company": "ClearSale S.A.",
           "role": "Desenvolvedor .NET Pleno",
-          "description": "TODO_DESCRICAO",
-          "tags": ["C#/.NET", "SQL"]
+          "description": "Desenvolvi e mantive o produto de Threat Intelligence em Node.js e React, coletando e analisando fraudes, phishing, anúncios falsos e outros ataques ao e-commerce. Na squad de Payments, construí APIs com tecnologias BNPL (Buy Now Pay Later) e PISP (Iniciação de Pagamento), além de manter o sistema de billing da ClearSale usado por diversas empresas de marketplace.",
+          "tags": ["Node.js", "React", "C#/.NET", "Pagamentos"]
         },
         {
-          "period": "—",
+          "period": "2020.03 — 2022.08",
           "company": "Zup IT Innovation",
           "role": "Desenvolvedor .NET Pleno",
-          "description": "TODO_DESCRICAO",
-          "tags": ["C#/.NET"]
+          "description": "Desenvolvi serviços de backend em .NET para o Itaú Unibanco, o maior banco privado da América Latina. Atuei como API Owner do time, responsável por todo o processo de CI/CD do API Gateway hospedado na AWS.",
+          "tags": ["C#/.NET", "AWS", "API Gateway", "CI/CD"]
         },
         {
-          "period": "—",
+          "period": "2019.08 — 2020.03",
           "company": "DTI Digital",
           "role": "Desenvolvedor .NET Júnior",
-          "description": "TODO_DESCRICAO",
-          "tags": ["C#/.NET"]
+          "description": "Construí APIs em .NET Core para o Banco BS2, consumidas pelo time de frontend do aplicativo mobile do banco, e mantive um sistema interno legado em .NET Framework e Razor.",
+          "tags": [".NET Core", "Razor", "SQL"]
         },
         {
-          "period": "—",
+          "period": "2017.09 — 2019.08",
           "company": "Rumo IT Solutions",
           "role": "Desenvolvedor Júnior / Estagiário",
-          "description": "TODO_DESCRICAO",
-          "tags": ["C#/.NET"]
+          "description": "Comecei como estagiário e fui contratado como desenvolvedor júnior, alocado em um banco de crédito consignado — meus primeiros anos entregando código .NET em produção.",
+          "tags": ["C#/.NET", "SQL"]
         }
       ]
     },
@@ -65,16 +72,24 @@
       "items": [
         {
           "name": "Gasolinha",
-          "description": "TODO_DESCRICAO",
-          "tags": ["TODO"],
-          "status": "Em andamento",
+          "description": "Um SaaS de controle de abastecimento de veículos, construído de ponta a ponta com um fluxo AI-first usando Claude Code. Motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo. Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
+          "tags": ["Next.js", "TypeScript", "Supabase", "Vercel"],
+          "status": "No ar",
+          "repo": "",
+          "demo": "https://www.gasolinha.com.br"
+        },
+        {
+          "name": "DouglasOS",
+          "description": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, dock e tela de boot. Projetado spec-first e construído com um fluxo AI-first.",
+          "tags": ["Next.js", "TypeScript", "Zustand", "Framer Motion"],
+          "status": "No ar",
           "repo": "",
           "demo": ""
         },
         {
           "name": "The Wedding Post",
-          "description": "TODO_DESCRICAO",
-          "tags": ["TODO"],
+          "description": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos. Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
+          "tags": ["Next.js", "TypeScript"],
           "status": "Em andamento",
           "repo": "",
           "demo": ""
@@ -85,39 +100,48 @@
       "title": "skills.app",
       "label": "Habilidades",
       "categories": [
-        { "name": "Backend", "items": ["C# / .NET", "Node.js"] },
-        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui"] },
-        { "name": "Bancos de dados", "items": ["SQL", "MongoDB"] },
-        { "name": "Cloud / DevOps", "items": ["AWS", "Vercel", "CI/CD"] },
-        { "name": "Ferramentas de IA", "items": ["Claude Code", "GitHub Copilot", "Servidores MCP"] },
-        { "name": "Metodologia", "items": ["Agile", "Scrum", "Design de API"] }
+        { "name": "Backend", "items": ["C#", ".NET Core", ".NET Framework", "Node.js", "TypeScript"] },
+        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Razor"] },
+        { "name": "Bancos de dados", "items": ["Bancos SQL", "MongoDB"] },
+        { "name": "Cloud / DevOps", "items": ["AWS", "Pipelines de CI/CD", "API Gateway", "APIs REST", "Microsserviços", "Vercel", "Git"] },
+        { "name": "Ferramentas de IA", "items": ["Claude Code", "GitHub Copilot", "Cursor", "Servidores MCP"] },
+        { "name": "Domínios", "items": ["Threat Intelligence", "Detecção de fraude", "Fintech", "E-commerce e pagamentos"] },
+        { "name": "Idiomas", "items": ["Português (nativo)", "Inglês (profissional)"] }
       ]
     },
     "how-i-work-with-ai": {
       "title": "how-i-work-with-ai.app",
       "label": "Como trabalho com IA",
-      "intro": "TODO_INTRO",
+      "intro": "Trato a IA como parte central do ferramental de engenharia, não como novidade. O objetivo é simples: entregar software melhor, mais rápido, sem abaixar a barra de qualidade. Isso significa usar IA de forma deliberada — com specs, revisão e critério — em vez de só mandar prompt e torcer.",
       "sections": [
-        { "heading": "Ferramentas do dia a dia", "body": "TODO_CORPO" },
-        { "heading": "Fluxo discovery-first", "body": "TODO_CORPO" },
-        { "heading": "Multiplicadores de produtividade", "body": "TODO_CORPO" },
-        { "heading": "O que a IA não substitui", "body": "TODO_CORPO" }
+        {
+          "heading": "Ferramentas do dia a dia",
+          "body": "O Claude Code é minha principal ferramenta para trabalhos complexos de múltiplas etapas; o GitHub Copilot — conectado a servidores MCP internos na Serasa Experian — acelera o dia a dia dentro da IDE. Entre os dois, a maior parte do boilerplate, da estrutura de testes e dos refactorings exploratórios é delegada, e minha atenção fica no design e na corretude."
+        },
+        {
+          "heading": "Fluxo discovery-first",
+          "body": "Antes de qualquer código de verdade, eu escrevo o produto: brief, PRD, escopo e specs de interface. O Gasolinha — meu SaaS de controle de abastecimento — e este próprio site foram construídos assim: uma fase de discovery documentada primeiro, depois agentes de IA executando contra essas specs. A IA é dramaticamente mais eficaz quando o alvo não deixa ambiguidade."
+        },
+        {
+          "heading": "Multiplicadores de produtividade",
+          "body": "A IA comprime as partes caras da entrega: ganhar contexto em códigos desconhecidos, escrever testes completos, migrar padrões em muitos arquivos e produzir primeiras versões de documentação. No trabalho, isso se traduz em assumir tarefas mais complexas com os mesmos prazos — o multiplicador é real quando os fundamentos são sólidos."
+        },
+        {
+          "heading": "O que a IA não substitui",
+          "body": "Critério. Decidir o que construir, como arquitetar, quais trade-offs são aceitáveis e o que significa 'pronto' — isso continua humano. Assim como depurar incidentes em produção, onde contexto e responsabilidade importam. Reviso tudo que a IA produz da mesma forma que revisaria o PR de um colega."
+        }
       ]
     },
     "contact": {
       "title": "contact.app",
       "label": "Contato",
       "heading": "Vamos conversar",
-      "availability": "Aberto a oportunidades remotas.",
+      "availability": "Aberto a oportunidades remotas — times internacionais são bem-vindos.",
       "copy": "Copiar",
       "copied": "Copiado!"
     }
   },
-  "resume": {
-    "title": "resume.pdf",
-    "label": "Currículo",
-    "download": "Baixar CV"
-  },
+  "resume": { "title": "resume.pdf", "label": "Currículo", "download": "Baixar CV" },
   "window": {
     "close": "Fechar",
     "minimize": "Minimizar",
@@ -125,7 +149,16 @@
     "restore": "Restaurar"
   },
   "mobile": {
-    "title": "Melhor no desktop",
-    "body": "O DouglasOS é uma interface de desktop interativa. Abra em uma tela maior para explorar a experiência completa."
+    "banner": "Melhor no desktop — abra o DouglasOS em uma tela maior.",
+    "dismiss": "Fechar aviso",
+    "heroTagline": "Desenvolvedor fullstack construindo produtos de combate à fraude na Serasa Experian — entregando AI-first em toda a stack.",
+    "nav": {
+      "about": "Sobre",
+      "experience": "Experiência",
+      "projects": "Projetos",
+      "skills": "Habilidades",
+      "ai": "Como trabalho com IA",
+      "contact": "Contato"
+    }
   }
 }

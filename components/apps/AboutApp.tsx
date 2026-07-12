@@ -7,32 +7,25 @@ interface Stat {
   value: string;
 }
 
-export default function AboutApp() {
+/** Summary paragraphs + quick stats — shared between the window and the
+ *  mobile fallback (which has its own hero, so it skips the header). */
+export function AboutSummary() {
   const t = useTranslations("apps.about");
   const stats = t.raw("stats") as Stat[];
+  const summary = t.raw("summary") as string[];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        {/* TODO: real profile photo at public/avatar.* */}
-        <div
-          className="size-20 shrink-0 rounded-full bg-gradient-to-br from-base-3 to-base-1 ring-1 ring-white/10"
-          aria-hidden
-        />
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-            {t("name")}
-          </h1>
-          <p className="text-accent">{t("headline")}</p>
-          <p className="mt-1 font-mono text-xs text-text-muted">
-            {t("location")}
+    <>
+      <div className="flex flex-col gap-3">
+        {summary.map((paragraph) => (
+          <p
+            key={paragraph.slice(0, 24)}
+            className="text-sm leading-relaxed text-text-secondary"
+          >
+            {paragraph}
           </p>
-        </div>
+        ))}
       </div>
-
-      <p className="text-sm leading-relaxed text-text-secondary">
-        {t("summary")}
-      </p>
 
       <dl className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
@@ -49,6 +42,34 @@ export default function AboutApp() {
           </div>
         ))}
       </dl>
+    </>
+  );
+}
+
+export default function AboutApp() {
+  const t = useTranslations("apps.about");
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-4">
+        <div
+          className="flex size-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent/25 via-base-2 to-accent-purple/25 shadow-glow-subtle ring-1 ring-accent/30"
+          aria-hidden
+        >
+          <span className="font-mono text-2xl font-bold text-accent">DT</span>
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+            {t("name")}
+          </h1>
+          <p className="text-accent">{t("headline")}</p>
+          <p className="mt-1 font-mono text-xs text-text-muted">
+            {t("location")}
+          </p>
+        </div>
+      </div>
+
+      <AboutSummary />
     </div>
   );
 }

@@ -28,6 +28,9 @@ export function DraggableIcon({ launcher }: { launcher: LauncherConfig }) {
     <motion.div
       className="absolute left-0 top-0 cursor-grab touch-none active:cursor-grabbing"
       style={{ zIndex: dragging ? 2 : 1 }}
+      // No fly-in on mount: icons render directly at their grid cell; the
+      // spring only animates subsequent moves (drag release snapping).
+      initial={false}
       animate={{ x: pos.x, y: pos.y }}
       transition={
         dragging || reducedMotion
