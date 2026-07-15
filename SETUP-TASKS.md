@@ -1,67 +1,62 @@
-# DouglasOS — Setup & Foundation Tasks
+# DouglasOS — Technical Phase Tasks
 
-Working checklist for the foundation phase (see `/instructions/MVP-SCOPE.md`). Work through one task at a time; check items off as they complete. Heavier feature work (OS shell, apps, 3D) comes in later phases.
+Working checklist for the **technical / launch-infrastructure phase** (see `instructions/MVP-SCOPE.md`). Work through one task at a time; check items off as they complete.
 
-> Scope of this phase: dependencies + design tokens + shadcn + i18n routing + clean base. **Not** in this phase: boot screen, menu bar, dock, windows, the 7 apps, 3D background, Framer Motion, Vercel deploy, full SEO/OG.
+> Previously completed (see `instructions/AI-WORKFLOW-LOG.md` + git): **Foundation** (boilerplate cleanup, shadcn/ui, design tokens in `@theme`, next-intl `/en`+`/pt` routing) and the **OS shell** (boot screen, menu bar, dock, desktop icons, the full Zustand window manager, and all 7 app shells).
 >
-> Process note: the AI-assisted build process is logged in `instructions/AI-WORKFLOW-LOG.md` (raw material for `how-i-work-with-ai.app`) — append to it as tasks complete.
+> Scope of this phase: avatar/social wiring, 3D ambient background, the real mobile linear-scroll fallback, SEO/OG, Vercel staging deploy. **Not** in this phase: writing the real text content for the 7 apps — that copy is **intentionally deferred** to a later content pass (experience descriptions, project copy, the `how-i-work-with-ai` narrative, years stat all stay as `TODO_*`).
+>
+> Process note: append to `instructions/AI-WORKFLOW-LOG.md` as tasks complete (raw material for `how-i-work-with-ai.app`). Keep `npm run lint` + `npm run build` green after every task.
 
 ---
 
-## Task 0 — Task tracker & housekeeping
+## Task 1 — Wire in available assets (avatar + social URLs)
 
-- [x] Create this `SETUP-TASKS.md`.
-- [x] Fix the two markdownlint MD032 warnings in `CLAUDE.md` (blank lines around lists).
-- **Done when:** tracker exists and `CLAUDE.md` lints clean.
+- [ ] Add the avatar to `public/` (e.g. `public/avatar.jpg`); replace the placeholder circle in `components/apps/AboutApp.tsx` (use `next/image`, keep rounded/token styling).
+- [ ] Replace the `/TODO` LinkedIn + GitHub URLs in `components/apps/ContactApp.tsx` with the real profiles.
+- **Gated on:** Douglas providing the image file + the two URLs.
+- **Done when:** `about.app` shows the real photo, `contact.app` links resolve to real profiles, lint + build green.
 
-## Task 1 — Clean the boilerplate
+## Task 2 — 3D ambient background (React Three Fiber + Drei)
 
-- [x] Replace `app/page.tsx` boilerplate with a minimal dark placeholder.
-- [x] Strip default light-mode styles from `app/globals.css` (keep `@import "tailwindcss";` + Geist font mappings).
-- [x] Update `app/layout.tsx` metadata (title "DouglasOS", real description).
-- [x] Remove unused starter SVGs from `public/` (`next.svg`, `vercel.svg`, `window.svg`, `file.svg`, `globe.svg`).
-- **Done when:** `npm run dev` shows a blank dark placeholder, no boilerplate, no console errors.
+- [ ] Install `three @react-three/fiber @react-three/drei` (pre-approved target stack per `CLAUDE.md`). Check `node_modules/next/dist/docs/` for any Next 16 client-component nuances first.
+- [ ] Build a low-density ambient scene per the 3D section of `DESIGN-GUIDELINES.md` (drifting particles / code fragments, cyan/purple, subtle drift).
+- [ ] Lazy-load after critical UI via `next/dynamic({ ssr: false })`; render behind `Desktop` (z below icons/windows), `pointer-events-none`. Cap pixelRatio + particle count.
+- [ ] **Disable entirely** on `<768px` (`useMediaQuery`) and under `prefers-reduced-motion` (`useReducedMotion`).
+- **Done when:** subtle ambient motion ≥30fps, doesn't block clicks, absent on mobile + reduced-motion, no SSR/hydration errors, build green.
 
-## Task 2 — shadcn/ui init (before adding our tokens)
+## Task 3 — Real mobile linear-scroll fallback (replace `MobilePlaceholder`)
 
-- [x] `npx shadcn@latest init -b radix -p nova -y` (CLI v4.11; `nova` preset = Lucide/Geist; Tailwind v4 auto-detected, CSS variables).
-- [x] Verify `components.json` + `lib/utils.ts` (`cn`) exist.
-- [x] Add `button` as a smoke-test component.
-- [x] Fix shadcn's font self-reference in `globals.css` (`--font-sans`/`--font-heading` → `var(--font-geist-sans)`).
-- [x] Pin `turbopack.root` in `next.config.ts` (stray home-dir lockfile was mis-rooting the build).
-- **Done when:** a shadcn Button renders. ✅ build + lint green.
+- [ ] Replace the "best on desktop" placeholder rendered by `ShellGate` with the real linear page: hero (name/headline/avatar) → About → Experience → Projects → Skills → How I Work with AI → Contact + CV download, plus a subtle "best on desktop" banner.
+- [ ] **Reuse the same i18n message keys.** Prefer reusing the existing app content components where they render cleanly outside a window; otherwise lightweight section components sharing the same design tokens. Dark-only.
+- **Done when:** `<768px` shows full linear content (placeholder copy is fine for now), CV download works, responsive across phone widths, build green.
 
-## Task 3 — Design tokens in `@theme`
+## Task 4 — SEO basics + OG image
 
-- [x] Translate `DESIGN-GUIDELINES.md` palette/shadows/radii into `app/globals.css` (`@theme` + CSS vars): `base-0..4`, `accent*`, `text-*`, semantic, glass, shadows/glows, radii, blur.
-- [x] Reconcile shadcn semantic tokens with the palette (background→base-0, primary→accent, foreground→text-primary, …).
-- [x] Set `body` to `base-0` / `text-primary`; force dark.
-- [x] Add global `prefers-reduced-motion: reduce` handling.
-- **Done when:** `bg-base-0` / `text-accent` / `shadow-glow-accent` render; shadcn Button is cyan accent. ✅ build + lint green; verified in compiled CSS.
+- [ ] Per-locale `generateMetadata` in `app/[locale]/layout.tsx` (title, description, `alternates`/hreflang for en/pt, `openGraph`, `twitter`).
+- [ ] OG image: static screenshot of the built desktop in `public/`, referenced in metadata.
+- [ ] Add `app/sitemap.ts` + `app/robots.ts`; add `Person` JSON-LD.
+- **Done when:** Lighthouse SEO ≥95, OG card previews correctly, sitemap/robots resolve, build green.
 
-## Task 4 — next-intl + locale routing (`/en`, `/pt`, EN default)
+## Task 5 — Vercel deploy (staging) + Analytics
 
-- [x] `npm i next-intl` (v4.13); confirmed Next 16 App Router support (peer dep `^16.0.0`).
-- [x] Wrap `next.config.ts` with `createNextIntlPlugin()` (loads `i18n/request.ts`).
-- [x] Add `i18n/routing.ts`, `i18n/request.ts`, `proxy.ts` (localePrefix `always`). **Note:** Next 16 renamed Middleware → Proxy, so the handler lives in `proxy.ts`, not `middleware.ts` (next-intl's `createMiddleware` is filename-agnostic).
-- [x] Set `localeDetection: false` so the root (`/`) always redirects to EN (EN-first decision); PT is opt-in via `/pt` or the future toggle.
-- [x] Move layout/page under `app/[locale]/`; `NextIntlClientProvider` + `setRequestLocale`; `<html lang={locale}>`; `generateStaticParams` + `hasLocale` 404 guard.
-- [x] Add `messages/en.json` + `messages/pt.json` with seed keys (`home.*`).
-- **Done when:** `/en` and `/pt` load localized seed text, `/` redirects to default, no hydration errors. ✅ `/` → 307 `/en`; `/en`+`/pt` render localized seed + correct `<html lang>`; dev log clean.
+- [ ] Deploy to a Vercel preview/staging URL. **`noindex` while content is placeholder** (don't index `TODO` copy).
+- [ ] Add `@vercel/analytics`, mount in the root layout.
+- **Done when:** staging URL loads boot→desktop, analytics events register, no prod console errors.
 
-## Task 5 — Verify & document
+## Task 6 — Verify & document
 
-- [x] `npm run lint` passes.
-- [x] `npm run build` passes (`/en` + `/pt` prerendered SSG; Proxy registered).
-- [x] Manual `npm run dev` check on `/en` + `/pt` (+ `/` redirect).
-- [x] Tracker reflects reality; deferred items noted.
-- **Done when:** lint + build green and this tracker is fully checked. ✅
+- [ ] `npm run lint` + `npm run build` green.
+- [ ] `npm run test` (Vitest unit/integration) + `npm run test:e2e` (Playwright, all browsers) green. Extend the e2e specs in `e2e/` to cover any new flow this phase adds (e.g. the real mobile page, 3D-disabled paths).
+- [ ] Append phase progress to `AI-WORKFLOW-LOG.md`; tracker fully checked.
+- **Done when:** lint + build + unit + e2e green, this tracker is fully checked.
+
+> **Testing infrastructure** is set up (Vitest + Testing Library for unit/integration, Playwright for e2e, GitHub Actions CI). See the Testing section in `CLAUDE.md` for commands and conventions. Unit coverage is strongest on `lib/store/*`; e2e covers boot + window-manager + i18n + mobile + reduced-motion.
 
 ---
 
-### Deferred (upcoming phases)
+### Deferred (next, after this phase)
 
-- OS shell: boot screen, menu bar, dock, desktop icons, window manager (+ Zustand).
-- The 7 apps + content; `resume.pdf` download action.
-- 3D ambient background (React Three Fiber + Drei); Framer Motion animations.
-- Mobile linear fallback; full SEO/OG image; Vercel deploy + Analytics.
+- **All real text content** for the 7 apps — experience role descriptions, project copy/links, the `how-i-work-with-ai` narrative, years stat. The intentionally-deferred content pass.
+- **Production launch:** remove `noindex`, custom domain, social announcement — after content lands.
+- **P1 polish:** window snap-to-edge, keyboard shortcuts (Cmd/Ctrl+W, Tab cycle), window resize, dock magnification refinement, loading skeleton states.

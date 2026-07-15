@@ -66,6 +66,7 @@ export function BootScreen() {
       {visible && (
         <motion.div
           key="boot"
+          data-testid="boot-screen"
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-10 bg-base-0"
           initial={{ opacity: 1 }}
           exit={{
