@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Globe, Link2, Mail, MessageCircle, Copy, Check } from "lucide-react";
+import { PROFILE } from "@/lib/profile";
 
-const EMAIL = "douglasjtds@gmail.com";
+const EMAIL = PROFILE.email;
 
-// TODO: replace placeholder hrefs with real profile URLs / WhatsApp number.
 const LINKS = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/TODO", icon: Globe },
-  { label: "GitHub", href: "https://github.com/TODO", icon: Link2 },
-  { label: "WhatsApp", href: "https://wa.me/5531991848090?text=Hey%20Douglas!", icon: MessageCircle },
+  { label: "LinkedIn", href: PROFILE.linkedin, icon: Globe },
+  { label: "GitHub", href: PROFILE.github, icon: Link2 },
+  { label: "WhatsApp", href: PROFILE.whatsapp, icon: MessageCircle },
 ] as const;
 
 export default function ContactApp() {

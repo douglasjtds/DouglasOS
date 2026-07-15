@@ -22,12 +22,17 @@ export type AppId =
 /** Everything that can sit in the dock / on the desktop. */
 export type LauncherId = AppId | "resume";
 
+/** Icon-container color family (DESIGN-GUIDELINES: cyan primary, purple only
+ *  for AI-related elements, resume visually distinct as the primary CTA). */
+export type LauncherTint = "neutral" | "purple" | "accent";
+
 export interface WindowAppConfig {
   id: AppId;
   kind: "window";
   /** Key into the `apps` i18n namespace, e.g. "about" → apps.about.title. */
   titleKey: AppId;
   icon: LucideIcon;
+  tint: LauncherTint;
   defaultSize: { width: number; height: number };
   /** Lazily-loaded window body so content never bloats the shell bundle. */
   Content: LazyExoticComponent<ComponentType>;
@@ -38,6 +43,7 @@ export interface DownloadConfig {
   kind: "download";
   titleKey: "resume";
   icon: LucideIcon;
+  tint: LauncherTint;
   href: string;
   download: string;
 }
@@ -55,6 +61,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "about",
     icon: UserCircle,
+    tint: "neutral",
     defaultSize: { width: 600, height: 550 },
     Content: lazy(() => import("@/components/apps/AboutApp")),
   },
@@ -63,6 +70,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "experience",
     icon: Briefcase,
+    tint: "neutral",
     defaultSize: { width: 700, height: 600 },
     Content: lazy(() => import("@/components/apps/ExperienceApp")),
   },
@@ -71,6 +79,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "projects",
     icon: FolderOpen,
+    tint: "neutral",
     defaultSize: { width: 700, height: 600 },
     Content: lazy(() => import("@/components/apps/ProjectsApp")),
   },
@@ -79,6 +88,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "skills",
     icon: Layers,
+    tint: "neutral",
     defaultSize: { width: 650, height: 550 },
     Content: lazy(() => import("@/components/apps/SkillsApp")),
   },
@@ -87,6 +97,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "how-i-work-with-ai",
     icon: Sparkles,
+    tint: "purple",
     defaultSize: { width: 700, height: 600 },
     Content: lazy(() => import("@/components/apps/HowIWorkWithAiApp")),
   },
@@ -95,6 +106,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     titleKey: "contact",
     icon: MessageSquare,
+    tint: "neutral",
     defaultSize: { width: 500, height: 500 },
     Content: lazy(() => import("@/components/apps/ContactApp")),
   },
@@ -103,6 +115,7 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "download",
     titleKey: "resume",
     icon: FileText,
+    tint: "accent",
     href: "/resume.pdf",
     download: "Douglas-Tertuliano-CV.pdf",
   },

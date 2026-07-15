@@ -67,7 +67,7 @@ export function BootScreen() {
         <motion.div
           key="boot"
           data-testid="boot-screen"
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-10 bg-base-0"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-10 bg-base-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_45%,rgb(0_217_255/0.06),transparent)]"
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,

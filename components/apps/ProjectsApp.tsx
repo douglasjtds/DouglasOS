@@ -17,7 +17,7 @@ export default function ProjectsApp() {
   const items = t.raw("items") as Project[];
 
   return (
-    <ul className="grid grid-cols-2 gap-4">
+    <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {items.map((p) => (
         <li
           key={p.name}
