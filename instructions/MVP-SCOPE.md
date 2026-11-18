@@ -1,7 +1,9 @@
 # DouglasOS — MVP Scope
 
-**Date:** March 2026
-**Version:** 1.0
+**Date:** March 2026 (v1) · updated November 2026 (v1.5 plan)
+**Version:** 1.5
+
+> **Status:** v1 (MVP) is feature-complete. v1.5 — the "DouglasOS XP" redesign plus a staged feature set — is planned below in [Post-MVP Roadmap](#post-mvp-roadmap--v15-douglasos-xp). Sections describing v1 are kept as the historical record; where a v1 rule has been superseded, it is marked **(superseded in v1.5)**.
 
 ---
 
@@ -27,8 +29,8 @@
 | Feature | Description | Done When |
 |---------|-------------|-----------|
 | Boot screen | 2-3s animated DouglasOS logo intro | Loads cleanly, can be skipped after 1s, doesn't replay on navigation |
-| Menu bar (top) | DouglasOS logo, active app name, clock, EN/PT toggle | Visible always, sticky, functional toggle |
-| Dock (bottom) | Hover-effected shortcuts to all 7 apps | Icons scale on hover, opens app on click, indicator for open apps |
+| Menu bar (top) **(superseded in v1.5 → taskbar)** | DouglasOS logo, active app name, clock, EN/PT toggle | Visible always, sticky, functional toggle |
+| Dock (bottom) **(superseded in v1.5 → taskbar + Start menu)** | Hover-effected shortcuts to all 7 apps | Icons scale on hover, opens app on click, indicator for open apps |
 | Desktop icons | 7 app icons arranged on desktop | Click opens window, double-click also works, visual focus state |
 | Window manager | Drag, minimize, maximize, close, focus | Multiple windows work simultaneously, z-index correct, smooth animations |
 | `about.app` | Photo, name, headline, summary paragraph | Content matches CV; localized |
@@ -38,9 +40,9 @@
 | `how-i-work-with-ai.app` | Narrative on AI-first approach | Concrete examples (Claude Code at Serasa, MCP usage, discovery process); localized |
 | `resume.pdf` icon | Triggers PDF download on click | Click → download starts; no window opens; uses up-to-date PDF |
 | `contact.app` | Links to LinkedIn, GitHub, email, WhatsApp | All links work; copy-to-clipboard for email; localized labels |
-| 3D background (light) | Ambient floating code/particles via R3F | Renders smoothly, doesn't block interaction, respects reduced-motion |
+| 3D background (light) **(v1.5: optional animated wallpaper)** | Ambient floating code/particles via R3F | Renders smoothly, doesn't block interaction, respects reduced-motion |
 | i18n EN/PT | All UI and content translated | Toggle switches instantly; URL reflects locale (`/en`, `/pt`); EN is default |
-| Mobile fallback | Linear scroll version of same content | Fully responsive on phones; no OS metaphor; clean and polished |
+| Mobile fallback **(superseded in v1.5 → touchable XP)** | Linear scroll version of same content | Fully responsive on phones; no OS metaphor; clean and polished |
 | SEO basics | Meta tags, OG image, sitemap | Lighthouse SEO ≥ 95; OG card looks good on social shares |
 | Vercel deploy | Production deployment | Live URL accessible; analytics tracking |
 
@@ -59,8 +61,8 @@
 
 | Feature | Description | Consider When |
 |---------|-------------|---------------|
-| Light mode toggle | Switch between dark and light themes | Multiple recruiters mention dark mode aversion |
-| Wallpaper picker | User picks desktop background | Adds personality; if v1 gets traction |
+| Light mode toggle **(moot in v1.5: the XP theme is light-only)** | Switch between dark and light themes | Multiple recruiters mention dark mode aversion |
+| Wallpaper picker **(moved to v1.5 stage 1: Display Properties)** | User picks desktop background | Adds personality; if v1 gets traction |
 | App icons with notification dots | Indicate "new" content | If portfolio is regularly updated |
 
 ---
@@ -71,13 +73,13 @@
 
 | Feature | Why not included | When to reconsider |
 |---------|------------------|---------------------|
-| Functional terminal with commands | High complexity (parser, command logic, history) | v1.5 after core launches |
-| Tic-tac-toe / games | Polish feature, not core differentiator | v1.5 |
-| Easter eggs | Discoverability is wasted if base experience isn't solid | v1.5 |
-| AI Assistant chat | Token cost, abuse risk, infrastructure needs | v2 if ever; needs rate-limiting infra |
+| Functional terminal with commands | High complexity (parser, command logic, history) | v1.5 replaces it with **Run… + command palette** (stage 7), no shell emulation |
+| Tic-tac-toe / games | Polish feature, not core differentiator | v1.5 brings Paint (stage 10); Solitaire and other games stay a **future idea** |
+| Easter eggs | Discoverability is wasted if base experience isn't solid | **v1.5** (recycle-bin jokes, "DON'T OPEN THIS.exe") — never blocking CV/contact |
+| AI Assistant chat (LLM) | Token cost, abuse risk, infrastructure needs | **Still out.** v1.5 ships *scripted* assistant + scripted messenger instead (no LLM, no backend) |
 | Heavy 3D scene (bruno-simon style) | Massive scope; learning curve; performance risk | v2 after validation |
-| Sound effects (boot, click) | Most recruiters browse with sound off | v1.5 with mute toggle |
-| Mobile OS metaphor adaptation | Doubles design/dev work | v2 after desktop is solid |
+| Sound effects (boot, click) | Most recruiters browse with sound off | v1.5 only as user-started audio (media player, stage 8) with volume/mute; no system sounds |
+| Mobile OS metaphor adaptation | Doubles design/dev work | **v1.5 stage 2** ("Mobile = touchable XP") |
 | Blog or articles section | Content production overhead | If content strategy emerges later |
 | Project case studies (deep) | Long-form requires time investment | Post-launch, one at a time |
 | Custom file system simulation | Adds zero value to core goal | Never (or v3 if portfolio becomes a product itself) |
@@ -87,10 +89,10 @@
 ### Common Temptations to Avoid
 
 - [ ] Building "just one more app" before launch
-- [ ] Pixel-perfect macOS replication (DouglasOS is its own thing)
+- [ ] ~~Pixel-perfect macOS replication~~ → v1.5: **faithful to the XP (Luna) look, but DouglasOS-branded** — no Microsoft names, logos, wallpapers, icons, sounds or verbatim text
 - [ ] Overly long boot sequence "for cinematics"
 - [ ] Complex preferences/settings panel
-- [ ] Multiple themes/skins
+- [ ] Multiple themes/skins (v1.5 has one Luna theme; wallpapers are the only personalization)
 - [ ] Animation libraries beyond Framer Motion
 - [ ] State management libraries beyond Zustand
 - [ ] Server-side anything that could be static
@@ -110,9 +112,9 @@
 - [x] **Updates via PR/commit** — content lives in repo
 
 ### UI/UX
-- [x] **Dark mode only in v1** (light mode could come later if requested)
-- [x] **Desktop-first metaphor**, mobile gets linear fallback
-- [x] **shadcn/ui default + dark customization** — no full design system from scratch
+- [x] **Dark mode only in v1** (light mode could come later if requested) — **superseded in v1.5:** single light Luna theme
+- [x] **Desktop-first metaphor**, mobile gets linear fallback — **superseded in v1.5:** "Mobile = touchable XP"
+- [x] **shadcn/ui default + dark customization** — no full design system from scratch (v1.5: shadcn/radix behavior with XP styling)
 - [x] **No onboarding tutorial** — interface is self-explanatory; subtle hover cues only
 
 ### State
@@ -146,7 +148,7 @@
 | Persona | Why not now |
 |---------|-------------|
 | Anonymous casual visitor | Not the user we optimize for; metaphor will still entertain them |
-| Recruiter who only browses on mobile | Served by linear fallback, not optimized for metaphor experience |
+| Recruiter who only browses on mobile | Served by linear fallback in v1; **v1.5 stage 2 serves them with the touchable XP desktop** |
 | Visually impaired user using screen reader | Mobile fallback content is accessible; metaphor isn't ideal for SR but content is reachable |
 
 ---
@@ -178,7 +180,7 @@
 8. Visitor opens `contact.app` → notes contact info
 ```
 
-### Flow 3: Mobile visitor (fallback)
+### Flow 3: Mobile visitor (fallback — v1; replaced by touchable XP in v1.5 stage 2)
 
 ```
 1. Visitor lands on URL (mobile detected)
@@ -197,7 +199,7 @@
 
 | Layer | Technology | Justification |
 |-------|------------|---------------|
-| Framework | Next.js 14+ App Router | SSR for SEO, modern DX, Vercel-native |
+| Framework | Next.js 16 App Router (originally planned as 14+) | SSR for SEO, modern DX, Vercel-native |
 | Language | TypeScript | Type safety, better tooling |
 | Styling | Tailwind CSS | Speed, consistency, no naming overhead |
 | Components | shadcn/ui | Customizable, well-built, dark-friendly |
@@ -215,7 +217,7 @@
 - [ ] GraphQL (no API needed)
 - [ ] CMS (Contentful, Sanity, etc.) — static content is fine
 - [ ] Authentication libraries (no users)
-- [ ] Form libraries (no forms)
+- [ ] Form libraries (no forms; the v1.5 messenger "leave a message" form is a plain controlled form that builds a mailto/wa.me link)
 - [ ] Database / ORM (no data)
 - [ ] WebSockets (no real-time)
 - [ ] Service Workers (PWA not needed for v1)
@@ -289,14 +291,62 @@ The MVP is ready to launch when:
 
 ---
 
-## Post-MVP Roadmap
+## Post-MVP Roadmap — v1.5 "DouglasOS XP"
 
-After validating MVP, consider in this order:
+> Source analysis and per-stage prompts: `instructions/full-refactor/V1.5-FEATURE-PROMPTS.md`. Visual system: `DESIGN-GUIDELINES.md`. Interface: `DESKTOP-INTERFACE-SPEC.md`.
 
-1. [ ] **v1.5 features:** terminal, easter eggs, game
-2. [ ] **Content additions:** deeper project case studies, blog/notes section
-3. [ ] **Polish:** light mode toggle, sound effects (with mute)
-4. [ ] **v2 ambitions:** heavy 3D scene, AI assistant (with rate limiting), mobile metaphor adaptation
+### Decisions (recorded November 2026)
+
+| Decision | Before (v1) | v1.5 |
+|----------|-------------|------|
+| Visual identity | Dark, glass, cyan `#00D9FF`, macOS-like menu bar + dock | Faithful early-2000s **Luna-style desktop** (taskbar, Start menu, Luna windows), **DouglasOS-branded** — no Microsoft names/logos/wallpapers/icons/sounds/text |
+| "Pixel-perfect macOS replication" temptation | Avoid — DouglasOS is its own thing | **Faithful to XP, but with the DouglasOS brand** |
+| Mobile | "Mobile drops the metaphor" — linear fallback | **"Mobile = touchable XP"** — same desktop adapted to touch |
+| 3D background | Always on (desktop) | Optional **animated wallpaper** in Display Properties; default is an original static wallpaper |
+| AI chat with an LLM | Out (cost, abuse) | **Still out** (cost and abuse). The assistant and the messenger are **scripted** — no LLM, no backend |
+| Easter eggs, sound, games | Out of MVP, "v1.5" | **In v1.5**, but they never get in the way of the CV or contact. Sound only when the user starts it |
+| Solitaire / other games | — | **Future idea**, not in v1.5 |
+| Terminal | v1.5 candidate | Replaced by **Run… + command palette** (stage 7) |
+
+### Order of work
+
+| # | Stage | Summary |
+|---|-------|---------|
+| 0 | Docs | Roadmap + "DouglasOS XP" design system (this update) |
+| 1 | **XP refactor — desktop** | Luna tokens, boot + logon, taskbar (Start, Quick Launch, window buttons, tray), Start menu, Luna windows, own XP-style icons, original wallpaper + Display Properties (3D becomes optional) |
+| 2 | **XP refactor — mobile** | Touchable XP replacing the linear `MobileFallback` |
+| 3 | External shortcuts | LinkedIn / GitHub / WhatsApp / e-mail on the desktop and in All Programs (URLs only from `lib/profile.ts`) |
+| 4 | Case studies in a browser window | Projects as case studies in "DouglasOS Explorer": address bar, history, themed "not found" |
+| 5 | "mini Douglas" assistant | Scripted desktop companion (tips, shortcuts, offline keyword search), dances when clicked — no LLM, no backend |
+| 5b | "DouglasOS Messenger" | Scripted MSN-style chat with "Douglas" (intents shared with the assistant) ending in a **real message** sent via `mailto:` or WhatsApp (`wa.me`) — no LLM, no backend |
+| 6 | Recycle Bin + lasso | Icons dropped in the bin are rescued with a per-icon line; lasso + group drag |
+| 7 | Run… / command palette | Run dialog, `Ctrl+K` palette, desktop context menu (same resolver as the assistant) |
+| 8 | Music player + synced dance | Original-branded media player; assistant dances while it plays |
+| 9 | Pixelated webcam | "Retro Cam": local-only processing, palettes, no upload |
+| 10 | Paint + easter egg | "DouglasOS Paint" + "DON'T OPEN THIS.exe" (short, reversible) |
+
+Later / future ideas: Solitaire and other games, screen saver (if not cheap in stage 1), heavy 3D scene (v2).
+
+### Definition of done — every v1.5 stage
+
+A stage is done only when **all** of these hold:
+
+- [ ] **Golden rule:** CV and Contact still reachable in ≤ 2 clicks; nothing new covers, delays or gates them.
+- [ ] **Accessibility:** keyboard-complete, visible focus, correct roles/labels, AA contrast, screen-reader check of the new UI.
+- [ ] **Reduced motion:** every animation has a static alternative; verified with `prefers-reduced-motion: reduce`.
+- [ ] **Mobile:** behavior on touch (< 768px) defined in `DESKTOP-INTERFACE-SPEC.md` and implemented (stage 1 only needs to keep the existing mobile path compiling).
+- [ ] **EN/PT:** all new UI copy in `messages/en.json` and `messages/pt.json`; no hardcoded strings.
+- [ ] **Tests:** Vitest for new pure logic (`lib/`) and stores; component tests for new UI; Playwright e2e for the stage's main flow (resilient selectors).
+- [ ] **Brand safety:** no Microsoft names/logos/assets/sounds/verbatim text; no copy or visuals from the reference portfolio.
+- [ ] **Green pipeline:** `npm run lint`, `npm run test`, `npm run build`, relevant e2e.
+- [ ] **Docs:** `DESKTOP-INTERFACE-SPEC.md` updated (and this file if status changes); entry in `AI-WORKFLOW-LOG.md`.
+
+### Status
+
+| Stage | Status |
+|-------|--------|
+| 0 | Done |
+| 1–10, 5b | Planned |
 
 ---
 

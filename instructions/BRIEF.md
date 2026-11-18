@@ -146,5 +146,6 @@ The visitor lands on a boot screen, then sees a desktop with app icons. Each ico
 
 - Visual identity: "DouglasOS" as a custom fictional OS, not a macOS clone — branding belongs to Douglas
 - Accent color: cyan electric (`#00D9FF`) for futuristic tech vibe
+- **v1.5 update (November 2026):** the visual identity moves from the dark/glass/cyan macOS-inspired look to a faithful early-2000s Luna-style desktop branded as DouglasOS ("DouglasOS XP"), and mobile becomes a touchable version of the same desktop. See `DESIGN-GUIDELINES.md` and `MVP-SCOPE.md` → Post-MVP Roadmap.
 - The current `douglasjtds.github.io` should be either taken down or redirected once DouglasOS launches, to avoid recruiters finding stale content via Google
 - This project runs in parallel with Gasolinha and Wedding Post; pacing matters

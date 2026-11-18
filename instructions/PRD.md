@@ -2,7 +2,9 @@
 
 **Author:** Douglas Tertuliano
 **Date:** March 2026
-**Status:** Draft
+**Status:** v1 complete · v1.5 ("DouglasOS XP") planned — see [Post-MVP Roadmap](#post-mvp-roadmap-v15--douglasos-xp)
+
+> v1 sections below are kept as the original product record. Where v1.5 changes a decision, it is marked **(v1.5: …)**.
 
 ---
 
@@ -50,9 +52,9 @@ The site looks indistinguishable from thousands of others, defeating its primary
 ## Non-Goals
 
 - ❌ Building a fully simulated operating system (no actual file system, no functional installer)
-- ❌ Replicating macOS 1:1 (DouglasOS is its own brand)
-- ❌ Mobile-first experience with the OS metaphor (mobile gets a clean linear fallback)
-- ❌ Real-time chat with visitors / AI assistant in v1
+- ❌ Replicating macOS 1:1 (DouglasOS is its own brand) — **(v1.5: the look becomes a faithful XP/Luna-style desktop, still DouglasOS-branded: no Microsoft names, logos, wallpapers, icons, sounds or text)**
+- ❌ Mobile-first experience with the OS metaphor (mobile gets a clean linear fallback) — **(v1.5: replaced by "Mobile = touchable XP")**
+- ❌ Real-time chat with visitors / AI assistant in v1 — **(v1.5: still no LLM and no real-time chat; a *scripted* assistant and a *scripted* messenger are added, with the real message sent via mailto/WhatsApp)**
 - ❌ Multi-user features, accounts, or any persistence
 - ❌ A blog or CMS-driven content (static content only)
 - ❌ Heavy 3D scene like bruno-simon.com (reserved for v2 if ever)
@@ -96,12 +98,12 @@ The site looks indistinguishable from thousands of others, defeating its primary
 
 DouglasOS presents a custom-branded desktop interface on landing:
 1. A brief **boot sequence** (2-3 seconds) plays as the DouglasOS logo appears
-2. The **desktop loads** with a futuristic dark background, ambient 3D effects (floating code, particles), a top menu bar, and a dock at the bottom
+2. The **desktop loads** with a futuristic dark background, ambient 3D effects (floating code, particles), a top menu bar, and a dock at the bottom **(v1.5: Luna-style desktop with an original static wallpaper, taskbar and Start menu; 3D becomes an optional animated wallpaper)**
 3. **App icons** are arranged on the desktop and in the dock
 4. Clicking any icon opens a **draggable, minimizable window** with that section's content
 5. Multiple windows can be open simultaneously, with proper z-index management
 6. A **language toggle** (EN/PT) is accessible from the menu bar
-7. **Mobile devices** receive a clean linear fallback with the same content stacked vertically
+7. **Mobile devices** receive a clean linear fallback with the same content stacked vertically **(v1.5: touchable XP desktop)**
 
 ### Apps in v1 (7 total)
 
@@ -210,7 +212,7 @@ DouglasOS presents a custom-branded desktop interface on landing:
 - ARIA labels on all interactive elements
 - Reduced-motion support (respect `prefers-reduced-motion`)
 - Color contrast meets WCAG AA on text
-- Mobile fallback is fully accessible (no metaphor barrier)
+- Mobile fallback is fully accessible (no metaphor barrier) — **(v1.5: the touchable XP shell keeps real text in the DOM and full keyboard/screen-reader support)**
 
 ### SEO
 - Proper `<title>` and meta description per locale
@@ -221,7 +223,7 @@ DouglasOS presents a custom-branded desktop interface on landing:
 - Mobile fallback content is SSR'd for crawlers
 
 ### Security
-- No user input fields (no XSS surface)
+- No user input fields (no XSS surface) — **(v1.5 adds client-side inputs: address bar, Run, assistant search, messenger. They are matched against static data, never rendered as HTML, never sent to a server; the messenger only builds `mailto:`/`wa.me` links with encoded text)**
 - No backend (no auth or data leak risk)
 - Strict CSP headers via `next.config.js`
 - Resume PDF served from same origin (no third-party CDN risk)
@@ -312,7 +314,32 @@ DouglasOS presents a custom-branded desktop interface on landing:
 - [ ] Should there be a "splash" or "loading" message users can skip? (UX trade-off)
 - [ ] Are the 7 apps locked, or can we replace one with a different idea before build starts?
 - [ ] Should `projects.app` link out to live demos or stay self-contained?
-- [ ] Light mode toggle in v1, or dark-only?
+- [x] Light mode toggle in v1, or dark-only? → v1 shipped dark-only; v1.5 moves to a single light Luna theme.
+
+---
+
+## Post-MVP Roadmap (v1.5 — "DouglasOS XP")
+
+The detailed plan, decisions table and per-stage definition of done live in `MVP-SCOPE.md` → Post-MVP Roadmap. Summary:
+
+**Why:** v1 proved the shell works; v1.5 makes it *memorable*. A faithful early-2000s desktop (blue taskbar, green Start button, Luna windows) is instantly recognizable, makes the OS metaphor self-explanatory, and carries playful mechanics (assistant, recycle bin, media player) observed in a reference OS-style portfolio — with all assets, names and copy original to DouglasOS.
+
+**Order:**
+1. XP refactor — desktop (tokens, boot/logon, taskbar, Start menu, Luna windows, icons, wallpaper + Display Properties; 3D becomes optional).
+2. XP refactor — mobile ("touchable XP" replaces the linear fallback).
+3. External shortcuts (LinkedIn, GitHub, WhatsApp, e-mail).
+4. Projects as case studies in a browser-style window ("DouglasOS Explorer").
+5. Scripted "mini Douglas" assistant (no LLM, no backend).
+   - 5b. "DouglasOS Messenger": scripted MSN-style chat with a real message via mailto/WhatsApp (no LLM, no backend).
+6. Recycle Bin that rescues icons + lasso selection.
+7. Run… + command palette + desktop context menu.
+8. Music player with synced assistant dance.
+9. Pixelated webcam ("Retro Cam", local-only).
+10. Paint + "DON'T OPEN THIS.exe" easter egg.
+
+**Decisions:** LLM chat stays out (cost, abuse) — the assistant and messenger are scripted; easter eggs, sound and games move from OUT into v1.5 but never block the CV or contact; "Mobile drops the metaphor" becomes "Mobile = touchable XP"; "not a macOS clone" becomes "faithful to XP, but DouglasOS-branded"; Solitaire stays a future idea; heavy 3D remains v2.
+
+**Done criteria per stage:** accessibility, reduced motion, mobile behavior, EN/PT copy, tests (unit + e2e), golden rule preserved.
 
 ---
 

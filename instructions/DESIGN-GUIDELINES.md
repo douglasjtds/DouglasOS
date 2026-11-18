@@ -1,145 +1,380 @@
-# DouglasOS — Design Guidelines
+# DouglasOS — Design Guidelines ("DouglasOS XP")
 
-> Visual design system for DouglasOS. These tokens and rules are the source of truth for all UI work. Implement them as Tailwind config + CSS variables for consistency.
+> Visual design system for DouglasOS from v1.5 onward. These tokens and rules are the **source of truth** for all UI work. Implement them as Tailwind v4 `@theme` tokens + CSS variables in `app/globals.css` (and TS constants where Framer Motion or geometry code needs them). Never hardcode a value that has a token.
+>
+> **Status:** target design for v1.5. Written in stage 0 (docs only). The code still runs the v1 "dark glass" shell until stage 1 (desktop) and stage 2 (mobile) land. See [Changelog](#changelog--why-the-identity-changed) for what changed and why.
+>
+> **Naming:** "DouglasOS XP" is the *internal* name of this design system. The product brand shown to visitors is just **DouglasOS** — never render "XP" as a product/edition name in the UI (see [What NOT to use](#what-not-to-use)).
 
 ---
 
 ## Design Philosophy
 
-**DouglasOS visual identity:** dark, futuristic, confident. Inspired by macOS chrome conventions but with its own brand — never a clone. Glassmorphism, electric accents, ambient depth. The interface should feel like premium software, not a toy.
+**DouglasOS is a faithful simulation of the early-2000s blue desktop ("Luna" era) under its own brand.** The visitor should instantly recognize the mechanics — green Start button, blue taskbar, rounded blue title bars, beige dialogs, yellow balloons — and then notice that everything carries the DouglasOS name, logo, icons, wallpapers and copy.
 
-**Core tensions to balance:**
-- Visual ambition vs. recruiter-readability
-- Originality vs. familiar UI patterns
-- Density vs. breathing room
-- Tech aesthetics vs. accessibility
+**Core principles:**
+
+- **Familiar mechanics, original assets.** Recreate the *look and behavior* with our own CSS/SVG/illustrations. Copy nothing that is a trademark, artwork, icon, sound or verbatim text (see [What NOT to use](#what-not-to-use)).
+- **Fun never blocks the CV or contact.** The golden rule still wins over fidelity: CV and Contact are always 1–2 clicks away.
+- **Fidelity yields to accessibility.** Where the original look fails WCAG AA (contrast, focus visibility, tiny text in content), we deviate deliberately and document it ([Accessibility](#accessibility)).
+- **Chrome is dense, content is readable.** System chrome (taskbar, menus, title bars) uses the original's 11px density; reading content inside windows uses a larger body size.
+- **Light theme only.** v1.5 is a single light Luna theme. No dark mode, no theme switcher (wallpapers are the only personalization).
 
 ---
 
-## Color Palette
+## Color Palette (Luna)
 
-### Base / Neutrals (Dark Mode)
+All values below become `--color-*` tokens in the Tailwind v4 `@theme` block. Token names are the source of truth; the hex values are tuned approximations of the original look (not sampled assets), adjusted where needed for AA contrast (marked **AA**).
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `base-0` | `#0A0A0F` | Deepest background (under 3D scene) |
-| `base-1` | `#13131A` | Solid surfaces, mobile fallback bg |
-| `base-2` | `#1C1C26` | Slightly elevated surfaces |
-| `base-3` | `#2A2A36` | Window borders, dividers |
-| `base-4` | `#3D3D4A` | Subtle highlights, hover states |
-
-### Surfaces (Glassmorphism)
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `glass-window` | `rgba(20, 20, 30, 0.65)` + `backdrop-blur(20px)` | Main window backgrounds |
-| `glass-chrome` | `rgba(15, 15, 22, 0.75)` + `backdrop-blur(24px)` | Menu bar, dock, window chrome |
-| `glass-card` | `rgba(28, 28, 38, 0.5)` + `backdrop-blur(12px)` | Cards inside windows |
-
-### Accent (Primary)
+### Taskbar & tray
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `accent` | `#00D9FF` | Primary accent — buttons, focus, glow, key highlights |
-| `accent-bright` | `#33E1FF` | Hover state of accent |
-| `accent-muted` | `#0099B8` | Subdued accent (e.g., secondary text on accent bg) |
-| `accent-glow` | `rgba(0, 217, 255, 0.4)` | Glow effects, shadows |
+| `taskbar` | `#245DDB` | Taskbar body (gradient mid-tone) |
+| `taskbar-highlight` | `#3F8CF3` | Top highlight band of the taskbar gradient |
+| `taskbar-shadow` | `#1941A5` | Bottom edge of the taskbar gradient |
+| `taskbar-edge` | `#0C37A8` | 1px top border line |
+| `tray` | `#0B72D0` | Notification area (tray) mid-tone — **AA** (darker than the original cyan so white clock text passes) |
+| `tray-highlight` | `#19A3EC` | Tray top highlight |
+| `tray-edge` | `#0A4FB0` | Tray left separator line |
+| `task-button` | `#2860D6` | Taskbar window button (normal) — **AA** |
+| `task-button-highlight` | `#4B8BF0` | Task button top highlight |
+| `task-button-hover` | `#3270E2` | Task button hover mid-tone — **AA** |
+| `task-button-active` | `#1C49A8` | Task button of the focused window (pressed) |
 
-### Accent (Secondary — sparing use)
+### Start button
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `accent-purple` | `#7C3AED` | Optional secondary accent for variety (e.g., AI-related elements) |
-| `accent-purple-glow` | `rgba(124, 58, 237, 0.4)` | Purple glow effects |
+| `start` | `#2E7D32` | Start button mid-tone — **AA** (darker than the original so white bold label passes 4.5:1) |
+| `start-highlight` | `#5DB85D` | Start button top highlight |
+| `start-highlight-hover` | `#79CC79` | Hover: only the highlight brightens; mid-tone stays AA |
+| `start-shadow` | `#1E5E22` | Bottom edge |
+| `start-pressed` | `#23662A` | Pressed / menu-open state |
+
+### Window chrome
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `titlebar` | `#0058EE` | Active title bar mid-tone |
+| `titlebar-highlight` | `#3D95FF` | Active title bar top highlight |
+| `titlebar-shadow` | `#003DD7` | Active title bar bottom edge |
+| `window-frame` | `#0831D9` | Active window frame (3px sides/bottom) |
+| `titlebar-inactive` | `#7A96DF` | Inactive title bar mid-tone |
+| `titlebar-inactive-highlight` | `#9DB9EB` | Inactive top highlight |
+| `titlebar-inactive-shadow` | `#7894DE` | Inactive bottom edge (kept light so navy text stays ≥ 4.5:1 across the gradient) |
+| `window-frame-inactive` | `#7A96DF` | Inactive frame |
+| `titlebar-text` | `#FFFFFF` | Active title text |
+| `titlebar-text-inactive` | `#0F2A6B` | Inactive title text — **AA deviation**: the original used pale text on the pale bar (~2.9:1); we use navy (4.6:1) |
+| `control` | `#2F6BE8` | Minimize/maximize button fill |
+| `control-highlight` | `#7BA9F5` | Control top highlight |
+| `control-hover` | `#4D86F2` | Control hover |
+| `control-pressed` | `#1D4FC2` | Control pressed |
+| `control-border` | `#FFFFFF` | 1px border around each control button |
+| `close` | `#D8461F` | Close button fill |
+| `close-highlight` | `#F0A08A` | Close top highlight |
+| `close-hover` | `#E86A4B` | Close hover |
+| `close-pressed` | `#A93212` | Close pressed |
+
+### Surfaces ("ButtonFace" family) & bevels
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `button-face` | `#ECE9D8` | Window body, dialogs, menu bars, status bars, toolbars |
+| `surface` | `#FFFFFF` | Content panes, text fields, list views, menus, Start menu left column |
+| `surface-muted` | `#F4F3EE` | Zebra rows, subtle panels inside content |
+| `bevel-highlight` | `#FFFFFF` | Outer light edge of raised elements |
+| `bevel-light` | `#F1EFE2` | Inner light edge |
+| `bevel-shadow` | `#ACA899` | Inner dark edge; separators |
+| `bevel-dark` | `#716F64` | Outer dark edge |
+| `field-border` | `#7F9DB9` | Text fields, sunken content panes, list boxes |
+| `button-border` | `#003C74` | Push button 1px border |
+| `groupbox-border` | `#D0D0BF` | Group box outline |
+
+### Hover, focus & selection
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `hot` | `#F8B330` | Hover ("hot-track") amber — inner glow on buttons, tab top line |
+| `hot-light` | `#FFF0CF` | Light end of the hover glow |
+| `hot-strong` | `#E5A01A` | Strong hover edge, Start menu orange separator accents |
+| `default-ring` | `#98B8EA` | Inner blue ring of the default/focused push button |
+| `default-ring-light` | `#CEE7FF` | Light end of that ring |
+| `focus-ring` | `#0A246A` | Keyboard focus outline on light surfaces |
+| `focus-ring-inverse` | `#FFFFFF` | Keyboard focus outline on blue chrome (taskbar, title bars, Start header) |
+| `highlight` | `#316AC5` | Selection background (menus, lists, selected desktop icon label) |
+| `highlight-text` | `#FFFFFF` | Text on `highlight` |
+| `highlight-inactive` | `#D4D0C8` | Selection in an unfocused list (black text) |
+| `lasso-border` | `#316AC5` | Rubber-band (lasso) selection border (stage 6) |
+| `lasso-fill` | `rgb(49 106 197 / 0.25)` | Lasso fill |
+
+### Start menu
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `startmenu-frame` | `#1C5BCC` | Outer 1px frame |
+| `startmenu-header` | `#1868CE` | Header (avatar + name) and footer gradient mid-tone |
+| `startmenu-header-highlight` | `#3C8BE6` | Header/footer top highlight |
+| `startmenu-header-shadow` | `#0F55B8` | Header/footer bottom edge |
+| `startmenu-accent-line` | `#E5813A` | 2px orange separator line under the header |
+| `startmenu-left` | `#FFFFFF` | Left column (pinned programs) |
+| `startmenu-right` | `#D3E5FA` | Right column (places) |
+| `startmenu-right-border` | `#95BDEE` | Divider between columns |
+| `startmenu-right-text` | `#0A246A` | Right column text |
+| `startmenu-hover` | `#316AC5` | Item hover/focus background (white text) |
 
 ### Text
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `text-primary` | `#F5F5F7` | Headings, primary content |
-| `text-secondary` | `#C7C7CC` | Body text |
-| `text-muted` | `#8A8A93` | Captions, hints, timestamps |
-| `text-disabled` | `#5A5A63` | Disabled state |
+| `text` | `#000000` | Default text on `button-face` / `surface` |
+| `text-muted` | `#5C5C5C` | Secondary text, captions, status bar text (AA on both surfaces) |
+| `text-disabled` | `#ACA899` | Disabled labels (exempt from contrast, never used for content) |
+| `text-inverse` | `#FFFFFF` | Text on blue/green chrome |
+| `link` | `#0033CC` | Links inside windows (underlined) |
+| `link-visited` | `#551A8B` | Visited links (optional) |
+| `desktop-label` | `#FFFFFF` | Desktop icon labels (always with `shadow-desktop-label`) |
 
-### Semantic Colors
+### Info surfaces & semantic icon colors
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `success` | `#22C55E` | Success indicators (current role badge, etc.) |
-| `warning` | `#F59E0B` | Warnings (rare in this UI) |
-| `danger` | `#EF4444` | Close window button (subtle, not classic macOS red) |
+| `info` | `#FFFFE1` | Tooltips, tray balloons, assistant bubble |
+| `info-border` | `#000000` | 1px border of tooltips/balloons |
+| `icon-error` | `#D11F1F` | Error dialog icon (own SVG, red circle + ×) |
+| `icon-warning` | `#F2C230` | Warning icon (own SVG, yellow triangle + !) |
+| `icon-info` | `#2A6FD6` | Information icon (own SVG, blue circle + i) |
+| `icon-success` | `#2E8B2E` | Success / "online" indicators |
+| `progress` | `#2FB52F` | In-window progress bar blocks |
 
-### Window Control Buttons
+### Desktop, boot & logon
 
-> Inspired by macOS but visually distinct. Don't copy the exact red-yellow-green sequence.
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `desktop` | `#004E98` | Solid desktop fallback (behind wallpapers; default solid color) |
+| `boot-bg` | `#000000` | Boot screen background |
+| `boot-progress` | `#2B6CF5` | Boot progress blocks |
+| `boot-progress-highlight` | `#8FB8FF` | Boot block top highlight |
+| `boot-track` | `#B2B2B2` | Boot progress track border |
+| `logon-bg` | `#5A7EDC` | Logon screen body |
+| `logon-band` | `#00309C` | Logon top/bottom bands |
+| `logon-divider` | `#F5A86C` | Thin divider accent next to the user list |
 
-| Action | Color | Hover |
-|--------|-------|-------|
-| Close | `#FF5F57` (muted) | `#FF7B73` |
-| Minimize | `#FFBD2E` (muted) | `#FFCC4D` |
-| Maximize | `#28C840` (muted) | `#3FD651` |
+---
 
-**Note:** Keep these at lower saturation than macOS for distinction. Consider monochrome versions on hover for further differentiation.
+## Gradients (CSS recipes)
+
+Gradients are **not** a Tailwind v4 theme namespace. Define them as `--gradient-*` custom properties on `:root`, built only from the color tokens above, and expose them through `@utility` classes (e.g. `@utility bg-taskbar { background-image: var(--gradient-taskbar); }`) or `bg-[image:var(--gradient-taskbar)]`. Never inline a raw gradient in a component.
+
+```css
+:root {
+  /* Taskbar: bright top band, flat body, dark bottom edge */
+  --gradient-taskbar: linear-gradient(
+    to bottom,
+    var(--color-taskbar-edge) 0,
+    var(--color-taskbar-highlight) 4%,
+    var(--color-taskbar) 18%,
+    var(--color-taskbar) 88%,
+    var(--color-taskbar-shadow) 100%
+  );
+
+  /* Tray: lighter/cyan-ish, same structure */
+  --gradient-tray: linear-gradient(
+    to bottom,
+    var(--color-tray-edge) 0,
+    var(--color-tray-highlight) 6%,
+    var(--color-tray) 20%,
+    var(--color-tray) 90%,
+    var(--color-tray-edge) 100%
+  );
+
+  /* Start button: glossy green, rounded right side */
+  --gradient-start: linear-gradient(
+    to bottom,
+    var(--color-start-highlight) 0,
+    var(--color-start) 30%,
+    var(--color-start) 80%,
+    var(--color-start-shadow) 100%
+  );
+  --gradient-start-hover: linear-gradient(
+    to bottom,
+    var(--color-start-highlight-hover) 0,
+    var(--color-start) 34%,
+    var(--color-start) 80%,
+    var(--color-start-shadow) 100%
+  );
+
+  /* Taskbar window buttons */
+  --gradient-task-button: linear-gradient(
+    to bottom,
+    var(--color-task-button-highlight) 0,
+    var(--color-task-button) 25%,
+    var(--color-task-button) 100%
+  );
+  --gradient-task-button-hover: linear-gradient(
+    to bottom,
+    var(--color-task-button-highlight) 0,
+    var(--color-task-button-hover) 25%,
+    var(--color-task-button-hover) 100%
+  );
+  /* Focused window's button is flat + inset (see shadow-task-button-active) */
+
+  /* Title bars */
+  --gradient-titlebar: linear-gradient(
+    to bottom,
+    var(--color-titlebar-highlight) 0,
+    var(--color-titlebar) 10%,
+    var(--color-titlebar) 85%,
+    var(--color-titlebar-shadow) 100%
+  );
+  --gradient-titlebar-inactive: linear-gradient(
+    to bottom,
+    var(--color-titlebar-inactive-highlight) 0,
+    var(--color-titlebar-inactive) 12%,
+    var(--color-titlebar-inactive) 85%,
+    var(--color-titlebar-inactive-shadow) 100%
+  );
+
+  /* Title bar control buttons */
+  --gradient-control: radial-gradient(
+    circle at 90% 90%,
+    var(--color-control) 0,
+    var(--color-control) 55%,
+    var(--color-control-highlight) 100%
+  );
+  --gradient-close: radial-gradient(
+    circle at 90% 90%,
+    var(--color-close) 0,
+    var(--color-close) 55%,
+    var(--color-close-highlight) 100%
+  );
+
+  /* Start menu header & footer */
+  --gradient-startmenu-header: linear-gradient(
+    to bottom,
+    var(--color-startmenu-header-highlight) 0,
+    var(--color-startmenu-header) 30%,
+    var(--color-startmenu-header) 85%,
+    var(--color-startmenu-header-shadow) 100%
+  );
+  --gradient-startmenu-accent: linear-gradient(
+    to right,
+    transparent 0,
+    var(--color-startmenu-accent-line) 50%,
+    transparent 100%
+  );
+
+  /* XP push button (in-window) */
+  --gradient-button: linear-gradient(
+    to bottom,
+    var(--color-surface) 0,
+    var(--color-button-face) 86%,
+    var(--color-bevel-shadow) 100%
+  );
+  --gradient-button-pressed: linear-gradient(
+    to bottom,
+    var(--color-bevel-shadow) 0,
+    var(--color-button-face) 14%,
+    var(--color-surface) 100%
+  );
+
+  /* Boot progress block */
+  --gradient-boot-block: linear-gradient(
+    to bottom,
+    var(--color-boot-progress-highlight) 0,
+    var(--color-boot-progress) 50%,
+    var(--color-boot-progress) 100%
+  );
+
+  /* Logon screen: bands + soft light spot top-left */
+  --gradient-logon: radial-gradient(
+    circle at 15% 20%,
+    color-mix(in srgb, var(--color-surface) 25%, var(--color-logon-bg)) 0,
+    var(--color-logon-bg) 45%
+  );
+}
+```
 
 ---
 
 ## Typography
 
-### Font Families
+### Font families
+
+**System stacks only.** No webfonts are bundled — in particular, never self-host or load Microsoft fonts (Tahoma, Verdana, Trebuchet MS, Segoe UI, Lucida Console, Franklin Gothic). We only *reference* them by name; visitors who have them installed see them, everyone else gets the fallbacks. Stage 1 removes the Geist `next/font` loading (a performance win as well).
 
 | Token | Stack | Usage |
 |-------|-------|-------|
-| `font-sans` | `'Geist Sans', Inter, system-ui, sans-serif` | UI default |
-| `font-mono` | `'Geist Mono', 'JetBrains Mono', ui-monospace, monospace` | Code blocks, terminal-style text, clock |
-| `font-display` | `'Geist Sans', Inter, sans-serif` (weight 600+) | Headings, app titles |
+| `font-sans` | `Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif` | All UI chrome and content |
+| `font-title` | `"Trebuchet MS", Tahoma, Verdana, "DejaVu Sans", sans-serif` | Window title bars, Start menu user name, boot/logon headings |
+| `font-mono` | `"Lucida Console", "Courier New", ui-monospace, monospace` | Address bar paths, Run dialog field, code snippets |
 
-### Type Scale
+### Type scale
 
-| Token | Size | Line Height | Weight | Usage |
-|-------|------|-------------|--------|-------|
-| `text-xs` | 12px | 16px | 400/500 | Captions, clock, hints |
-| `text-sm` | 14px | 20px | 400 | Secondary body, labels |
-| `text-base` | 16px | 24px | 400 | Body text |
-| `text-lg` | 18px | 26px | 500 | Large body, subtitles |
-| `text-xl` | 20px | 28px | 600 | Section headings (small) |
-| `text-2xl` | 24px | 32px | 600 | Section headings (large) |
-| `text-3xl` | 30px | 38px | 700 | Page headings (e.g., app titles inside windows) |
-| `text-4xl` | 36px | 44px | 700 | Hero name, marquee text |
-| `text-5xl` | 48px | 56px | 700 | Boot screen logo |
+Defined as Tailwind v4 `--text-*` tokens (with `--text-*--line-height`).
 
-### Typography Rules
+| Token | Size / line height | Weight | Usage |
+|-------|--------------------|--------|-------|
+| `text-system` | 11px / 14px (8pt) | 400 | Taskbar, tray, menus, Start menu items, status bars, dialogs, desktop icon labels, tooltips, balloons |
+| `text-title` | 13px / 16px | 700 | Window title text |
+| `text-start` | 14px / 16px | 700 italic | Start button label (with `shadow-start-label`) |
+| `text-startmenu-user` | 14px / 18px | 700 | Start menu header user name |
+| `text-body` | 13px / 20px | 400 | Reading content inside windows (about, experience, AI narrative) |
+| `text-heading` | 16px / 22px | 700 | Section headings inside windows |
+| `text-heading-lg` | 20px / 26px | 700 | App page title inside a window (e.g. "About Douglas") |
+| `text-logon` | 24px / 30px | 400 | Logon screen headline and user name |
+| `text-boot` | 40px / 44px | 700 | Boot screen wordmark |
 
-- **Headings:** Geist Sans, weight 600-700, tight tracking (-0.02em on 24px+)
-- **Body:** Geist Sans, weight 400, normal tracking
-- **Mono:** Geist Mono for any code-like or technical text
-- **Avoid:** decorative fonts, font weights below 400
-- **App titles in window chrome:** Geist Sans 500, 14px
-- **Filename labels (under desktop icons):** Geist Mono 500, 12px
+### Rules
+
+- **Chrome is 11px; content is 13px.** Never set long-form reading content at 11px.
+- Title bars: `font-title`, bold, single line, ellipsis on overflow.
+- Desktop icon labels: 11px, centered, max 2 lines, ellipsis; full label shown when selected/focused.
+- No letter-spacing tricks, no gradient text, no text shadows **except** the desktop label shadow and the Start button label shadow (both functional: legibility on wallpapers/green).
+- Respect browser zoom: layouts must reflow at 200% zoom without loss of content (WCAG 1.4.4); never lock font sizes with viewport units.
 
 ---
 
-## Spacing Scale
+## Spacing
 
-Based on a **4px base unit** (Tailwind default).
+4px base unit (Tailwind default scale). The XP look is **dense** — use the small end of the scale for chrome.
 
-| Token | Value | Common Use |
-|-------|-------|------------|
-| `space-0` | 0 | Reset |
-| `space-1` | 4px | Tight gaps, icon padding |
-| `space-2` | 8px | Small gaps between related elements |
-| `space-3` | 12px | Padding inside small buttons |
-| `space-4` | 16px | Standard padding, gap between cards |
-| `space-5` | 20px | Window chrome padding |
-| `space-6` | 24px | Window content padding |
-| `space-8` | 32px | Section spacing |
-| `space-10` | 40px | Large section gaps |
-| `space-12` | 48px | Major divisions |
-| `space-16` | 64px | Hero spacing (mobile) |
+| Step | Value | Common use |
+|------|-------|-----------|
+| `0.5` | 2px | Bevel gaps, icon-to-label gap in menus |
+| `1` | 4px | Taskbar padding, gap between task buttons, menu item vertical padding |
+| `1.5` | 6px | Title bar horizontal padding, gap between control buttons |
+| `2` | 8px | Menu item horizontal padding, group box inner padding, window content padding (dense apps) |
+| `3` | 12px | Dialog padding, window content padding (reading apps), push button horizontal padding |
+| `4` | 16px | Gap between group boxes / content sections |
+| `6` | 24px | Large section breaks inside content windows |
+| `8` | 32px | Logon/boot layout gaps |
 
-**Rules:**
-- Don't use values between scale steps
-- Don't invent custom values for "just this case"
-- Vertical rhythm: prefer multiples of `space-2` (8px) for paragraph spacing
+**Rules:** don't use values between steps; don't invent one-off values. Window **content** may breathe more (12–16px) than window **chrome** (2–6px).
+
+---
+
+## Sizes
+
+Defined as Tailwind v4 `--spacing-*` tokens so they generate utilities (`h-taskbar`, `size-icon-desktop`, …). Geometry constants in `lib/store/geometry.ts` / `desktopGrid.ts` **must mirror** these values (keep a comment cross-reference; stage 1 updates them).
+
+| Token | Desktop | Mobile (< 768px) | Notes |
+|-------|---------|------------------|-------|
+| `taskbar` | 30px | 48px + `env(safe-area-inset-bottom)` | Taskbar height |
+| `titlebar` | 30px | 36px | Includes the 3px top frame |
+| `menubar` | 20px | — (collapsed into a "⋯" menu) | File/Edit/View/Help row |
+| `statusbar` | 22px | 22px | Optional per app |
+| `control-button` | 21px | 32px (hit area ≥ 44px) | Minimize/maximize/close |
+| `start-button` | 30px tall, ~100px wide | 48px tall, ~88px wide | Label + logo |
+| `task-button` | 22px tall, 40–160px wide | 40px tall | Shrinks to icon-only at 40px |
+| `icon-desktop` | 48px | 48px | Desktop icon glyph ("large icons") |
+| `icon-startmenu-pinned` | 32px | 32px | Start menu left column |
+| `icon-startmenu-places` | 24px | 24px | Start menu right column |
+| `icon-small` | 16px | 16px (in ≥ 44px hit area) | Title bars, task buttons, tray, menus |
+| `desktop-cell` | 88 × 96px pitch, 76px label width | 96 × 104px pitch | Icon grid (column-first, top-left origin) |
+| `startmenu` | 380 × ~480px | full width, 85dvh | Start menu panel |
+| `startmenu-header` | 64px (avatar 48px) | 64px | User header |
+| `touch-target` | — | ≥ 44 × 44px | Every interactive element on mobile |
 
 ---
 
@@ -147,348 +382,326 @@ Based on a **4px base unit** (Tailwind default).
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `radius-sm` | 4px | Small badges, tags |
-| `radius-md` | 8px | Buttons, inputs, cards inside windows |
-| `radius-lg` | 12px | Windows, large cards |
-| `radius-xl` | 16px | Dock container |
-| `radius-2xl` | 20px | Hero containers (mobile) |
-| `radius-full` | 9999px | Pills, avatar circles, accent toggle |
+| `radius-window` | 8px | **Top-left and top-right only** of window frames (`rounded-t-window`); bottom corners square |
+| `radius-start` | 0 12px 12px 0 | Start button: flush left against the screen edge, pill-rounded on the right |
+| `radius-startmenu` | 8px | Top corners of the Start menu panel only |
+| `radius-control` | 3px | Title bar control buttons |
+| `radius-button` | 3px | Push buttons, task buttons |
+| `radius-groupbox` | 3px | Group boxes |
+| `radius-balloon` | 8px | Tray balloons, assistant bubble |
+| `radius-none` | 0 | Text fields, menus, status bars, content panes |
 
 ---
 
-## Shadows & Glows
+## Borders, Bevels & Shadows
 
-### Box Shadows
+The 3D "bevel" is built with stacked inset shadows, never with images.
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `shadow-window` | `0 25px 50px -12px rgba(0, 0, 0, 0.6)` | Active windows (dramatic depth) |
-| `shadow-window-inactive` | `0 15px 30px -8px rgba(0, 0, 0, 0.4)` | Inactive windows |
-| `shadow-dock` | `0 10px 30px -8px rgba(0, 0, 0, 0.5)` | Dock container |
-| `shadow-card` | `0 4px 12px rgba(0, 0, 0, 0.3)` | Cards inside windows |
-| `shadow-glow-accent` | `0 0 24px rgba(0, 217, 255, 0.4)` | Glow on accent elements |
-| `shadow-glow-subtle` | `0 0 16px rgba(0, 217, 255, 0.2)` | Subtle accent glow (hover states) |
+| `shadow-bevel-raised` | `inset -1px -1px var(--color-bevel-dark), inset 1px 1px var(--color-bevel-highlight), inset -2px -2px var(--color-bevel-shadow), inset 2px 2px var(--color-bevel-light)` | Raised panels, toolbar buttons (pressed state flips it) |
+| `shadow-bevel-sunken` | `inset 1px 1px var(--color-bevel-shadow), inset -1px -1px var(--color-bevel-highlight)` | Status bar panes, sunken frames |
+| `shadow-button-hover` | `inset -1px 1px var(--color-hot-light), inset 1px 2px var(--color-hot), inset -2px 2px var(--color-hot), inset 2px -2px var(--color-hot-strong)` | Push button hover (amber inner glow) |
+| `shadow-button-default` | `inset -1px 1px var(--color-default-ring-light), inset 1px 2px var(--color-default-ring), inset -2px 2px var(--color-default-ring-light), inset 2px -2px var(--color-default-ring)` | Default / focused push button (blue inner ring) |
+| `shadow-task-button-active` | `inset 1px 1px 2px rgb(0 0 0 / 0.45)` | Focused window's taskbar button (pressed look) |
+| `shadow-window` | `2px 4px 12px rgb(0 0 0 / 0.35)` | Active window (subtle; the original had none — added for depth) |
+| `shadow-window-inactive` | `1px 2px 6px rgb(0 0 0 / 0.25)` | Inactive window |
+| `shadow-menu` | `2px 2px 3px rgb(0 0 0 / 0.4)` | Start menu, context menus, dropdowns |
+| `shadow-balloon` | `2px 2px 4px rgb(0 0 0 / 0.35)` | Balloons, tooltips, assistant bubble |
+| `shadow-desktop-label` | `1px 1px 1px rgb(0 0 0 / 0.9), 0 0 2px rgb(0 0 0 / 0.6)` (text-shadow) | Desktop icon labels — mandatory |
+| `shadow-start-label` | `1px 1px 1px rgb(0 0 0 / 0.5)` (text-shadow) | Start button label |
 
-### Glow Strategy
-- Use glows **sparingly** on hover and focus states, not as decoration
-- Accent glow on: focused window borders, hover state of dock icons, CTA buttons
-- Avoid glow on body text or large surfaces (looks tacky)
-
----
-
-## Glassmorphism Recipe
-
-Apply consistently across all "glass" surfaces (windows, menu bar, dock):
-
-```css
-background: rgba(20, 20, 30, 0.65);
-backdrop-filter: blur(20px) saturate(180%);
--webkit-backdrop-filter: blur(20px) saturate(180%);
-border: 1px solid rgba(255, 255, 255, 0.08);
-```
-
-**Variations:**
-- Menu bar: blur 24px, slightly more opaque
-- Window: blur 20px, standard
-- Dock: blur 24px, slightly more opaque
-- Cards inside windows: blur 12px, lighter
-
-**Fallback:** Browsers without `backdrop-filter` (rare in modern set) get a solid `base-2` background.
+**Borders:** text fields and content panes `1px solid var(--color-field-border)`; push buttons `1px solid var(--color-button-border)`; menus `1px solid var(--color-bevel-shadow)`; window frame 3px (`window-frame` / `window-frame-inactive`); group boxes `1px solid var(--color-groupbox-border)`.
 
 ---
 
-## Animations & Transitions
+## Focus States
 
-### Library: Framer Motion
+- **Keyboard focus is always visible** (`:focus-visible`), on every interactive element, on every surface.
+- On light surfaces (`button-face`, `surface`): `outline: 2px solid var(--color-focus-ring); outline-offset: 1px` **plus** the classic 1px dotted inner rectangle (`outline` on an inner element or `::after` with `1px dotted currentColor`) for fidelity.
+- On blue chrome (taskbar, title bars, Start header/footer, task buttons, tray): `outline: 2px solid var(--color-focus-ring-inverse); outline-offset: -3px`.
+- Desktop icons: focused icon = selected styling (`highlight` behind the label, icon tinted) + 1px dotted rectangle around the label.
+- Push buttons: focused = `shadow-button-default` + dotted rectangle; hover = `shadow-button-hover`.
+- Never remove an outline without replacing it. Mouse clicks must not show the outline (`:focus-visible` only).
 
-### Standard Durations
+---
+
+## Motion
+
+### Library & philosophy
+
+**Framer Motion for all animation** (fixed stack). The original desktop barely animated: motion is **short, functional, and explains spatial change** (where a window went, where a menu came from). No decorative loops in chrome.
+
+### Tokens
+
+Framer consumes TS values, so motion tokens live as constants in `lib/motion.ts` (created in stage 1), mirrored as `--duration-*` / `--ease-*` CSS vars only if CSS needs them.
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `duration-fast` | 150ms | Micro-interactions (button press) |
-| `duration-base` | 250ms | Hover effects, small state changes |
-| `duration-medium` | 350ms | Window open/close, app launches |
-| `duration-slow` | 500ms | Boot screen transitions |
+| `duration-instant` | 0ms | Hover/press states (XP had no hover transitions) |
+| `duration-fast` | 100ms | Start menu, context menus, dropdowns, tooltips |
+| `duration-base` | 150ms | Minimize/restore, balloons, dialogs |
+| `duration-slow` | 250ms | Logon → desktop fade, boot → logon fade |
+| `ease-out` | `[0.2, 0, 0, 1]` | Entries |
+| `ease-in` | `[0.4, 0, 1, 1]` | Exits |
+| `ease-linear` | `"linear"` | Boot progress marquee |
 
-### Easing
+### Recipes
 
-| Token | Curve | Use |
-|-------|-------|-----|
-| `ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | Default for entries (windows opening) |
-| `ease-in` | `cubic-bezier(0.7, 0, 0.84, 0)` | Exits (windows closing) |
-| `ease-in-out` | `cubic-bezier(0.45, 0, 0.55, 1)` | Bidirectional (drag, smooth movement) |
-| `ease-bounce` | `spring(stiffness: 200, damping: 20)` | Playful elements (dock hover) |
+| Element | Animation |
+|---------|-----------|
+| Start menu open | opacity 0→1, `y: 8 → 0`, `duration-fast`, `ease-out`; close = instant |
+| Context menu / dropdown | opacity 0→1, `duration-fast` |
+| Window open | opacity 0→1, `duration-fast` (no scale — the original popped windows in) |
+| Window close | instant unmount (no exit animation) |
+| Minimize | scale + translate toward the window's taskbar button rect, opacity → 0, `duration-base`, `ease-in` |
+| Restore | reverse of minimize, `ease-out` |
+| Maximize / restore size | instant (no tween) |
+| Tray balloon | opacity 0→1, `duration-base`; auto-dismiss after ~8s unless hovered/focused |
+| Boot progress | 3 blocks sliding through the track on a loop (~1.2s, `ease-linear`) |
+| Logon → desktop | crossfade `duration-slow` |
 
-### Animation Recipes
+### Reduced motion (`prefers-reduced-motion: reduce`)
 
-**Window Open:**
-```ts
-{
-  initial: { opacity: 0, scale: 0.95 },
-  animate: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.95 },
-  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
-}
-```
+Every animation has a static alternative:
 
-**Dock Icon Hover (magnification):**
-```ts
-{
-  whileHover: { scale: 1.2, y: -4 },
-  transition: { type: "spring", stiffness: 300, damping: 20 }
-}
-```
-
-**Boot Screen Out:**
-```ts
-{
-  exit: { opacity: 0, scale: 1.05 },
-  transition: { duration: 0.5, ease: [0.7, 0, 0.84, 0] }
-}
-```
-
-### Reduced Motion
-
-Respect `prefers-reduced-motion: reduce`:
-- Disable 3D scene entirely
-- Replace window animations with simple opacity transitions
-- Disable dock magnification
-- Disable boot screen animation (skip directly to desktop)
+- All tweens become instant (no transforms, no fades longer than `duration-fast`).
+- Boot: no marquee; a static "Starting DouglasOS…" label, then go straight to logon (or desktop when skipped).
+- Minimize/restore: instant.
+- 3D wallpaper: never loads; falls back to the default static wallpaper.
+- Assistant/dance/nudge/visualizers (later stages): static poster or indicator.
+- The global CSS reduced-motion reset in `globals.css` stays.
 
 ---
 
 ## Iconography
 
-### Style
-- Outline style with 1.5-2px stroke
-- Rounded line caps
-- Subtle accent fills on key UI elements
-- Consistent visual weight across all icons
+### Direction
 
-### Library Choice
-- **Primary:** `lucide-react` (consistent, comprehensive, well-maintained)
-- **Custom:** App icons may be custom-designed for brand identity
+**Own SVG icons in the XP style** — never the originals, never traced.
 
-### App Icon Visual Treatment
-- Container: gradient background (subtle, dark) with rounded corners (radius-md or radius-lg)
-- Symbol: clean lucide icon in accent or white
-- Label below: Geist Mono 12px
-- Hover: subtle glow + scale (1.05)
+- Colorful, soft vertical gradients, light from the top-left, a slightly darker 1px outline, gentle rounded forms and a subtle drop shadow (in the SVG, not CSS).
+- Three-quarter or front view; friendly, glossy, but simple enough to read at 16px.
+- Palette drawn from the color tokens (blues, greens, ambers) plus a small set of icon-local accent colors documented in the icon module.
+- Each icon is a React SVG component (in `components/icons/` or `lib/icons/` — chosen in stage 1) with a **48px master** and a **simplified 16px variant**; 32/24px scale from the master.
+- External shortcuts (stage 3) get a **shortcut-arrow overlay** of our own design in the bottom-left corner.
+- `lucide-react` is allowed **only inside window content** (e.g. list bullets, inline actions), never for desktop, Start menu, taskbar or title bar icons.
 
----
+### Icon concepts per launcher
 
-## Component Guidelines (shadcn/ui usage)
+| Launcher | Concept |
+|----------|---------|
+| `about` | User card / ID badge with Douglas's stylized silhouette |
+| `experience` | Leather briefcase |
+| `projects` | Yellow folder with documents peeking out ("My Projects") |
+| `skills` | Toolbox / stacked colored blocks |
+| `how-i-work-with-ai` | Lightbulb with a small circuit/spark motif — the marquee icon, slightly more vivid |
+| `resume` | Paper document with a folded corner and a red "PDF" band — a **generic** PDF cue, never a vendor logo |
+| `contact` | Envelope + address card |
+| `display` (stage 1) | Monitor showing a tiny hills wallpaper |
+| Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera, paint, "don't open this" |
 
-Use shadcn/ui components for in-window UI, customized to match the dark glass aesthetic.
+### Brand mark (DouglasOS logo)
 
-### Buttons
-
-| Variant | When to use |
-|---------|-------------|
-| `default` (accent bg) | Primary CTA inside an app (e.g., "Download CV") |
-| `outline` | Secondary actions |
-| `ghost` | Tertiary, navigation-style actions |
-| `link` | Inline text actions |
-
-**Customization:**
-- Primary buttons: accent bg + dark text, glow on hover
-- All buttons: radius-md, 14px font, slight scale on click
-
-### Tabs
-
-Use for switching content within a single window (e.g., projects organized by category).
-- Underline indicator in accent color
-- Smooth transition between tab content
-
-### Cards
-
-For projects, experience items, and content groupings inside windows.
-- Background: `glass-card`
-- Border: `1px solid base-3`
-- Hover: subtle accent border + slight lift
-
-### Badges / Tags
-
-For tech stack tags, status indicators.
-- Background: `base-3` with `accent` text, or filled accent for emphasis
-- Small text (12px), pill shape (`radius-full`)
-- No icon unless meaningful
-
-### Dialogs / Modals
-
-Avoid in v1. Window system replaces modal patterns.
-
-### Tooltips
-
-Use sparingly — small accent-styled tooltips on icon-only buttons (e.g., window controls).
+- The DouglasOS logo takes the place where the original put its flag (boot, logon, Start button, About dialog, favicon).
+- Direction: a glossy rounded-square tile in Luna blue with a white "D" monogram and a small green accent dot (echoing the Start button).
+- **Never** a four-pane / four-color / waving-flag shape, never a window-pane grid. If it reads as "a flag" at 16px, redraw it.
 
 ---
 
-## 3D Scene Guidelines
+## Wallpapers
 
-### Concept
-Ambient background with subtle motion. Goal: presence, not distraction.
+Wallpapers are the only personalization. They're chosen in **Display Properties** (stage 1) and persisted locally.
 
-### Elements
-- Floating "code fragments" (text-like geometry) drifting slowly
-- Soft particles in accent and purple
-- Subtle depth-of-field blur on background elements
-- Color palette: dark base + accent cyan + occasional purple
+| Wallpaper | Type | Notes |
+|-----------|------|-------|
+| **"Morning Hills"** (default) | Static, original | Flat-vector illustration: 3–4 layered rolling hills receding to the horizon in Luna-compatible greens, a winding path, a deep-blue-to-pale morning sky with a few flat clouds. |
+| "Dusk Hills" | Static, original | Same composition at sunset (warm sky, cooler hills) — cheap variant of the default. |
+| "Blueprint" | Static, original | Deep blue field with a faint DouglasOS-logo / grid pattern. |
+| Solid color | Static | Fixed swatches (default `desktop` `#004E98` + up to 5 more); no free color picker. |
+| **"DouglasOS 3D (animated)"** | Animated, optional | The existing R3F `AmbientBackground` scene, unchanged in spirit. |
 
-### Implementation
-- React Three Fiber + Drei
-- Postprocessing pipeline: subtle bloom on accent particles
-- Performance: cap at 30 FPS, low density of objects
-- Lazy load: 3D scene only initializes after critical UI renders
-- Disable on mobile and `prefers-reduced-motion`
+### Rules for static wallpapers
 
-### Density Recommendation
-- 50-100 floating particles total
-- 5-10 code fragments
-- No high-poly models
-- No physics, no collisions
+- **Original artwork only.** Explicitly *not* the famous green-hill photograph or anything derived from it: no photography, no single smooth hill under a blue sky with white clouds as the whole composition. Ours is visibly illustrated and layered.
+- Stored in `public/wallpapers/` as optimized SVG (≤ 80KB, SVGO) or, if the illustration needs it, AVIF/WebP ≤ 200KB at 2560px wide.
+- Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing and the wallpaper never becomes the LCP element.
+- **Label legibility:** the area under the default icon column (left ~200px, top 70%) must be mid-to-dark (the deep part of the sky / hills) so white labels with `shadow-desktop-label` stay readable.
+- Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (hills must survive a 9:19.5 crop).
 
----
+### "DouglasOS 3D (animated)" rules (carried over from v1)
 
-## Visual References
-
-| Reference | What to Borrow |
-|-----------|----------------|
-| Linear (`linear.app`) | Density, typography quality, transitions |
-| Vercel (`vercel.com`) | Gradients, monospace usage, dark mode polish |
-| Arc Browser (`arc.net`) | Visual ambition, glass effects |
-| macOS Sonoma | Window chrome conventions, dock magnification |
-| bruno-simon.com | Ambition reference for 3D (v2 target) |
-| Apple Vision Pro UI | Glassmorphism execution at its peak |
-| Raycast (`raycast.com`) | Command-style aesthetic for terminal app (v1.5) |
-| Phantom Wallet | Dark mode + accent color execution |
+- Off by default. Opt-in in Display Properties only.
+- Lazy-loaded after the critical UI; never on the critical path.
+- Capped at 30 FPS; low density (50–100 particles, 5–10 code fragments); no physics, no high-poly models.
+- **Never loads** under `prefers-reduced-motion`, with `Save-Data`, or on mobile (stage 2 may propose an exception within the perf budget).
+- If unavailable, falls back to the default static wallpaper, and Display Properties explains why ("disabled: reduced motion").
+- The scene keeps its original night palette (near-black base, electric cyan `#00D9FF`, purple `#7C3AED`) as **scene-local constants inside the 3D module**. These are not UI tokens and must not leak into chrome.
 
 ---
 
-## Accessibility Notes
+## Component Guidelines (shadcn/ui inside windows)
 
-- All accent-colored text must meet WCAG AA contrast on its background (`#00D9FF` on `base-1` passes; verify each pairing)
-- Focus indicators visible on all interactive elements (accent ring 2px)
-- Don't rely on color alone — use icons, text labels, or shape changes
-- Reduced motion respected throughout
-- Touch targets on mobile: minimum 44x44px
-- Window chrome buttons must have ARIA labels
+shadcn/ui + radix stay the base for in-window UI and for accessible primitives (menus, dialogs, popovers, tabs). Their **styles** are replaced by the XP look; their **behavior** (focus management, ARIA) is kept.
 
----
-
-## Anti-Patterns (what to avoid)
-
-- ❌ Bright/saturated full backgrounds (this is a dark UI, keep base dark)
-- ❌ Multiple competing accent colors in one view (cyan as primary, purple sparingly)
-- ❌ Skeuomorphic textures (no fake leather, brushed metal, etc.)
-- ❌ Drop shadows on text (looks dated)
-- ❌ Gradient text for body content (use only for hero/brand elements)
-- ❌ More than one font family per screen (Sans + Mono only when intentional)
-- ❌ Overly playful animations (this isn't a kids' app)
-- ❌ Loading spinners spinning forever (always have a timeout / fallback)
-- ❌ Icons without labels in primary nav
-- ❌ macOS button colors at full saturation (looks like a copy)
+| Component | XP treatment |
+|-----------|--------------|
+| **Push button** (`Button` default) | `gradient-button`, 1px `button-border`, `radius-button`, min-width 75px, height 23px, `text-system`. Hover `shadow-button-hover`, focus `shadow-button-default` + dotted rect, pressed `gradient-button-pressed`. |
+| **Primary action** (e.g. "Download CV") | Same push button in the "default button" state (permanent blue ring) — never a different color fill. |
+| **Link** | `link` color, underlined, no button chrome. |
+| **Text field / textarea** | `surface` bg, 1px `field-border`, height 21–23px, `radius-none`; focus ring per [Focus States](#focus-states). |
+| **Checkbox / radio** | 13px boxes, white with `field-border`, green check / dot glyph (own SVG). |
+| **Tabs** | Raised tabs on `button-face`; hover adds a 2px `hot` top line; selected tab is `surface`, connected to the panel, with a `hot-strong` top line. |
+| **Group box** | 1px `groupbox-border`, `radius-groupbox`, label sits on the top border on `button-face`. |
+| **Content pane** | `surface` with 1px `field-border` (sunken look) — replaces v1 "glass cards". |
+| **Tags / badges** | Small `surface` chips, 1px `bevel-shadow` border, `radius-button`, `text-system`. |
+| **Menus** (menu bar, context, dropdown) | `surface` bg, 1px `bevel-shadow` border, `shadow-menu`, items 22px tall, hover/focus `highlight` + `highlight-text`, separators 1px `bevel-shadow`, submenu arrow ▸. |
+| **Dialog / message box** | Window chrome (title bar with close only), `button-face` body, semantic icon (32px) on the left, text on the right, buttons right-aligned at the bottom. Modal: focus trapped, Esc = Cancel. No dimming scrim (transparent click-blocker), matching the original. |
+| **Tooltip** | `info` bg, 1px `info-border`, `text-system`, no radius, `shadow-balloon`; delay ~500ms. |
+| **Balloon** (tray, assistant) | `info` bg, 1px `info-border`, `radius-balloon`, tail pointing to its source, bold title row with 16px icon, close ×. |
+| **Progress bar** | Sunken track, `progress` green blocks. |
+| **Scrollbars** | Optional XP tint via `scrollbar-color`; never hide scrollbars. |
 
 ---
 
-## Tailwind Config Reference
+## Accessibility
 
-```ts
-// tailwind.config.ts (conceptual — adjust to actual structure)
-export default {
-  theme: {
-    extend: {
-      colors: {
-        base: {
-          0: '#0A0A0F',
-          1: '#13131A',
-          2: '#1C1C26',
-          3: '#2A2A36',
-          4: '#3D3D4A',
-        },
-        accent: {
-          DEFAULT: '#00D9FF',
-          bright: '#33E1FF',
-          muted: '#0099B8',
-          purple: '#7C3AED',
-        },
-        text: {
-          primary: '#F5F5F7',
-          secondary: '#C7C7CC',
-          muted: '#8A8A93',
-          disabled: '#5A5A63',
-        },
-      },
-      fontFamily: {
-        sans: ['Geist Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['Geist Mono', 'JetBrains Mono', 'monospace'],
-      },
-      boxShadow: {
-        window: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
-        'window-inactive': '0 15px 30px -8px rgba(0, 0, 0, 0.4)',
-        dock: '0 10px 30px -8px rgba(0, 0, 0, 0.5)',
-        card: '0 4px 12px rgba(0, 0, 0, 0.3)',
-        'glow-accent': '0 0 24px rgba(0, 217, 255, 0.4)',
-        'glow-subtle': '0 0 16px rgba(0, 217, 255, 0.2)',
-      },
-      backdropBlur: {
-        glass: '20px',
-        'glass-strong': '24px',
-      },
-      borderRadius: {
-        window: '12px',
-        dock: '16px',
-      },
-    },
-  },
-}
-```
+- **Contrast AA (4.5:1) for all text**, including chrome. Key pairs (computed):
+
+| Text / background | Ratio |
+|-------------------|-------|
+| `text` on `button-face` | ~17:1 |
+| `text-muted` on `surface` / `button-face` | ~6.7:1 / ~5.5:1 |
+| `link` on `surface` | ~9:1 |
+| `titlebar-text` on `titlebar` | ~5.8:1 |
+| `titlebar-text-inactive` on `titlebar-inactive` | ~4.6:1 |
+| `text-inverse` on `task-button` / `task-button-hover` | ~5.6:1 / ~4.6:1 |
+| `text-inverse` on `tray` | ~4.9:1 |
+| `text-inverse` on `start` | ~5.1:1 |
+| `text-inverse` on `startmenu-header` | ~5.4:1 |
+| `highlight-text` on `highlight` | ~5.3:1 |
+| `startmenu-right-text` on `startmenu-right` | ~11:1 |
+
+- **Deliberate fidelity deviations for AA:** darker Start green, darker task buttons, darker tray, navy inactive title text, 13px reading text inside windows, a solid 2px focus outline in addition to the dotted rectangle.
+- Non-text contrast ≥ 3:1 for control glyphs (white glyphs on `control` / `close`).
+- Never rely on color alone (active window = color **and** pressed taskbar button; selection = color **and** dotted focus rect).
+- Every icon-only control has an accessible name (`aria-label`, localized).
+- Touch targets ≥ 44 × 44px on mobile (hit area may extend beyond the visual).
+- Reduced motion respected everywhere (see [Motion](#motion)).
 
 ---
 
-## CSS Variables (alternative / complement)
+## What NOT to use
+
+DouglasOS imitates mechanics, never property. The following are **banned** in code, assets, copy, metadata and screenshots:
+
+- ❌ The names **"Windows"**, **"Microsoft"**, **"Windows XP"**, and "XP" as a product/edition name in the UI ("DouglasOS XP" is an internal doc name only).
+- ❌ The **flag logo** or anything resembling it (four colored panes, waving flag, window-pane grid as a logo).
+- ❌ The **"Bliss" wallpaper**, photos or derivatives of it, or any composition that reads as it.
+- ❌ **Original system icons** (My Computer, Recycle Bin, folders, Internet Explorer "e", Media Player, MSN/Windows Live, Outlook, Paint, Solitaire, etc.) — no extraction, tracing or "inspired copy" of individual icons.
+- ❌ **Original sounds** (startup, logon/logoff, error "ding", balloon, messenger nudge/login).
+- ❌ **Microsoft fonts bundled or self-hosted** (Tahoma, Verdana, Trebuchet MS, Segoe UI, Lucida Console, Franklin Gothic). System-stack references only.
+- ❌ **Verbatim original UI text** (e.g. the exact shutdown/boot/error strings, the blue-screen text). Write original, DouglasOS-voiced copy.
+- ❌ **Product names** of the era: Internet Explorer, Windows Media Player, MSN/Windows Live Messenger, Outlook Express, Office Assistant / the paperclip character. Our equivalents have original names ("DouglasOS Explorer", "DouglasOS Media Player", "DouglasOS Messenger", the "mini Douglas" assistant).
+- ❌ Screenshots of the real OS used as assets or placeholders.
+- ❌ The reference video's portfolio **copy or visuals** — we reuse its mechanics only.
+- ❌ Vendor logos as generic icons (e.g. the Adobe PDF logo on `resume.pdf`).
+- ❌ v1 leftovers: glassmorphism/backdrop blur, electric cyan accent in chrome, dark-only surfaces, Geist fonts, dock magnification, macOS traffic-light controls.
+
+---
+
+## Implementation Reference (Tailwind v4)
+
+Conceptual shape of the `globals.css` rewrite in stage 1 (names are normative, structure is indicative):
 
 ```css
+@theme {
+  /* Colors — every token from the palette tables above */
+  --color-taskbar: #245ddb;
+  --color-start: #2e7d32;
+  --color-titlebar: #0058ee;
+  --color-button-face: #ece9d8;
+  --color-highlight: #316ac5;
+  --color-focus-ring: #0a246a;
+  /* … */
+
+  /* Fonts */
+  --font-sans: Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif;
+  --font-title: "Trebuchet MS", Tahoma, Verdana, "DejaVu Sans", sans-serif;
+  --font-mono: "Lucida Console", "Courier New", ui-monospace, monospace;
+
+  /* Type scale */
+  --text-system: 11px;
+  --text-system--line-height: 14px;
+  --text-title: 13px;
+  --text-body: 13px;
+  --text-body--line-height: 20px;
+  /* … */
+
+  /* Sizes → utilities like h-taskbar, size-icon-desktop */
+  --spacing-taskbar: 30px;
+  --spacing-titlebar: 30px;
+  --spacing-icon-desktop: 48px;
+  /* … */
+
+  /* Radii */
+  --radius-window: 8px;
+  --radius-button: 3px;
+  --radius-balloon: 8px;
+
+  /* Shadows */
+  --shadow-bevel-raised: inset -1px -1px var(--color-bevel-dark), inset 1px 1px var(--color-bevel-highlight),
+    inset -2px -2px var(--color-bevel-shadow), inset 2px 2px var(--color-bevel-light);
+  --shadow-menu: 2px 2px 3px rgb(0 0 0 / 0.4);
+  /* … */
+}
+
 :root {
-  --base-0: #0A0A0F;
-  --base-1: #13131A;
-  --base-2: #1C1C26;
-  --base-3: #2A2A36;
-  --base-4: #3D3D4A;
-
-  --accent: #00D9FF;
-  --accent-bright: #33E1FF;
-  --accent-muted: #0099B8;
-  --accent-purple: #7C3AED;
-
-  --text-primary: #F5F5F7;
-  --text-secondary: #C7C7CC;
-  --text-muted: #8A8A93;
-  --text-disabled: #5A5A63;
-
-  --glass-window: rgba(20, 20, 30, 0.65);
-  --glass-chrome: rgba(15, 15, 22, 0.75);
-  --glass-card: rgba(28, 28, 38, 0.5);
-
-  --shadow-window: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-  --shadow-glow-accent: 0 0 24px rgba(0, 217, 255, 0.4);
-
-  --radius-window: 12px;
-  --radius-dock: 16px;
-
-  --blur-glass: 20px;
-  --blur-glass-strong: 24px;
+  color-scheme: light;
+  /* --gradient-* recipes (see Gradients) */
+  /* shadcn semantic tokens mapped onto Luna: */
+  --background: var(--color-button-face);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --popover: var(--color-surface);
+  --primary: var(--color-highlight);
+  --primary-foreground: var(--color-highlight-text);
+  --muted: var(--color-surface-muted);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-highlight);
+  --accent-foreground: var(--color-highlight-text);
+  --border: var(--color-bevel-shadow);
+  --input: var(--color-field-border);
+  --ring: var(--color-focus-ring);
 }
 ```
 
+- Remove the forced `html.dark` class and the `dark` variant usage; `color-scheme: light`.
+- Remove every v1 token (`base-*`, `accent*`, `glass-*`, `glow-*`, `win-*`, `blur-glass*`, `radius-dock`) once no component references it.
+- Keep the global `prefers-reduced-motion` reset.
+
+### Checklist for stage 1
+
+- [ ] All palette, type, size, radius and shadow tokens defined in `@theme`; gradients as `--gradient-*` + `@utility`.
+- [ ] Geist font loading removed; system stacks applied.
+- [ ] shadcn semantic tokens remapped; `color-scheme: light`; no `.dark`.
+- [ ] Geometry constants (`MENU_BAR_H` → taskbar, grid pitch) mirror the size tokens.
+- [ ] `lib/motion.ts` with the motion tokens; reduced-motion paths verified.
+- [ ] Contrast pairs above verified in the browser (not just on paper).
+- [ ] No banned asset/name anywhere (grep for "Windows", "Microsoft", "XP" in UI copy).
+
 ---
 
-## Final Checklist Before Coding
+## Changelog — why the identity changed
 
-- [ ] Tailwind config extended with all tokens above
-- [ ] Geist Sans + Geist Mono loaded via `next/font`
-- [ ] shadcn/ui installed with dark theme as default
-- [ ] CSS variables defined in `globals.css`
-- [ ] Base layout uses `base-0` as page background
-- [ ] First component (e.g., button) built using design tokens — no hardcoded values
-- [ ] Reduced-motion media query handled globally
+**v1 (MVP, 2026) — "dark glass":** dark-only UI, glassmorphism (`backdrop-blur`), electric cyan accent `#00D9FF` (+ purple), Geist Sans/Mono, macOS-inspired top menu bar + bottom dock with magnification, muted traffic-light window controls, ambient R3F 3D background always on (desktop). The full v1 document is preserved in git history: `git show 14dc47d:instructions/DESIGN-GUIDELINES.md`.
+
+**v1.5 — "DouglasOS XP":** replaced by a faithful early-2000s Luna simulation with DouglasOS branding.
+
+**Why:**
+
+- The v1 look was polished but read as "another dark dev portfolio"; the brief's goal is to be *memorable*. A faithful, nostalgic desktop is instantly recognizable and shareable, and it makes the OS metaphor self-explanatory (everyone knows Start → Programs).
+- The analysis of a reference OS-style portfolio (`instructions/full-refactor/V1.5-FEATURE-PROMPTS.md`) showed that the delight comes from *mechanics* (Start menu, recycle bin, assistant, media player) — which map naturally onto a Luna-style desktop, not onto a macOS-like dock.
+- A familiar desktop also works on touch (stage 2), replacing the v1 linear mobile fallback with the same experience.
+
+**What was removed:** dark-only rule, glassmorphism recipe, cyan/purple accents in UI, Geist fonts, dock/menu-bar tokens, macOS-style window controls, "3D always on" (it is now an optional animated wallpaper).
