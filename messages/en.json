@@ -330,7 +330,7 @@
     "welcome": "welcome",
     "intro": "This desktop is a portfolio. Make yourself at home.",
     "subtitle": "AI-First Fullstack Developer",
-    "tileLabel": "Log on as Douglas",
+    "tileLabel": "Log on as Douglas, AI-First Fullstack Developer",
     "hint": "Click Douglas to come in.",
     "hintTouch": "Tap Douglas to come in."
   },
@@ -350,9 +350,9 @@
   },
   "balloon": {
     "title": "Welcome to DouglasOS",
-    "body": "Click any icon to open it. Your CV is one click away on the taskbar.",
+    "body": "Click any icon to open it. Douglas's CV is one click away on the taskbar.",
     "close": "Close",
-    "bodyTouch": "Tap any icon to open it. Your CV is one tap away on the taskbar."
+    "bodyTouch": "Tap any icon to open it. Douglas's CV is one tap away on the taskbar."
   },
   "static": {
     "label": "DouglasOS — text version of the portfolio"

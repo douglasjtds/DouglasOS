@@ -330,7 +330,7 @@
     "welcome": "boas-vindas",
     "intro": "Esta área de trabalho é um portfólio. Fique à vontade.",
     "subtitle": "Desenvolvedor Fullstack AI-First",
-    "tileLabel": "Entrar como Douglas",
+    "tileLabel": "Entrar como Douglas, Desenvolvedor Fullstack AI-First",
     "hint": "Clique no Douglas para entrar.",
     "hintTouch": "Toque no Douglas para entrar."
   },
@@ -350,9 +350,9 @@
   },
   "balloon": {
     "title": "Bem-vindo ao DouglasOS",
-    "body": "Clique em qualquer ícone para abrir. Seu CV está a um clique na barra de tarefas.",
+    "body": "Clique em qualquer ícone para abrir. O CV do Douglas está a um clique na barra de tarefas.",
     "close": "Fechar",
-    "bodyTouch": "Toque em qualquer ícone para abrir. Seu CV está a um toque na barra de tarefas."
+    "bodyTouch": "Toque em qualquer ícone para abrir. O CV do Douglas está a um toque na barra de tarefas."
   },
   "static": {
     "label": "DouglasOS — versão em texto do portfólio"

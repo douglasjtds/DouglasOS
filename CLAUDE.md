@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `DESKTOP-INTERFACE-SPEC.md` — structure and behavior of every interface element (boot, logon, taskbar, Start menu, windows, dialogs, mobile, keyboard map, each app).
   - `DESIGN-GUIDELINES.md` — the "DouglasOS XP" design-token source of truth (Luna colors, gradients, type, sizes, bevels, focus, motion, icons, wallpapers, what NOT to use). Implement tokens as Tailwind v4 `@theme` tokens + CSS variables; never hardcode values that have a token.
   - `full-refactor/V1.5-FEATURE-PROMPTS.md` — the analysis behind v1.5 and the self-contained prompt for each stage.
-- **v1.5 redesign in progress.** The docs describe the target "DouglasOS XP" shell (a faithful early-2000s Luna-style desktop, branded DouglasOS). Until stage 1 (desktop) and stage 2 (mobile) land, the code still runs the v1 shell (dark glass, menu bar + dock, linear mobile fallback). Check the real component structure before editing.
+- **v1.5 redesign in progress.** The "DouglasOS XP" shell (a faithful early-2000s Luna-style desktop, branded DouglasOS) is live on desktop (stage 1) and mobile (stage 2); the remaining stages add features on top of it (see `MVP-SCOPE.md`). Check the real component structure before editing.
 - **This is NOT the Next.js you may know.** Per `AGENTS.md`, this Next.js version has breaking changes vs. training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing framework code, and heed deprecation notices.
 
 ## Commands
