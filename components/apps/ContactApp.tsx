@@ -32,7 +32,7 @@ export default function ContactApp() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-heading-lg text-text">{t("heading")}</h1>
+        <h3 className="text-heading-lg text-text">{t("heading")}</h3>
         <p className="mt-1 text-body text-text">{t("availability")}</p>
       </div>
 

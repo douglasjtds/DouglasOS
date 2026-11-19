@@ -30,7 +30,11 @@ test.describe("boot → logon → desktop", () => {
   test("does not replay within the same session", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/en");
+    // Wait for hydration (the boot focuses Skip on mount, in the same commit
+    // that installs its key listener); an earlier Esc would be lost.
+    await expect(page.getByTestId("boot-screen").getByRole("button", { name: "Skip" })).toBeFocused();
     await page.keyboard.press("Escape");
+    await expect(page.getByTestId("boot-screen")).toHaveCount(0);
     await expect(startButton(page)).toBeVisible();
 
     await page.goto("/en");

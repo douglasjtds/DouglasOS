@@ -5,12 +5,17 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { BOOT_MARQUEE_S, EASE } from "@/lib/motion";
 import { DouglasOSLogo } from "@/components/icons/SystemIcons";
 import { Wordmark } from "@/components/os/session/Wordmark";
 
-/** Boot length: ~2s with motion, much shorter with the static label. */
+/**
+ * Boot length: ~2s with motion, ~1s on touch screens (DESKTOP-INTERFACE-SPEC
+ * §11), much shorter with the static label.
+ */
 export const BOOT_MS = 2000;
+export const BOOT_MOBILE_MS = 1000;
 export const BOOT_REDUCED_MS = 600;
 
 /** Three blue blocks sliding through a rounded track, looping. */
@@ -42,15 +47,17 @@ function ProgressMarquee() {
 export function BootScreen() {
   const t = useTranslations("boot");
   const reduced = useReducedMotion();
+  const mobile = useIsMobile();
   const finishBoot = useShellStore((s) => s.finishBoot);
   const skipToDesktop = useShellStore((s) => s.skipToDesktop);
   const skipRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     skipRef.current?.focus();
-    const timer = setTimeout(finishBoot, reduced ? BOOT_REDUCED_MS : BOOT_MS);
+    const duration = reduced ? BOOT_REDUCED_MS : mobile ? BOOT_MOBILE_MS : BOOT_MS;
+    const timer = setTimeout(finishBoot, duration);
     return () => clearTimeout(timer);
-  }, [finishBoot, reduced]);
+  }, [finishBoot, reduced, mobile]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -69,7 +76,7 @@ export function BootScreen() {
       onClick={skipToDesktop}
       className="fixed inset-0 z-2000 flex cursor-default flex-col items-center justify-center gap-8 bg-boot-bg"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 max-md:flex-col max-md:gap-3">
         <DouglasOSLogo size={72} />
         <Wordmark />
       </div>
@@ -85,7 +92,7 @@ export function BootScreen() {
           </span>
         </>
       )}
-      <div className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-3">
+      <div className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-3 px-4 text-center max-md:bottom-[calc(2rem+env(safe-area-inset-bottom,0px))]">
         <button
           ref={skipRef}
           type="button"
@@ -93,7 +100,7 @@ export function BootScreen() {
             e.stopPropagation();
             skipToDesktop();
           }}
-          className="rounded-button border border-boot-track px-3 py-0.5 text-system text-text-inverse hover:bg-text-inverse/10 focus-inverse"
+          className="rounded-button border border-boot-track px-3 py-0.5 text-system text-text-inverse hover:bg-text-inverse/10 focus-inverse max-md:min-h-touch-target max-md:min-w-24 max-md:px-6"
         >
           {t("skip")}
         </button>

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { DropdownMenu } from "radix-ui";
 import { useWindowStore } from "@/lib/store/windowStore";
 import { useDrag } from "@/hooks/useDrag";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { getApp, type AppId } from "@/lib/apps/registry";
 import { WindowControls } from "@/components/os/window/WindowControls";
 import { menuItemClass, menuSurfaceClass } from "@/components/os/menuStyles";
@@ -66,6 +67,10 @@ function WindowIconMenu({ id, titleId }: { id: AppId; titleId: string }) {
  * Luna title bar: app icon, bold title, and the three controls. The bar is the
  * drag handle; double-click toggles maximize. Inactive windows get the paler
  * bar with navy text (AA deviation, see DESIGN-GUIDELINES → Accessibility).
+ *
+ * Touch shell (< 768px): a compact bar (36px token) with a plain icon, the
+ * title, and Minimize + Close only — windows are always full-screen there, so
+ * there's nothing to drag, maximize or restore.
  */
 export function WindowChrome({
   id,
@@ -78,23 +83,32 @@ export function WindowChrome({
 }) {
   const t = useTranslations("apps");
   const maximized = useWindowStore((s) => Boolean(s.windows[id]?.maximized));
-  const drag = useDrag(id, maximized);
+  const mobile = useIsMobile();
+  const drag = useDrag(id, maximized || mobile);
+  const Icon = getApp(id).icon;
 
   return (
     <div
       {...drag}
       data-titlebar
       onDoubleClick={(e) => {
-        if ((e.target as HTMLElement).closest("[data-no-drag]")) return;
+        if (mobile || (e.target as HTMLElement).closest("[data-no-drag]")) return;
         useWindowStore.getState().toggleMaximize(id);
       }}
       className={cn(
-        "flex h-titlebar shrink-0 touch-none select-none items-center gap-1.5 px-1.5 pt-0.5",
-        !maximized && "rounded-t-window",
+        "flex h-titlebar shrink-0 select-none items-center gap-1.5 px-1.5 pt-0.5",
+        !mobile && "touch-none",
+        !maximized && !mobile && "rounded-t-window",
         active ? "bg-titlebar-gradient" : "bg-titlebar-inactive-gradient",
       )}
     >
-      <WindowIconMenu id={id} titleId={titleId} />
+      {mobile ? (
+        <span aria-hidden className="flex size-icon-small shrink-0 items-center justify-center">
+          <Icon size={16} />
+        </span>
+      ) : (
+        <WindowIconMenu id={id} titleId={titleId} />
+      )}
       <h2
         id={titleId}
         className={cn(
@@ -104,7 +118,7 @@ export function WindowChrome({
       >
         {t(`${id}.title`)}
       </h2>
-      <WindowControls id={id} active={active} />
+      <WindowControls id={id} active={active} compact={mobile} />
     </div>
   );
 }

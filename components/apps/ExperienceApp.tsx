@@ -25,7 +25,7 @@ export default function ExperienceApp() {
         <li key={r.company}>
           <GroupBox title={r.company}>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-body font-bold text-text">{r.role}</h2>
+              <h3 className="text-body font-bold text-text">{r.role}</h3>
               {r.current && (
                 <Tag className="border-icon-success font-bold text-icon-success">
                   {currentBadge}

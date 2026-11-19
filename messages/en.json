@@ -300,7 +300,12 @@
     "quickContact": "Contact",
     "windows": "Open windows",
     "tray": "Notification area",
-    "language": "Language"
+    "language": "Language",
+    "languageSwitch": "Language: English. Switch to {next}",
+    "languageNames": {
+      "en": "English",
+      "pt": "Português"
+    }
   },
   "startMenu": {
     "label": "Start menu",
@@ -326,7 +331,8 @@
     "intro": "This desktop is a portfolio. Make yourself at home.",
     "subtitle": "AI-First Fullstack Developer",
     "tileLabel": "Log on as Douglas",
-    "hint": "Click Douglas to come in."
+    "hint": "Click Douglas to come in.",
+    "hintTouch": "Tap Douglas to come in."
   },
   "shutdown": {
     "dialogTitle": "Turn off DouglasOS",
@@ -345,19 +351,10 @@
   "balloon": {
     "title": "Welcome to DouglasOS",
     "body": "Click any icon to open it. Your CV is one click away on the taskbar.",
-    "close": "Close"
+    "close": "Close",
+    "bodyTouch": "Tap any icon to open it. Your CV is one tap away on the taskbar."
   },
-  "mobile": {
-    "banner": "Best experienced on a desktop — open DouglasOS on a larger screen.",
-    "dismiss": "Dismiss",
-    "heroTagline": "Fullstack developer building fraud-fighting products at Serasa Experian — shipping AI-first across the whole stack.",
-    "nav": {
-      "about": "About",
-      "experience": "Experience",
-      "projects": "Projects",
-      "skills": "Skills",
-      "ai": "How I work with AI",
-      "contact": "Contact"
-    }
+  "static": {
+    "label": "DouglasOS — text version of the portfolio"
   }
 }

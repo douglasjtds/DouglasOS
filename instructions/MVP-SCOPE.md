@@ -346,8 +346,9 @@ A stage is done only when **all** of these hold:
 | Stage | Status |
 |-------|--------|
 | 0 | Done |
-| 1 | Done — desktop XP shell (≥ 768px); mobile keeps the restyled linear fallback until stage 2 |
-| 2–10, 5b | Planned |
+| 1 | Done — desktop XP shell (≥ 768px) |
+| 2 | Done — touchable XP below 768px replaces the linear `MobileFallback` (same shell, stores and content; full-screen windows, row-first icon grid, 85% Start panel, 1s boot); server-rendered crawlable text version; Lighthouse mobile 98–99, LCP ≤ 2.3s. Default wallpaper reworked to "Morning Waves" (abstract, not Bliss-like) |
+| 3–10, 5b | Planned |
 
 ---
 

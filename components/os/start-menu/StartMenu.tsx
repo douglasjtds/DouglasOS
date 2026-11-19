@@ -21,13 +21,14 @@ import {
 } from "@/components/icons/SystemIcons";
 import type { IconComponent } from "@/components/icons/types";
 import { menuSurfaceClass } from "@/components/os/menuStyles";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
 const PINNED: LauncherId[] = ["about", "projects", "how-i-work-with-ai", "contact"];
 
 const itemBase =
-  "flex cursor-default select-none items-center gap-2 outline-none data-[highlighted]:bg-startmenu-hover data-[highlighted]:text-text-inverse";
+  "flex cursor-default select-none items-center gap-2 outline-none data-[highlighted]:bg-startmenu-hover data-[highlighted]:text-text-inverse max-md:min-h-touch-target";
 
 /** Move keyboard focus to the first item of a Start menu column. */
 function focusColumn(column: "left" | "right") {
@@ -87,6 +88,12 @@ function PlaceItem({
  * in the footer. Radix DropdownMenu provides focus management, Esc, outside
  * click and type-ahead; the open state lives in the shell store so keyboard
  * shortcuts (Ctrl+Esc, Meta tap, Alt+Shift+S) can toggle it.
+ *
+ * Touch shell (< 768px, DESKTOP-INTERFACE-SPEC §11): a full-width panel up to
+ * 85% of the screen height; the two columns stack (pinned programs, then
+ * places) inside a scrolling body between the fixed header and footer, every
+ * item is a 44px target, and All Programs is an inline list instead of a
+ * cascading submenu (no room to cascade on a phone).
  */
 export function StartMenu() {
   const t = useTranslations();
@@ -105,6 +112,7 @@ export function StartMenu() {
   }
 
   const label = (id: LauncherId) => t(launcherTitleKey(id));
+  const mobile = useIsMobile();
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -137,7 +145,10 @@ export function StartMenu() {
             if (keepFocus.current) e.preventDefault();
             keepFocus.current = false;
           }}
-          className="z-1200 flex w-startmenu-w flex-col text-system overflow-hidden rounded-t-startmenu border border-startmenu-frame bg-startmenu-header shadow-menu outline-none"
+          className={cn(
+            "z-1200 flex w-startmenu-w flex-col text-system overflow-hidden rounded-t-startmenu border border-startmenu-frame bg-startmenu-header shadow-menu outline-none",
+            "max-md:max-h-[min(85dvh,var(--radix-dropdown-menu-content-available-height))] max-md:w-screen max-md:border-x-0",
+          )}
         >
           {/* Header: avatar + user name */}
           <div className="flex h-startmenu-header shrink-0 items-center gap-2 bg-startmenu-header-gradient px-2">
@@ -150,14 +161,22 @@ export function StartMenu() {
           </div>
           <div aria-hidden className="h-0.5 shrink-0 bg-startmenu-accent-gradient" />
 
-          <div className="grid grid-cols-2 bg-startmenu-left">
+          <div
+            data-start-body
+            className="grid grid-cols-2 bg-startmenu-left max-md:min-h-0 max-md:grid-cols-1 max-md:overflow-y-auto max-md:overscroll-contain"
+          >
             {/* Left column: pinned programs + All Programs */}
             <div
               data-start-column="left"
               onKeyDown={crossColumn("left")}
-              className="flex flex-col gap-0.5 p-1.5"
+              // Touch: `contents` lets pinned / places / All Programs stack in
+              // that order inside the single scrolling column.
+              className="flex flex-col gap-0.5 p-1.5 max-md:contents"
             >
-              <DropdownMenu.Group aria-label={t("startMenu.pinned")} className="flex flex-col gap-0.5">
+              <DropdownMenu.Group
+                aria-label={t("startMenu.pinned")}
+                className="flex flex-col gap-0.5 max-md:order-1 max-md:p-1.5"
+              >
                 {PINNED.map((id) => {
                   const Icon = getLauncher(id).icon;
                   return (
@@ -179,9 +198,32 @@ export function StartMenu() {
                 })}
               </DropdownMenu.Group>
 
-              <div className="flex-1" />
-              <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-accent-gradient" />
+              <div className="flex-1 max-md:hidden" />
+              <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-accent-gradient max-md:hidden" />
 
+              {mobile ? (
+                <DropdownMenu.Group
+                  aria-label={t("startMenu.allPrograms")}
+                  data-all-programs
+                  className="flex flex-col p-1.5 max-md:order-3"
+                >
+                  <DropdownMenu.Label className="flex min-h-touch-target items-center justify-center gap-2 px-1 font-bold text-text">
+                    {t("startMenu.allPrograms")}
+                    <AllProgramsIcon size={18} />
+                  </DropdownMenu.Label>
+                  {LAUNCHERS.map((l) => (
+                    <DropdownMenu.Item
+                      key={l.id}
+                      data-program={l.id}
+                      onSelect={() => select(() => launch(l.id), l.kind === "window")}
+                      className={cn(itemBase, "px-2 text-text")}
+                    >
+                      <l.icon size={16} />
+                      {label(l.id)}
+                    </DropdownMenu.Item>
+                  ))}
+                </DropdownMenu.Group>
+              ) : (
               <DropdownMenu.Sub>
                 <DropdownMenu.SubTrigger
                   data-start-subtrigger
@@ -211,13 +253,14 @@ export function StartMenu() {
                   </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
               </DropdownMenu.Sub>
+              )}
             </div>
 
             {/* Right column: places */}
             <div
               data-start-column="right"
               onKeyDown={crossColumn("right")}
-              className="flex flex-col gap-0.5 border-l border-startmenu-right-border bg-startmenu-right p-1.5"
+              className="flex flex-col gap-0.5 border-l border-startmenu-right-border bg-startmenu-right p-1.5 max-md:order-2 max-md:border-y max-md:border-l-0"
             >
               <PlaceItem
                 testId="my-projects"

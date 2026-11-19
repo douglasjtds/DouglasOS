@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. Stage 2 implements the touch (mobile) shell; until then phones keep the linear `MobileFallback` (restyled with the Luna tokens). Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -294,16 +294,21 @@ External shortcuts (3), DouglasOS Explorer (4), mini Douglas assistant (5, a des
 
 ## 11. Mobile (touchable XP)
 
-> Replaces the v1 "linear mobile fallback". Applies below 768px. Implemented in stage 2.
+> Replaced the v1 "linear mobile fallback". Applies below 768px (Tailwind `md`; `useIsMobile()` / `DESKTOP_QUERY` in `hooks/useIsMobile.ts`). **Implemented in stage 2.**
 
-- **Layout:** full-screen desktop with the icon grid (fewer columns, larger cells — `desktop-cell` mobile token), taskbar at the bottom (48px + safe-area inset), `100dvh`, no horizontal scroll. A **resume.pdf** icon is visible on the first screen.
-- **Taskbar:** Start button, window buttons (icon-only if needed), tray with language + clock. Quick Launch may be dropped if space is tight (CV stays 2 taps away: Start → Résumé (CV)).
-- **Start menu:** a panel of ~85% viewport height (or full screen), scrollable, same two sections stacked (pinned apps, then places), footer with Log Off / Turn Off.
-- **Windows:** always maximized; no drag/resize; compact title bar (title, minimize, close; back where it applies). Only one window visible at a time; the taskbar switches between open ones.
-- **Gestures:** single tap opens an icon (no double-tap needed on touch); **press-and-hold (~500ms) = right-click** (context menu, stage 7). No hover-only affordances. Icon drag on mobile is off by default (stage 2 may enable long-press drag if cheap; documented there).
-- **Boot/logon:** shorter (~1s) and skippable; same once-per-session rule.
-- **3D wallpaper:** not offered on mobile by default.
-- **Content:** real text in the DOM (no canvas-only content), proper headings, crawlable.
+One shell for every width: `ShellGate` always mounts `DesktopShell`, and components adapt through `useIsMobile()` plus `max-md:` classes. The size tokens themselves switch to their mobile values under `@media (width < 48rem)` in `globals.css` (taskbar 48px + bottom safe-area inset, title bar 36px, control buttons 32px, task buttons 40px, desktop cell 96 × 104 with an 88px label), so `h-taskbar`, `bottom-taskbar`, `h-titlebar`… just work on phones. The Zustand stores are shared and unchanged: the touch shell is a different **presentation** of the same state.
+
+- **Layout:** full-screen desktop (`100dvh`, `viewport-fit=cover`, safe-area padding on the desktop, windows and session screens), taskbar at the bottom, no horizontal scroll (e2e-checked). `touch-manipulation` on the shell removes the double-tap-zoom delay.
+- **Icon grid:** like a phone home screen — larger cells, filled **row-first** and centered (`mobileIconLayout` in `lib/store/desktopGrid.ts`, unit-tested for no overlap at 320–767px), so About, **resume.pdf** and Contact share the first row. The layout is derived from the container width (ResizeObserver) and **never persisted**, so it can't disturb the desktop arrangement in `desktopStore`. If a short screen can't fit every row, the desktop scrolls vertically instead of stacking icons.
+- **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
+- **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
+- **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. "Back" arrives with the Explorer in stage 4.
+- **Gestures:** single tap opens an icon. **Long-press** is reserved for the stage-7 context menu: icons already suppress text selection and the iOS callout so the gesture is free, but nothing is bound to it yet (no dead menu). **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
+- **Boot/logon:** boot ~1s (`BOOT_MOBILE_MS`; reduced motion stays at 0.6s), Skip is a 44px button; the logon stacks (brand above the user tile, thinner bands) and its hint says "Tap Douglas to come in." Same once-per-session rule.
+- **Welcome balloon:** same once-per-session balloon with "tap" copy; on every width it now dismisses itself as soon as the Start menu or a window opens, so it never covers the menu or a window's buttons.
+- **3D wallpaper:** **not offered on mobile** (Display Properties shows it disabled with the reason). Stage 2 decision: no exception. The static wallpaper already scores 98–99 on Lighthouse mobile; the R3F chunk plus a WebGL context on mid-range phones isn't worth the battery and LCP risk for an ambient effect.
+- **Content, SEO and screen readers:** the page also server-renders `StaticContent` (`components/os/StaticContent.tsx`), a server component with no client JS: every app's EN/PT content as real text with an `h1` (name + headline) → `h2` per app → `h3` outline, CV link and contact links. It's visually hidden but stays in the DOM for crawlers and for screen-reader users who want a linear read, and a `<noscript>` style makes it the visible page when JavaScript is off. Inside windows the title bar is the `h2` and in-app headings are `h3`.
+- **Performance:** the server-rendered placeholder paints the default wallpaper over the same box as the shell's wallpaper, and the page preloads that SVG, so the LCP is the first paint instead of a post-hydration background. Lighthouse mobile (production build, simulated throttling): performance 98–99, LCP 1.8–2.3s, CLS 0.
 - Every later feature must state its mobile behavior in its stage.
 
 ---
@@ -393,7 +398,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 
 | State | Behavior |
 |-------|----------|
-| No JavaScript | Server-rendered content readable (stage 2 guarantees real text in the DOM); the desktop metaphor is unavailable |
+| No JavaScript | The server-rendered text version (`StaticContent`) becomes the visible page via `<noscript>`; the desktop metaphor is unavailable |
 | Slow connection | Boot never exceeds ~3s; wallpaper paints over the solid color when ready; 3D never blocks |
 | Reduced motion | No 3D, no marquee/fades/minimize tweens; static alternatives for every animation |
 | Screen reader | Logical order: desktop icons → windows → taskbar; metaphor never hides content |
@@ -409,7 +414,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 | Stage | Interface work |
 |-------|----------------|
 | 1 | Tokens, boot, logon, taskbar (Start, Quick Launch, window buttons, tray), Start menu, Luna windows, XP icons, wallpaper + Display Properties, keyboard map (stage-1 rows), welcome balloon |
-| 2 | Mobile touchable XP (§11), replaces `MobileFallback` |
+| 2 | Mobile touchable XP (§11), replaces `MobileFallback` — **done** |
 | 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs |
 | 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route |
 | 5 | "mini Douglas" scripted assistant (layer + queue) |

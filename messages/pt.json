@@ -300,7 +300,12 @@
     "quickContact": "Contato",
     "windows": "Janelas abertas",
     "tray": "Área de notificação",
-    "language": "Idioma"
+    "language": "Idioma",
+    "languageSwitch": "Idioma: Português. Mudar para {next}",
+    "languageNames": {
+      "en": "English",
+      "pt": "Português"
+    }
   },
   "startMenu": {
     "label": "Menu Iniciar",
@@ -326,7 +331,8 @@
     "intro": "Esta área de trabalho é um portfólio. Fique à vontade.",
     "subtitle": "Desenvolvedor Fullstack AI-First",
     "tileLabel": "Entrar como Douglas",
-    "hint": "Clique no Douglas para entrar."
+    "hint": "Clique no Douglas para entrar.",
+    "hintTouch": "Toque no Douglas para entrar."
   },
   "shutdown": {
     "dialogTitle": "Desligar o DouglasOS",
@@ -345,19 +351,10 @@
   "balloon": {
     "title": "Bem-vindo ao DouglasOS",
     "body": "Clique em qualquer ícone para abrir. Seu CV está a um clique na barra de tarefas.",
-    "close": "Fechar"
+    "close": "Fechar",
+    "bodyTouch": "Toque em qualquer ícone para abrir. Seu CV está a um toque na barra de tarefas."
   },
-  "mobile": {
-    "banner": "Melhor no desktop — abra o DouglasOS em uma tela maior.",
-    "dismiss": "Fechar aviso",
-    "heroTagline": "Desenvolvedor fullstack construindo produtos de combate à fraude na Serasa Experian — entregando AI-first em toda a stack.",
-    "nav": {
-      "about": "Sobre",
-      "experience": "Experiência",
-      "projects": "Projetos",
-      "skills": "Habilidades",
-      "ai": "Como trabalho com IA",
-      "contact": "Contato"
-    }
+  "static": {
+    "label": "DouglasOS — versão em texto do portfólio"
   }
 }

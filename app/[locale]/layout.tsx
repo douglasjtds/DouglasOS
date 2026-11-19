@@ -15,7 +15,13 @@ import "../globals.css";
 // Typography), so nothing is loaded via next/font.
 
 // Browser chrome tinted with the taskbar blue (light theme only).
+// `viewportFit: "cover"` lets the touch shell paint edge to edge and exposes
+// the iOS safe-area insets (env(safe-area-inset-*)) that the taskbar, windows
+// and session screens pad against.
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: THEME_HEX.taskbar,
   colorScheme: "light",
 };

@@ -8,8 +8,12 @@ import { defineConfig, devices } from "@playwright/test";
  * Multi-browser (Chromium/Firefox/WebKit) directly serves the MVP's
  * cross-browser requirement. CI sets `CI=1`, which enables retries + `forbidOnly`.
  */
-const PORT = 3000;
+// PORT overrides the default, e.g. to run against `next start -p 3100` while a dev
+// server already holds 3000.
+const PORT = Number(process.env.PORT ?? 3000);
 const BASE_URL = `http://localhost:${PORT}`;
+/** Specs for the touch shell; they run only on the phone projects. */
+const MOBILE_SPECS = /mobile\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -22,9 +26,15 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
-    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    // Desktop shell (>= 768px) on the three engines.
+    { name: "chromium", use: { ...devices["Desktop Chrome"] }, testIgnore: MOBILE_SPECS },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] }, testIgnore: MOBILE_SPECS },
+    { name: "webkit", use: { ...devices["Desktop Safari"] }, testIgnore: MOBILE_SPECS },
+    // Touch shell (< 768px) on real phone descriptors (touch, mobile viewport,
+    // DPR). Firefox has no mobile emulation (`isMobile`), so phones run on
+    // WebKit (iPhone) and Chromium (Android).
+    { name: "iphone-13", use: { ...devices["iPhone 13"] }, testMatch: MOBILE_SPECS },
+    { name: "pixel-7", use: { ...devices["Pixel 7"] }, testMatch: MOBILE_SPECS },
   ],
   webServer: {
     // Reuse a running dev server locally; build+start fresh in CI.

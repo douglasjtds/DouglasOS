@@ -1,5 +1,5 @@
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { animatedWallpaperBlocker, type AnimatedBlocker } from "@/lib/wallpapers";
 
 interface NetworkInformationLike {
@@ -19,10 +19,10 @@ function prefersSaveData(): boolean {
  */
 export function useAnimatedWallpaperBlocker(): AnimatedBlocker | null {
   const reducedMotion = useReducedMotion();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const mobile = useIsMobile();
   return animatedWallpaperBlocker({
     reducedMotion,
     saveData: prefersSaveData(),
-    mobile: isDesktop === false,
+    mobile,
   });
 }

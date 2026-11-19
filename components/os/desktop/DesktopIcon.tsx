@@ -54,7 +54,9 @@ export function DesktopIcon({
       onFocus={() => onSelect(launcher.id)}
       onClick={handleClick}
       onKeyDown={onKeyDown}
-      className="group flex w-desktop-label cursor-default flex-col items-center gap-1 outline-none"
+      // No text selection / iOS callout on long-press (reserved for the
+      // stage-7 context menu); on touch the whole 88px cell is the hit area.
+      className="group flex w-desktop-label cursor-default select-none flex-col items-center gap-1 outline-none [-webkit-touch-callout:none] max-md:py-1"
     >
       <span className={cn("size-icon-desktop", selected && "icon-selected-tint")}>
         <Icon size={48} />

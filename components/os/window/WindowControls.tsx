@@ -37,7 +37,9 @@ function Glyph({ glyph }: { glyph: ControlGlyph }) {
 
 /**
  * One XP title-bar control button (21px, white 1px border, glossy fill; the
- * close button is red). Also used by message boxes (close only).
+ * close button is red). Also used by message boxes (close only). On touch
+ * screens the token grows to 32px and an invisible ::after extends the hit
+ * area to the 44px touch target.
  */
 export function TitleBarButton({
   glyph,
@@ -49,7 +51,8 @@ export function TitleBarButton({
     <button
       type="button"
       className={cn(
-        "flex size-control-button shrink-0 items-center justify-center rounded-control border border-control-border text-text-inverse focus-inverse",
+        "relative flex size-control-button shrink-0 items-center justify-center rounded-control border border-control-border text-text-inverse focus-inverse",
+        "max-md:after:absolute max-md:after:-inset-1.5 max-md:after:content-['']",
         isClose
           ? "bg-close-gradient hover:bg-close-hover-gradient active:bg-close-pressed active:bg-none"
           : "bg-control-gradient hover:bg-control-hover-gradient active:bg-control-pressed active:bg-none",
@@ -62,8 +65,20 @@ export function TitleBarButton({
   );
 }
 
-/** Minimize / Maximize-or-Restore / Close. `data-no-drag` keeps clicks from dragging. */
-export function WindowControls({ id, active }: { id: AppId; active: boolean }) {
+/**
+ * Minimize / Maximize-or-Restore / Close. `data-no-drag` keeps clicks from
+ * dragging. `compact` (touch shell) drops Maximize/Restore: windows are always
+ * full-screen there.
+ */
+export function WindowControls({
+  id,
+  active,
+  compact = false,
+}: {
+  id: AppId;
+  active: boolean;
+  compact?: boolean;
+}) {
   const t = useTranslations("window");
   const maximized = useWindowStore((s) => Boolean(s.windows[id]?.maximized));
   const closeWindow = useWindowStore((s) => s.closeWindow);
@@ -72,7 +87,7 @@ export function WindowControls({ id, active }: { id: AppId; active: boolean }) {
 
   return (
     <div
-      className={cn("flex items-center gap-0.5", !active && "opacity-75")}
+      className={cn("flex items-center gap-0.5 max-md:gap-3", !active && "opacity-75")}
       data-no-drag
     >
       <TitleBarButton
@@ -81,12 +96,14 @@ export function WindowControls({ id, active }: { id: AppId; active: boolean }) {
         title={t("minimize")}
         onClick={() => minimizeWindow(id)}
       />
-      <TitleBarButton
-        glyph={maximized ? "restore" : "maximize"}
-        aria-label={maximized ? t("restore") : t("maximize")}
-        title={maximized ? t("restore") : t("maximize")}
-        onClick={() => toggleMaximize(id)}
-      />
+      {!compact && (
+        <TitleBarButton
+          glyph={maximized ? "restore" : "maximize"}
+          aria-label={maximized ? t("restore") : t("maximize")}
+          title={maximized ? t("restore") : t("maximize")}
+          onClick={() => toggleMaximize(id)}
+        />
+      )}
       <TitleBarButton
         glyph="close"
         aria-label={t("close")}

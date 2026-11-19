@@ -22,7 +22,7 @@ export function QuickLaunch() {
     <div
       role="group"
       aria-label={t("quickLaunch")}
-      className="flex h-full shrink-0 items-center gap-0.5 border-r border-taskbar-shadow px-1.5 shadow-[1px_0_var(--color-taskbar-highlight)]"
+      className="flex h-full shrink-0 items-center gap-0.5 border-r border-taskbar-shadow px-1.5 shadow-[1px_0_var(--color-taskbar-highlight)] max-md:gap-0 max-md:px-0.5"
     >
       {ITEMS.map(({ id, labelKey, icon: Icon }) => (
         <Tooltip key={id} content={t(labelKey)}>
@@ -31,7 +31,7 @@ export function QuickLaunch() {
             aria-label={t(labelKey)}
             data-quick-launch={id}
             onClick={() => launch(id)}
-            className="flex size-task-button items-center justify-center rounded-button hover:bg-task-button-hover hover:shadow-bevel-sunken active:bg-task-button-active focus-inverse"
+            className="flex size-task-button items-center justify-center rounded-button hover:bg-task-button-hover hover:shadow-bevel-sunken active:bg-task-button-active focus-inverse max-md:size-touch-target"
           >
             <Icon size={16} />
           </button>

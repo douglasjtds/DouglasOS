@@ -33,7 +33,7 @@ function TaskButton({ id }: { id: AppId }) {
   }
 
   return (
-    <li className="@container min-w-task-button-min max-w-task-button-max flex-1">
+    <li className="@container min-w-task-button-min max-w-task-button-max flex-1 max-md:w-touch-target max-md:min-w-touch-target max-md:flex-none">
       <button
         type="button"
         data-task-app={id}
@@ -41,7 +41,7 @@ function TaskButton({ id }: { id: AppId }) {
         title={title}
         onClick={onClick}
         className={cn(
-          "flex h-task-button w-full items-center gap-1.5 rounded-button px-1.5 text-left text-system text-text-inverse focus-inverse",
+          "flex h-task-button w-full items-center gap-1.5 rounded-button px-1.5 text-left text-system text-text-inverse focus-inverse max-md:justify-center max-md:px-0",
           active
             ? "bg-task-button-active shadow-task-button-active"
             : "bg-task-button-gradient shadow-[inset_-1px_-1px_var(--color-taskbar-shadow)] hover:bg-task-button-hover-gradient",
@@ -50,19 +50,27 @@ function TaskButton({ id }: { id: AppId }) {
         <span className="shrink-0">
           <Icon size={16} />
         </span>
-        {/* Icon-only when the button gets crowded (title stays as tooltip/name). */}
-        <span className="truncate @max-[64px]:sr-only">{title}</span>
+        {/* Icon-only when the button gets crowded or on touch screens (the
+            title stays as the accessible name / tooltip). */}
+        <span className="truncate @max-[64px]:sr-only max-md:sr-only">{title}</span>
       </button>
     </li>
   );
 }
 
-/** One button per open window, in opening order. */
+/**
+ * One button per open window, in opening order. On touch screens the buttons
+ * are icon-only 44px targets and the list scrolls sideways inside the taskbar
+ * (never the page) when many windows are open.
+ */
 export function TaskButtons() {
   const t = useTranslations("taskbar");
   const order = useWindowStore((s) => s.order);
   return (
-    <ul aria-label={t("windows")} className="flex min-w-0 flex-1 items-center gap-1 px-1.5">
+    <ul
+      aria-label={t("windows")}
+      className="flex min-w-0 flex-1 items-center gap-1 px-1.5 max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none]"
+    >
       {order.map((id) => (
         <TaskButton key={id} id={id} />
       ))}

@@ -12,10 +12,11 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { useShellShortcuts } from "@/hooks/useShellShortcuts";
 
 /**
- * Top-level interactive island (≥ 768px): desktop (wallpaper + icons),
- * windows, taskbar and balloons, with the session screens (boot / logon /
- * shutdown) layered above. The desktop is `inert` while a session screen is
- * up so focus and screen readers stay on that screen.
+ * Top-level interactive island: desktop (wallpaper + icons), windows, taskbar
+ * and balloons, with the session screens (boot / logon / shutdown) layered
+ * above. The desktop is `inert` while a session screen is up so focus and
+ * screen readers stay on that screen. The same tree serves phones (< 768px);
+ * `touch-manipulation` removes the double-tap-zoom delay so a single tap opens.
  */
 export function DesktopShell() {
   const phase = useShellStore((s) => s.phase);
@@ -29,7 +30,7 @@ export function DesktopShell() {
         <div
           data-shell
           inert={phase !== "desktop"}
-          className="relative h-dvh w-screen overflow-hidden bg-desktop"
+          className="relative h-dvh w-full touch-manipulation overflow-hidden bg-desktop"
         >
           <Desktop />
           <WindowManager />

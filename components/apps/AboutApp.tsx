@@ -11,9 +11,8 @@ interface Stat {
   value: string;
 }
 
-/** Summary paragraphs + quick stats — shared between the window and the
- *  mobile fallback (which has its own hero, so it skips the header). */
-export function AboutSummary() {
+/** Summary paragraphs + quick stats. */
+function AboutSummary() {
   const t = useTranslations("apps.about");
   const stats = t.raw("stats") as Stat[];
   const summary = t.raw("summary") as string[];
@@ -56,7 +55,8 @@ export default function AboutApp() {
           <UserAvatar size={112} />
         </span>
         <div className="flex flex-col gap-0.5">
-          <h1 className="text-heading-lg text-text">{t("name")}</h1>
+          {/* h3: the window title is the h2 (headings stay in order per window). */}
+          <h3 className="text-heading-lg text-text">{t("name")}</h3>
           <p className="text-heading text-text">{t("headline")}</p>
           <p className="text-system text-text-muted">{t("location")}</p>
         </div>

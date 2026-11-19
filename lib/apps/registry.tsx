@@ -1,5 +1,6 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { IconComponent } from "@/components/icons/types";
+import { RESUME } from "@/lib/profile";
 import {
   AboutIcon,
   AiIcon,
@@ -74,8 +75,8 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "download",
     icon: ResumeIcon,
     onDesktop: true,
-    href: "/resume.pdf",
-    download: "Douglas-Tertuliano-CV.pdf",
+    href: RESUME.href,
+    download: RESUME.filename,
   },
   {
     id: "contact",

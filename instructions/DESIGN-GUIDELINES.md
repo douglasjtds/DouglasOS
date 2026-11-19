@@ -371,7 +371,7 @@ Defined as Tailwind v4 `--spacing-*` tokens so they generate utilities (`h-taskb
 | `icon-startmenu-pinned` | 32px | 32px | Start menu left column |
 | `icon-startmenu-places` | 24px | 24px | Start menu right column |
 | `icon-small` | 16px | 16px (in ≥ 44px hit area) | Title bars, task buttons, tray, menus |
-| `desktop-cell` | 88 × 96px pitch, 76px label width | 96 × 104px pitch | Icon grid (column-first, top-left origin) |
+| `desktop-cell` | 88 × 96px pitch, 76px label width | 96 × 104px pitch, 88px label width | Icon grid (desktop: column-first from the top-left; mobile: row-first, centered) |
 | `startmenu` | 380 × ~480px | full width, 85dvh | Start menu panel |
 | `startmenu-header` | 64px (avatar 48px) | 64px | User header |
 | `touch-target` | — | ≥ 44 × 44px | Every interactive element on mobile |
@@ -525,7 +525,7 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 
 - **Original artwork only.** Explicitly *not* the famous green-hill photograph or anything derived from it: no photography, no single smooth hill under a blue sky with white clouds as the whole composition. Ours is visibly illustrated and layered.
 - Stored in `public/wallpapers/` as optimized SVG (≤ 80KB, SVGO) or, if the illustration needs it, AVIF/WebP ≤ 200KB at 2560px wide.
-- Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing and the wallpaper never becomes the LCP element.
+- Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing. **LCP:** CSS background images *do* count as LCP candidates (stage 2 measured the wallpaper as the LCP element), so the server HTML paints the default wallpaper in `ShellGate`'s placeholder, over the same box as the shell's wallpaper (Chrome ignores full-viewport backgrounds as candidates), and the page preloads it with `fetchpriority="high"`. Keep the default small (the SVG is ~3KB).
 - **Label legibility:** the area under the default icon column (left ~200px, top 70%) must be mid-to-dark (the deep part of the sky / hills) so white labels with `shadow-desktop-label` stay readable.
 - Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (the default's mark is centered and its ribbons span the full width, so it survives a 9:19.5 crop).
 - Persisted ids of retired wallpapers (e.g. `morning-hills`) are unknown to `sanitizeDisplay` and fall back to the current default.
@@ -535,7 +535,7 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 - Off by default. Opt-in in Display Properties only.
 - Lazy-loaded after the critical UI; never on the critical path.
 - Capped at 30 FPS; low density (50–100 particles, 5–10 code fragments); no physics, no high-poly models.
-- **Never loads** under `prefers-reduced-motion`, with `Save-Data`, or on mobile (stage 2 may propose an exception within the perf budget).
+- **Never loads** under `prefers-reduced-motion`, with `Save-Data`, or on mobile. Stage 2 considered an exception and declined it: the static wallpaper keeps Lighthouse mobile at 98–99, and WebGL on mid-range phones isn't worth the battery/LCP risk for an ambient effect.
 - If unavailable, falls back to the default static wallpaper, and Display Properties explains why ("disabled: reduced motion").
 - The scene keeps its original night palette (near-black base, electric cyan `#00D9FF`, purple `#7C3AED`) as **scene-local constants inside the 3D module**. These are not UI tokens and must not leak into chrome.
 
@@ -697,6 +697,10 @@ Beyond the tables above, implementation needed a few extra tokens (all in `app/g
 | `--text-shadow-desktop-label`, `--text-shadow-start-label` | as in Shadows table | Exposed as Tailwind `text-shadow-*` utilities |
 
 `lib/utils.ts` registers these custom utilities with tailwind-merge (otherwise `cn("text-system text-text")` silently drops the font size).
+
+### Tokens added in stage 2 (mobile)
+
+The "Mobile" column of [Sizes](#sizes) is implemented by overriding the same `--spacing-*` variables under `@media (width < 48rem)` in `app/globals.css` (no second set of utilities). `--spacing-taskbar` becomes `calc(48px + env(safe-area-inset-bottom))`. New utilities: `pb-safe-bottom`, `pt-safe-top`, `px-safe` (safe-area insets; needs `viewport-fit=cover`, set in the root layout) and `static-content` (the visually hidden, crawlable text version). JS mirrors: `MOBILE_COL_PITCH`, `MOBILE_ROW_PITCH`, `MOBILE_ICON_W/H` in `lib/store/desktopGrid.ts`.
 
 ### Checklist for stage 1
 

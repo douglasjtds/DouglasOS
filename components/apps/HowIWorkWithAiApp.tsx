@@ -18,7 +18,7 @@ export default function HowIWorkWithAiApp() {
       </p>
       {sections.map((s) => (
         <section key={s.heading} className="flex flex-col gap-1">
-          <h2 className="text-heading text-link">{s.heading}</h2>
+          <h3 className="text-heading text-link">{s.heading}</h3>
           <p className="text-body text-text">{s.body}</p>
         </section>
       ))}

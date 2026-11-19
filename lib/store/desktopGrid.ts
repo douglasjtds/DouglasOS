@@ -158,3 +158,92 @@ export function iconsInGridOrder<Id extends string>(cells: Record<Id, Cell>): Id
     return ca.col - cb.col || ca.row - cb.row;
   });
 }
+
+/* ------------------------------------------------------------------------ *
+ * Mobile (< 768px) icon grid — DESKTOP-INTERFACE-SPEC §11.
+ *
+ * On phones the icons are laid out like a home screen: larger cells, filled
+ * row-first from the top-left (so About, resume.pdf and Contact share the
+ * first row), centered horizontally, and never dragged. The layout is purely
+ * derived from the container width, so it is never persisted and can't clash
+ * with the desktop arrangement saved in `desktopStore`.
+ * ------------------------------------------------------------------------ */
+
+/** Viewport width below which the touch shell is used (Tailwind `md`). */
+export const MOBILE_BREAKPOINT = 768;
+
+/**
+ * Mobile cell pitch — mirrors the mobile `desktop-cell` token
+ * (`--spacing-desktop-cell-x/y` under `max-md` in app/globals.css: 96 × 104px).
+ */
+export const MOBILE_COL_PITCH = 96;
+export const MOBILE_ROW_PITCH = 104;
+/** Mobile icon footprint: the 88px label width × glyph + two label lines + padding. */
+export const MOBILE_ICON_W = 88;
+export const MOBILE_ICON_H = 96;
+/** Top inset of the first row and minimum side margin. */
+export const MOBILE_GRID_TOP = 8;
+const MOBILE_MIN_MARGIN = 2;
+
+export function isMobileViewport(vp: Pick<Viewport, "width">): boolean {
+  return vp.width < MOBILE_BREAKPOINT;
+}
+
+export interface MobileIconLayout<Id extends string> {
+  /** Grid cell per icon (row-first). Used for arrow-key navigation. */
+  cells: Record<Id, Cell>;
+  /** Top-left pixel of each icon inside the desktop container. */
+  positions: Record<Id, { x: number; y: number }>;
+  cols: number;
+  rows: number;
+  /** Total content height, so the container can scroll if a short screen needs it. */
+  height: number;
+}
+
+/**
+ * Row-first, horizontally centered icon layout for a container `width` px
+ * wide. One icon per cell, so icons can never overlap; when the screen is too
+ * short for every row, the container scrolls (see `height`) instead of icons
+ * stacking. `ids` order is the CTA order from the registry.
+ */
+export function mobileIconLayout<Id extends string>(
+  ids: readonly Id[],
+  width: number,
+): MobileIconLayout<Id> {
+  const cols = Math.max(
+    1,
+    Math.floor((width - 2 * MOBILE_MIN_MARGIN) / MOBILE_COL_PITCH),
+  );
+  const rows = Math.max(1, Math.ceil(ids.length / cols));
+  const offsetX =
+    Math.max(0, Math.floor((width - cols * MOBILE_COL_PITCH) / 2)) +
+    (MOBILE_COL_PITCH - MOBILE_ICON_W) / 2;
+
+  const cells = {} as Record<Id, Cell>;
+  const positions = {} as Record<Id, { x: number; y: number }>;
+  ids.forEach((id, i) => {
+    const cell = { col: i % cols, row: Math.floor(i / cols) };
+    cells[id] = cell;
+    positions[id] = {
+      x: offsetX + cell.col * MOBILE_COL_PITCH,
+      y: MOBILE_GRID_TOP + cell.row * MOBILE_ROW_PITCH,
+    };
+  });
+
+  return {
+    cells,
+    positions,
+    cols,
+    rows,
+    height: MOBILE_GRID_TOP * 2 + (rows - 1) * MOBILE_ROW_PITCH + MOBILE_ICON_H,
+  };
+}
+
+/** Icons in row-first reading order (mobile home-screen layout). */
+export function iconsInRowOrder<Id extends string>(cells: Record<Id, Cell>): Id[] {
+  return (Object.keys(cells) as Id[]).sort((a, b) => {
+    const ca = cells[a];
+    const cb = cells[b];
+    return ca.row - cb.row || ca.col - cb.col;
+  });
+}

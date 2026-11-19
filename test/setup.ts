@@ -51,11 +51,24 @@ Object.defineProperty(window, "sessionStorage", {
  * Browser APIs jsdom lacks but Radix (menus, dialogs, tooltips) and Framer
  * Motion touch: matchMedia, ResizeObserver, pointer capture, scrollIntoView.
  */
+/**
+ * Width queries are evaluated against the (pinned) `innerWidth`, so the shell
+ * picks the pointer desktop by default and a test can switch to the touch
+ * shell by setting `window.innerWidth` below 768 before rendering. Every other
+ * query (e.g. reduced motion) reports false.
+ */
+function matchesWidthQuery(query: string): boolean {
+  const min = /min-width:\s*(\d+(?:\.\d+)?)px/.exec(query);
+  const max = /max-width:\s*(\d+(?:\.\d+)?)px/.exec(query);
+  if (!min && !max) return false;
+  const width = window.innerWidth;
+  return (!min || width >= Number(min[1])) && (!max || width <= Number(max[1]));
+}
 if (!window.matchMedia) {
   Object.defineProperty(window, "matchMedia", {
     configurable: true,
     value: (query: string) => ({
-      matches: false,
+      matches: matchesWidthQuery(query),
       media: query,
       onchange: null,
       addEventListener: () => {},

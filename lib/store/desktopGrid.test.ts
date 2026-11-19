@@ -7,7 +7,12 @@ import {
   cellToPixel,
   defaultCells,
   gridDims,
+  MOBILE_ICON_H,
+  MOBILE_ICON_W,
   iconsInGridOrder,
+  iconsInRowOrder,
+  isMobileViewport,
+  mobileIconLayout,
   nearestFreeCell,
   neighborIcon,
   pixelToCell,
@@ -160,5 +165,82 @@ describe("iconsInGridOrder", () => {
         z: { col: 0, row: 0 },
       }),
     ).toEqual(["z", "y", "x"]);
+  });
+});
+
+describe("mobile icon grid", () => {
+  const IDS = [
+    "about",
+    "resume",
+    "contact",
+    "projects",
+    "experience",
+    "skills",
+    "how-i-work-with-ai",
+  ] as const;
+  // Common phone widths: iPhone SE/mini, iPhone 13/14, Pixel 7, small tablet portrait.
+  const WIDTHS = [320, 360, 375, 390, 412, 430, 600, 767];
+
+  function overlaps(
+    a: { x: number; y: number },
+    b: { x: number; y: number },
+  ): boolean {
+    return (
+      a.x < b.x + MOBILE_ICON_W &&
+      b.x < a.x + MOBILE_ICON_W &&
+      a.y < b.y + MOBILE_ICON_H &&
+      b.y < a.y + MOBILE_ICON_H
+    );
+  }
+
+  it("uses the touch shell below 768px only", () => {
+    expect(isMobileViewport({ width: 390 })).toBe(true);
+    expect(isMobileViewport({ width: 767 })).toBe(true);
+    expect(isMobileViewport({ width: 768 })).toBe(false);
+  });
+
+  it.each(WIDTHS)("never overlaps two icons and stays inside %ipx", (width) => {
+    const { positions } = mobileIconLayout(IDS, width);
+    const rects = IDS.map((id) => positions[id]);
+    for (let i = 0; i < rects.length; i++) {
+      expect(rects[i].x).toBeGreaterThanOrEqual(0);
+      expect(rects[i].x + MOBILE_ICON_W).toBeLessThanOrEqual(width);
+      for (let j = i + 1; j < rects.length; j++) {
+        expect(overlaps(rects[i], rects[j])).toBe(false);
+      }
+    }
+  });
+
+  it("gives every icon its own cell", () => {
+    const { cells } = mobileIconLayout(IDS, 390);
+    const keys = new Set(IDS.map((id) => `${cells[id].col},${cells[id].row}`));
+    expect(keys.size).toBe(IDS.length);
+  });
+
+  it("fills row-first so the CV sits in the first row", () => {
+    const layout = mobileIconLayout(IDS, 390);
+    expect(layout.cols).toBe(4);
+    expect(layout.rows).toBe(2);
+    expect(layout.cells.about).toEqual({ col: 0, row: 0 });
+    expect(layout.cells.resume).toEqual({ col: 1, row: 0 });
+    expect(layout.cells.contact).toEqual({ col: 2, row: 0 });
+    expect(layout.cells.projects).toEqual({ col: 3, row: 0 });
+    expect(layout.cells.experience).toEqual({ col: 0, row: 1 });
+    expect(iconsInRowOrder(layout.cells)).toEqual([...IDS]);
+  });
+
+  it("has fewer columns than the desktop grid and centers them", () => {
+    const narrow = mobileIconLayout(IDS, 360);
+    expect(narrow.cols).toBe(3);
+    const first = narrow.positions.about.x;
+    const last = narrow.positions.contact.x + MOBILE_ICON_W;
+    expect(first).toBe(360 - last);
+  });
+
+  it("degrades to a single scrolling column on a very narrow container", () => {
+    const layout = mobileIconLayout(IDS, 100);
+    expect(layout.cols).toBe(1);
+    expect(layout.rows).toBe(IDS.length);
+    expect(layout.height).toBeGreaterThan(layout.positions["how-i-work-with-ai"].y);
   });
 });
