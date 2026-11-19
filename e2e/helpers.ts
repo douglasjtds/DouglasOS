@@ -10,21 +10,27 @@ import { expect, type Page } from "@playwright/test";
  *
  * The mini Douglas assistant is dismissed too (as if "Not now" was picked
  * this session) so his timed appearances can't overlap other specs; pass
- * `{ assistant: true }` to keep him (`assistant.spec.ts`).
+ * `{ assistant: true }` to keep him (`assistant.spec.ts`). Likewise the
+ * DouglasOS Messenger toast is marked as already shown; pass
+ * `{ messengerToast: true }` to let it pop up.
  */
 export async function gotoDesktop(
   page: Page,
   locale: "en" | "pt" = "en",
-  { assistant = false }: { assistant?: boolean } = {},
+  { assistant = false, messengerToast = false }: { assistant?: boolean; messengerToast?: boolean } = {},
 ) {
-  await page.addInitScript((keepAssistant) => {
-    sessionStorage.setItem("douglasos-booted", "1");
-    sessionStorage.setItem("douglasos-welcomed", "1");
-    // Only on the first load of the session, so a test can dismiss him and reload.
-    if (!keepAssistant && sessionStorage.getItem("douglasos-assistant") === null) {
-      sessionStorage.setItem("douglasos-assistant", JSON.stringify({ dismissed: true, fired: [] }));
-    }
-  }, assistant);
+  await page.addInitScript(
+    ({ keepAssistant, keepToast }) => {
+      sessionStorage.setItem("douglasos-booted", "1");
+      sessionStorage.setItem("douglasos-welcomed", "1");
+      // Only on the first load of the session, so a test can dismiss him and reload.
+      if (!keepAssistant && sessionStorage.getItem("douglasos-assistant") === null) {
+        sessionStorage.setItem("douglasos-assistant", JSON.stringify({ dismissed: true, fired: [] }));
+      }
+      if (!keepToast) sessionStorage.setItem("douglasos-messenger-toast", "1");
+    },
+    { keepAssistant: assistant, keepToast: messengerToast },
+  );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`/${locale}`);
   await expect(startButton(page)).toBeVisible();
@@ -66,4 +72,13 @@ export function assistantCharacter(page: Page) {
 
 export function assistantBubble(page: Page) {
   return page.locator("[data-assistant-bubble]");
+}
+
+/** DouglasOS Messenger: the window, its tray icon and the toast. */
+export function messengerTray(page: Page) {
+  return page.locator("[data-tray-messenger]");
+}
+
+export function messengerToast(page: Page) {
+  return page.locator("[data-messenger-toast]");
 }

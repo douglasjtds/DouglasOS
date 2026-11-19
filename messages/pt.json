@@ -286,6 +286,10 @@
         }
       ]
     },
+    "messenger": {
+      "title": "DouglasOS Messenger",
+      "description": "Converse com o Douglas (roteirizado)"
+    },
     "contact": {
       "title": "Contato",
       "description": "LinkedIn, GitHub, e-mail, WhatsApp",
@@ -497,6 +501,142 @@
       "experience": "Oito anos até aqui, hoje como desenvolvedor fullstack na Serasa Experian. A trajetória completa está em Experiência.",
       "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude. Mais em Sobre o Douglas.",
       "fallback": "Essa ainda não está no meu roteiro. Tente “CV”, “projetos”, “stack” ou “remoto”, ou pergunte pro Douglas de verdade pelo Contato."
+    }
+  },
+  "messenger": {
+    "name": "DouglasOS Messenger",
+    "contacts": {
+      "listLabel": "Contatos",
+      "you": "Você",
+      "youStatus": "Visitante (online)",
+      "group": "Online ({count})",
+      "douglas": "Douglas",
+      "status": "Online",
+      "personalMessage": "Construindo coisas com a IA de dupla (coffee)",
+      "open": "Iniciar uma conversa com o Douglas",
+      "hint": "Clique no Douglas para começar a conversar. As respostas são automáticas, escritas por ele."
+    },
+    "conversation": {
+      "back": "Contatos",
+      "title": "Conversa com o Douglas",
+      "douglasSays": "Douglas diz:",
+      "youSay": "Você diz:",
+      "typing": "Douglas está digitando…",
+      "disclaimer": "Respostas automáticas, escritas com antecedência pelo próprio Douglas. Para uma resposta de verdade, deixe um recado.",
+      "logLabel": "Histórico da conversa",
+      "composerLabel": "Sua mensagem",
+      "placeholder": "Digite uma mensagem…",
+      "send": "Enviar",
+      "emoticons": "Emoticons",
+      "nudge": "Chamar atenção",
+      "nudgeSent": "Você chamou a atenção.",
+      "nudgeTooSoon": "Calma! Espere alguns segundos antes de chamar a atenção de novo.",
+      "quickReplies": "Respostas sugeridas",
+      "toolbar": "Atalhos",
+      "downloadCv": "Baixar CV",
+      "contact": "Contato"
+    },
+    "form": {
+      "title": "Deixar um recado",
+      "intro": "Escreva aqui e envie pelo seu próprio app de e-mail ou WhatsApp. Nada sai desta página até você apertar enviar lá.",
+      "name": "Seu nome (opcional)",
+      "message": "Mensagem",
+      "sendEmail": "Enviar por e-mail",
+      "sendWhatsapp": "Enviar no WhatsApp",
+      "cancel": "Cancelar",
+      "counter": "{count}/{max}",
+      "subject": "Olá pelo DouglasOS Messenger",
+      "subjectNamed": "{name}, pelo DouglasOS Messenger",
+      "body": "Oi, Douglas!\n\n{message}\n\n(Enviado pelo DouglasOS Messenger)",
+      "bodyNamed": "Oi, Douglas!\n\n{message}\n\n{name}\n(Enviado pelo DouglasOS Messenger)"
+    },
+    "quickReplies": {
+      "projects": {
+        "label": "Ver projetos",
+        "say": "Posso ver seus projetos?"
+      },
+      "cv": {
+        "label": "Baixar CV",
+        "say": "Pode me mandar seu currículo?"
+      },
+      "skills": {
+        "label": "Tecnologias",
+        "say": "Quais tecnologias você usa?"
+      },
+      "availability": {
+        "label": "Disponibilidade",
+        "say": "Você está aberto a vagas? Remoto?"
+      },
+      "aiWorkflow": {
+        "label": "Fluxo com IA",
+        "say": "Como você trabalha com IA?"
+      },
+      "experience": {
+        "label": "Experiência",
+        "say": "Me conta da sua experiência."
+      },
+      "leaveMessage": {
+        "label": "Deixar um recado",
+        "say": "Quero te deixar um recado."
+      }
+    },
+    "actions": {
+      "downloadCv": "Baixar o CV (PDF)",
+      "openProject": "Abrir {project}",
+      "leaveMessage": "Deixar um recado",
+      "apps": {
+        "contact": "Abrir Contato",
+        "projects": "Abrir Meus Projetos",
+        "skills": "Abrir Habilidades",
+        "experience": "Abrir Experiência",
+        "about": "Abrir Sobre o Douglas",
+        "aiWorkflow": "Abrir Como Trabalho com IA"
+      }
+    },
+    "emoticons": {
+      "smile": "Sorriso",
+      "grin": "Sorrisão",
+      "wink": "Piscadinha",
+      "tongue": "Língua de fora",
+      "surprised": "Surpreso",
+      "sad": "Triste",
+      "cool": "Descolado",
+      "heart": "Coração",
+      "thumbsUp": "Joinha",
+      "coffee": "Café"
+    },
+    "replies": {
+      "greeting": "Oi! Vi que você está olhando meu portfólio :)",
+      "greetingFollowUp": "Pergunte o que quiser sobre o meu trabalho ou escolha uma das sugestões abaixo. Quer uma resposta de verdade? Me deixa um recado que ele cai direto na minha caixa de entrada.",
+      "cv": "Claro! Taí meu currículo em PDF. Sem cadastro, sem pegadinha.",
+      "cvSent": "Pronto, o download já deve ter começado. Se não começou, o link está aqui de novo.",
+      "contact": "Bora conversar! O jeito mais rápido é me deixar um recado aqui mesmo. LinkedIn, e-mail e WhatsApp também estão no Contato.",
+      "projects": "Meus projetos estão escritos como estudos de caso: o problema, a minha abordagem e o resultado. Quer dar uma olhada?",
+      "project": "Boa escolha! {project} tem um estudo de caso só dele. Quer que eu abra?",
+      "skills": "Oito anos entre .NET, Node.js e React, com AWS na parte de infra. A lista completa está em Habilidades.",
+      "availability": "Moro em Lagoa Santa, MG, e trabalho remoto. Estou aberto a vagas remotas, inclusive em times internacionais (y)",
+      "aiWorkflow": "Meu assunto favorito! Trabalho com IA em primeiro lugar: Claude Code e GitHub Copilot fazem parte de como eu desenho, construo e entrego software todo dia. Os detalhes estão em Como Trabalho com IA.",
+      "experience": "Oito anos até aqui. Hoje sou desenvolvedor fullstack na Serasa Experian, construindo APIs de threat intelligence e detecção de fraude. A trajetória completa está em Experiência.",
+      "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude, trabalhando com IA em primeiro lugar.",
+      "aboutPersonal": "",
+      "fallback": "Essa eu vou ter que responder pessoalmente — me deixa um recado?",
+      "leaveMessage": "Claro! Escreve aí embaixo e escolhe e-mail ou WhatsApp. Chega direto em mim.",
+      "sentEmail": "Valeu! Seu app de e-mail deve ter aberto com tudo preenchido. É só apertar enviar lá que eu te respondo.",
+      "sentWhatsapp": "Valeu! O WhatsApp deve ter aberto com a sua mensagem pronta. É só apertar enviar lá que eu te respondo.",
+      "nudge": [
+        "Opa! Tô aqui, tô aqui :D",
+        "Tá bom, tá bom, você tem toda a minha atenção :P",
+        "Quase derrubei o café (coffee) Em que posso ajudar?"
+      ]
+    },
+    "tray": {
+      "label": "Douglas está online. Abrir o DouglasOS Messenger",
+      "unread": "Douglas está online, {count, plural, one {# mensagem nova} other {# mensagens novas}}. Abrir o DouglasOS Messenger"
+    },
+    "toast": {
+      "says": "Douglas diz:",
+      "text": "Oi! Tem um minutinho? Pergunte o que quiser sobre o meu trabalho, tô por aqui :)",
+      "close": "Fechar"
     }
   },
   "static": {

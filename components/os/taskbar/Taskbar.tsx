@@ -6,10 +6,11 @@ import { QuickLaunch } from "@/components/os/taskbar/QuickLaunch";
 import { TaskButtons } from "@/components/os/taskbar/TaskButtons";
 import { LocaleToggle } from "@/components/os/taskbar/LocaleToggle";
 import { Clock } from "@/components/os/taskbar/Clock";
+import { MessengerTray } from "@/components/os/taskbar/MessengerTray";
 
 /**
  * The persistent system bar: Start (+ menu), Quick Launch (CV, Contact),
- * window buttons and the tray (language + clock). Always above windows.
+ * window buttons and the tray (Messenger "online" icon, language, clock). Always above windows.
  * On touch screens the `taskbar` token grows to 48px + the bottom safe-area
  * inset (the padding keeps the controls clear of the home indicator).
  */
@@ -30,6 +31,7 @@ export function Taskbar() {
         data-tray
         className="flex h-full shrink-0 items-center gap-2 border-l border-tray-edge bg-tray-gradient px-2.5 shadow-[inset_1px_0_var(--color-tray-highlight)] max-md:gap-1 max-md:px-1.5"
       >
+        <MessengerTray />
         <LocaleToggle />
         <Clock />
       </div>

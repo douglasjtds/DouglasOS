@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import en from "@/messages/en.json";
 import pt from "@/messages/pt.json";
 import { PROFILE } from "@/lib/profile";
+import { mobileIconLayout } from "@/lib/store/desktopGrid";
 import {
   DESKTOP_ICON_GROUPS,
   DESKTOP_ICON_IDS,
@@ -65,6 +66,21 @@ describe("registry: external shortcuts", () => {
     for (const l of LAUNCHERS) {
       expect(lookup(en, launcherTitleKey(l.id))).toEqual(expect.any(String));
       expect(lookup(pt, launcherTitleKey(l.id))).toEqual(expect.any(String));
+    }
+  });
+});
+
+describe("registry: DouglasOS Messenger (stage 5b)", () => {
+  it("is a window app with a desktop icon, last of the apps group", () => {
+    expect(isAppId("messenger")).toBe(true);
+    expect(getLauncher("messenger")).toMatchObject({ kind: "window", onDesktop: true, surface: "bare" });
+    expect(DESKTOP_ICON_GROUPS[0].at(-1)).toBe("messenger");
+  });
+
+  it("never pushes About / CV / Contact off a phone's first row", () => {
+    for (const width of [320, 360, 390, 430]) {
+      const { cells } = mobileIconLayout(DESKTOP_ICON_GROUPS, width);
+      for (const id of ["about", "resume", "contact"] as const) expect(cells[id].row).toBe(0);
     }
   });
 });

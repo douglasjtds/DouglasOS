@@ -42,6 +42,7 @@ describe("Desktop icons", () => {
       "Experience",
       "Skills",
       "How I Work With AI",
+      "DouglasOS Messenger",
       "linkedin.url",
       "github.url",
       "whatsapp.exe",

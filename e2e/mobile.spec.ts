@@ -1,5 +1,16 @@
 import { test, expect, type Page } from "@playwright/test";
-import { assistantBubble, assistantCharacter, desktopIcon, gotoDesktop, startButton, startItem, taskButton, windowById, windows } from "./helpers";
+import {
+  assistantBubble,
+  assistantCharacter,
+  desktopIcon,
+  gotoDesktop,
+  messengerTray,
+  startButton,
+  startItem,
+  taskButton,
+  windowById,
+  windows,
+} from "./helpers";
 
 /**
  * Touch shell (DESKTOP-INTERFACE-SPEC §11). Runs only in the phone projects of
@@ -103,7 +114,7 @@ test.describe("touch shell", () => {
     expect(Math.round(box.width)).toBe(viewport.width);
     expect(box.height).toBeLessThanOrEqual(viewport.height * 0.85 + 1);
     // All Programs is inline (no cascading submenu) and lists every launcher.
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(12);
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(13);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 
@@ -199,5 +210,38 @@ test.describe("touch shell", () => {
     await desktopIcon(page, "about").tap();
     await expect(windowById(page, "about")).toBeVisible();
     await expect(character).toHaveCount(0);
+  });
+
+  test("Messenger: full screen from the tray, chips scroll sideways, composer above the taskbar, CV one tap away", async ({
+    page,
+  }) => {
+    await gotoDesktop(page);
+    // The new desktop icon never pushes About / CV / Contact off the first row.
+    const about = (await desktopIcon(page, "about").boundingBox())!;
+    const messengerIcon = (await desktopIcon(page, "messenger").boundingBox())!;
+    expect(messengerIcon.y).toBeGreaterThan(about.y);
+
+    await messengerTray(page).tap();
+    const messenger = windowById(page, "messenger");
+    await expect(messenger).toHaveAttribute("data-presentation", "fullscreen");
+    await messenger.locator('[data-messenger-contact="douglas"]').tap();
+    await expect(messenger.getByRole("log")).toContainText("looking around my portfolio");
+
+    const viewport = page.viewportSize()!;
+    const chips = messenger.locator("[data-messenger-quick-replies]");
+    const chipsBox = (await chips.boundingBox())!;
+    expect(chipsBox.width).toBeLessThanOrEqual(viewport.width);
+    // One row of chips that scrolls sideways instead of wrapping.
+    expect(await chips.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    expect((await chips.locator("[data-quick-reply]").first().boundingBox())!.height).toBeGreaterThanOrEqual(44);
+
+    const composer = (await messenger.locator("[data-messenger-input]").boundingBox())!;
+    expect(composer.y + composer.height).toBeLessThanOrEqual(await taskbarTop(page));
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+
+    const downloadPromise = page.waitForEvent("download");
+    await messenger.locator('[data-messenger-shortcut="cv"]').tap();
+    expect((await downloadPromise).suggestedFilename()).toContain(".pdf");
   });
 });

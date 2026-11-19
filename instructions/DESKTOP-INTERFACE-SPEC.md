@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies) and stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -105,12 +105,13 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 | `experience` | Experience | Experiência |
 | `skills` | Skills | Habilidades |
 | `how-i-work-with-ai` | How I Work With AI | Como Trabalho com IA |
+| `messenger` *(stage 5b)* | DouglasOS Messenger | DouglasOS Messenger |
 | `linkedin` *(stage 3, link)* | linkedin.url | linkedin.url |
 | `github` *(stage 3, link)* | github.url | github.url |
 | `whatsapp` *(stage 3, link)* | whatsapp.exe | whatsapp.exe |
 | `email` *(stage 3, link)* | write-me.eml | me-escreva.eml |
 
-- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts follow the apps.
+- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI, DouglasOS Messenger *(5b — last of the apps, see [§14](#14-douglasos-messenger-stage-5b) → Placement)*. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts follow the apps.
 
 ### External shortcuts *(stage 3 — done)*
 - Four `kind: "link"` launchers in `lib/apps/registry.tsx` (`LinkConfig { id, kind, titleKey, icon, href, external }`): `linkedin`, `github`, `whatsapp`, `email`. The ids are **stable** (they are the Recycle Bin rescue targets in stage 6). URLs come only from `lib/profile.ts`; `email` is `mailto:`.
@@ -147,7 +148,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 4. **Tray (notification area)** — separated by the tray edge, right-aligned:
    - **Language** `EN` / `PT` toggle (reuses `LocaleToggle`; switches locale in place, windows stay).
    - **Volume** — only once something plays sound *(stage 8)*.
-   - **Messenger "online"** icon *(stage 5b)*, **now-playing** note *(stage 8)*.
+   - **Messenger "online"** icon *(stage 5b — done; left of the language toggle, see [§14](#14-douglasos-messenger-stage-5b))*, **now-playing** note *(stage 8)*.
    - **Clock** (HH:mm, reuses `Clock`); tooltip with the full localized date.
    - Tray icons can anchor **balloons** ([§7](#7-dialogs-balloons-tooltips--menus)).
 
@@ -178,7 +179,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; later: Messenger *(5b)*, and folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; later: folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -312,7 +313,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -362,6 +363,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Run… | `Meta+R` (best effort) | `Alt+Shift+R` | 7 |
 | Command palette | `Ctrl+K` / `Cmd+K` | — | 7 |
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
+| Messenger: close form / window | `Esc` (form first; from the composer it closes the window) | — | 5b |
 
 - A single shortcut registry (pure, in `lib/`, unit-tested) owns this map so later stages can't introduce conflicts.
 - **`F2` decided by Douglas: option (c)** — no rename; `F2` opens the humorous "protected file" message box ([§7](#7-dialogs-balloons-tooltips--menus)).
@@ -413,6 +415,49 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8).
 - **Performance:** the assistant chunk loads only after the desktop is up and the browser is idle (and not at all once dismissed); the videos only once he appears.
 
+## 14. DouglasOS Messenger *(stage 5b)*
+
+**Purpose:** a 2000s-messenger-style chat where the visitor feels they're talking to Douglas. **Scripted** end to end (no LLM, no network, no backend) and it ends in a **real message** the visitor sends from their own mail app or WhatsApp. Independent of mini Douglas (§13). Brand is original: name "DouglasOS Messenger", own buddy-with-speech-bubble icon, own SVG emoticons, no sounds — never another messenger's name, butterfly/two-person logo, nudge/login sounds or emoticons.
+
+### Pieces
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Types + constants | `lib/messenger/types.ts` | `MessengerAction` (`ShellAction` \| `leaveMessage`), `QUICK_REPLY_IDS`, `DEFAULT_QUICK_REPLIES`, `ScriptLine`, `ScriptReply`, `MESSENGER_TIMING`, `canNudge()`. Kept apart from the engine so the store/tray/toast don't pull the matcher into the shell bundle |
+| Script engine | `lib/messenger/engine.ts` | Pure: `greetingReply()`, `replyToText(text)` / `replyToIntent(result)` (through `matchIntent`), `quickReplyTurn(id)` (`{ sayKey, effect?, reply }`), `nudgeReply(n)`, `messageSentReply(channel)`, `suggestionsAfter(topic)`, `typingDelayMs(length, { reducedMotion })`, `actionLabel()`, `actionId()` |
+| Link builders | `lib/messenger/links.ts` | Pure: `buildMailtoLink`, `buildWhatsAppLink`, `buildMessageLinks`, `whatsappChatUrl`, `cleanMessage`. Destinations only from `lib/profile.ts`; subject/body encoded (CRLF in mail bodies); the visitor's text (never the localized frame) is shortened with "…" to keep links ≤ 2,000 chars, cutting on code points |
+| Emoticons | `lib/messenger/emoticons.ts` + `components/icons/MessengerIcons.tsx` | 10 codes (`:)`, `:D`, `;)`, `:P`, `:O`, `:(`, `(cool)`, `<3`, `(y)`, `(coffee)`) → original SVG faces; `splitEmoticons` never parses markup, codes glued to a word stay text |
+| State | `lib/store/messengerStore.ts` | `view` (`contacts` \| `conversation`), `messages`, `pending` (lines still to "type"), `typing`, `unread`, `quickReplies`, `formOpen`, `draft`, `greeted`, nudges. Actions: `setView`, `openConversation`, `showContacts`, `postVisitor`, `postSystem`, `queueReply`, `deliverNext({ unread, skip })`, `setTyping`, `markRead`, `openForm`/`closeForm`, `setDraft`, `nudge(now)`, `reset`. Persisted to **sessionStorage** (`douglasos:messenger`, sanitized on load) |
+| UI | `components/apps/MessengerApp.tsx` + `components/apps/messenger/` | `ContactList`, `Conversation`, `MessageLog`, `Composer`, `MessageForm`, `MessageText`, `shell.ts` (`runMessengerAction`, `closeMessengerWindow`) |
+| Tray + toast | `components/os/taskbar/MessengerTray.tsx`, `MessengerToast.tsx` | |
+
+### Window
+- Registry: `messenger`, kind `window`, `surface: "bare"`, ~460×580, on the desktop, in All Programs (not pinned: Start stays CTA-first).
+- **Contact list:** brand band (icon + name, "You · Visitor (online)"), group "Online (1)", one row: Douglas's picture with an online dot, "(Online)" in text (never color alone), personal message, unread count. **Single click / tap / Enter** opens the conversation (deliberate deviation from the brief's double-click, consistent with Douglas's single-click decision for every icon). One window, two views — no multi-instance.
+- **Conversation:** header (Back to contacts, picture, name/status, personal message, **Download CV** and **Contact** push buttons — the golden rule one click inside the chat), a permanent muted notice ("Automatic replies, written in advance by Douglas himself. For a real answer, leave a message."), the log ("Douglas says:" / "You say:", system lines in italics, link-style buttons under Douglas's lines), a "Douglas is typing…" status line, suggested replies, then the composer (Emoticons picker, Nudge, field, Send).
+- **Script:** the first time the conversation shows in a session Douglas types the opening ("Hi! I saw you're looking around my portfolio :)" + how to use it). Free text → `matchIntent` → that intent's answer + buttons (open a project via `openWindow("projects", { route })`, the project list, Skills, Experience, About, How I Work With AI, Contact, CV via `lib/download.ts`, the message form). Unknown → "That one I'll have to answer in person. Leave me a message?" with the form. Quick replies: See projects, **Download CV** (downloads immediately — one click — and posts a backup link), Tech stack, Availability, AI workflow / Experience, **Leave a message**; the topic just answered is swapped out. Lines whose copy is still an empty `TODO(douglas)` are skipped.
+- **Typing:** 450ms + 28ms/char, capped at 2.2s; instant under reduced motion. The current suggestions stay up while he types and are replaced when his last line lands. Lines delivered while the window is minimized/unfocused or on the contact list count as **unread** (red dot on the tray icon, count on the contact row); reading the conversation clears them.
+- **Nudge:** the window shakes ~0.5s (Framer Motion on the window frame; half amplitude on phones); under reduced motion no shake — the "You sent a nudge." notice marks it. One per 10s ("Easy there!…" otherwise); Douglas answers with a rotating comeback. No sound.
+- **Leave a message:** replaces the suggestions + composer: name (optional, 80) + message (required, 1000, counter) + **Send by e-mail** (`mailto:` link, same tab → mail app) / **Send on WhatsApp** (`wa.me`, new tab, `noopener noreferrer`) / Cancel. The links are real `<a href>`s rebuilt as the visitor types; with an empty message they don't navigate and focus the field. After following one, the form closes, the message is logged as "You say:" and Douglas thanks them. Nothing is ever sent by the page itself.
+
+### Tray icon and toast
+- **Tray:** 16px buddy icon left of the language toggle (44px target on phones), tooltip/name "Douglas is online. Open DouglasOS Messenger" (with the unread count when there is one); click opens/focuses the window (straight to the conversation when there are unread lines).
+- **Toast:** "Douglas says: Hi! Got a minute?…" in a small messenger-style card above the tray (title-bar strip + light-blue body), **at most once per session** (`douglasos-messenger-toast`), 20s after the desktop appears (35s on phones). Takes the shared **balloon slot** (`balloonStore` owner `messenger`), so it never shows with the welcome balloon or the assistant bubble; waits while the Start menu is open or (phones) while a full-screen window is up; skipped for the session once the visitor opened the Messenger on their own. `role="status"` + `aria-live="polite"`, never takes focus, closes itself after 8s unless hovered/focused, × closes it, a click opens the conversation. It never opens the window on its own.
+
+### Placement (decision)
+The desktop icon is the **last of the apps group** (after How I Work With AI), not with the external links. Desktop: it ends the first column (row 8 at 1440×900); the links keep their own column. Phones (4 per row at 390px): it completes the apps' second row, so About / resume.pdf / Contact keep the first row and the links still start a fresh row (unit- and e2e-checked). Putting it in the links group would have spilled a fifth link into an extra row on phones; a Start pin would have pushed the CTA-ordered pins down.
+
+### A11y & keyboard
+- Log is `role="log"` + `aria-live="polite"` (labelled "Conversation history"); auto-scrolls to the newest line; nothing moves focus on its own except the visitor's own actions (opening the conversation on the pointer desktop focuses the field; opening the form focuses the message).
+- Field has a (visually hidden) label; **Enter** sends, **Shift+Enter** adds a line (IME composition respected). Quick replies are a labelled group of buttons (Tab order); emoticons are a Radix menu (arrows, Esc).
+- **Esc:** closes the emoticon menu → the form → (from the composer) the window, focus moving to the next window, else the tray icon, else Start. Elsewhere in the window the shell's Esc-closes-window applies.
+- Emoticons are `role="img"` with localized names.
+
+### Mobile
+Full-screen window like every app; header compacts (icon-only Back and Contact, avatar 32px, personal message hidden); suggestions are a **single row of 44px chips that scrolls sideways**; composer and form fields use 16px text (no iOS zoom); the composer stays above the on-screen keyboard (`hooks/useKeyboardInset.ts` pads by the part of the window the `visualViewport` no longer shows). Tap opens the conversation; the toast waits until no window is up.
+
+### Persistence
+`douglasos:messenger` (sessionStorage): conversation, pending lines, view, suggestions, unread, form open, draft, greeted, nudge count — gone when the tab closes. `douglasos-messenger-toast` (sessionStorage): the toast already showed.
+
 ---
 
 ## Layering (z-index policy)
@@ -425,7 +470,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Assistant character + bubble *(stage 5)* | 1050 | above windows, below the taskbar; never covers the focused window's title bar (see below) |
 | Taskbar | 1100 | |
 | Start menu, context menus, dropdowns | 1200 | |
-| Tray balloons, messenger toast *(5b)* | 1300 | one at a time, shared slot with the assistant bubble |
+| Tray balloons, messenger toast *(5b — done)* | 1300 | one at a time, shared slot with the assistant bubble |
 | Modal dialogs (shutdown, Run, errors) | 1400 | |
 | Boot / logon / shutdown screens | 2000 | |
 
@@ -440,7 +485,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ## CTA Hierarchy
 
-1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, assistant bubble (stage 5), later messenger/Run.
+1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, assistant bubble (stage 5), Messenger header + quick reply + answers (5b), later Run.
 2. **Contact** — desktop (3rd icon), Quick Launch, Start (left pinned + right column).
 3. **How I Work With AI** and **Experience** — pinned in Start / desktop.
 4. Everything else (About, Projects, Skills, fun apps).
@@ -459,9 +504,11 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos-booted` | sessionStorage | `shellStore` *(stage 1)* | Boot + logon seen: skip them for the rest of the session |
 | `douglasos-welcomed` | sessionStorage | `WelcomeBalloon` *(stage 1)* | Welcome balloon already shown this session |
 | `douglasos-assistant` | sessionStorage | `assistantStore` *(stage 5)* | `{ dismissed, fired }`: "Not now" picked, and which automatic appearances already played |
+| `douglasos:messenger` | sessionStorage | `messengerStore` *(stage 5b)* | Conversation history, pending lines, view, suggestions, unread, draft, form open, greeted |
+| `douglasos-messenger-toast` | sessionStorage | `MessengerToast` *(stage 5b)* | The tray toast already showed this session |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Later stages add their own keys here (messenger history, volume).
+Later stages add their own keys here (volume).
 
 ---
 
@@ -489,7 +536,7 @@ Later stages add their own keys here (messenger history, volume).
 | 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs — **done** |
 | 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route — **done** |
 | 5 | "mini Douglas" scripted assistant (layer + single balloon slot, §13) — **done** |
-| 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast) |
+| 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast, §14) — **done** |
 | 6 | Recycle Bin rescue + lasso/multi-select |
 | 7 | Run…, command palette, desktop context menu |
 | 8 | DouglasOS Media Player + synced dance, tray volume/now-playing |

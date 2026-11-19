@@ -18,6 +18,7 @@ import {
   LinkedInLinkIcon,
   WhatsAppLinkIcon,
 } from "@/components/icons/LinkIcons";
+import { MessengerIcon } from "@/components/icons/MessengerIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -27,6 +28,7 @@ export type AppId =
   | "skills"
   | "how-i-work-with-ai"
   | "contact"
+  | "messenger"
   | "display";
 
 /**
@@ -163,6 +165,17 @@ export const LAUNCHERS: LauncherConfig[] = [
     onDesktop: true,
     defaultSize: { width: 700, height: 600 },
     Content: lazy(() => import("@/components/apps/HowIWorkWithAiApp")),
+  },
+  // DouglasOS Messenger (stage 5b): last of the apps, so on phones it ends the
+  // apps' second row and About / CV / Contact keep the first one.
+  {
+    id: "messenger",
+    kind: "window",
+    icon: MessengerIcon,
+    onDesktop: true,
+    surface: "bare",
+    defaultSize: { width: 460, height: 580 },
+    Content: lazy(() => import("@/components/apps/MessengerApp")),
   },
   // External shortcuts follow the apps; on the desktop they start their own
   // column (row on mobile), see DESKTOP_ICON_GROUPS.

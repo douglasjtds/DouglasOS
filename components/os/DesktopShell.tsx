@@ -5,6 +5,7 @@ import { Desktop } from "@/components/os/Desktop";
 import { WindowManager } from "@/components/os/WindowManager";
 import { Taskbar } from "@/components/os/taskbar/Taskbar";
 import { WelcomeBalloon } from "@/components/os/taskbar/WelcomeBalloon";
+import { MessengerToast } from "@/components/os/taskbar/MessengerToast";
 import { LazyAssistant } from "@/components/os/assistant/LazyAssistant";
 import { ShellDialogs } from "@/components/os/ShellDialogs";
 import { SessionScreens } from "@/components/os/session/SessionScreens";
@@ -38,6 +39,7 @@ export function DesktopShell() {
           <LazyAssistant />
           <Taskbar />
           <WelcomeBalloon />
+          <MessengerToast />
         </div>
         <ShellDialogs />
         <SessionScreens />

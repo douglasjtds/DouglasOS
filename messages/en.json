@@ -286,6 +286,10 @@
         }
       ]
     },
+    "messenger": {
+      "title": "DouglasOS Messenger",
+      "description": "Chat with (scripted) Douglas"
+    },
     "contact": {
       "title": "Contact",
       "description": "LinkedIn, GitHub, e-mail, WhatsApp",
@@ -497,6 +501,142 @@
       "experience": "Eight years so far, today as a fullstack developer at Serasa Experian. The whole path is in Experience.",
       "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention. More in About Douglas.",
       "fallback": "That one isn't in my script yet. Try “CV”, “projects”, “stack” or “remote”, or ask the real me through Contact."
+    }
+  },
+  "messenger": {
+    "name": "DouglasOS Messenger",
+    "contacts": {
+      "listLabel": "Contacts",
+      "you": "You",
+      "youStatus": "Visitor (online)",
+      "group": "Online ({count})",
+      "douglas": "Douglas",
+      "status": "Online",
+      "personalMessage": "Building things with AI as my pair (coffee)",
+      "open": "Start a conversation with Douglas",
+      "hint": "Click Douglas to start chatting. Replies are automatic, written by him."
+    },
+    "conversation": {
+      "back": "Contacts",
+      "title": "Conversation with Douglas",
+      "douglasSays": "Douglas says:",
+      "youSay": "You say:",
+      "typing": "Douglas is typing…",
+      "disclaimer": "Automatic replies, written in advance by Douglas himself. For a real answer, leave a message.",
+      "logLabel": "Conversation history",
+      "composerLabel": "Your message",
+      "placeholder": "Type a message…",
+      "send": "Send",
+      "emoticons": "Emoticons",
+      "nudge": "Nudge",
+      "nudgeSent": "You sent a nudge.",
+      "nudgeTooSoon": "Easy there! Wait a few seconds before nudging again.",
+      "quickReplies": "Suggested replies",
+      "toolbar": "Shortcuts",
+      "downloadCv": "Download CV",
+      "contact": "Contact"
+    },
+    "form": {
+      "title": "Leave a message",
+      "intro": "Write it here, then send it from your own mail app or WhatsApp. Nothing leaves this page until you hit send there.",
+      "name": "Your name (optional)",
+      "message": "Message",
+      "sendEmail": "Send by e-mail",
+      "sendWhatsapp": "Send on WhatsApp",
+      "cancel": "Cancel",
+      "counter": "{count}/{max}",
+      "subject": "Hello from the DouglasOS Messenger",
+      "subjectNamed": "{name}, via the DouglasOS Messenger",
+      "body": "Hi Douglas,\n\n{message}\n\n(Sent from the DouglasOS Messenger)",
+      "bodyNamed": "Hi Douglas,\n\n{message}\n\n{name}\n(Sent from the DouglasOS Messenger)"
+    },
+    "quickReplies": {
+      "projects": {
+        "label": "See projects",
+        "say": "Can I see your projects?"
+      },
+      "cv": {
+        "label": "Download CV",
+        "say": "Can I have your CV?"
+      },
+      "skills": {
+        "label": "Tech stack",
+        "say": "What's your tech stack?"
+      },
+      "availability": {
+        "label": "Availability",
+        "say": "Are you open to new roles? Remote?"
+      },
+      "aiWorkflow": {
+        "label": "AI workflow",
+        "say": "How do you work with AI?"
+      },
+      "experience": {
+        "label": "Experience",
+        "say": "Tell me about your experience."
+      },
+      "leaveMessage": {
+        "label": "Leave a message",
+        "say": "I'd like to leave you a message."
+      }
+    },
+    "actions": {
+      "downloadCv": "Download the CV (PDF)",
+      "openProject": "Open {project}",
+      "leaveMessage": "Leave a message",
+      "apps": {
+        "contact": "Open Contact",
+        "projects": "Open My Projects",
+        "skills": "Open Skills",
+        "experience": "Open Experience",
+        "about": "Open About Douglas",
+        "aiWorkflow": "Open How I Work With AI"
+      }
+    },
+    "emoticons": {
+      "smile": "Smile",
+      "grin": "Big grin",
+      "wink": "Wink",
+      "tongue": "Tongue out",
+      "surprised": "Surprised",
+      "sad": "Sad",
+      "cool": "Cool",
+      "heart": "Heart",
+      "thumbsUp": "Thumbs up",
+      "coffee": "Coffee"
+    },
+    "replies": {
+      "greeting": "Hi! I saw you're looking around my portfolio :)",
+      "greetingFollowUp": "Ask me anything about my work, or pick one of the suggestions below. Want a real answer from me? Leave a message and it lands straight in my inbox.",
+      "cv": "Sure! Here's my CV as a PDF. No sign-up, no tricks.",
+      "cvSent": "Done, the download should have started. If it didn't, here's the link again.",
+      "contact": "Let's talk! The quickest way is to leave me a message right here. LinkedIn, e-mail and WhatsApp are in Contact too.",
+      "projects": "I write my projects up as case studies: the problem, my approach and the result. Want to take a look?",
+      "project": "Good pick! {project} has its own case study. Want me to open it?",
+      "skills": "Eight years across .NET, Node.js and React, with AWS on the infra side. The full list is in Skills.",
+      "availability": "I live in Lagoa Santa, Brazil, and work remotely. I'm open to remote roles, international teams included (y)",
+      "aiWorkflow": "My favorite topic! I work AI-first: Claude Code and GitHub Copilot are part of how I design, build and ship software every day. I wrote the details down in How I Work With AI.",
+      "experience": "Eight years so far. Today I'm a fullstack developer at Serasa Experian, building APIs for threat intelligence and fraud detection. The whole path is in Experience.",
+      "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention, working AI-first.",
+      "aboutPersonal": "",
+      "fallback": "That one I'll have to answer in person. Leave me a message?",
+      "leaveMessage": "Sure! Write it below and pick e-mail or WhatsApp. It comes straight to me.",
+      "sentEmail": "Thanks! Your mail app should have opened with everything filled in. Just hit send there and I'll get back to you.",
+      "sentWhatsapp": "Thanks! WhatsApp should have opened with your message ready. Just hit send there and I'll get back to you.",
+      "nudge": [
+        "Whoa! I'm here, I'm here :D",
+        "Okay, okay, you have my full attention :P",
+        "My coffee almost went flying (coffee) What can I do for you?"
+      ]
+    },
+    "tray": {
+      "label": "Douglas is online. Open DouglasOS Messenger",
+      "unread": "Douglas is online, {count, plural, one {# new message} other {# new messages}}. Open DouglasOS Messenger"
+    },
+    "toast": {
+      "says": "Douglas says:",
+      "text": "Hi! Got a minute? Ask me anything about my work, I'm right here :)",
+      "close": "Close"
     }
   },
   "static": {
