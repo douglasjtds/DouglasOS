@@ -12,8 +12,8 @@ const store = () => useDisplayStore.getState();
 describe("displayStore", () => {
   beforeEach(() => store().resetDisplay());
 
-  it("defaults to the Morning Hills wallpaper", () => {
-    expect(store().wallpaper).toBe("morning-hills");
+  it("defaults to the Morning Waves wallpaper", () => {
+    expect(store().wallpaper).toBe("morning-waves");
     expect(store().swatch).toBe(DEFAULT_DISPLAY.swatch);
   });
 
@@ -34,6 +34,16 @@ describe("displayStore", () => {
     expect(store().wallpaper).toBe("dusk-hills");
     expect(store().swatch).toBe(DEFAULT_DISPLAY.swatch);
   });
+
+  it("falls back to the default when a retired wallpaper id was persisted", async () => {
+    localStorage.setItem(
+      "douglasos:display",
+      JSON.stringify({ state: { wallpaper: "morning-hills", swatch: "teal" }, version: 1 }),
+    );
+    await useDisplayStore.persist.rehydrate();
+    expect(store().wallpaper).toBe(DEFAULT_DISPLAY.wallpaper);
+    expect(store().swatch).toBe("teal");
+  });
 });
 
 describe("wallpaper helpers", () => {
@@ -52,7 +62,7 @@ describe("wallpaper helpers", () => {
 
   it("falls back to the default static wallpaper when 3D is blocked", () => {
     expect(effectiveWallpaper("3d", null)).toBe("3d");
-    expect(effectiveWallpaper("3d", "reducedMotion")).toBe("morning-hills");
+    expect(effectiveWallpaper("3d", "reducedMotion")).toBe("morning-waves");
     expect(effectiveWallpaper("blueprint", "reducedMotion")).toBe("blueprint");
   });
 });

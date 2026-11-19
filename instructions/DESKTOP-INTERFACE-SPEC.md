@@ -30,7 +30,7 @@
 │ Contact               │ status bar                                   │  │
 │                       └─────────────────────────────────────────────┘  │
 │ [icon]                                                                 │
-│ My Projects                         wallpaper ("Morning Hills")        │
+│ My Projects                         wallpaper ("Morning Waves")        │
 │ [icon] Experience                                                      │
 │ [icon] Skills                                                          │
 │ [icon] How I Work With AI                                [Recycle Bin] │
@@ -88,7 +88,7 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 **Purpose:** surface the launchers on a wallpaper, like a real desktop.
 
 ### Wallpaper
-- Default: static original "Morning Hills". Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
+- Default: static original "Morning Waves" (abstract blue ribbons + DouglasOS mark; replaced the stage-1 "Morning Hills", which read too close to the famous hill photograph). Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
 - The solid `desktop` color paints first; the wallpaper never blocks interaction.
 
 ### Desktop icons
@@ -233,7 +233,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 New `display` window app (kind `"window"`), opened from the Start menu (and the desktop context menu, stage 7).
 
-- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Hills" (default), "Dusk Hills", "Blueprint", "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
+- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
 - **Screen Saver tab:** omitted in stage 1 (not cheap enough to do well; no dead tab). Listed as a future idea in `MVP-SCOPE.md`.
 - The choice persists locally in a new `displayStore` (`lib/store/displayStore.ts`, key `douglasos:display`; catalog + pure helpers in `lib/wallpapers.ts`). Solid colors are five fixed swatches (`--color-swatch-*` tokens).

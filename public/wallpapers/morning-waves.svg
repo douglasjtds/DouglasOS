@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice">
+  <!-- "Morning Waves" — original DouglasOS wallpaper: abstract blue light ribbons sweeping under a glowing DouglasOS mark. No landscape, no sky/clouds. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#062f7e"/>
+      <stop offset="0.42" stop-color="#1450b8"/>
+      <stop offset="0.72" stop-color="#2f7ce0"/>
+      <stop offset="1" stop-color="#7fc0f5"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.36" r="0.42">
+      <stop offset="0" stop-color="#d9f0ff" stop-opacity="0.75"/>
+      <stop offset="0.35" stop-color="#8cc8ff" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8cc8ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="r1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b86e6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#a8dcff" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="r2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1a5cc4"/>
+      <stop offset="1" stop-color="#3f95ea"/>
+    </linearGradient>
+    <linearGradient id="r3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e47a6"/>
+      <stop offset="1" stop-color="#072f78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <g transform="translate(835 250) scale(5.2)" opacity="0.32">
+    <rect x="3" y="3" width="42" height="42" rx="11" fill="#ffffff" fill-opacity="0.35" stroke="#ffffff" stroke-width="0.6"/>
+    <path fill-rule="evenodd" d="M13 11h10.5a13 13 0 0 1 0 26H13zm6 5.5v15h4.2a7.5 7.5 0 0 0 0-15z" fill="#ffffff"/>
+    <circle cx="36.5" cy="36.5" r="5.5" fill="#7ed957"/>
+  </g>
+  <g fill="#ffffff">
+    <circle cx="1500" cy="180" r="5" opacity="0.5"/><circle cx="1640" cy="300" r="3" opacity="0.45"/><circle cx="1320" cy="120" r="3" opacity="0.4"/>
+    <circle cx="1780" cy="150" r="7" opacity="0.25"/><circle cx="760" cy="200" r="4" opacity="0.3"/><circle cx="1180" cy="560" r="3" opacity="0.35"/>
+  </g>
+  <path d="M0 640 C 380 520 760 760 1160 640 S 1700 420 1920 470 V1080 H0 Z" fill="url(#r1)"/>
+  <path d="M0 640 C 380 520 760 760 1160 640 S 1700 420 1920 470" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="5"/>
+  <path d="M0 760 C 420 660 820 880 1240 770 S 1740 590 1920 640 V1080 H0 Z" fill="url(#r2)" opacity="0.92"/>
+  <path d="M0 760 C 420 660 820 880 1240 770 S 1740 590 1920 640" fill="none" stroke="#7ed957" stroke-opacity="0.85" stroke-width="6"/>
+  <path d="M0 790 C 420 690 820 910 1240 800 S 1740 620 1920 670" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <path d="M0 900 C 460 820 860 1000 1300 910 S 1780 790 1920 820 V1080 H0 Z" fill="url(#r3)"/>
+  <path d="M0 900 C 460 820 860 1000 1300 910 S 1780 790 1920 820" fill="none" stroke="#a8dcff" stroke-opacity="0.55" stroke-width="3"/>
+</svg>

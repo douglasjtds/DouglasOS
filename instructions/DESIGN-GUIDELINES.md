@@ -498,7 +498,7 @@ Every animation has a static alternative:
 | `how-i-work-with-ai` | Lightbulb with a small circuit/spark motif — the marquee icon, slightly more vivid |
 | `resume` | Paper document with a folded corner and a red "PDF" band — a **generic** PDF cue, never a vendor logo |
 | `contact` | Envelope + address card |
-| `display` (stage 1) | Monitor showing a tiny hills wallpaper |
+| `display` (stage 1) | Monitor showing a tiny "Morning Waves" wallpaper |
 | Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera, paint, "don't open this" |
 
 ### Brand mark (DouglasOS logo)
@@ -515,8 +515,8 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 
 | Wallpaper | Type | Notes |
 |-----------|------|-------|
-| **"Morning Hills"** (default) | Static, original | Flat-vector illustration: 3–4 layered rolling hills receding to the horizon in Luna-compatible greens, a winding path, a deep-blue-to-pale morning sky with a few flat clouds. |
-| "Dusk Hills" | Static, original | Same composition at sunset (warm sky, cooler hills) — cheap variant of the default. |
+| **"Morning Waves"** (default, `morning-waves`) | Static, original | Abstract, no landscape: a diagonal deep-navy → bright Luna-blue field, three flowing light ribbons sweeping across the lower third (pale-blue, mid-blue, deep-blue) with white crest lines and one Start-green accent line, a soft glow behind a faint DouglasOS mark centered in the upper half, a few sparkles. Replaced the stage-1 "Morning Hills" (green hills + blue sky + clouds), which read too close to the famous hill photograph. |
+| "Dusk Hills" | Static, original | Layered rolling hills at sunset (purple-to-orange sky, slate hills, stars) — the warm-palette alternative. |
 | "Blueprint" | Static, original | Deep blue field with a faint DouglasOS-logo / grid pattern. |
 | Solid color | Static | Fixed swatches (default `desktop` `#004E98` + up to 5 more); no free color picker. |
 | **"DouglasOS 3D (animated)"** | Animated, optional | The existing R3F `AmbientBackground` scene, unchanged in spirit. |
@@ -527,7 +527,8 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 - Stored in `public/wallpapers/` as optimized SVG (≤ 80KB, SVGO) or, if the illustration needs it, AVIF/WebP ≤ 200KB at 2560px wide.
 - Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing and the wallpaper never becomes the LCP element.
 - **Label legibility:** the area under the default icon column (left ~200px, top 70%) must be mid-to-dark (the deep part of the sky / hills) so white labels with `shadow-desktop-label` stay readable.
-- Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (hills must survive a 9:19.5 crop).
+- Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (the default's mark is centered and its ribbons span the full width, so it survives a 9:19.5 crop).
+- Persisted ids of retired wallpapers (e.g. `morning-hills`) are unknown to `sanitizeDisplay` and fall back to the current default.
 
 ### "DouglasOS 3D (animated)" rules (carried over from v1)
 

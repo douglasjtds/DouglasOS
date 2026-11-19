@@ -250,7 +250,7 @@ export function ContactIcon(props: IconProps) {
   );
 }
 
-/** `display` — monitor showing a tiny hills wallpaper. */
+/** `display` — monitor showing a tiny "Morning Waves" wallpaper. */
 export function DisplayIcon(props: IconProps) {
   const id = useSvgIds("bezel", "sky", "stand");
   return (
@@ -274,10 +274,10 @@ export function DisplayIcon(props: IconProps) {
       <rect x="12" y="39.5" width="24" height="3" rx="1.5" fill={C.beige} stroke={C.beigeDark} strokeWidth="1" />
       <rect x="4" y="6" width="40" height="29" rx="3" fill={`url(#${id.bezel})`} stroke={C.beigeDark} strokeWidth="1" />
       <rect x="8" y="9.5" width="32" height="21" fill={`url(#${id.sky})`} stroke={C.outline} strokeWidth="0.8" />
-      <path d="M8.4 25c5-4 10-5 15-2.5s10 1.5 16.2-1.5v9.6H8.4z" fill={C.greenLight} />
-      <path d="M8.4 28c6-2.5 13-2.5 19 0s9 1.5 12.2.5v2H8.4z" fill={C.green} />
-      <circle cx="33" cy="14" r="2" fill="#fff6c2" />
-      <circle cx="39" cy="32.5" r="0.9" fill={C.green} />
+      <path d="M8.4 22c5-3 10 1.5 16-1s10-3.5 15.2-2v11.4H8.4z" fill="#8cc8ff" />
+      <path d="M8.4 24.6c5-3 10 1.5 16-1s10-3.5 15.2-2" fill="none" stroke={C.greenLight} strokeWidth="1" />
+      <path d="M8.4 27c5.5-2.5 11 1 17-1s9-2.5 14.2-1.5v5.6H8.4z" fill="#123c9c" />
+      <rect x="21" y="12" width="6" height="6" rx="1.6" fill="#ffffff" opacity="0.6" />
     </Svg>
   );
 }

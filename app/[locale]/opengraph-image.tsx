@@ -7,7 +7,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
- * OG card in the DouglasOS identity: a blue desktop with rolling hills, one
+ * OG card in the DouglasOS identity: a blue desktop with the "Morning Waves"
+ * ribbons (the default wallpaper), one
  * Luna window introducing Douglas, and the taskbar with the green Start
  * button. All original shapes (no OS artwork); colors from lib/theme.ts.
  */
@@ -29,21 +30,22 @@ export default async function OpengraphImage({
           display: "flex",
           flexDirection: "column",
           backgroundColor: C.desktop,
-          backgroundImage: `linear-gradient(to bottom, #2a6fd6, #9cc8f5)`,
+          backgroundImage: `linear-gradient(135deg, #062f7e, #1450b8 42%, #2f7ce0 72%, #7fc0f5)`,
           fontFamily: "sans-serif",
           position: "relative",
         }}
       >
-        {/* Hills */}
+        {/* Wallpaper ribbons (mirrors public/wallpapers/morning-waves.svg) */}
         <svg
           width="1200"
           height="630"
           viewBox="0 0 1200 630"
           style={{ position: "absolute", left: 0, top: 0 }}
         >
-          <path d="M0 430 C 250 360 450 380 700 430 S 1050 470 1200 400 V 630 H 0 Z" fill="#7cc46a" />
-          <path d="M0 500 C 300 440 600 470 900 520 S 1150 540 1200 520 V 630 H 0 Z" fill="#3f9a3c" />
-          <path d="M0 560 C 350 520 700 540 1200 575 V 630 H 0 Z" fill="#2e7d32" />
+          <path d="M0 373 C 238 303 475 443 725 373 S 1063 245 1200 274 V 630 H 0 Z" fill="#a8dcff" fillOpacity="0.55" />
+          <path d="M0 443 C 263 385 513 513 775 449 S 1088 344 1200 373 V 630 H 0 Z" fill="#2f7ce0" />
+          <path d="M0 443 C 263 385 513 513 775 449 S 1088 344 1200 373" fill="none" stroke="#7ed957" strokeWidth="5" />
+          <path d="M0 525 C 288 478 538 583 813 531 S 1113 461 1200 478 V 630 H 0 Z" fill="#0e47a6" />
         </svg>
 
         {/* Window */}
