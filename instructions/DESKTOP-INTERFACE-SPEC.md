@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts) and stage 4 (DouglasOS Explorer: projects as case studies) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies) and stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -186,7 +186,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - **Contact** — opens Contact.
 - separator
 - **Display Properties** — opens the `display` app.
-- **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips from stage 5).
+- **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
 - **Run…** — *(stage 7)* opens the Run dialog. **Items appear only when their stage ships — no dead entries.**
 
 **Footer:**
@@ -237,6 +237,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - **Message boxes** (shutdown, errors such as "DouglasOS can't find '…'", confirmations): window chrome with close only, 32px semantic icon (own SVG: error / warning / info / question), message text, right-aligned buttons (`OK`, `Cancel`, …). Modal: focus trapped, initial focus on the default button, `Esc` = Cancel/close, `role="alertdialog"` for errors and confirmations.
 - **Tray balloons**: yellow rounded bubble with a tail pointing at the tray icon, bold title + 16px icon, text, close ×. `aria-live="polite"`, never steals focus, auto-dismiss ~8s (paused on hover/focus). **Max one balloon at a time**; queued otherwise.
   - Stage 1 ships one: on the first logon of a session, "Welcome to DouglasOS — Click any icon to open it. Your CV is one click away on the taskbar." (EN/PT), once per session (`douglasos-welcomed` sessionStorage flag).
+  - **Single balloon slot** *(stage 5)*: the welcome balloon, the assistant bubble and (stage 5b) the Messenger toast share one first-come-first-served slot, `lib/store/balloonStore.ts` (`request(owner)` / `release(owner)`, head of the line = on screen). Each shows only while it holds the slot; see [Layering](#layering-z-index-policy).
 - **Protected-file dialog** (`F2` on a desktop icon): warning message box, original humorous copy (EN: "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart." / PT equivalent), one button ("Fair enough" / "Justo"). Never renames.
 - **Tooltips**: yellow rectangles, ~500ms delay, on every icon-only control (Quick Launch, tray, window controls).
 - **Menus** (window menus, context menus, submenus): white, blue highlight, keyboard-complete (radix).
@@ -311,7 +312,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4), mini Douglas assistant (5, a desktop companion, not a window), DouglasOS Messenger (5b), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -373,6 +374,47 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ---
 
+## 13. mini Douglas assistant *(stage 5)*
+
+**Purpose:** a scripted desktop companion — tips, CV/Contact/project shortcuts and an offline "ask me something" search — with personality (he dances when clicked). No LLM, no network, no backend. Never blocks the golden rule: every bubble offers CV/Contact in one click, and he never covers what a recruiter needs.
+
+### Pieces
+| Piece | Where | Notes |
+|-------|-------|-------|
+| State + actions | `lib/store/assistantStore.ts` | `visible`, `dismissed`, `state` (`idle` \| `talking` \| `dancing`), `queue` of messages, `fired` triggers, `tipIndex`. Pure Zustand, no UI |
+| Script | `lib/assistant/script.ts` | Every line as data (`AssistantMessage { id, titleKey, textKey, values?, actions[], search?, auto? }`), tip rotation, answers per intent, `ASSISTANT_TIMING` |
+| Intent matcher | `lib/assistant/intents.ts` | Pure, UI-agnostic; reused by Messenger (5b) and Run/palette (7) |
+| Shell actions | `lib/assistant/actions.ts` | `ShellAction` (`openProject` / `openApp` / `downloadCv`), `runShellAction()` through `launch()`, `INTENT_ACTIONS`, `actionsForIntent()` |
+| Placement | `lib/assistant/layout.ts` | Character/bubble rects, `assistantClearance()` (golden-rule check) |
+| Asset contract | `lib/assistant/media.ts` + `instructions/full-refactor/ASSISTANT-ASSETS.md` | `idle/talk/dance` clips (VP9-alpha WebM + HEVC-alpha .mov for Safari/iOS) + `poster.png`; `ASSISTANT_MEDIA.ready` switches from the placeholder |
+| UI | `components/os/assistant/` | `LazyAssistant` (dynamic import, mounted after the desktop is idle), `Assistant` (layer, triggers, Esc, slot), `AssistantBubble`, `AssistantCharacter` (one interface: `PlaceholderCharacter` SVG now, `VideoCharacter` once the clips exist) |
+| Triggers | `hooks/useAssistantTriggers.ts` | See below |
+
+### Public API for later stages
+- `say(message)` — queue a line (stage 6 Recycle Bin rescue jokes). Dropped after "Not now" and when a line with the same `id` is already queued. Lines said during a dance wait until it ends.
+- `dance(options?)` / `stopDance(options?)` — stage 8 calls `dance()` (no duration) when music starts and `stopDance()` when it stops; `stopDance` says the "Phew!" line unless `{ quiet: true }`. A click uses `dance({ durationMs: 3500 })`.
+- Also: `show()`, `replace(message)`, `closeMessage()`, `nextTip()`, `dismiss()`, `trigger(id, message?)` (once per session), `markFired(id)`.
+- Intents: `matchIntent(text)` → `IntentMatch { intent, score, projectSlug? }` or `IntentFallback { intent: "fallback", score: 0, suggestions }`; `rankIntents`, `normalizeText`, `tokenize`, `findProjectSlug`, `isFallback`, `INTENT_IDS`, `FALLBACK_SUGGESTIONS`. Intents: `cv`, `contact` (incl. hire/contratar), `projects` (+ slug from slug/brand/alias), `skills`/stack, `availability` (remote/location), `ai-workflow`, `experience`, `about`. EN + PT keywords, accent/case/punctuation-insensitive, stems by prefix (`contrat*`), phrases ("entrar em contato"); ties go to CV, then Contact.
+
+### Placement & look
+- **Desktop:** the character (96 × 112) stands on the taskbar toward the tray, just left of the icon grid's last column (the bottom-right cell stays free for the stage-6 Recycle Bin). The bubble (300px wide, up to 320px tall, scrolls beyond) sits above him, right-aligned to the screen edge, tail pointing at him. XP balloon look: `info` background, 1px `info-border`, `radius-balloon`, `shadow-balloon`, bold title + 16px info icon + close ×, shortcuts as blue-bullet link options, then "Ask me something:" field + **Search** push button.
+- **Phones (< 768px):** smaller character (60 × 70) above the taskbar at the right, hidden while a (full-screen) window is up; the bubble is a **bottom sheet** (full width, above the taskbar, ≤ 60dvh, 44px shortcuts in two columns, 16px input so iOS doesn't zoom).
+- Character art: until Douglas records the clips, an **original** SVG figure (round head, dark hair, blue DouglasOS hoodie with the tile on the chest, sneakers) — not modeled on any classic OS assistant. Illustration-local colors live in the component, like `ICON_COLORS`.
+
+### Behavior
+- **Click the character:** he dances ~3.5s (bubble hidden), then says "Phew!…" with the standard shortcuts. Under reduced motion: no dance, the click opens the "How can I help?" bubble. Clicking while he dances does nothing.
+- **Shortcuts** (standard set): Show me a project → `openWindow("projects", { route: FEATURED_PROJECT_SLUG })`; I want to get in touch → Contact; Download the CV → `lib/download.ts` via `launch("resume")`; Show me another tip → `nextTip()`; Not now, thanks → `dismiss()` (gone for the session, focus moves to Start if it was in the bubble). Window/download shortcuts close the bubble.
+- **Search:** the text goes through `matchIntent`; the bubble is replaced by the intent's answer + its shortcuts (never auto-opens anything); unknown → an honest fallback with Projects / CV / Contact.
+- **Triggers** (each at most once per session, persisted in `douglasos-assistant`; none fires while a session screen is up; none moves focus):
+  1. after logon — greeting, 2.5s desktop / 5s phone (queued behind the welcome balloon, so in practice after it closes); on a reload in the same session he just reappears quietly;
+  2. first opening of My Projects — address-bar tip, 1.2s / 2.5s later (skipped if the Explorer was opened from his own shortcut);
+  3. 30s desktop / 45s phone without pointer or keyboard input — "Still around?" with Download CV + Contact.
+- **Auto lines** close themselves after 15s unless hovered or focused inside; lines the visitor asked for stay until closed.
+- **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8).
+- **Performance:** the assistant chunk loads only after the desktop is up and the browser is idle (and not at all once dismissed); the videos only once he appears.
+
+---
+
 ## Layering (z-index policy)
 
 | Layer | z-index | Notes |
@@ -380,20 +422,25 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Wallpaper (static or 3D) | 0 | |
 | Desktop icons, lasso | 10 | |
 | Windows | 100–999 | focus increments; recycled on overflow (existing logic) |
-| Assistant character + bubble *(stage 5)* | 1050 | above windows, below the taskbar; never covers the focused window's controls |
+| Assistant character + bubble *(stage 5)* | 1050 | above windows, below the taskbar; never covers the focused window's title bar (see below) |
 | Taskbar | 1100 | |
 | Start menu, context menus, dropdowns | 1200 | |
-| Tray balloons, messenger toast *(5b)* | 1300 | one at a time, shared queue with the assistant bubble |
+| Tray balloons, messenger toast *(5b)* | 1300 | one at a time, shared slot with the assistant bubble |
 | Modal dialogs (shutdown, Run, errors) | 1400 | |
 | Boot / logon / shutdown screens | 2000 | |
 
-Stage 5 refines the assistant/balloon queue; changes are recorded here.
+**Stage 5 rules (balloon slot + assistant):**
+- The bubble lives in the assistant layer (1050), not at 1300: it sits above the character, away from the taskbar, so it never needs to cover menus. Menus (1200) and dialogs (1400) always win over it.
+- **One balloon on screen at a time.** Welcome balloon, assistant bubble and Messenger toast *(5b)* take turns through `balloonStore` (first come, first served). While another owner holds the slot, the assistant's line waits in his queue **and the character itself hides**, so he never stands under the welcome balloon.
+- **Focused window first.** Desktop: if the focused window's title bar (controls) would intersect the character, he steps aside entirely; if it would intersect only the bubble's reserved area, the line waits until the window moves (`assistantClearance` in `lib/assistant/layout.ts`, unit-tested). Phones: the character hides while any window is up (they're full-screen); the bottom sheet may show above the window's lower part, never over its title bar.
+- CV, Contact and Quick Launch are on the taskbar (1100), above the assistant layer by construction; the character stands left of the grid's last column, clear of the default icon columns and of the bottom-right cell reserved for the Recycle Bin *(stage 6)*.
+- Esc closes the topmost transient first: an open menu/dialog, then the assistant bubble, then (shell shortcut) the focused window.
 
 ---
 
 ## CTA Hierarchy
 
-1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, later assistant/messenger/Run.
+1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, assistant bubble (stage 5), later messenger/Run.
 2. **Contact** — desktop (3rd icon), Quick Launch, Start (left pinned + right column).
 3. **How I Work With AI** and **Experience** — pinned in Start / desktop.
 4. Everything else (About, Projects, Skills, fun apps).
@@ -411,9 +458,10 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos:display` | localStorage | `displayStore` *(stage 1)* | Wallpaper + solid-color swatch |
 | `douglasos-booted` | sessionStorage | `shellStore` *(stage 1)* | Boot + logon seen: skip them for the rest of the session |
 | `douglasos-welcomed` | sessionStorage | `WelcomeBalloon` *(stage 1)* | Welcome balloon already shown this session |
+| `douglasos-assistant` | sessionStorage | `assistantStore` *(stage 5)* | `{ dismissed, fired }`: "Not now" picked, and which automatic appearances already played |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Later stages add their own keys here (assistant dismissal, messenger history, volume).
+Later stages add their own keys here (messenger history, volume).
 
 ---
 
@@ -423,7 +471,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 |-------|----------|
 | No JavaScript | The server-rendered text version (`StaticContent`) becomes the visible page via `<noscript>`; the desktop metaphor is unavailable |
 | Slow connection | Boot never exceeds ~3s; wallpaper paints over the solid color when ready; 3D never blocks |
-| Reduced motion | No 3D, no marquee/fades/minimize tweens; static alternatives for every animation |
+| Reduced motion | No 3D, no marquee/fades/minimize tweens; static alternatives for every animation (assistant: still frame/poster, no dance — a click offers help instead) |
 | Screen reader | Logical order: desktop icons → windows → taskbar; metaphor never hides content |
 | Window off-screen after resize | `reconcilePersisted` snaps it back into the work area |
 | All windows open | Taskbar buttons shrink to icon-only; performance maintained |
@@ -440,7 +488,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 | 2 | Mobile touchable XP (§11), replaces `MobileFallback` — **done** |
 | 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs — **done** |
 | 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route — **done** |
-| 5 | "mini Douglas" scripted assistant (layer + queue) |
+| 5 | "mini Douglas" scripted assistant (layer + single balloon slot, §13) — **done** |
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast) |
 | 6 | Recycle Bin rescue + lasso/multi-select |
 | 7 | Run…, command palette, desktop context menu |

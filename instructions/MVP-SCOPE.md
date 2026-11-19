@@ -350,7 +350,8 @@ A stage is done only when **all** of these hold:
 | 2 | Done — touchable XP below 768px replaces the linear `MobileFallback` (same shell, stores and content; full-screen windows, row-first icon grid, 85% Start panel, 1s boot); server-rendered crawlable text version; Lighthouse mobile 98–99, LCP ≤ 2.3s. Default wallpaper reworked to "Morning Waves" (abstract, not Bliss-like) |
 | 3 | Done — external shortcuts (`linkedin`, `github`, `whatsapp`, `email`) as `kind: "link"` launchers: own column on the desktop, own row on mobile (CV/Contact keep the first row), listed in All Programs; new tab with `noopener noreferrer`, e-mail via `mailto:` |
 | 4 | Done — `projects` is **DouglasOS Explorer**: typed case-study source (`lib/content/projects.ts` + EN/PT texts, pending sections shown as "coming soon", no invented content), address bar `C:\DouglasOS\Projects\<slug>` resolving slugs/names/aliases, themed not-found dialog, Back/Forward/Home, File + Favorites menus, route + history in `windowStore` (`openWindow("projects", { route })`), Start → My Projects ▸ submenu; compact one-row toolbar on mobile. No per-project desktop icons |
-| 5–10, 5b | Planned |
+| 5 | Done — scripted **mini Douglas** assistant: original SVG placeholder character behind the recorded-clip contract (`ASSISTANT-ASSETS.md`, clips pending from Douglas), XP balloon with shortcuts (project, Contact, CV, another tip, not now) and an offline EN/PT intent search (`lib/assistant/intents.ts`, reusable by 5b/7), dance on click, three once-per-session triggers (logon, first Explorer opening, 30s idle), single balloon slot shared with the welcome balloon, steps aside for the focused window's title bar, dismiss for the session; bottom sheet on phones; lazy-loaded |
+| 5b, 6–10 | Planned |
 
 ---
 

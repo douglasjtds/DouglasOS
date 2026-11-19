@@ -79,6 +79,12 @@ export const PROJECTS: ProjectCaseStudy[] = [
   },
 ];
 
+/**
+ * The project surfaced by "Show me a project" shortcuts (assistant, later the
+ * messenger): the first case study in the list above.
+ */
+export const FEATURED_PROJECT_SLUG = PROJECTS[0].slug;
+
 /** Route of the Explorer home page (the project list). Never a slug. */
 export const PROJECTS_HOME_ROUTE = "home";
 

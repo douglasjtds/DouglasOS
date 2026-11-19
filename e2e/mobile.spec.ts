@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { desktopIcon, gotoDesktop, startButton, startItem, taskButton, windowById, windows } from "./helpers";
+import { assistantBubble, assistantCharacter, desktopIcon, gotoDesktop, startButton, startItem, taskButton, windowById, windows } from "./helpers";
 
 /**
  * Touch shell (DESKTOP-INTERFACE-SPEC §11). Runs only in the phone projects of
@@ -169,5 +169,35 @@ test.describe("touch shell", () => {
       () => document.documentElement.scrollWidth - window.innerWidth,
     );
     expect(overflow).toBeLessThanOrEqual(0);
+  });
+  test("mini Douglas: small character above the taskbar, bubble as a bottom sheet, out of the way of windows", async ({
+    page,
+  }) => {
+    await gotoDesktop(page, "en", { assistant: true });
+    const sheet = assistantBubble(page);
+    // Phones wait longer before the greeting (5s) than the desktop.
+    await expect(sheet).toBeVisible({ timeout: 12_000 });
+    const viewport = page.viewportSize()!;
+    const sheetBox = (await sheet.boundingBox())!;
+    expect(sheetBox.x).toBe(0);
+    expect(Math.round(sheetBox.width)).toBe(viewport.width);
+    expect(Math.round(sheetBox.y + sheetBox.height)).toBe(Math.round(await taskbarTop(page)));
+
+    // Shortcuts are real touch targets.
+    const contact = sheet.locator('[data-assistant-action="open-contact"]');
+    expect((await contact.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+
+    await sheet.getByRole("button", { name: "Close" }).tap();
+    await expect(sheet).toHaveCount(0);
+    const character = assistantCharacter(page);
+    await expect(character).toBeVisible();
+    expect((await character.boundingBox())!.y + (await character.boundingBox())!.height).toBeLessThan(
+      await taskbarTop(page),
+    );
+
+    // A full-screen window owns the screen: the character steps aside.
+    await desktopIcon(page, "about").tap();
+    await expect(windowById(page, "about")).toBeVisible();
+    await expect(character).toHaveCount(0);
   });
 });

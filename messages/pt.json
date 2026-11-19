@@ -425,6 +425,80 @@
     "close": "Fechar",
     "bodyTouch": "Toque em qualquer ícone para abrir. O CV do Douglas está a um toque na barra de tarefas."
   },
+  "assistant": {
+    "name": "mini Douglas",
+    "characterLabel": "mini Douglas, assistente da área de trabalho",
+    "close": "Fechar",
+    "shortcuts": "Atalhos",
+    "search": {
+      "label": "Me pergunte algo:",
+      "placeholder": "ex.: remoto? stack? CV",
+      "submit": "Pesquisar"
+    },
+    "actions": {
+      "openProject": "Me mostra um projeto",
+      "openProjectNamed": "Abrir {project}",
+      "downloadCv": "Baixar o currículo",
+      "nextTip": "Mostrar outra dica",
+      "dismiss": "Agora não, valeu",
+      "apps": {
+        "contact": "Quero entrar em contato",
+        "projects": "Ver todos os projetos",
+        "skills": "Abrir Habilidades",
+        "about": "Abrir Sobre o Douglas",
+        "experience": "Abrir Experiência",
+        "aiWorkflow": "Abrir Como Trabalho com IA"
+      }
+    },
+    "messages": {
+      "greeting": {
+        "title": "Oi! Eu sou o mini Douglas",
+        "text": "O Douglas em versão de bolso, aqui pra te mostrar o lugar. Com pressa? Meu currículo e meu contato estão a um clique deste balão."
+      },
+      "help": {
+        "title": "Como posso ajudar?",
+        "text": "Escolha um atalho ou me pergunte algo. Conheço cada canto desta área de trabalho."
+      },
+      "afterDance": {
+        "title": "Ufa!",
+        "text": "Não dançava assim desde o dia em que um deploy passou de primeira. De volta ao trabalho: quer ver um projeto?"
+      },
+      "projectsTip": {
+        "title": "Dica rápida",
+        "text": "Esta janela é um navegador em miniatura. Digite o nome de um projeto, tipo “{project}”, na barra de endereço e aperte Enter."
+      },
+      "idle": {
+        "title": "Ainda por aí?",
+        "text": "Sem pressa! Se você só tem um minuto, estes dois são os que mais importam:"
+      },
+      "tip": {
+        "title": "Você sabia?"
+      },
+      "answer": {
+        "title": "O mini Douglas responde"
+      }
+    },
+    "tips": {
+      "singleClick": "Aqui todo ícone abre com um clique só (ou um toque). Nada de ritual de clique duplo.",
+      "quickLaunch": "Viu os dois botõezinhos ao lado do Iniciar? Um baixa meu currículo, o outro abre o Contato.",
+      "addressBar": "Meus Projetos funciona como um navegador: digite o nome de um projeto na barra de endereço e aperte Enter.",
+      "aiWorkflow": "Como Trabalho com IA é a parte de que mais me orgulho: as ferramentas e os hábitos por trás de como eu construo software hoje.",
+      "startMenu": "Se perdeu? O menu Iniciar tem tudo num lugar só, inclusive meu currículo.",
+      "language": "Prefer English? O botão EN/PT na barra de tarefas troca o idioma da área de trabalho inteira."
+    },
+    "answers": {
+      "cv": "Taí: meu currículo em PDF. Sem cadastro, sem pegadinha.",
+      "contact": "Bora conversar! LinkedIn, e-mail e WhatsApp estão todos no Contato. Escolha o seu favorito.",
+      "projects": "Meus projetos estão escritos como estudos de caso: o problema, a minha abordagem e o resultado.",
+      "project": "Boa escolha! {project} tem um estudo de caso só dele. Quer abrir?",
+      "skills": "Oito anos entre .NET, Node.js e React, com AWS na parte de infra. A lista completa está em Habilidades.",
+      "availability": "Moro em Lagoa Santa, MG, e trabalho remoto. Estou aberto a vagas remotas, inclusive em times internacionais.",
+      "aiWorkflow": "Meu assunto favorito! Trabalho com IA em primeiro lugar, com Claude Code e GitHub Copilot no dia a dia. Os detalhes estão em Como Trabalho com IA.",
+      "experience": "Oito anos até aqui, hoje como desenvolvedor fullstack na Serasa Experian. A trajetória completa está em Experiência.",
+      "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude. Mais em Sobre o Douglas.",
+      "fallback": "Essa ainda não está no meu roteiro. Tente “CV”, “projetos”, “stack” ou “remoto”, ou pergunte pro Douglas de verdade pelo Contato."
+    }
+  },
   "static": {
     "label": "DouglasOS — versão em texto do portfólio"
   }

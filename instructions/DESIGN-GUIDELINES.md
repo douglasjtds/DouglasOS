@@ -483,6 +483,7 @@ Every animation has a static alternative:
 - Colorful, soft vertical gradients, light from the top-left, a slightly darker 1px outline, gentle rounded forms and a subtle drop shadow (in the SVG, not CSS).
 - Three-quarter or front view; friendly, glossy, but simple enough to read at 16px.
 - Palette drawn from the color tokens (blues, greens, ambers) plus a small set of icon-local accent colors documented in the icon module.
+- The mini Douglas placeholder character (stage 5) follows the same rule: `ICON_COLORS` plus two illustration-local colors (skin, hair) declared in `PlaceholderCharacter.tsx`. Its box (96 × 112 desktop, 60 × 70 phones) and the bubble size (300 × ≤ 320) live in `lib/assistant/layout.ts`; the bubble uses the Balloon recipe below.
 - Each icon is a React SVG component in **`components/icons/`** (`AppIcons.tsx` for launchers, `SystemIcons.tsx` for the brand mark, avatar, Start places and dialog glyphs) drawn on a **48px master**; 32/24/16px scale from it. *Stage 1 deviation:* there is no separately drawn 16px variant yet — the masters were kept simple enough to read at 16px (checked in the taskbar/Start menu screenshots); hand-tuned 16px variants are a polish item.
 - External shortcuts (stage 3) get a **shortcut-arrow overlay** of our own design in the bottom-left corner (white tile, curved blue arrow; `ShortcutArrow` in `components/icons/LinkIcons.tsx`).
 - `lucide-react` is allowed **only inside window content** (e.g. list bullets, inline actions), never for desktop, Start menu, taskbar or title bar icons.

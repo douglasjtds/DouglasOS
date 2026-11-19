@@ -7,12 +7,24 @@ import { expect, type Page } from "@playwright/test";
  * `lib/store/shellStore.ts`); the welcome balloon also shows once per session.
  * Most specs only care about the shell, so we pre-set both flags and emulate
  * reduced motion (instant transitions). `boot.spec.ts` drives the real flow.
+ *
+ * The mini Douglas assistant is dismissed too (as if "Not now" was picked
+ * this session) so his timed appearances can't overlap other specs; pass
+ * `{ assistant: true }` to keep him (`assistant.spec.ts`).
  */
-export async function gotoDesktop(page: Page, locale: "en" | "pt" = "en") {
-  await page.addInitScript(() => {
+export async function gotoDesktop(
+  page: Page,
+  locale: "en" | "pt" = "en",
+  { assistant = false }: { assistant?: boolean } = {},
+) {
+  await page.addInitScript((keepAssistant) => {
     sessionStorage.setItem("douglasos-booted", "1");
     sessionStorage.setItem("douglasos-welcomed", "1");
-  });
+    // Only on the first load of the session, so a test can dismiss him and reload.
+    if (!keepAssistant && sessionStorage.getItem("douglasos-assistant") === null) {
+      sessionStorage.setItem("douglasos-assistant", JSON.stringify({ dismissed: true, fired: [] }));
+    }
+  }, assistant);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`/${locale}`);
   await expect(startButton(page)).toBeVisible();
@@ -45,4 +57,13 @@ export function windows(page: Page) {
 
 export function windowById(page: Page, id: string) {
   return page.locator(`[data-window="${id}"]`);
+}
+
+/** The mini Douglas character button and his bubble. */
+export function assistantCharacter(page: Page) {
+  return page.locator("[data-assistant-character]");
+}
+
+export function assistantBubble(page: Page) {
+  return page.locator("[data-assistant-bubble]");
 }

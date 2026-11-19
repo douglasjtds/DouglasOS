@@ -425,6 +425,80 @@
     "close": "Close",
     "bodyTouch": "Tap any icon to open it. Douglas's CV is one tap away on the taskbar."
   },
+  "assistant": {
+    "name": "mini Douglas",
+    "characterLabel": "mini Douglas, desktop assistant",
+    "close": "Close",
+    "shortcuts": "Shortcuts",
+    "search": {
+      "label": "Ask me something:",
+      "placeholder": "e.g. remote? stack? CV",
+      "submit": "Search"
+    },
+    "actions": {
+      "openProject": "Show me a project",
+      "openProjectNamed": "Open {project}",
+      "downloadCv": "Download the CV",
+      "nextTip": "Show me another tip",
+      "dismiss": "Not now, thanks",
+      "apps": {
+        "contact": "I want to get in touch",
+        "projects": "See all projects",
+        "skills": "Open Skills",
+        "about": "Open About Douglas",
+        "experience": "Open Experience",
+        "aiWorkflow": "Open How I Work With AI"
+      }
+    },
+    "messages": {
+      "greeting": {
+        "title": "Hi! I'm mini Douglas",
+        "text": "The pocket-sized Douglas, here to show you around. In a hurry? My CV and contact are one click away from this balloon."
+      },
+      "help": {
+        "title": "How can I help?",
+        "text": "Pick a shortcut or ask me something. I know every corner of this desktop."
+      },
+      "afterDance": {
+        "title": "Phew!",
+        "text": "Haven't danced like that since a deploy went green on the first try. Back to work: want to see a project?"
+      },
+      "projectsTip": {
+        "title": "Quick tip",
+        "text": "This window is a tiny browser. Type a project name like “{project}” in the address bar and press Enter."
+      },
+      "idle": {
+        "title": "Still around?",
+        "text": "No rush! If you only have a minute, these two are the ones that matter most:"
+      },
+      "tip": {
+        "title": "Did you know?"
+      },
+      "answer": {
+        "title": "mini Douglas says"
+      }
+    },
+    "tips": {
+      "singleClick": "Every icon here opens with a single click (or tap). No double-click ritual required.",
+      "quickLaunch": "See the two small buttons next to Start? One downloads my CV, the other opens Contact.",
+      "addressBar": "My Projects works like a small browser: type a project name in the address bar and press Enter.",
+      "aiWorkflow": "How I Work With AI is the part I'm proudest of: the tools and habits behind how I build software today.",
+      "startMenu": "Lost? The Start menu has everything in one place, my CV included.",
+      "language": "Fala português? The EN/PT button on the taskbar switches the whole desktop."
+    },
+    "answers": {
+      "cv": "Here you go: my CV as a PDF. No sign-up, no tricks.",
+      "contact": "Let's talk! LinkedIn, e-mail and WhatsApp are all in Contact. Pick your favorite.",
+      "projects": "My projects are written up as case studies: the problem, my approach and the result.",
+      "project": "Good pick! {project} has its own case study. Want to open it?",
+      "skills": "Eight years across .NET, Node.js and React, with AWS on the infra side. The full list is in Skills.",
+      "availability": "I live in Lagoa Santa, Brazil, and work remotely. I'm open to remote roles, international teams included.",
+      "aiWorkflow": "My favorite topic! I work AI-first, with Claude Code and GitHub Copilot in my daily flow. The details are in How I Work With AI.",
+      "experience": "Eight years so far, today as a fullstack developer at Serasa Experian. The whole path is in Experience.",
+      "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention. More in About Douglas.",
+      "fallback": "That one isn't in my script yet. Try “CV”, “projects”, “stack” or “remote”, or ask the real me through Contact."
+    }
+  },
   "static": {
     "label": "DouglasOS — text version of the portfolio"
   }

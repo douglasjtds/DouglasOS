@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useWindowStore } from "@/lib/store/windowStore";
+import { selectActiveBalloon, useBalloonStore } from "@/lib/store/balloonStore";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { DURATION } from "@/lib/motion";
@@ -26,7 +27,8 @@ function alreadyWelcomed(): boolean {
 /**
  * First-logon tray balloon (DESKTOP-INTERFACE-SPEC §7): once per session,
  * points at the taskbar, never steals focus, auto-dismisses after ~8s unless
- * hovered/focused. Polite live region.
+ * hovered/focused. Polite live region. Holds the shared balloon slot while
+ * it's up, so the mini Douglas bubble waits its turn.
  */
 export function WelcomeBalloon() {
   const t = useTranslations("balloon");
@@ -44,7 +46,16 @@ export function WelcomeBalloon() {
   const windowCount = useWindowStore((s) => s.order.length);
   const [initialWindowCount] = useState(windowCount);
   if (!dismissed && (startOpen || windowCount > initialWindowCount)) setDismissed(true);
-  const visible = eligible && !dismissed && phase === "desktop";
+  const wanted = eligible && !dismissed && phase === "desktop";
+  const holdsSlot = useBalloonStore((s) => selectActiveBalloon(s) === "welcome");
+  const visible = wanted && holdsSlot;
+
+  useEffect(() => {
+    const { request, release } = useBalloonStore.getState();
+    if (wanted) request("welcome");
+    else release("welcome");
+  }, [wanted]);
+  useEffect(() => () => useBalloonStore.getState().release("welcome"), []);
 
   useEffect(() => {
     if (!visible) return;
