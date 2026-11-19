@@ -99,20 +99,35 @@ export function nearestFreeCell(
   return target;
 }
 
+/** Icon ids, either flat or split into layout groups (`DESKTOP_ICON_GROUPS`). */
+export type IconGroups<Id extends string> = readonly Id[] | readonly (readonly Id[])[];
+
+function toGroups<Id extends string>(ids: IconGroups<Id>): (readonly Id[])[] {
+  if (ids.length === 0) return [];
+  return Array.isArray(ids[0]) ? [...(ids as readonly (readonly Id[])[])] : [ids as readonly Id[]];
+}
+
 /**
  * The classic arrangement: icons fill the first column top-to-bottom from the
  * top-left, wrapping to the next column when the work area runs out of rows.
- * `ids` order is the CTA order from the registry.
+ * `ids` order is the CTA order from the registry. When `ids` is split into
+ * groups, each group starts a fresh column (the external shortcuts get their
+ * own column next to the apps instead of trailing under them).
  */
 export function defaultCells<Id extends string>(
-  ids: readonly Id[],
+  ids: IconGroups<Id>,
   vp: Viewport,
 ): Record<Id, Cell> {
   const { rows } = gridDims(vp);
   const cells = {} as Record<Id, Cell>;
-  ids.forEach((id, i) => {
-    cells[id] = { col: Math.floor(i / rows), row: i % rows };
-  });
+  let startCol = 0;
+  for (const group of toGroups(ids)) {
+    if (group.length === 0) continue;
+    group.forEach((id, i) => {
+      cells[id] = { col: startCol + Math.floor(i / rows), row: i % rows };
+    });
+    startCol += Math.ceil(group.length / rows);
+  }
   return cells;
 }
 
@@ -204,31 +219,38 @@ export interface MobileIconLayout<Id extends string> {
  * Row-first, horizontally centered icon layout for a container `width` px
  * wide. One icon per cell, so icons can never overlap; when the screen is too
  * short for every row, the container scrolls (see `height`) instead of icons
- * stacking. `ids` order is the CTA order from the registry.
+ * stacking. `ids` order is the CTA order from the registry; when split into
+ * groups, each group starts a fresh row (the external shortcuts sit on their
+ * own row(s) below the apps, so About / CV / Contact keep the first row).
  */
 export function mobileIconLayout<Id extends string>(
-  ids: readonly Id[],
+  ids: IconGroups<Id>,
   width: number,
 ): MobileIconLayout<Id> {
   const cols = Math.max(
     1,
     Math.floor((width - 2 * MOBILE_MIN_MARGIN) / MOBILE_COL_PITCH),
   );
-  const rows = Math.max(1, Math.ceil(ids.length / cols));
   const offsetX =
     Math.max(0, Math.floor((width - cols * MOBILE_COL_PITCH) / 2)) +
     (MOBILE_COL_PITCH - MOBILE_ICON_W) / 2;
 
   const cells = {} as Record<Id, Cell>;
   const positions = {} as Record<Id, { x: number; y: number }>;
-  ids.forEach((id, i) => {
-    const cell = { col: i % cols, row: Math.floor(i / cols) };
-    cells[id] = cell;
-    positions[id] = {
-      x: offsetX + cell.col * MOBILE_COL_PITCH,
-      y: MOBILE_GRID_TOP + cell.row * MOBILE_ROW_PITCH,
-    };
-  });
+  let startRow = 0;
+  for (const group of toGroups(ids)) {
+    if (group.length === 0) continue;
+    group.forEach((id, i) => {
+      const cell = { col: i % cols, row: startRow + Math.floor(i / cols) };
+      cells[id] = cell;
+      positions[id] = {
+        x: offsetX + cell.col * MOBILE_COL_PITCH,
+        y: MOBILE_GRID_TOP + cell.row * MOBILE_ROW_PITCH,
+      };
+    });
+    startRow += Math.ceil(group.length / cols);
+  }
+  const rows = Math.max(1, startRow);
 
   return {
     cells,

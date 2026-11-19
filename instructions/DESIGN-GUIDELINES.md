@@ -484,7 +484,7 @@ Every animation has a static alternative:
 - Three-quarter or front view; friendly, glossy, but simple enough to read at 16px.
 - Palette drawn from the color tokens (blues, greens, ambers) plus a small set of icon-local accent colors documented in the icon module.
 - Each icon is a React SVG component in **`components/icons/`** (`AppIcons.tsx` for launchers, `SystemIcons.tsx` for the brand mark, avatar, Start places and dialog glyphs) drawn on a **48px master**; 32/24/16px scale from it. *Stage 1 deviation:* there is no separately drawn 16px variant yet — the masters were kept simple enough to read at 16px (checked in the taskbar/Start menu screenshots); hand-tuned 16px variants are a polish item.
-- External shortcuts (stage 3) get a **shortcut-arrow overlay** of our own design in the bottom-left corner.
+- External shortcuts (stage 3) get a **shortcut-arrow overlay** of our own design in the bottom-left corner (white tile, curved blue arrow; `ShortcutArrow` in `components/icons/LinkIcons.tsx`).
 - `lucide-react` is allowed **only inside window content** (e.g. list bullets, inline actions), never for desktop, Start menu, taskbar or title bar icons.
 
 ### Icon concepts per launcher
@@ -498,6 +498,10 @@ Every animation has a static alternative:
 | `how-i-work-with-ai` | Lightbulb with a small circuit/spark motif — the marquee icon, slightly more vivid |
 | `resume` | Paper document with a folded corner and a red "PDF" band — a **generic** PDF cue, never a vendor logo |
 | `contact` | Envelope + address card |
+| `linkedin` *(link)* | Web globe with a blue "in" monogram tag — generic, not the service's logo |
+| `github` *(link)* | Dark code tile with `</>` and a small branch glyph — no mascot/logo |
+| `whatsapp` *(link)* | Green chat bubble with typing dots — no handset/logo |
+| `email` *(link)* | Blue-lined envelope with an orange "@" seal (distinct from `contact`'s beige envelope + card) |
 | `display` (stage 1) | Monitor showing a tiny "Morning Waves" wallpaper |
 | Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera, paint, "don't open this" |
 

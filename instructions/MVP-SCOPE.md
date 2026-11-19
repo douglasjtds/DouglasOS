@@ -348,7 +348,8 @@ A stage is done only when **all** of these hold:
 | 0 | Done |
 | 1 | Done — desktop XP shell (≥ 768px) |
 | 2 | Done — touchable XP below 768px replaces the linear `MobileFallback` (same shell, stores and content; full-screen windows, row-first icon grid, 85% Start panel, 1s boot); server-rendered crawlable text version; Lighthouse mobile 98–99, LCP ≤ 2.3s. Default wallpaper reworked to "Morning Waves" (abstract, not Bliss-like) |
-| 3–10, 5b | Planned |
+| 3 | Done — external shortcuts (`linkedin`, `github`, `whatsapp`, `email`) as `kind: "link"` launchers: own column on the desktop, own row on mobile (CV/Contact keep the first row), listed in All Programs; new tab with `noopener noreferrer`, e-mail via `mailto:` |
+| 4–10, 5b | Planned |
 
 ---
 

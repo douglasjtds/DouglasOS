@@ -281,6 +281,24 @@
     "title": "resume.pdf",
     "download": "Download CV"
   },
+  "links": {
+    "linkedin": {
+      "title": "linkedin.url",
+      "description": "LinkedIn profile (opens in a new tab)"
+    },
+    "github": {
+      "title": "github.url",
+      "description": "GitHub profile (opens in a new tab)"
+    },
+    "whatsapp": {
+      "title": "whatsapp.exe",
+      "description": "Chat on WhatsApp (opens in a new tab)"
+    },
+    "email": {
+      "title": "write-me.eml",
+      "description": "Send an e-mail (opens your mail app)"
+    }
+  },
   "window": {
     "close": "Close",
     "minimize": "Minimize",

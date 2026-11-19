@@ -10,6 +10,10 @@ const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
   downloadFile: (...args: unknown[]) => downloadSpy(...args),
 }));
+const openLinkSpy = vi.fn();
+vi.mock("@/lib/openLink", () => ({
+  openLink: (...args: unknown[]) => openLinkSpy(...args),
+}));
 
 // While the (modal) menu is open Radix hides the rest of the page from the
 // accessibility tree, so the trigger is queried with `hidden: true`.
@@ -62,6 +66,25 @@ describe("StartMenu", () => {
     await userEvent.click(items[items.length - 1]);
     expect(useWindowStore.getState().windows.contact).toBeDefined();
     expect(useWindowStore.getState().focusedId).toBe("contact");
+  });
+
+  it("All Programs lists the external shortcuts after the apps and follows them", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    const trigger = screen.getByRole("menuitem", { name: /All Programs/ });
+    trigger.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    const programs = document.querySelectorAll("[data-all-programs] [data-program]");
+    expect([...programs].map((p) => p.getAttribute("data-program")).slice(-4)).toEqual([
+      "linkedin",
+      "github",
+      "whatsapp",
+      "email",
+    ]);
+    await userEvent.click(screen.getByRole("menuitem", { name: "whatsapp.exe" }));
+    expect(openLinkSpy).toHaveBeenCalledWith("https://wa.me/5531991848090?text=Hey%20Douglas!", true);
+    expect(useWindowStore.getState().windows).toEqual({});
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
   it("lists pinned programs and the places column", async () => {

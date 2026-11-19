@@ -25,7 +25,8 @@ test.describe("Start menu", () => {
     await startButton(page).click();
     await startItem(page, "all-programs").hover();
     const programs = page.locator("[data-all-programs] [data-program]");
-    await expect(programs).toHaveCount(8);
+    // 7 apps + Display Properties + 4 external shortcuts.
+    await expect(programs).toHaveCount(12);
     await programs.filter({ hasText: "Skills" }).click();
     await expect(windowById(page, "skills")).toBeVisible();
   });

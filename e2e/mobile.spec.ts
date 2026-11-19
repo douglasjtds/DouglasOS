@@ -103,7 +103,7 @@ test.describe("touch shell", () => {
     expect(Math.round(box.width)).toBe(viewport.width);
     expect(box.height).toBeLessThanOrEqual(viewport.height * 0.85 + 1);
     // All Programs is inline (no cascading submenu) and lists every launcher.
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(8);
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(12);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 
@@ -118,5 +118,28 @@ test.describe("touch shell", () => {
       "About Douglas",
     );
     await expect(windowById(page, "about").getByRole("heading", { level: 3 })).toBeVisible();
+  });
+
+  test("external shortcuts: a row below the apps, CV and Contact still first; tap opens a new tab", async ({
+    page,
+  }) => {
+    await page
+      .context()
+      .route(/^https:\/\/www\.linkedin\.com\//, (route) =>
+        route.fulfill({ status: 200, contentType: "text/html", body: "<title>stub</title>" }),
+      );
+    await gotoDesktop(page);
+    const resume = (await desktopIcon(page, "resume").boundingBox())!;
+    const contact = (await desktopIcon(page, "contact").boundingBox())!;
+    const linkedin = (await desktopIcon(page, "linkedin").boundingBox())!;
+    expect(Math.round(contact.y)).toBe(Math.round(resume.y));
+    expect(linkedin.y).toBeGreaterThan(resume.y);
+    await expect(desktopIcon(page, "resume")).toBeInViewport({ ratio: 1 });
+    await expect(desktopIcon(page, "contact")).toBeInViewport({ ratio: 1 });
+
+    const popupPromise = page.waitForEvent("popup");
+    await desktopIcon(page, "linkedin").tap();
+    const popup = await popupPromise;
+    await expect.poll(() => popup.url()).toBe("https://www.linkedin.com/in/douglasjtds");
   });
 });

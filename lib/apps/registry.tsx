@@ -1,6 +1,6 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { IconComponent } from "@/components/icons/types";
-import { RESUME } from "@/lib/profile";
+import { PROFILE, RESUME } from "@/lib/profile";
 import {
   AboutIcon,
   AiIcon,
@@ -11,6 +11,12 @@ import {
   ResumeIcon,
   SkillsIcon,
 } from "@/components/icons/AppIcons";
+import {
+  EmailLinkIcon,
+  GitHubLinkIcon,
+  LinkedInLinkIcon,
+  WhatsAppLinkIcon,
+} from "@/components/icons/LinkIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -22,8 +28,14 @@ export type AppId =
   | "contact"
   | "display";
 
+/**
+ * External shortcuts (stage 3). These ids are stable on purpose: they are the
+ * targets of the Recycle Bin rescue jokes in stage 6.
+ */
+export type LinkId = "linkedin" | "github" | "whatsapp" | "email";
+
 /** Everything that can be launched (Start menu, desktop, Quick Launch). */
-export type LauncherId = AppId | "resume";
+export type LauncherId = AppId | "resume" | LinkId;
 
 /** Launchers that also live as desktop icons (Display Properties doesn't). */
 export type DesktopIconId = Exclude<LauncherId, "display">;
@@ -53,7 +65,23 @@ export interface DownloadConfig {
   download: string;
 }
 
-export type LauncherConfig = WindowAppConfig | DownloadConfig;
+/**
+ * An external shortcut: opens `href` instead of a window. External links open
+ * in a new tab with `rel="noopener noreferrer"`; `mailto:` opens the mail app
+ * in place (`external: false`). URLs come only from `lib/profile.ts`.
+ */
+export interface LinkConfig {
+  id: LinkId;
+  kind: "link";
+  /** i18n key of the fun file-name label ("linkedin.url", "whatsapp.exe"…). */
+  titleKey: string;
+  icon: IconComponent;
+  onDesktop: true;
+  href: string;
+  external: boolean;
+}
+
+export type LauncherConfig = WindowAppConfig | DownloadConfig | LinkConfig;
 
 /**
  * Single source of truth for launchers. The order is the desktop's default
@@ -118,6 +146,44 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 700, height: 600 },
     Content: lazy(() => import("@/components/apps/HowIWorkWithAiApp")),
   },
+  // External shortcuts follow the apps; on the desktop they start their own
+  // column (row on mobile), see DESKTOP_ICON_GROUPS.
+  {
+    id: "linkedin",
+    kind: "link",
+    titleKey: "links.linkedin.title",
+    icon: LinkedInLinkIcon,
+    onDesktop: true,
+    href: PROFILE.linkedin,
+    external: true,
+  },
+  {
+    id: "github",
+    kind: "link",
+    titleKey: "links.github.title",
+    icon: GitHubLinkIcon,
+    onDesktop: true,
+    href: PROFILE.github,
+    external: true,
+  },
+  {
+    id: "whatsapp",
+    kind: "link",
+    titleKey: "links.whatsapp.title",
+    icon: WhatsAppLinkIcon,
+    onDesktop: true,
+    href: PROFILE.whatsapp,
+    external: true,
+  },
+  {
+    id: "email",
+    kind: "link",
+    titleKey: "links.email.title",
+    icon: EmailLinkIcon,
+    onDesktop: true,
+    href: `mailto:${PROFILE.email}`,
+    external: false,
+  },
   {
     id: "display",
     kind: "window",
@@ -140,6 +206,21 @@ export const DESKTOP_LAUNCHERS = LAUNCHERS.filter(
 
 export const DESKTOP_ICON_IDS: DesktopIconId[] = DESKTOP_LAUNCHERS.map((l) => l.id);
 
+/** External shortcuts, in registry order. */
+export const LINK_LAUNCHERS: LinkConfig[] = LAUNCHERS.filter(
+  (l): l is LinkConfig => l.kind === "link",
+);
+
+/**
+ * Desktop icons split into default-layout groups: the apps (+ CV) first, then
+ * the external shortcuts. Each group starts a new column on the desktop and a
+ * new row on mobile, so the links never push About / CV / Contact around.
+ */
+export const DESKTOP_ICON_GROUPS: DesktopIconId[][] = [
+  DESKTOP_LAUNCHERS.filter((l) => l.kind !== "link").map((l) => l.id),
+  DESKTOP_LAUNCHERS.filter((l) => l.kind === "link").map((l) => l.id),
+];
+
 const WINDOW_APP_BY_ID = new Map<AppId, WindowAppConfig>(
   WINDOW_APPS.map((app) => [app.id, app]),
 );
@@ -161,13 +242,17 @@ export function getLauncher(id: LauncherId): LauncherConfig {
 }
 
 export function isAppId(id: LauncherId): id is AppId {
-  return id !== "resume";
+  return WINDOW_APP_BY_ID.has(id as AppId);
 }
 
 /**
  * i18n key of a launcher's friendly label (window title, icon label, menu
- * entry): `apps.<id>.title` for window apps, `resume.title` for the CV.
+ * entry): `apps.<id>.title` for window apps, `resume.title` for the CV and the
+ * link's own `titleKey` for external shortcuts.
  */
 export function launcherTitleKey(id: LauncherId): string {
-  return id === "resume" ? "resume.title" : `apps.${id}.title`;
+  if (id === "resume") return "resume.title";
+  const launcher = LAUNCHER_BY_ID.get(id);
+  if (launcher?.kind === "link") return launcher.titleKey;
+  return `apps.${id}.title`;
 }

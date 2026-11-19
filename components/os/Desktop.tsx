@@ -3,7 +3,7 @@
 import { useRef, useState, type KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
 import {
-  DESKTOP_ICON_IDS,
+  DESKTOP_ICON_GROUPS,
   DESKTOP_LAUNCHERS,
   type DesktopIconId,
 } from "@/lib/apps/registry";
@@ -58,7 +58,7 @@ export function Desktop() {
     typeof window === "undefined" ? 0 : window.innerWidth,
   );
 
-  const mobileLayout = mobile ? mobileIconLayout(DESKTOP_ICON_IDS, surfaceWidth) : null;
+  const mobileLayout = mobile ? mobileIconLayout(DESKTOP_ICON_GROUPS, surfaceWidth) : null;
   const iconCells: Record<DesktopIconId, Cell> = mobileLayout?.cells ?? savedCells;
   const ordered = mobileLayout ? iconsInRowOrder(iconCells) : iconsInGridOrder(iconCells);
   const tabStop = selected ?? ordered[0];

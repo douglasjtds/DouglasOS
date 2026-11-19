@@ -11,6 +11,19 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
+ * Hover hint (also the accessible description): what a non-window icon does,
+ * since its label is a file name ("resume.pdf", "linkedin.url").
+ */
+function iconHint(
+  launcher: LauncherConfig,
+  t: ReturnType<typeof useTranslations>,
+): string | undefined {
+  if (launcher.kind === "download") return t("resume.download");
+  if (launcher.kind === "link") return t(`links.${launcher.id}.description`);
+  return undefined;
+}
+
+/**
  * One desktop icon: 48px glyph + white shadowed label. A single click opens it
  * (DouglasOS decision, see DESKTOP-INTERFACE-SPEC §3); the press shows the blue
  * selection, and keyboard focus = selection + dotted rectangle. A press that
@@ -47,7 +60,7 @@ export function DesktopIcon({
       aria-selected={selected}
       tabIndex={tabbable ? 0 : -1}
       data-desktop-icon={launcher.id}
-      title={launcher.kind === "download" ? t("resume.download") : undefined}
+      title={iconHint(launcher, t)}
       onPointerDown={(e: PointerEvent) => {
         if (e.button === 0) onSelect(launcher.id);
       }}

@@ -105,8 +105,22 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 | `experience` | Experience | Experiência |
 | `skills` | Skills | Habilidades |
 | `how-i-work-with-ai` | How I Work With AI | Como Trabalho com IA |
+| `linkedin` *(stage 3, link)* | linkedin.url | linkedin.url |
+| `github` *(stage 3, link)* | github.url | github.url |
+| `whatsapp` *(stage 3, link)* | whatsapp.exe | whatsapp.exe |
+| `email` *(stage 3, link)* | write-me.eml | me-escreva.eml |
 
-- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts *(stage 3)* follow the apps.
+- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts follow the apps.
+
+### External shortcuts *(stage 3 — done)*
+- Four `kind: "link"` launchers in `lib/apps/registry.tsx` (`LinkConfig { id, kind, titleKey, icon, href, external }`): `linkedin`, `github`, `whatsapp`, `email`. The ids are **stable** (they are the Recycle Bin rescue targets in stage 6). URLs come only from `lib/profile.ts`; `email` is `mailto:`.
+- **Opening:** same single click / tap / `Enter` as any icon, through `launch()` → `lib/openLink.ts`. External links open in a **new tab** with `rel="noopener noreferrer"`; `mailto:` is followed in place (hands off to the mail app, no blank tab). No window, no taskbar button. `F2` shows the same "protected file" joke.
+- **Labels** are fun file names (table above), so each icon also carries a hover hint / accessible description (`links.<id>.description`, e.g. "LinkedIn profile (opens in a new tab)").
+- **Icons:** own generic glyphs (globe + "in" monogram tag, dark code tile with `</>` and a branch, green chat bubble with typing dots, envelope with an "@" seal), each with the DouglasOS **shortcut-arrow overlay** bottom-left (`components/icons/LinkIcons.tsx`). No official logos.
+- **Placement (decision):** the desktop icons form two layout groups (`DESKTOP_ICON_GROUPS`). The apps + CV fill the first column as before; the links **start their own second column** (rows 0–3) instead of trailing under the apps (on a 1440×900 screen that would have split them across the bottom of column 1 and the top of column 2). A single "Links" folder was considered and rejected: it would add a click and a folder window (stage-4 territory) in front of contact routes recruiters should reach in one click.
+- **Saved layouts:** no persist version bump. `mergeIconCells` keeps every saved cell and backfills the new ids at their default cell (or the nearest free one if a saved icon already sits there) — unit-tested with a pre-stage-3 layout.
+- **Mobile:** the links start a **fresh row** below the apps (`mobileIconLayout` with groups), so About, resume.pdf and Contact keep the first row. On a 390px phone that's rows 0–1 for the apps and row 2 for the four links — everything on the first screen. Tap opens the new tab.
+- **Start menu:** All Programs lists the links after a separator, below the apps (cascading submenu on desktop, inline list on phones). They are not pinned and not in Quick Launch (Quick Launch stays CV + Contact only).
 - **Interaction (pointer):** **a single click opens** the icon (decision by Douglas after stage 0 — a deliberate deviation from the classic double-click: recruiters shouldn't have to know the convention, and it matches touch). Pressing an icon shows the selection (blue label highlight, tinted glyph) and the icon stays selected; click on empty desktop clears the selection. Dragging is unaffected: the existing `useDesktopIconDrag` `wasDragged` guard means a press that became a drag never opens.
 - **Interaction (keyboard):** the desktop is one tab stop (roving tabindex on a `listbox` of `option`s); focus = selection; arrows move the selection across the grid (nearest icon in that direction, `neighborIcon` in `lib/store/desktopGrid.ts`); `Enter` opens; Home/End jump to first/last icon; `F2` shows the "protected file" joke (see [Keyboard](#12-keyboard--accessibility)).
 - **Drag:** drag moves the icon and snaps to the nearest free cell (existing guard: a drag never counts as a click).
@@ -164,7 +178,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, and later: external shortcuts *(stage 3)*, Messenger *(5b)*, and folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; later: Messenger *(5b)*, and folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
 
 **Right column (light blue):**
 - **My Projects ▸** — opens the Projects window; from stage 4, a submenu lists each case study (opens `projects` at that route).
@@ -288,7 +302,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3), DouglasOS Explorer (4), mini Douglas assistant (5, a desktop companion, not a window), DouglasOS Messenger (5b), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4), mini Douglas assistant (5, a desktop companion, not a window), DouglasOS Messenger (5b), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -415,7 +429,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 |-------|----------------|
 | 1 | Tokens, boot, logon, taskbar (Start, Quick Launch, window buttons, tray), Start menu, Luna windows, XP icons, wallpaper + Display Properties, keyboard map (stage-1 rows), welcome balloon |
 | 2 | Mobile touchable XP (§11), replaces `MobileFallback` — **done** |
-| 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs |
+| 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs — **done** |
 | 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route |
 | 5 | "mini Douglas" scripted assistant (layer + queue) |
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast) |

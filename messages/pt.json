@@ -281,6 +281,24 @@
     "title": "curriculo.pdf",
     "download": "Baixar CV"
   },
+  "links": {
+    "linkedin": {
+      "title": "linkedin.url",
+      "description": "Perfil no LinkedIn (abre em nova aba)"
+    },
+    "github": {
+      "title": "github.url",
+      "description": "Perfil no GitHub (abre em nova aba)"
+    },
+    "whatsapp": {
+      "title": "whatsapp.exe",
+      "description": "Conversar no WhatsApp (abre em nova aba)"
+    },
+    "email": {
+      "title": "me-escreva.eml",
+      "description": "Enviar um e-mail (abre seu app de e-mail)"
+    }
+  },
   "window": {
     "close": "Fechar",
     "minimize": "Minimizar",

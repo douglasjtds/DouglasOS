@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DESKTOP_ICON_IDS, type DesktopIconId } from "@/lib/apps/registry";
+import {
+  DESKTOP_ICON_GROUPS,
+  DESKTOP_ICON_IDS,
+  type DesktopIconId,
+} from "@/lib/apps/registry";
 import type { Viewport } from "@/lib/store/geometry";
 import {
   FALLBACK_VIEWPORT,
@@ -17,11 +21,14 @@ function viewport(): Viewport {
   return { width: window.innerWidth, height: window.innerHeight };
 }
 
-/** The default column-first layout for the current viewport. */
+/**
+ * The default column-first layout for the current viewport: the apps (+ CV)
+ * fill the first column, the external shortcuts start the next one.
+ */
 export function defaultIconCells(
   vp: Viewport = viewport(),
 ): Record<DesktopIconId, Cell> {
-  return defaultCells(DESKTOP_ICON_IDS, vp);
+  return defaultCells(DESKTOP_ICON_GROUPS, vp);
 }
 
 /**
@@ -33,7 +40,7 @@ export function mergeIconCells(
   saved: Partial<Record<string, Cell>> | undefined,
   vp: Viewport,
 ): Record<DesktopIconId, Cell> {
-  const defaults = defaultCells(DESKTOP_ICON_IDS, vp);
+  const defaults = defaultIconCells(vp);
   const result = {} as Record<DesktopIconId, Cell>;
   const occupied: Cell[] = [];
   for (const id of DESKTOP_ICON_IDS) {
@@ -92,6 +99,8 @@ export const useDesktopStore = create<DesktopState>()(
       name: "douglasos:desktop-icons",
       // v3: the XP grid (88×96 pitch, column-first) replaced the v1 scattered
       // layout, so any older arrangement is dropped. Drags persist again from v3.
+      // New launchers (e.g. the stage-3 external shortcuts) need no version
+      // bump: `merge` keeps every saved cell and backfills the newcomers.
       version: 3,
       partialize: (state) => ({ iconCells: state.iconCells }),
       migrate: () => ({ iconCells: defaultIconCells() }),

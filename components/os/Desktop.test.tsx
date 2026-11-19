@@ -12,18 +12,23 @@ const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
   downloadFile: (...args: unknown[]) => downloadSpy(...args),
 }));
+const openLinkSpy = vi.fn();
+vi.mock("@/lib/openLink", () => ({
+  openLink: (...args: unknown[]) => openLinkSpy(...args),
+}));
 
 const icon = (name: string) => screen.getByRole("option", { name });
 
 describe("Desktop icons", () => {
   beforeEach(() => {
     downloadSpy.mockClear();
+    openLinkSpy.mockClear();
     useWindowStore.setState({ windows: {}, order: [], focusedId: null, topZ: Z_BASE, openCount: 0 });
     useShellStore.setState({ phase: "desktop", startMenuOpen: false, dialog: null });
     useDesktopStore.getState().resetLayout();
   });
 
-  it("renders the launchers as one listbox, in CTA order, without Display Properties", () => {
+  it("renders the launchers as one listbox, in CTA order, links last, without Display Properties", () => {
     renderWithIntl(<Desktop />);
     // The label is the last child (the glyph is aria-hidden SVG).
     const options = screen
@@ -37,6 +42,10 @@ describe("Desktop icons", () => {
       "Experience",
       "Skills",
       "How I Work With AI",
+      "linkedin.url",
+      "github.url",
+      "whatsapp.exe",
+      "write-me.eml",
     ]);
     expect(screen.getByRole("listbox", { name: "Desktop icons" })).toBeInTheDocument();
   });
@@ -52,6 +61,25 @@ describe("Desktop icons", () => {
     renderWithIntl(<Desktop />);
     await userEvent.click(icon("resume.pdf"));
     expect(downloadSpy).toHaveBeenCalledWith("/resume.pdf", "Douglas-Tertuliano-CV.pdf");
+  });
+
+  it("follows an external shortcut on a single click, without opening a window", async () => {
+    renderWithIntl(<Desktop />);
+    await userEvent.click(icon("linkedin.url"));
+    expect(openLinkSpy).toHaveBeenCalledWith("https://www.linkedin.com/in/douglasjtds", true);
+    await userEvent.click(icon("write-me.eml"));
+    expect(openLinkSpy).toHaveBeenLastCalledWith("mailto:douglasjtds@gmail.com", false);
+    expect(useWindowStore.getState().windows).toEqual({});
+    expect(icon("linkedin.url")).toHaveAttribute("title", "LinkedIn profile (opens in a new tab)");
+  });
+
+  it("→ from the apps column reaches the links column", async () => {
+    renderWithIntl(<Desktop />);
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(icon("linkedin.url")).toHaveFocus();
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+    expect(openLinkSpy).toHaveBeenCalledWith("https://github.com/douglasjtds", true);
   });
 
   it("a press that turns into a drag does not open the app", () => {
@@ -77,7 +105,7 @@ describe("Desktop icons", () => {
     expect(icon("resume.pdf")).toHaveFocus();
     expect(icon("resume.pdf")).toHaveAttribute("aria-selected", "true");
     await userEvent.keyboard("{End}");
-    expect(icon("How I Work With AI")).toHaveFocus();
+    expect(icon("write-me.eml")).toHaveFocus();
     await userEvent.keyboard("{Home}");
     expect(icon("About Douglas")).toHaveFocus();
 

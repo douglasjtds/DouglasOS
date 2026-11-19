@@ -4,7 +4,7 @@ import {
   mergeIconCells,
   useDesktopStore,
 } from "@/lib/store/desktopStore";
-import { cellToPixel } from "@/lib/store/desktopGrid";
+import { cellToPixel, defaultCells } from "@/lib/store/desktopGrid";
 import { DESKTOP_ICON_IDS } from "@/lib/apps/registry";
 
 const store = () => useDesktopStore.getState();
@@ -86,5 +86,48 @@ describe("mergeIconCells", () => {
     expect(merged.resume).not.toEqual({ col: 0, row: 1 });
     const keys = Object.values(merged).map((c) => `${c.col},${c.row}`);
     expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it("keeps a pre-stage-3 saved layout intact and backfills the new shortcuts", () => {
+    // What a v3 user saved before the external shortcuts existed: the seven
+    // original icons, one of them dragged elsewhere.
+    const legacyIds = [
+      "about",
+      "resume",
+      "contact",
+      "projects",
+      "experience",
+      "skills",
+      "how-i-work-with-ai",
+    ] as const;
+    const saved: Record<string, { col: number; row: number }> = {
+      ...defaultCells(legacyIds, VP),
+      skills: { col: 4, row: 4 },
+    };
+    const merged = mergeIconCells(saved, VP);
+    for (const id of legacyIds) expect(merged[id]).toEqual(saved[id]);
+    expect(merged.linkedin).toEqual({ col: 1, row: 0 });
+    expect(merged.email).toEqual({ col: 1, row: 3 });
+    const keys = Object.values(merged).map((c) => `${c.col},${c.row}`);
+    expect(new Set(keys).size).toBe(DESKTOP_ICON_IDS.length);
+  });
+
+  it("moves a new shortcut to a free neighbour when a saved icon sits on its default cell", () => {
+    const merged = mergeIconCells({ about: { col: 1, row: 0 } }, VP);
+    expect(merged.about).toEqual({ col: 1, row: 0 });
+    expect(merged.linkedin).not.toEqual({ col: 1, row: 0 });
+    const keys = Object.values(merged).map((c) => `${c.col},${c.row}`);
+    expect(new Set(keys).size).toBe(DESKTOP_ICON_IDS.length);
+  });
+
+  it("is what the persisted store rehydrates through", async () => {
+    localStorage.setItem(
+      "douglasos:desktop-icons",
+      JSON.stringify({ state: { iconCells: { about: { col: 6, row: 5 } } }, version: 3 }),
+    );
+    await useDesktopStore.persist.rehydrate();
+    expect(store().iconCells.about).toEqual({ col: 6, row: 5 });
+    expect(store().iconCells.linkedin).toEqual({ col: 1, row: 0 });
+    localStorage.removeItem("douglasos:desktop-icons");
   });
 });

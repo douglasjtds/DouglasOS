@@ -19,6 +19,7 @@ import {
   type Cell,
 } from "@/lib/store/desktopGrid";
 import { TASKBAR_H, type Viewport } from "@/lib/store/geometry";
+import { DESKTOP_ICON_GROUPS, DESKTOP_ICON_IDS } from "@/lib/apps/registry";
 
 const VP: Viewport = { width: 1440, height: 900 };
 
@@ -130,6 +131,56 @@ describe("defaultCells", () => {
       expect(new Set(keys).size).toBe(ids.length);
     }
   });
+
+  it("starts each group in a fresh column", () => {
+    const cells = defaultCells([["a", "b", "c"], ["x", "y"]], VP);
+    expect(cells.c).toEqual({ col: 0, row: 2 });
+    expect(cells.x).toEqual({ col: 1, row: 0 });
+    expect(cells.y).toEqual({ col: 1, row: 1 });
+  });
+
+  it("starts the next group after a group that wrapped", () => {
+    const short: Viewport = { width: 1024, height: 600 };
+    const { rows } = gridDims(short);
+    const cells = defaultCells([ids, ["x"]], short);
+    expect(cells.x).toEqual({ col: Math.ceil(ids.length / rows), row: 0 });
+  });
+});
+
+describe("default desktop layout (registry groups)", () => {
+  const VIEWPORTS: Viewport[] = [
+    VP,
+    { width: 1920, height: 1080 },
+    { width: 1366, height: 768 },
+    { width: 1280, height: 720 },
+    { width: 1024, height: 600 },
+    { width: 768, height: 600 },
+  ];
+
+  it("gives every desktop icon a distinct in-grid cell on common screens", () => {
+    for (const vp of VIEWPORTS) {
+      const cells = defaultCells(DESKTOP_ICON_GROUPS, vp);
+      const { cols, rows } = gridDims(vp);
+      const keys = DESKTOP_ICON_IDS.map((id) => {
+        const c = cells[id];
+        expect(c.col).toBeLessThan(cols);
+        expect(c.row).toBeLessThan(rows);
+        return `${c.col},${c.row}`;
+      });
+      expect(new Set(keys).size).toBe(DESKTOP_ICON_IDS.length);
+    }
+  });
+
+  it("keeps the apps in the first column and the links in the next one", () => {
+    const cells = defaultCells(DESKTOP_ICON_GROUPS, VP);
+    expect(cells.about).toEqual({ col: 0, row: 0 });
+    expect(cells.resume).toEqual({ col: 0, row: 1 });
+    expect(cells.contact).toEqual({ col: 0, row: 2 });
+    expect(cells.linkedin).toEqual({ col: 1, row: 0 });
+    expect(cells.github).toEqual({ col: 1, row: 1 });
+    expect(cells.whatsapp).toEqual({ col: 1, row: 2 });
+    expect(cells.email).toEqual({ col: 1, row: 3 });
+  });
 });
 
 describe("neighborIcon", () => {
@@ -235,6 +286,36 @@ describe("mobile icon grid", () => {
     const first = narrow.positions.about.x;
     const last = narrow.positions.contact.x + MOBILE_ICON_W;
     expect(first).toBe(360 - last);
+  });
+
+  it("keeps About, CV and Contact in the first row with the links on later rows, no overlap", () => {
+    for (const width of WIDTHS) {
+      const layout = mobileIconLayout(DESKTOP_ICON_GROUPS, width);
+      expect(layout.cells.about.row).toBe(0);
+      expect(layout.cells.resume.row).toBe(0);
+      expect(layout.cells.contact.row).toBe(0);
+      const appRows = Math.max(...DESKTOP_ICON_GROUPS[0].map((id) => layout.cells[id].row));
+      for (const id of DESKTOP_ICON_GROUPS[1]) {
+        expect(layout.cells[id].row).toBeGreaterThan(appRows);
+      }
+      const rects = DESKTOP_ICON_IDS.map((id) => layout.positions[id]);
+      for (let i = 0; i < rects.length; i++) {
+        expect(rects[i].x + MOBILE_ICON_W).toBeLessThanOrEqual(width);
+        for (let j = i + 1; j < rects.length; j++) {
+          expect(overlaps(rects[i], rects[j])).toBe(false);
+        }
+      }
+      expect(layout.height).toBeGreaterThanOrEqual(
+        Math.max(...rects.map((r) => r.y)) + MOBILE_ICON_H,
+      );
+    }
+  });
+
+  it("starts the links on a fresh row on a 390px phone", () => {
+    const layout = mobileIconLayout(DESKTOP_ICON_GROUPS, 390);
+    expect(layout.cells.linkedin).toEqual({ col: 0, row: 2 });
+    expect(layout.cells.email).toEqual({ col: 3, row: 2 });
+    expect(layout.rows).toBe(3);
   });
 
   it("degrades to a single scrolling column on a very narrow container", () => {

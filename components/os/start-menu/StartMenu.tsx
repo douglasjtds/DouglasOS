@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type KeyboardEvent, type ReactNode } from "react";
+import { Fragment, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { DropdownMenu } from "radix-ui";
 import { useShellStore } from "@/lib/store/shellStore";
@@ -23,6 +23,16 @@ import type { IconComponent } from "@/components/icons/types";
 import { menuSurfaceClass } from "@/components/os/menuStyles";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
+
+/**
+ * All Programs: every launcher in registry order, apps first, then the
+ * external shortcuts (stage 3) after a separator.
+ */
+const ALL_PROGRAMS = [
+  ...LAUNCHERS.filter((l) => l.kind !== "link"),
+  ...LAUNCHERS.filter((l) => l.kind === "link"),
+];
+const FIRST_LINK_ID = LAUNCHERS.find((l) => l.kind === "link")?.id;
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
 const PINNED: LauncherId[] = ["about", "projects", "how-i-work-with-ai", "contact"];
@@ -211,16 +221,20 @@ export function StartMenu() {
                     {t("startMenu.allPrograms")}
                     <AllProgramsIcon size={18} />
                   </DropdownMenu.Label>
-                  {LAUNCHERS.map((l) => (
-                    <DropdownMenu.Item
-                      key={l.id}
-                      data-program={l.id}
-                      onSelect={() => select(() => launch(l.id), l.kind === "window")}
-                      className={cn(itemBase, "px-2 text-text")}
-                    >
-                      <l.icon size={16} />
-                      {label(l.id)}
-                    </DropdownMenu.Item>
+                  {ALL_PROGRAMS.map((l) => (
+                    <Fragment key={l.id}>
+                      {l.id === FIRST_LINK_ID && (
+                        <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-right-border" />
+                      )}
+                      <DropdownMenu.Item
+                        data-program={l.id}
+                        onSelect={() => select(() => launch(l.id), l.kind === "window")}
+                        className={cn(itemBase, "px-2 text-text")}
+                      >
+                        <l.icon size={16} />
+                        {label(l.id)}
+                      </DropdownMenu.Item>
+                    </Fragment>
                   ))}
                 </DropdownMenu.Group>
               ) : (
@@ -239,16 +253,20 @@ export function StartMenu() {
                     sideOffset={2}
                     className={cn(menuSurfaceClass, "z-1200 min-w-52")}
                   >
-                    {LAUNCHERS.map((l) => (
-                      <DropdownMenu.Item
-                        key={l.id}
-                        data-program={l.id}
-                        onSelect={() => select(() => launch(l.id), l.kind === "window")}
-                        className={cn(itemBase, "h-menu-item px-2")}
-                      >
-                        <l.icon size={16} />
-                        {label(l.id)}
-                      </DropdownMenu.Item>
+                    {ALL_PROGRAMS.map((l) => (
+                      <Fragment key={l.id}>
+                        {l.id === FIRST_LINK_ID && (
+                          <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
+                        )}
+                        <DropdownMenu.Item
+                          data-program={l.id}
+                          onSelect={() => select(() => launch(l.id), l.kind === "window")}
+                          className={cn(itemBase, "h-menu-item px-2")}
+                        >
+                          <l.icon size={16} />
+                          {label(l.id)}
+                        </DropdownMenu.Item>
+                      </Fragment>
                     ))}
                   </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
