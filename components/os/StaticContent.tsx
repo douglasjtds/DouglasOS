@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { PROFILE, RESUME } from "@/lib/profile";
+import { CASE_STUDY_SECTIONS, PROJECTS } from "@/lib/content/projects";
 
 interface Stat {
   label: string;
@@ -12,14 +13,6 @@ interface Role {
   description: string;
   tags: string[];
   current?: boolean;
-}
-interface Project {
-  name: string;
-  description: string;
-  tags: string[];
-  status: string;
-  repo: string;
-  demo: string;
 }
 interface SkillCategory {
   name: string;
@@ -50,7 +43,6 @@ export async function StaticContent({ locale }: { locale: string }) {
   const summary = t.raw("apps.about.summary") as string[];
   const stats = t.raw("apps.about.stats") as Stat[];
   const roles = t.raw("apps.experience.roles") as Role[];
-  const projects = t.raw("apps.projects.items") as Project[];
   const skills = t.raw("apps.skills.categories") as SkillCategory[];
   const aiSections = t.raw("apps.how-i-work-with-ai.sections") as AiSection[];
 
@@ -103,14 +95,28 @@ export async function StaticContent({ locale }: { locale: string }) {
 
         <section>
           <h2>{t("apps.projects.title")}</h2>
-          {projects.map((p) => (
-            <section key={p.name}>
-              <h3>{p.name}</h3>
-              <p>{p.description}</p>
-              <p>{p.tags.join(", ")}</p>
-              {p.repo && <a href={p.repo}>{p.repo}</a>}
-            </section>
-          ))}
+          {PROJECTS.map((p) => {
+            const study = (key: string) => t(`apps.projects.caseStudies.${p.slug}.${key}`);
+            return (
+              <section key={p.slug}>
+                <h3>{p.name}</h3>
+                <p>
+                  {[study("category"), study("status"), p.year?.toString()].filter(Boolean).join(" · ")}
+                </p>
+                <p>{study("summary")}</p>
+                {/* Only the sections Douglas has written; pending ones are skipped. */}
+                {CASE_STUDY_SECTIONS.filter((s) => study(`sections.${s}`)).map((s) => (
+                  <p key={s}>
+                    <strong>{t(`apps.projects.explorer.page.sections.${s}`)}:</strong>{" "}
+                    {study(`sections.${s}`)}
+                  </p>
+                ))}
+                <p>{p.tags.join(", ")}</p>
+                {p.links.demo && <a href={p.links.demo}>{p.links.demo}</a>}
+                {p.links.repo && <a href={p.links.repo}>{p.links.repo}</a>}
+              </section>
+            );
+          })}
         </section>
 
         <section>

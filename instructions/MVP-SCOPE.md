@@ -349,7 +349,8 @@ A stage is done only when **all** of these hold:
 | 1 | Done — desktop XP shell (≥ 768px) |
 | 2 | Done — touchable XP below 768px replaces the linear `MobileFallback` (same shell, stores and content; full-screen windows, row-first icon grid, 85% Start panel, 1s boot); server-rendered crawlable text version; Lighthouse mobile 98–99, LCP ≤ 2.3s. Default wallpaper reworked to "Morning Waves" (abstract, not Bliss-like) |
 | 3 | Done — external shortcuts (`linkedin`, `github`, `whatsapp`, `email`) as `kind: "link"` launchers: own column on the desktop, own row on mobile (CV/Contact keep the first row), listed in All Programs; new tab with `noopener noreferrer`, e-mail via `mailto:` |
-| 4–10, 5b | Planned |
+| 4 | Done — `projects` is **DouglasOS Explorer**: typed case-study source (`lib/content/projects.ts` + EN/PT texts, pending sections shown as "coming soon", no invented content), address bar `C:\DouglasOS\Projects\<slug>` resolving slugs/names/aliases, themed not-found dialog, Back/Forward/Home, File + Favorites menus, route + history in `windowStore` (`openWindow("projects", { route })`), Start → My Projects ▸ submenu; compact one-row toolbar on mobile. No per-project desktop icons |
+| 5–10, 5b | Planned |
 
 ---
 

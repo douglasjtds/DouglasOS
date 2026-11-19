@@ -101,45 +101,97 @@
     "projects": {
       "title": "My Projects",
       "description": "Things I've built and shipped",
-      "items": [
-        {
-          "name": "Gasolinha",
-          "description": "A SaaS for vehicle fuel tracking, built end to end through an AI-first workflow with Claude Code. Drivers log each refueling (odometer, liters, cost) and the app calculates fuel efficiency automatically, keeping a complete history per vehicle. I own the full stack — database, auth and production deployment on a custom domain.",
-          "tags": [
-            "Next.js",
-            "TypeScript",
-            "Supabase",
-            "Vercel"
-          ],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://www.gasolinha.com.br"
+      "explorer": {
+        "name": "DouglasOS Explorer",
+        "menuBar": "Menu bar",
+        "menu": {
+          "file": "File",
+          "favorites": "Favorites",
+          "more": "More",
+          "home": "Project list",
+          "contact": "Contact Douglas",
+          "downloadCv": "Download CV",
+          "close": "Close"
         },
-        {
-          "name": "DouglasOS",
-          "description": "The site you are looking at: a portfolio rendered as a fictional desktop operating system, with a window manager, dock and boot screen. Designed spec-first and built with an AI-first workflow.",
-          "tags": [
-            "Next.js",
-            "TypeScript",
-            "Zustand",
-            "Framer Motion"
-          ],
-          "status": "Live",
-          "repo": "",
-          "demo": ""
+        "toolbar": {
+          "label": "Navigation",
+          "back": "Back",
+          "forward": "Forward",
+          "home": "Home"
         },
-        {
-          "name": "The Wedding Post",
-          "description": "A personal wedding-event project: a site where guests follow the celebration and share moments. Built with the same discovery-first, AI-assisted Next.js workflow.",
-          "tags": [
-            "Next.js",
-            "TypeScript"
-          ],
-          "status": "In progress",
-          "repo": "",
-          "demo": ""
+        "address": "Address",
+        "go": "Go",
+        "status": {
+          "done": "Done",
+          "count": "{count, plural, one {# project} other {# projects}}"
+        },
+        "announce": "{title} — DouglasOS Explorer",
+        "home": {
+          "heading": "My Projects",
+          "intro": "Pick a project to read its case study, or type a project name in the address bar and press Enter.",
+          "open": "Open case study"
+        },
+        "page": {
+          "year": "Year",
+          "category": "Category",
+          "status": "Status",
+          "stack": "Stack",
+          "links": "Links",
+          "repo": "Source code",
+          "demo": "Live site",
+          "sections": {
+            "problem": "Problem",
+            "approach": "Approach",
+            "role": "Role & stack",
+            "result": "Result"
+          },
+          "comingSoon": "Douglas is still writing this part. Coming soon.",
+          "backHome": "All projects",
+          "contactCta": "Want to talk about this project? Contact Douglas"
+        },
+        "notFound": {
+          "title": "DouglasOS Explorer",
+          "body": "Can't find “{address}”. Either Douglas hasn't built it yet, or it's still a sticky note on his monitor. Check the spelling, go back to the project list, or tell him it should exist.",
+          "home": "Project list",
+          "contact": "Contact Douglas",
+          "ok": "OK"
         }
-      ]
+      },
+      "caseStudies": {
+        "gasolinha": {
+          "category": "SaaS",
+          "status": "Live",
+          "summary": "A SaaS for vehicle fuel tracking: drivers log each refueling (odometer, liters, cost) and the app calculates fuel efficiency automatically, keeping a complete history per vehicle.",
+          "sections": {
+            "problem": "",
+            "approach": "Built end to end through an AI-first workflow with Claude Code.",
+            "role": "I own the full stack — database, auth and production deployment on a custom domain.",
+            "result": ""
+          }
+        },
+        "douglasos": {
+          "category": "Portfolio",
+          "status": "Live",
+          "summary": "The site you are looking at: a portfolio rendered as a fictional desktop operating system, with a window manager, taskbar, Start menu and boot screen.",
+          "sections": {
+            "problem": "",
+            "approach": "Designed spec-first and built with an AI-first workflow.",
+            "role": "",
+            "result": ""
+          }
+        },
+        "the-wedding-post": {
+          "category": "Personal project",
+          "status": "In progress",
+          "summary": "A personal wedding-event project: a site where guests follow the celebration and share moments.",
+          "sections": {
+            "problem": "",
+            "approach": "Built with the same discovery-first, AI-assisted Next.js workflow.",
+            "role": "",
+            "result": ""
+          }
+        }
+      }
     },
     "skills": {
       "title": "Skills",
@@ -332,6 +384,7 @@
     "places": "Places",
     "allPrograms": "All Programs",
     "myProjects": "My Projects",
+    "allProjects": "All projects",
     "resume": "Résumé (CV)",
     "contact": "Contact",
     "displayProperties": "Display Properties",

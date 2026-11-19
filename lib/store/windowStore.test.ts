@@ -269,3 +269,170 @@ describe("reconcilePersisted", () => {
     expect(r.topZ).toBeGreaterThanOrEqual(142);
   });
 });
+
+describe("routed windows (DouglasOS Explorer)", () => {
+  beforeEach(resetStore);
+
+  const route = (id: "projects" | "about" = "projects") => {
+    const h = store().windows[id]?.history;
+    return h ? h.entries[h.index] : undefined;
+  };
+
+  it("opens on the home route without a destination", () => {
+    store().openWindow("projects");
+    expect(store().windows.projects.history).toEqual({ entries: ["home"], index: 0 });
+  });
+
+  it("opens straight at a destination route", () => {
+    store().openWindow("projects", { route: "gasolinha" });
+    expect(store().windows.projects.history).toEqual({ entries: ["gasolinha"], index: 0 });
+  });
+
+  it("an already-open window navigates (pushes) to the destination and is focused/un-minimized", () => {
+    store().openWindow("projects");
+    store().openWindow("about");
+    store().minimizeWindow("projects");
+    store().openWindow("projects", { route: "douglasos" });
+    const s = store();
+    expect(s.windows.projects.history).toEqual({ entries: ["home", "douglasos"], index: 1 });
+    expect(s.windows.projects.minimized).toBe(false);
+    expect(s.focusedId).toBe("projects");
+    expect(s.order).toEqual(["projects", "about"]);
+  });
+
+  it("re-opening without a destination keeps the current page", () => {
+    store().openWindow("projects", { route: "gasolinha" });
+    store().openWindow("projects");
+    expect(route()).toBe("gasolinha");
+  });
+
+  it("ignores routes the app doesn't accept, and routes on non-routed apps", () => {
+    store().openWindow("projects", { route: "does-not-exist" });
+    expect(route()).toBe("home");
+    store().openWindow("about", { route: "gasolinha" });
+    expect(store().windows.about.history).toBeUndefined();
+    store().navigateWindow("projects", "nope");
+    expect(store().windows.projects.history).toEqual({ entries: ["home"], index: 0 });
+  });
+
+  it("navigate / back / forward walk the window's history", () => {
+    store().openWindow("projects");
+    store().navigateWindow("projects", "gasolinha");
+    store().navigateWindow("projects", "douglasos");
+    store().windowBack("projects");
+    expect(route()).toBe("gasolinha");
+    store().windowBack("projects");
+    expect(route()).toBe("home");
+    store().windowBack("projects"); // already at the start: no-op
+    expect(route()).toBe("home");
+    store().windowForward("projects");
+    expect(route()).toBe("gasolinha");
+    store().navigateWindow("projects", "the-wedding-post");
+    expect(store().windows.projects.history).toEqual({
+      entries: ["home", "gasolinha", "the-wedding-post"],
+      index: 2,
+    });
+  });
+
+  it("history actions on a closed or non-routed window are no-ops", () => {
+    const before = store();
+    store().windowBack("projects");
+    store().navigateWindow("projects", "gasolinha");
+    expect(store()).toBe(before);
+    store().openWindow("about");
+    const open = store();
+    store().windowForward("about");
+    expect(store()).toBe(open);
+  });
+
+  it("persists the route and history to localStorage", () => {
+    store().openWindow("projects", { route: "gasolinha" });
+    store().navigateWindow("projects", "douglasos");
+    const saved = JSON.parse(window.localStorage.getItem("douglasos:windows")!);
+    expect(saved.state.windows.projects.history).toEqual({
+      entries: ["gasolinha", "douglasos"],
+      index: 1,
+    });
+  });
+});
+
+describe("reconcilePersisted — routes", () => {
+  const VP: Viewport = { width: 1440, height: 900 };
+  const base = {
+    z: Z_BASE + 1,
+    rect: { x: 100, y: 100, width: 600, height: 400 },
+    minimized: false,
+    maximized: false,
+    restoreRect: null,
+  };
+  const persisted = (windows: Record<string, unknown>) => ({
+    windows: windows as Record<string, WindowInstance>,
+    order: Object.keys(windows) as WindowInstance["id"][],
+    focusedId: null,
+    topZ: Z_BASE + 1,
+    openCount: Object.keys(windows).length,
+  });
+
+  it("gives a window saved before routes existed the home route", () => {
+    const r = reconcilePersisted(persisted({ projects: { ...base, id: "projects" } }), VP);
+    expect(r.windows.projects.history).toEqual({ entries: ["home"], index: 0 });
+  });
+
+  it("keeps a saved route and history", () => {
+    const history = { entries: ["home", "gasolinha", "douglasos"], index: 1 };
+    const r = reconcilePersisted(persisted({ projects: { ...base, id: "projects", history } }), VP);
+    expect(r.windows.projects.history).toEqual(history);
+  });
+
+  it("drops removed projects from the history (and falls back to home if none survive)", () => {
+    const r = reconcilePersisted(
+      persisted({
+        projects: {
+          ...base,
+          id: "projects",
+          history: { entries: ["home", "deleted-project"], index: 1 },
+        },
+      }),
+      VP,
+    );
+    expect(r.windows.projects.history).toEqual({ entries: ["home"], index: 0 });
+
+    const gone = reconcilePersisted(
+      persisted({
+        projects: { ...base, id: "projects", history: { entries: ["deleted"], index: 0 } },
+      }),
+      VP,
+    );
+    expect(gone.windows.projects.history).toEqual({ entries: ["home"], index: 0 });
+  });
+
+  it("strips a stray history from apps without routes", () => {
+    const r = reconcilePersisted(
+      persisted({ about: { ...base, id: "about", history: { entries: ["x"], index: 0 } } }),
+      VP,
+    );
+    expect(r.windows.about).toBeDefined();
+    expect(r.windows.about.history).toBeUndefined();
+  });
+
+  it("rehydrates the persisted store with the route intact", async () => {
+    window.localStorage.setItem(
+      "douglasos:windows",
+      JSON.stringify({
+        state: persisted({
+          projects: {
+            ...base,
+            id: "projects",
+            history: { entries: ["home", "the-wedding-post"], index: 1 },
+          },
+        }),
+        version: 1,
+      }),
+    );
+    await useWindowStore.persist.rehydrate();
+    expect(store().windows.projects.history).toEqual({
+      entries: ["home", "the-wedding-post"],
+      index: 1,
+    });
+  });
+});

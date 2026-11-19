@@ -101,45 +101,97 @@
     "projects": {
       "title": "Meus Projetos",
       "description": "O que construí e coloquei no ar",
-      "items": [
-        {
-          "name": "Gasolinha",
-          "description": "Um SaaS de controle de abastecimento de veículos, construído de ponta a ponta com um fluxo AI-first usando Claude Code. Motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo. Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
-          "tags": [
-            "Next.js",
-            "TypeScript",
-            "Supabase",
-            "Vercel"
-          ],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://www.gasolinha.com.br"
+      "explorer": {
+        "name": "DouglasOS Explorer",
+        "menuBar": "Barra de menus",
+        "menu": {
+          "file": "Arquivo",
+          "favorites": "Favoritos",
+          "more": "Mais",
+          "home": "Lista de projetos",
+          "contact": "Falar com o Douglas",
+          "downloadCv": "Baixar CV",
+          "close": "Fechar"
         },
-        {
-          "name": "DouglasOS",
-          "description": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, dock e tela de boot. Projetado spec-first e construído com um fluxo AI-first.",
-          "tags": [
-            "Next.js",
-            "TypeScript",
-            "Zustand",
-            "Framer Motion"
-          ],
-          "status": "No ar",
-          "repo": "",
-          "demo": ""
+        "toolbar": {
+          "label": "Navegação",
+          "back": "Voltar",
+          "forward": "Avançar",
+          "home": "Início"
         },
-        {
-          "name": "The Wedding Post",
-          "description": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos. Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
-          "tags": [
-            "Next.js",
-            "TypeScript"
-          ],
-          "status": "Em andamento",
-          "repo": "",
-          "demo": ""
+        "address": "Endereço",
+        "go": "Ir",
+        "status": {
+          "done": "Concluído",
+          "count": "{count, plural, one {# projeto} other {# projetos}}"
+        },
+        "announce": "{title} — DouglasOS Explorer",
+        "home": {
+          "heading": "Meus Projetos",
+          "intro": "Escolha um projeto para ler o estudo de caso, ou digite o nome de um projeto na barra de endereço e aperte Enter.",
+          "open": "Abrir estudo de caso"
+        },
+        "page": {
+          "year": "Ano",
+          "category": "Categoria",
+          "status": "Status",
+          "stack": "Stack",
+          "links": "Links",
+          "repo": "Código-fonte",
+          "demo": "Site no ar",
+          "sections": {
+            "problem": "Problema",
+            "approach": "Abordagem",
+            "role": "Papel e stack",
+            "result": "Resultado"
+          },
+          "comingSoon": "O Douglas ainda está escrevendo esta parte. Em breve.",
+          "backHome": "Todos os projetos",
+          "contactCta": "Quer conversar sobre este projeto? Fale com o Douglas"
+        },
+        "notFound": {
+          "title": "DouglasOS Explorer",
+          "body": "Não encontrei “{address}”. Ou o Douglas ainda não construiu isso, ou ainda é um post-it no monitor dele. Confira o nome, volte para a lista de projetos ou conte para ele que isso deveria existir.",
+          "home": "Lista de projetos",
+          "contact": "Falar com o Douglas",
+          "ok": "OK"
         }
-      ]
+      },
+      "caseStudies": {
+        "gasolinha": {
+          "category": "SaaS",
+          "status": "No ar",
+          "summary": "Um SaaS de controle de abastecimento de veículos: motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo.",
+          "sections": {
+            "problem": "",
+            "approach": "Construído de ponta a ponta com um fluxo AI-first usando Claude Code.",
+            "role": "Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
+            "result": ""
+          }
+        },
+        "douglasos": {
+          "category": "Portfólio",
+          "status": "No ar",
+          "summary": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, barra de tarefas, menu Iniciar e tela de boot.",
+          "sections": {
+            "problem": "",
+            "approach": "Projetado spec-first e construído com um fluxo AI-first.",
+            "role": "",
+            "result": ""
+          }
+        },
+        "the-wedding-post": {
+          "category": "Projeto pessoal",
+          "status": "Em andamento",
+          "summary": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos.",
+          "sections": {
+            "problem": "",
+            "approach": "Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
+            "role": "",
+            "result": ""
+          }
+        }
+      }
     },
     "skills": {
       "title": "Habilidades",
@@ -332,6 +384,7 @@
     "places": "Locais",
     "allPrograms": "Todos os programas",
     "myProjects": "Meus Projetos",
+    "allProjects": "Todos os projetos",
     "resume": "Currículo (CV)",
     "contact": "Contato",
     "displayProperties": "Propriedades de Vídeo",

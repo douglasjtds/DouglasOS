@@ -1,6 +1,7 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { IconComponent } from "@/components/icons/types";
 import { PROFILE, RESUME } from "@/lib/profile";
+import { PROJECTS_HOME_ROUTE, isProjectRoute } from "@/lib/content/projects";
 import {
   AboutIcon,
   AiIcon,
@@ -37,6 +38,17 @@ export type LinkId = "linkedin" | "github" | "whatsapp" | "email";
 /** Everything that can be launched (Start menu, desktop, Quick Launch). */
 export type LauncherId = AppId | "resume" | LinkId;
 
+/**
+ * In-window navigation for apps that have pages (stage 4: the DouglasOS
+ * Explorer in `projects`). The window store keeps a Back/Forward history of
+ * these routes per window and only ever stores routes `isValid` accepts.
+ */
+export interface AppRoutes {
+  /** Route shown when the window opens without a destination. */
+  home: string;
+  isValid: (route: string) => boolean;
+}
+
 /** Launchers that also live as desktop icons (Display Properties doesn't). */
 export type DesktopIconId = Exclude<LauncherId, "display">;
 
@@ -49,9 +61,13 @@ export interface WindowAppConfig {
   onDesktop: boolean;
   /**
    * Window body style: "pane" (default) frames the content in a white sunken
-   * pane; "dialog" keeps the beige button-face body (property sheets).
+   * pane; "dialog" keeps the beige button-face body (property sheets);
+   * "bare" hands the whole body to the app, which draws its own bars and
+   * pane (the Explorer's menu bar, toolbar, address bar and status bar).
    */
-  surface?: "pane" | "dialog";
+  surface?: "pane" | "dialog" | "bare";
+  /** Present when the app has pages (see `AppRoutes`). */
+  routes?: AppRoutes;
   /** Lazily-loaded window body so content never bloats the shell bundle. */
   Content: LazyExoticComponent<ComponentType>;
 }
@@ -119,7 +135,9 @@ export const LAUNCHERS: LauncherConfig[] = [
     kind: "window",
     icon: ProjectsIcon,
     onDesktop: true,
-    defaultSize: { width: 700, height: 600 },
+    surface: "bare",
+    routes: { home: PROJECTS_HOME_ROUTE, isValid: isProjectRoute },
+    defaultSize: { width: 760, height: 600 },
     Content: lazy(() => import("@/components/apps/ProjectsApp")),
   },
   {

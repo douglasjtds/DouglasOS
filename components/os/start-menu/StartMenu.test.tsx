@@ -87,6 +87,27 @@ describe("StartMenu", () => {
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
+  it("My Projects ▸ lists the case studies and opens the Explorer at one", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    const trigger = document.querySelector<HTMLElement>('[data-start-item="my-projects"]')!;
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    trigger.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    const entries = [...document.querySelectorAll("[data-projects-submenu] [data-project-entry]")];
+    expect(entries.map((e) => e.getAttribute("data-project-entry"))).toEqual([
+      "home",
+      "gasolinha",
+      "douglasos",
+      "the-wedding-post",
+    ]);
+    await userEvent.click(screen.getByRole("menuitem", { name: "The Wedding Post" }));
+    const { windows, focusedId } = useWindowStore.getState();
+    expect(focusedId).toBe("projects");
+    expect(windows.projects.history).toEqual({ entries: ["the-wedding-post"], index: 0 });
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
   it("lists pinned programs and the places column", async () => {
     renderWithIntl(<StartMenu />);
     await userEvent.click(startButton());

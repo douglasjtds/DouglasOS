@@ -22,6 +22,9 @@ import {
 import type { IconComponent } from "@/components/icons/types";
 import { menuSurfaceClass } from "@/components/os/menuStyles";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { PROJECTS, PROJECTS_HOME_ROUTE } from "@/lib/content/projects";
+import { CaseStudyIcon } from "@/components/icons/BrowserIcons";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -90,6 +93,12 @@ function PlaceItem({
       <span className="truncate">{label}</span>
     </DropdownMenu.Item>
   );
+}
+
+/** The `projects` launcher icon (places column / projects submenu). */
+function ProjectsPlaceIcon({ size = 24 }: { size?: number }) {
+  const Icon = getLauncher("projects").icon;
+  return <Icon size={size} />;
 }
 
 /**
@@ -280,12 +289,54 @@ export function StartMenu() {
               onKeyDown={crossColumn("right")}
               className="flex flex-col gap-0.5 border-l border-startmenu-right-border bg-startmenu-right p-1.5 max-md:order-2 max-md:border-y max-md:border-l-0"
             >
-              <PlaceItem
-                testId="my-projects"
-                icon={getLauncher("projects").icon}
-                label={t("startMenu.myProjects")}
-                onSelect={() => select(() => launch("projects"))}
-              />
+              {mobile ? (
+                // Touch: no cascading submenu; the Explorer home lists the projects.
+                <PlaceItem
+                  testId="my-projects"
+                  icon={getLauncher("projects").icon}
+                  label={t("startMenu.myProjects")}
+                  onSelect={() => select(() => launch("projects"))}
+                />
+              ) : (
+                <DropdownMenu.Sub>
+                  <DropdownMenu.SubTrigger
+                    data-start-item="my-projects"
+                    className={cn(itemBase, "px-1.5 py-1 font-bold text-startmenu-right-text")}
+                  >
+                    <ProjectsPlaceIcon />
+                    <span className="flex-1 truncate">{t("startMenu.myProjects")}</span>
+                    <ChevronRight className="size-3 shrink-0" aria-hidden />
+                  </DropdownMenu.SubTrigger>
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.SubContent
+                      data-projects-submenu
+                      sideOffset={2}
+                      className={cn(menuSurfaceClass, "z-1200 min-w-48")}
+                    >
+                      <DropdownMenu.Item
+                        data-project-entry={PROJECTS_HOME_ROUTE}
+                        onSelect={() => select(() => launch("projects", { route: PROJECTS_HOME_ROUTE }))}
+                        className={cn(itemBase, "h-menu-item px-2 font-bold")}
+                      >
+                        <ProjectsPlaceIcon size={16} />
+                        {t("startMenu.allProjects")}
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
+                      {PROJECTS.map((p) => (
+                        <DropdownMenu.Item
+                          key={p.slug}
+                          data-project-entry={p.slug}
+                          onSelect={() => select(() => launch("projects", { route: p.slug }))}
+                          className={cn(itemBase, "h-menu-item px-2")}
+                        >
+                          <CaseStudyIcon size={16} />
+                          {p.name}
+                        </DropdownMenu.Item>
+                      ))}
+                    </DropdownMenu.SubContent>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Sub>
+              )}
               <PlaceItem
                 testId="resume"
                 icon={getLauncher("resume").icon}

@@ -19,6 +19,7 @@ export function MessageBox({
   children,
   actions,
   testId,
+  onCloseAutoFocus,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -28,6 +29,8 @@ export function MessageBox({
   /** Buttons; wrap the default one in `AlertDialog.Cancel asChild` for focus. */
   actions: ReactNode;
   testId?: string;
+  /** Radix close auto-focus hook: `preventDefault()` when an action moved focus elsewhere. */
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   const t = useTranslations("window");
   return (
@@ -36,6 +39,7 @@ export function MessageBox({
         <AlertDialog.Overlay className="fixed inset-0 z-1400" />
         <AlertDialog.Content
           data-testid={testId}
+          onCloseAutoFocus={onCloseAutoFocus}
           className="fixed left-1/2 top-1/2 z-1400 flex w-[min(420px,calc(100vw-32px))] -translate-x-1/2 -translate-y-1/2 flex-col rounded-t-window border-x-[3px] border-b-[3px] border-window-frame bg-window-frame shadow-window outline-none"
         >
           <div className="flex h-titlebar items-center gap-1.5 rounded-t-window bg-titlebar-gradient px-1.5 pt-0.5">

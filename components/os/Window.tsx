@@ -116,20 +116,29 @@ export function Window({ id }: { id: AppId }) {
       )}
     >
       <WindowChrome id={id} active={isActive} titleId={titleId} />
-      <div className="flex min-h-0 flex-1 flex-col bg-button-face p-1 max-md:p-0.5">
-        <div
-          className={cn(
-            "min-h-0 flex-1 overflow-auto overscroll-contain text-body text-text",
-            app.surface === "dialog"
-              ? "p-2"
-              : "border border-field-border bg-surface p-4 max-md:p-3",
-          )}
-        >
+      {app.surface === "bare" ? (
+        // The app draws its own bars and content pane (DouglasOS Explorer).
+        <div className="flex min-h-0 flex-1 flex-col bg-button-face text-body text-text">
           <Suspense fallback={null}>
             <Content />
           </Suspense>
         </div>
-      </div>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col bg-button-face p-1 max-md:p-0.5">
+          <div
+            className={cn(
+              "min-h-0 flex-1 overflow-auto overscroll-contain text-body text-text",
+              app.surface === "dialog"
+                ? "p-2"
+                : "border border-field-border bg-surface p-4 max-md:p-3",
+            )}
+          >
+            <Suspense fallback={null}>
+              <Content />
+            </Suspense>
+          </div>
+        </div>
+      )}
       {!mobile && <ResizeHandles id={id} maximized={maximized} />}
     </motion.section>
   );

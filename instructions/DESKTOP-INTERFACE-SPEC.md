@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts) and stage 4 (DouglasOS Explorer: projects as case studies) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -181,7 +181,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; later: Messenger *(5b)*, and folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
 
 **Right column (light blue):**
-- **My Projects ▸** — opens the Projects window; from stage 4, a submenu lists each case study (opens `projects` at that route).
+- **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
 - **Résumé (CV)** — downloads the PDF (no window).
 - **Contact** — opens Contact.
 - separator
@@ -209,8 +209,8 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 ### Anatomy (top → bottom)
 1. **Title bar** (`titlebar` height, `gradient-titlebar` / inactive variant, rounded top corners): 16px app icon, bold title (ellipsis), then **Minimize**, **Maximize/Restore**, **Close** on the right (21px, own glyphs, close in red).
-2. **Menu bar** *(optional per app)*: `File / Edit / View / Help` — **only menus with real, useful items** (e.g. File → Download CV, Close; View → text size; Help → About this app). Never fake menus. Projects/Explorer gets Favorites *(stage 4)*.
-3. **Toolbar** *(optional)*: e.g. Back/Forward/Home + address bar in DouglasOS Explorer *(stage 4)*.
+2. **Menu bar** *(optional per app)*: `File / Edit / View / Help` — **only menus with real, useful items** (e.g. File → Download CV, Close; View → text size; Help → About this app). Never fake menus. Projects/Explorer gets File + Favorites *(stage 4 — done, see [§10](#my-projects-projects))*.
+3. **Toolbar** *(optional)*: e.g. Back/Forward/Home + address bar in DouglasOS Explorer *(stage 4 — done)*.
 4. **Content**: `button-face` body framing a white sunken content pane, scrollable; shadcn components with the XP treatment.
 5. **Status bar** *(optional)*: sunken panes with short status text (e.g. "Done", item counts).
 6. **Frame**: 3px sides/bottom; resize handles on all 8 edges/corners (existing `useResize`).
@@ -225,7 +225,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - **Close**: removes the window from the store; focus returns to the previously focused window, or to the launcher that opened it.
 - **Sizes**: default per app (registry `defaultSize`), min 400×300, max = work area.
 - **Window icon menu** (click on the 16px title icon): Restore / Minimize / Maximize / Close — shipped in stage 1 (radix DropdownMenu).
-- **Stage 1 implementation notes:** windows live in one isolated stacking layer (`z-100`, `isolate`) so their ever-growing z-indexes never climb above the taskbar; the per-app **menu bar** and **status bar** are not shipped yet (no app has real items for them yet — "never fake menus"); the Display Properties window uses the beige `dialog` body (`surface: "dialog"` in the registry) instead of the white content pane.
+- **Stage 1 implementation notes:** windows live in one isolated stacking layer (`z-100`, `isolate`) so their ever-growing z-indexes never climb above the taskbar; the per-app **menu bar** and **status bar** shipped only where they have real items — so far just DouglasOS Explorer (stage 4), which draws its own bars through the registry's `surface: "bare"` body; the Display Properties window uses the beige `dialog` body (`surface: "dialog"` in the registry) instead of the white content pane.
 
 ### Window apps (stage 1)
 `about`, `experience`, `projects`, `skills`, `how-i-work-with-ai`, `contact`, plus the new `display` (Display Properties). `resume` stays a download action.
@@ -278,8 +278,17 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 
 ### My Projects (`projects`)
 **Window:** ~700×600
-- v1.5 stage 1: grid/list of project cards in white panes (name, one-liner, tags, links, status).
-- Stage 4: becomes **DouglasOS Explorer** — browser-style window with Back/Forward/Home, an editable address bar (`C:\DouglasOS\Projects\<slug>`-style; exact format chosen in stage 4), home page listing projects, case-study pages (Problem → Approach → Role & stack → Result), themed "not found" dialog. Route lives in the window's payload in `windowStore`.
+**DouglasOS Explorer** *(stage 4 — done)*: the `projects` window is a small browser for case studies. Original name and glyphs (round green Back/Forward badges, a house for Home, a "case study" page icon, the DouglasOS tile as the brand mark) — never the name or logo of a real browser. The window title stays "My Projects" (same label on the desktop icon, Start menu and taskbar); the brand shows in the status bar.
+
+- **Content:** typed static source `lib/content/projects.ts` (slug, brand name, year, aliases, stack tags, repo/demo links, images in `public/projects/<slug>/`) + prose in `messages/*.json` → `apps.projects.caseStudies.<slug>` (category, status, summary, and the sections **Problem → Approach → Role & stack → Result**). No MDX. An empty section string renders "Douglas is still writing this part. Coming soon." (EN/PT) — nothing is invented; open items are marked `TODO(douglas)`. A unit test enforces EN/PT parity per section. The crawlable `StaticContent` lists the same projects with only the written sections.
+- **Anatomy (desktop):** menu bar — **File** (Project list, Contact Douglas, Download CV, Close) and **Favorites** (one entry per project), brand tile at the right; toolbar — **Back** (with label), **Forward**, **Home** (disabled when there's nowhere to go); address row — "Address" label, field with the folder glyph (`font-mono`), **Go**; white sunken content pane; status bar — "Done" / "Concluído" and "DouglasOS Explorer".
+- **Address format (decided):** `C:\DouglasOS\Projects\<slug>`; home is `C:\DouglasOS\Projects\`. `resolveAddress()` (`lib/content/projectAddress.ts`, pure, unit-tested) ignores case, surrounding spaces/quotes, `/` vs `\`, the whole or partial prefix and a fun extension (`gasolinha.exe`), and matches slug, brand name or alias with punctuation/spacing removed ("the wedding POST" → `the-wedding-post`). Empty input, the root, `home`, `Projects` → home. Anything else (or a deeper path) is not found.
+- **Not found:** an error message box ("DouglasOS Explorer", red error icon): "Can't find “{address}”. Either Douglas hasn't built it yet, or it's still a sticky note on his monitor…" (EN/PT) with **Project list**, **Contact Douglas** and **OK** (default; `Esc` = OK). The page stays where it was; OK/Esc return focus to the address field.
+- **Pages:** home = "My Projects" heading, one-line hint and the project list (page icon, linked name, category · status · year, summary, tags). Case study = header (48px page icon, name, meta line), summary, Live site / Source code links (new tab, `noopener noreferrer`), images when present, the four sections (Role & stack also lists the stack tags), footer with **All projects** and **Want to talk about this project? Contact Douglas**.
+- **State:** the route and Back/Forward history live in `windowStore` as the window's `history` (`{ entries, index }`, max 50, persisted with the window and sanitized by `reconcilePersisted`: removed projects drop out, windows saved before stage 4 open on home). API for other surfaces (assistant stage 5, Run/palette stage 7, Start menu): `openWindow("projects", { route: "<slug>" | "home" })` (also `launch(id, destination)`); an already-open window pushes the route on its history; unknown routes are ignored. Plus `navigateWindow(id, route)`, `windowBack(id)`, `windowForward(id)`. Routed apps declare `routes: { home, isValid }` in the registry.
+- **A11y:** the field has a visible `<label>` ("Address"); `Enter`/Go navigates, `Esc` in the field reverts it to the current address (the global Esc-closes-window shortcut never fires while typing); toolbar is a labelled group with named icon buttons; on a page change focus moves to the page's `h3` (sections are `h4`) and a polite live region announces "{title} — DouglasOS Explorer". Pages swap instantly (no transition at all, so reduced motion needs no alternative).
+- **Mobile:** the window is full-screen like every window; the menu bar folds into a **More (⋯)** menu (Favorites + File items) and the toolbar is a single compact row — Back, Forward, Home (44px icon buttons), the address field (16px text so iOS doesn't zoom; the label is visually hidden; the keyboard's Go key submits; it scrolls to show the slug) and More.
+- **Desktop icons per project:** none (decision: keep the desktop uncluttered); projects are reached through My Projects (icon, pinned Start item, `My Projects ▸` submenu).
 
 ### Skills (`skills`)
 **Window:** ~650×550
@@ -316,7 +325,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **Icon grid:** like a phone home screen — larger cells, filled **row-first** and centered (`mobileIconLayout` in `lib/store/desktopGrid.ts`, unit-tested for no overlap at 320–767px), so About, **resume.pdf** and Contact share the first row. The layout is derived from the container width (ResizeObserver) and **never persisted**, so it can't disturb the desktop arrangement in `desktopStore`. If a short screen can't fit every row, the desktop scrolls vertically instead of stacking icons.
 - **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
 - **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
-- **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. "Back" arrives with the Explorer in stage 4.
+- **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. In-app "Back" lives in the Explorer toolbar (stage 4; see [§10](#my-projects-projects) → Mobile).
 - **Gestures:** single tap opens an icon. **Long-press** is reserved for the stage-7 context menu: icons already suppress text selection and the iOS callout so the gesture is free, but nothing is bound to it yet (no dead menu). **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
 - **Boot/logon:** boot ~1s (`BOOT_MOBILE_MS`; reduced motion stays at 0.6s), Skip is a 44px button; the logon stacks (brand above the user tile, thinner bands) and its hint says "Tap Douglas to come in." Same once-per-session rule.
 - **Welcome balloon:** same once-per-session balloon with "tap" copy; on every width it now dismisses itself as soon as the Start menu or a window opens, so it never covers the menu or a window's buttons.
@@ -397,7 +406,7 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 
 | Key | Storage | Owner | Contents |
 |-----|---------|-------|----------|
-| `douglasos:windows` | localStorage | `windowStore` | Open windows, rects, z-order, minimized/maximized (reconciled on load) |
+| `douglasos:windows` | localStorage | `windowStore` | Open windows, rects, z-order, minimized/maximized, Explorer route + Back/Forward history (reconciled on load) |
 | `douglasos:desktop-icons` | localStorage | `desktopStore` | Icon cells (merge fills new launchers) |
 | `douglasos:display` | localStorage | `displayStore` *(stage 1)* | Wallpaper + solid-color swatch |
 | `douglasos-booted` | sessionStorage | `shellStore` *(stage 1)* | Boot + logon seen: skip them for the rest of the session |
@@ -430,7 +439,7 @@ Later stages add their own keys here (assistant dismissal, messenger history, vo
 | 1 | Tokens, boot, logon, taskbar (Start, Quick Launch, window buttons, tray), Start menu, Luna windows, XP icons, wallpaper + Display Properties, keyboard map (stage-1 rows), welcome balloon |
 | 2 | Mobile touchable XP (§11), replaces `MobileFallback` — **done** |
 | 3 | External shortcuts (LinkedIn/GitHub/WhatsApp/e-mail) on desktop and All Programs — **done** |
-| 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route |
+| 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route — **done** |
 | 5 | "mini Douglas" scripted assistant (layer + queue) |
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast) |
 | 6 | Recycle Bin rescue + lasso/multi-select |

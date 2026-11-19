@@ -142,4 +142,32 @@ test.describe("touch shell", () => {
     const popup = await popupPromise;
     await expect.poll(() => popup.url()).toBe("https://www.linkedin.com/in/douglasjtds");
   });
+
+  test("Explorer: full screen, compact address bar, tap a project, type another, Back", async ({ page }) => {
+    await gotoDesktop(page);
+    await desktopIcon(page, "projects").tap();
+    const win = windowById(page, "projects");
+    await expect(win).toHaveAttribute("data-presentation", "fullscreen");
+    // Compact: no menu bar, a More menu, 44px nav buttons.
+    await expect(win.getByRole("menubar")).toHaveCount(0);
+    await expect(win.locator("[data-explorer-more]")).toBeVisible();
+    const back = (await win.locator('[data-explorer-nav="back"]').boundingBox())!;
+    expect(back.height).toBeGreaterThanOrEqual(44);
+
+    await win.locator('[data-project-link="gasolinha"]').tap();
+    await expect(win.locator("[data-explorer-page]")).toHaveAttribute("data-explorer-page", "gasolinha");
+
+    const address = win.locator("[data-explorer-address]");
+    await address.fill("douglasos");
+    await address.press("Enter");
+    await expect(win.locator("[data-explorer-page]")).toHaveAttribute("data-explorer-page", "douglasos");
+
+    await win.locator('[data-explorer-nav="back"]').tap();
+    await expect(win.locator("[data-explorer-page]")).toHaveAttribute("data-explorer-page", "gasolinha");
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
 });
