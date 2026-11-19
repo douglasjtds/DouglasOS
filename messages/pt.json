@@ -69,7 +69,16 @@
     "projects": {
       "title": "projects.app",
       "label": "Projetos",
+      "visit": "Ver site",
       "items": [
+        {
+          "name": "Landing pages para pequenos negócios",
+          "description": "O site do meu serviço de landing pages: páginas únicas sob medida para autônomos e pequenos negócios, alinhadas à identidade visual de cada marca, feitas para converter pelo WhatsApp e entregues em até 10 dias úteis. O próprio site mostra páginas de clientes no ar e os pacotes.",
+          "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+          "status": "No ar",
+          "repo": "",
+          "demo": "https://douglastertuliano.vercel.app/"
+        },
         {
           "name": "Gasolinha",
           "description": "Um SaaS de controle de abastecimento de veículos, construído de ponta a ponta com um fluxo AI-first usando Claude Code. Motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo. Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
@@ -79,18 +88,52 @@
           "demo": "https://www.gasolinha.com.br"
         },
         {
-          "name": "DouglasOS",
-          "description": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, dock e tela de boot. Projetado spec-first e construído com um fluxo AI-first.",
-          "tags": ["Next.js", "TypeScript", "Zustand", "Framer Motion"],
+          "name": "Poupensa",
+          "description": "Um SaaS que monta a sua lista de compras a partir do que a casa realmente consome, para comprar só o necessário e parar de desperdiçar dinheiro.",
+          "tags": ["Next.js", "TypeScript", "SaaS"],
           "status": "No ar",
           "repo": "",
-          "demo": ""
+          "demo": "https://poupensa.vercel.app/"
+        },
+        {
+          "name": "Link para WhatsApp",
+          "description": "Uma ferramenta simples que gera um link direto para uma conversa no WhatsApp: digite o telefone e uma mensagem opcional e compartilhe o link onde quiser.",
+          "tags": ["Next.js", "TypeScript"],
+          "status": "No ar",
+          "repo": "",
+          "demo": "https://link-to-whatsapp.vercel.app/"
+        },
+        {
+          "name": "Santo Rosário",
+          "description": "Um guia tranquilo e sem distrações para rezar o terço: o terço do dia, o rosário completo ou os 20 mistérios, em português e inglês.",
+          "tags": ["Next.js", "TypeScript", "i18n"],
+          "status": "No ar",
+          "repo": "",
+          "demo": "https://santo-rosario-dojotes.vercel.app/"
+        },
+        {
+          "name": "Gerador de QR Code",
+          "description": "Gera um QR Code a partir de qualquer texto ou link, direto no navegador.",
+          "tags": ["JavaScript", "GitHub Pages"],
+          "status": "No ar",
+          "repo": "",
+          "demo": "https://douglasjtds.github.io/qr-code-generator/"
+        },
+        {
+          "name": "Ferramenta de prospecção de leads",
+          "description": "Um CRM pessoal que estou construindo para vender landing pages. Ele puxa negócios do Google Maps (cidade, nicho, nota, avaliações, se tem site), monta uma fila diária (quem respondeu, respostas automáticas para furar, follow-ups vencidos), sugere a próxima ação com a mensagem pronta, abre o WhatsApp com um clique e acompanha cada lead no funil: a contatar → contatado → respondeu → reunião → proposta → fechado. É de uso pessoal, por isso não tem link público.",
+          "tags": ["Next.js", "TypeScript", "Google Maps"],
+          "status": "Em construção",
+          "repo": "",
+          "demo": "",
+          "image": "/projects/prospecting-tool.png",
+          "imageAlt": "Print da ferramenta de prospecção: fila diária de leads à esquerda e, à direita, o status do lead selecionado, a próxima ação e a mensagem pronta para o WhatsApp (nomes das empresas fictícios)."
         },
         {
           "name": "The Wedding Post",
-          "description": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos. Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
+          "description": "O site de confirmação de presença do meu casamento, onde os convidados confirmavam presença e acompanhavam a celebração. Projeto pessoal, por isso sem link público.",
           "tags": ["Next.js", "TypeScript"],
-          "status": "Em andamento",
+          "status": "Pessoal",
           "repo": "",
           "demo": ""
         }
