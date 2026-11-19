@@ -325,7 +325,7 @@ The MVP is ready to launch when:
 | 9 | Pixelated webcam | "Retro Cam": local-only processing, palettes, no upload |
 | 10 | Paint + easter egg | "DouglasOS Paint" + "DON'T OPEN THIS.exe" (short, reversible) |
 
-Later / future ideas: Solitaire and other games, screen saver (if not cheap in stage 1), heavy 3D scene (v2).
+Later / future ideas: Solitaire and other games, screen saver (not shipped in stage 1), per-app window menu/status bars, hand-tuned 16px icon variants, heavy 3D scene (v2).
 
 ### Definition of done — every v1.5 stage
 
@@ -346,7 +346,8 @@ A stage is done only when **all** of these hold:
 | Stage | Status |
 |-------|--------|
 | 0 | Done |
-| 1–10, 5b | Planned |
+| 1 | Done — desktop XP shell (≥ 768px); mobile keeps the restyled linear fallback until stage 2 |
+| 2–10, 5b | Planned |
 
 ---
 

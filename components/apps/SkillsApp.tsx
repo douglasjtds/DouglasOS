@@ -1,34 +1,31 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { GroupBox } from "@/components/ui/group-box";
+import { Tag } from "@/components/ui/tag";
 
 interface Category {
   name: string;
   items: string[];
 }
 
+/** One group box per category, skills as XP chips. No star ratings. */
 export default function SkillsApp() {
   const t = useTranslations("apps.skills");
   const categories = t.raw("categories") as Category[];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       {categories.map((c) => (
-        <div key={c.name} className="flex flex-col gap-2">
-          <h2 className="font-mono text-xs uppercase tracking-wide text-text-muted">
-            {c.name}
-          </h2>
-          <ul className="flex flex-wrap gap-2">
+        <GroupBox key={c.name} title={c.name}>
+          <ul className="flex flex-wrap gap-1">
             {c.items.map((item) => (
-              <li
-                key={item}
-                className="rounded-md border border-white/[0.06] bg-glass-card px-2.5 py-1 text-sm text-text-secondary"
-              >
-                {item}
+              <li key={item}>
+                <Tag className="text-body">{item}</Tag>
               </li>
             ))}
           </ul>
-        </div>
+        </GroupBox>
       ))}
     </div>
   );

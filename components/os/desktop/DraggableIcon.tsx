@@ -1,12 +1,13 @@
 "use client";
 
+import type { KeyboardEvent } from "react";
 import { motion } from "framer-motion";
 import { DesktopIcon } from "@/components/os/desktop/DesktopIcon";
 import { useDesktopIconDrag } from "@/hooks/useDesktopIconDrag";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { cellToPixel } from "@/lib/store/desktopGrid";
-import type { LauncherConfig } from "@/lib/apps/registry";
+import type { DesktopIconId, LauncherConfig } from "@/lib/apps/registry";
 
 /**
  * Positions one desktop icon and makes it draggable. The icon follows the
@@ -14,7 +15,19 @@ import type { LauncherConfig } from "@/lib/apps/registry";
  * (instant under reduced motion). The `wasDragged` guard keeps a drop from also
  * opening the app. The shell only renders client-side, so `window` is safe here.
  */
-export function DraggableIcon({ launcher }: { launcher: LauncherConfig }) {
+export function DraggableIcon({
+  launcher,
+  selected,
+  tabbable,
+  onSelect,
+  onKeyDown,
+}: {
+  launcher: LauncherConfig & { id: DesktopIconId };
+  selected: boolean;
+  tabbable: boolean;
+  onSelect: (id: DesktopIconId) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
+}) {
   const cell = useDesktopStore((s) => s.iconCells[launcher.id]);
   const { handlers, live, wasDragged } = useDesktopIconDrag(launcher.id);
   const reducedMotion = useReducedMotion();
@@ -26,7 +39,8 @@ export function DraggableIcon({ launcher }: { launcher: LauncherConfig }) {
 
   return (
     <motion.div
-      className="absolute left-0 top-0 cursor-grab touch-none active:cursor-grabbing"
+      role="none"
+      className="absolute left-0 top-0 touch-none"
       style={{ zIndex: dragging ? 2 : 1 }}
       // No fly-in on mount: icons render directly at their grid cell; the
       // spring only animates subsequent moves (drag release snapping).
@@ -39,7 +53,14 @@ export function DraggableIcon({ launcher }: { launcher: LauncherConfig }) {
       }
       {...handlers}
     >
-      <DesktopIcon launcher={launcher} wasDragged={wasDragged} />
+      <DesktopIcon
+        launcher={launcher}
+        selected={selected}
+        tabbable={tabbable}
+        wasDragged={wasDragged}
+        onSelect={onSelect}
+        onKeyDown={onKeyDown}
+      />
     </motion.div>
   );
 }

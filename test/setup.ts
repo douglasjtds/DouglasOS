@@ -41,6 +41,53 @@ Object.defineProperty(window, "localStorage", {
   configurable: true,
   value: createMemoryStorage(),
 });
+// Same story for sessionStorage (boot/logon + welcome-balloon flags).
+Object.defineProperty(window, "sessionStorage", {
+  configurable: true,
+  value: createMemoryStorage(),
+});
+
+/*
+ * Browser APIs jsdom lacks but Radix (menus, dialogs, tooltips) and Framer
+ * Motion touch: matchMedia, ResizeObserver, pointer capture, scrollIntoView.
+ */
+if (!window.matchMedia) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+if (!("ResizeObserver" in window)) {
+  class ResizeObserverStub {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  Object.defineProperty(window, "ResizeObserver", {
+    configurable: true,
+    value: ResizeObserverStub,
+  });
+}
+for (const method of ["hasPointerCapture", "setPointerCapture", "releasePointerCapture"] as const) {
+  if (!(method in Element.prototype)) {
+    Object.defineProperty(Element.prototype, method, {
+      configurable: true,
+      value: method === "hasPointerCapture" ? () => false : () => {},
+    });
+  }
+}
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
 
 beforeEach(() => {
   Object.defineProperty(window, "innerWidth", {
@@ -53,8 +100,9 @@ beforeEach(() => {
     writable: true,
     value: DEFAULT_VIEWPORT.height,
   });
-  // Persisted stores write to localStorage; start each test from a clean slate.
+  // Persisted stores write to storage; start each test from a clean slate.
   window.localStorage.clear();
+  window.sessionStorage.clear();
 });
 
 afterEach(() => {

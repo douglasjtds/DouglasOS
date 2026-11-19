@@ -6,7 +6,7 @@ import {
 } from "react";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { cellToPixel } from "@/lib/store/desktopGrid";
-import type { LauncherId } from "@/lib/apps/registry";
+import type { DesktopIconId } from "@/lib/apps/registry";
 
 /** Pixels of movement before a press is treated as a drag (not a click). */
 const DRAG_THRESHOLD = 4;
@@ -43,7 +43,7 @@ export interface IconDrag {
  * into the nearest free grid cell. Reads the store imperatively via
  * `getState()`; `live` drives the follow render.
  */
-export function useDesktopIconDrag(id: LauncherId): IconDrag {
+export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
   const session = useRef<DragSession | null>(null);
   const wasDragged = useRef(false);
   const [live, setLive] = useState<{ x: number; y: number } | null>(null);

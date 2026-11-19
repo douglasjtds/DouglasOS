@@ -2,83 +2,83 @@
 
 import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { Download, X } from "lucide-react";
-import { LocaleToggle } from "@/components/os/menu-bar/LocaleToggle";
+import { Download } from "lucide-react";
+import { LocaleToggle } from "@/components/os/taskbar/LocaleToggle";
+import { DouglasOSLogo, UserAvatar } from "@/components/icons/SystemIcons";
 import { AboutSummary } from "@/components/apps/AboutApp";
 import ExperienceApp from "@/components/apps/ExperienceApp";
 import ProjectsApp from "@/components/apps/ProjectsApp";
 import SkillsApp from "@/components/apps/SkillsApp";
 import HowIWorkWithAiApp from "@/components/apps/HowIWorkWithAiApp";
 import ContactApp from "@/components/apps/ContactApp";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
- * Below 768px the OS metaphor is intentionally dropped (see
- * DESKTOP-INTERFACE-SPEC.md): the same content renders as a clean linear
- * page reusing the app components and design tokens — no windows, no 3D.
+ * Below 768px the linear page stays until stage 2 replaces it with the
+ * touchable XP desktop (DESKTOP-INTERFACE-SPEC §11). Restyled with the Luna
+ * tokens so it matches the new identity in the meantime: same content, no
+ * windows, no 3D.
  */
 export function MobileFallback() {
   const t = useTranslations();
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
+  const downloadCv = (
+    <a
+      href="/resume.pdf"
+      download="Douglas-Tertuliano-CV.pdf"
+      className={cn(buttonVariants({ variant: "primary" }), "min-h-touch-target gap-2")}
+    >
+      <Download className="size-4" aria-hidden />
+      {t("resume.download")}
+    </a>
+  );
+
   return (
-    <div className="min-h-dvh bg-base-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgb(0_217_255/0.08),transparent)]">
-      <header className="sticky top-0 z-50 flex h-12 items-center justify-between border-b border-white/[0.08] bg-glass-chrome px-4 backdrop-blur-glass-strong">
-        <p className="font-mono text-sm font-semibold">
-          <span className="text-text-primary">Douglas</span>
-          <span className="text-accent">OS</span>
+    <div className="min-h-dvh bg-button-face">
+      <header className="sticky top-0 z-50 flex h-12 items-center justify-between bg-taskbar-gradient px-3">
+        <p className="flex items-center gap-2 font-title text-start text-text-inverse">
+          <DouglasOSLogo size={24} />
+          <span>
+            Douglas<span className="text-hot">OS</span>
+          </span>
         </p>
-        <LocaleToggle />
+        <div className="rounded-button bg-tray-gradient px-2 py-1">
+          <LocaleToggle />
+        </div>
       </header>
 
       {!bannerDismissed && (
-        <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] bg-base-2/60 px-4 py-2">
-          <p className="text-xs text-text-muted">{t("mobile.banner")}</p>
+        <div className="flex items-center justify-between gap-3 border-b border-info-border bg-info px-3 py-2">
+          <p className="text-system text-text">{t("mobile.banner")}</p>
           <button
             type="button"
             onClick={() => setBannerDismissed(true)}
             aria-label={t("mobile.dismiss")}
-            className="shrink-0 rounded-md p-1 text-text-muted transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex size-touch-target shrink-0 items-center justify-center text-text focus-light"
           >
-            <X className="size-3.5" aria-hidden />
+            <svg viewBox="0 0 10 10" className="size-2.5" aria-hidden>
+              <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" />
+            </svg>
           </button>
         </div>
       )}
 
-      <main className="mx-auto flex max-w-xl flex-col gap-12 px-5 pb-16 pt-10">
-        {/* Hero */}
-        <section className="flex flex-col items-start gap-4">
-          <div
-            className="flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-accent/25 via-base-2 to-accent-purple/25 shadow-glow-subtle ring-1 ring-accent/30"
-            aria-hidden
-          >
-            <span className="font-mono text-xl font-bold text-accent">DT</span>
-          </div>
+      <main className="mx-auto flex max-w-xl flex-col gap-6 px-4 pb-12 pt-6">
+        <section className="flex flex-col items-start gap-3 border border-field-border bg-surface p-4">
+          <UserAvatar size={64} />
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-text-primary">
-              {t("apps.about.name")}
-            </h1>
-            <p className="mt-1 text-lg font-medium text-accent">
-              {t("apps.about.headline")}
-            </p>
-            <p className="mt-1 font-mono text-xs text-text-muted">
-              {t("apps.about.location")}
-            </p>
+            <h1 className="text-heading-lg text-text">{t("apps.about.name")}</h1>
+            <p className="text-heading text-text">{t("apps.about.headline")}</p>
+            <p className="text-system text-text-muted">{t("apps.about.location")}</p>
           </div>
-          <p className="text-sm leading-relaxed text-text-secondary">
-            {t("mobile.heroTagline")}
-          </p>
-          <a
-            href="/resume.pdf"
-            download="Douglas-Tertuliano-CV.pdf"
-            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-semibold text-base-0 shadow-glow-subtle transition hover:bg-accent-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-0"
-          >
-            <Download className="size-4" aria-hidden />
-            {t("resume.download")}
-          </a>
+          <p className="text-body text-text">{t("mobile.heroTagline")}</p>
+          {downloadCv}
         </section>
 
         <Section title={t("mobile.nav.about")}>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <AboutSummary />
           </div>
         </Section>
@@ -100,22 +100,14 @@ export function MobileFallback() {
         </Section>
 
         <Section title={t("mobile.nav.contact")}>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <ContactApp />
-            <a
-              href="/resume.pdf"
-              download="Douglas-Tertuliano-CV.pdf"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-semibold text-base-0 shadow-glow-subtle transition hover:bg-accent-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-0"
-            >
-              <Download className="size-4" aria-hidden />
-              {t("resume.download")}
-            </a>
+            {downloadCv}
           </div>
         </Section>
 
-        <footer className="border-t border-white/[0.06] pt-6 text-center font-mono text-xs text-text-muted">
-          Douglas<span className="text-accent">OS</span> —{" "}
-          {t("apps.about.headline")}
+        <footer className="pt-2 text-center text-system text-text-muted">
+          DouglasOS — {t("apps.about.headline")}
         </footer>
       </main>
     </div>
@@ -124,12 +116,11 @@ export function MobileFallback() {
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-4">
-      <h2 className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest text-accent">
-        <span className="size-1.5 rounded-full bg-accent shadow-glow-subtle" aria-hidden />
+    <section className="flex flex-col border border-window-frame bg-window-frame">
+      <h2 className="bg-titlebar-gradient px-2 py-1 font-title text-title text-titlebar-text">
         {title}
       </h2>
-      {children}
+      <div className="bg-surface p-4">{children}</div>
     </section>
   );
 }

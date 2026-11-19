@@ -1,19 +1,38 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useId, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import { useWindowStore } from "@/lib/store/windowStore";
 import { getApp, type AppId } from "@/lib/apps/registry";
 import { WindowChrome } from "@/components/os/window/WindowChrome";
 import { ResizeHandles } from "@/components/os/window/ResizeHandles";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { DURATION, EASE } from "@/lib/motion";
+import type { Rect } from "@/lib/store/geometry";
 import { cn } from "@/lib/utils";
+
+/**
+ * Transform that shrinks a window onto its taskbar button (the minimize
+ * target). Falls back to a short drop toward the taskbar if the button can't
+ * be measured.
+ */
+function minimizeTransform(id: AppId, rect: Rect) {
+  const button = document.querySelector<HTMLElement>(`[data-task-app="${id}"]`);
+  if (!button) return { x: 0, y: 40, scale: 0.9 };
+  const b = button.getBoundingClientRect();
+  return {
+    x: b.left - rect.x,
+    y: b.top - rect.y,
+    scale: Math.max(0.05, b.width / rect.width),
+  };
+}
 
 export function Window({ id }: { id: AppId }) {
   const instance = useWindowStore((s) => s.windows[id]);
   const isActive = useWindowStore((s) => s.focusedId === id);
   const focusWindow = useWindowStore((s) => s.focusWindow);
-  const t = useTranslations("apps");
+  const reduced = useReducedMotion();
+  const titleId = useId();
 
   const rootRef = useRef<HTMLElement>(null);
   const app = getApp(id);
@@ -24,44 +43,72 @@ export function Window({ id }: { id: AppId }) {
     rootRef.current?.focus();
   }, []);
 
+  const minimized = instance?.minimized ?? false;
+  // Once a window has been minimized, un-minimizing is a "restore" (reverse
+  // tween, duration-base) rather than the first-open fade (duration-fast).
+  // Derived during render — React's "adjust state on prop change" pattern.
+  const [everMinimized, setEverMinimized] = useState(minimized);
+  if (minimized && !everMinimized) setEverMinimized(true);
+
   if (!instance) return null;
-  const { rect, z, minimized, maximized } = instance;
+  const { rect, z, maximized } = instance;
+
+  const target = minimized
+    ? { opacity: 0, ...minimizeTransform(id, rect) }
+    : { opacity: 1, x: 0, y: 0, scale: 1 };
+  const transition = reduced
+    ? { duration: DURATION.instant }
+    : minimized
+      ? { duration: DURATION.base, ease: EASE.in }
+      : {
+          duration: everMinimized ? DURATION.base : DURATION.fast,
+          ease: EASE.out,
+        };
 
   return (
     <motion.section
       ref={rootRef}
-      role="dialog"
-      aria-label={t(`${id}.title`)}
+      aria-labelledby={titleId}
       aria-hidden={minimized}
+      inert={minimized}
+      data-window={id}
+      data-active={isActive}
       tabIndex={-1}
       onPointerDown={() => focusWindow(id)}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={
-        minimized
-          ? { opacity: 0, scale: 0.95, transition: { duration: 0.18, ease: "easeIn" } }
-          : { opacity: 1, scale: 1, transition: { duration: 0.25, ease: "easeOut" } }
-      }
-      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.18, ease: "easeIn" } }}
+      initial={{ opacity: 0 }}
+      animate={target}
+      transition={transition}
       style={{
         left: rect.x,
         top: rect.y,
         width: rect.width,
         height: rect.height,
         zIndex: z,
+        transformOrigin: "top left",
       }}
       className={cn(
-        "absolute flex flex-col overflow-hidden rounded-window border bg-glass-window backdrop-blur-glass focus:outline-none",
+        "pointer-events-auto absolute flex flex-col border-x-[3px] border-b-[3px] outline-none",
+        !maximized && "rounded-t-window",
         isActive
-          ? "border-accent/25 shadow-window"
-          : "border-white/[0.08] shadow-window-inactive",
+          ? "border-window-frame bg-window-frame shadow-window"
+          : "border-window-frame-inactive bg-window-frame-inactive shadow-window-inactive",
         minimized && "pointer-events-none",
       )}
     >
-      <WindowChrome id={id} />
-      <div className="min-h-0 flex-1 overflow-auto p-6">
-        <Suspense fallback={null}>
-          <Content />
-        </Suspense>
+      <WindowChrome id={id} active={isActive} titleId={titleId} />
+      <div className="flex min-h-0 flex-1 flex-col bg-button-face p-1">
+        <div
+          className={cn(
+            "min-h-0 flex-1 overflow-auto text-body text-text",
+            app.surface === "dialog"
+              ? "p-2"
+              : "border border-field-border bg-surface p-4",
+          )}
+        >
+          <Suspense fallback={null}>
+            <Content />
+          </Suspense>
+        </div>
       </div>
       <ResizeHandles id={id} maximized={maximized} />
     </motion.section>

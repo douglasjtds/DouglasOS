@@ -1,43 +1,80 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { LauncherId } from "@/lib/apps/registry";
+import { DESKTOP_ICON_IDS, type DesktopIconId } from "@/lib/apps/registry";
 import type { Viewport } from "@/lib/store/geometry";
 import {
-  DEFAULT_CELLS,
+  FALLBACK_VIEWPORT,
   cellToPixel,
+  defaultCells,
   nearestFreeCell,
   pixelToCell,
   type Cell,
 } from "@/lib/store/desktopGrid";
 
-/** Read the live viewport (client-only; actions never run during SSR). */
+/** Read the live viewport; falls back to a desktop default during SSR. */
 function viewport(): Viewport {
+  if (typeof window === "undefined") return FALLBACK_VIEWPORT;
   return { width: window.innerWidth, height: window.innerHeight };
 }
 
+/** The default column-first layout for the current viewport. */
+export function defaultIconCells(
+  vp: Viewport = viewport(),
+): Record<DesktopIconId, Cell> {
+  return defaultCells(DESKTOP_ICON_IDS, vp);
+}
+
+/**
+ * Rebuild the icon layout from whatever was persisted: keep saved cells for
+ * launchers that still exist, and place any new launcher on its default cell
+ * (or the nearest free one if a saved icon already sits there). Pure.
+ */
+export function mergeIconCells(
+  saved: Partial<Record<string, Cell>> | undefined,
+  vp: Viewport,
+): Record<DesktopIconId, Cell> {
+  const defaults = defaultCells(DESKTOP_ICON_IDS, vp);
+  const result = {} as Record<DesktopIconId, Cell>;
+  const occupied: Cell[] = [];
+  for (const id of DESKTOP_ICON_IDS) {
+    const cell = saved?.[id];
+    if (cell) {
+      result[id] = cell;
+      occupied.push(cell);
+    }
+  }
+  for (const id of DESKTOP_ICON_IDS) {
+    if (result[id]) continue;
+    const cell = nearestFreeCell(defaults[id], occupied, vp);
+    result[id] = cell;
+    occupied.push(cell);
+  }
+  return result;
+}
+
 interface DesktopState {
-  /** Grid cell each launcher's icon currently occupies. */
-  iconCells: Record<LauncherId, Cell>;
+  /** Grid cell each desktop icon currently occupies. */
+  iconCells: Record<DesktopIconId, Cell>;
   /**
    * Snap an icon to the grid cell nearest its drop point. If that cell is taken
    * by another icon, the nearest free cell is used instead — icons never stack.
    */
-  moveIcon: (id: LauncherId, dropX: number, dropY: number) => void;
-  /** Restore the default arrangement. */
+  moveIcon: (id: DesktopIconId, dropX: number, dropY: number) => void;
+  /** Restore the default arrangement ("Arrange Icons"). */
   resetLayout: () => void;
 }
 
 export const useDesktopStore = create<DesktopState>()(
   persist(
     (set) => ({
-      iconCells: { ...DEFAULT_CELLS },
+      iconCells: defaultIconCells(),
 
       moveIcon: (id, dropX, dropY) =>
         set((state) => {
           const vp = viewport();
           const target = pixelToCell(dropX, dropY, vp);
           const occupied = (
-            Object.entries(state.iconCells) as [LauncherId, Cell][]
+            Object.entries(state.iconCells) as [DesktopIconId, Cell][]
           )
             .filter(([key]) => key !== id)
             .map(([, cell]) => cell);
@@ -49,26 +86,23 @@ export const useDesktopStore = create<DesktopState>()(
           return { iconCells: { ...state.iconCells, [id]: next } };
         }),
 
-      resetLayout: () => set({ iconCells: { ...DEFAULT_CELLS } }),
+      resetLayout: () => set({ iconCells: defaultIconCells() }),
     }),
     {
       name: "douglasos:desktop-icons",
-      version: 2,
-      // Only the positions are worth persisting (actions are recreated on load).
+      // v3: the XP grid (88×96 pitch, column-first) replaced the v1 scattered
+      // layout, so any older arrangement is dropped. Drags persist again from v3.
+      version: 3,
       partialize: (state) => ({ iconCells: state.iconCells }),
-      // v1 used a tidy corner-block default; drop any older saved arrangement so
-      // the new scattered default applies. User drags persist again from v2 on.
-      migrate: () => ({ iconCells: { ...DEFAULT_CELLS } }),
-      // Drop any launcher that no longer exists / backfill new ones from defaults.
-      merge: (persisted, current) => {
-        const saved: Partial<Record<LauncherId, Cell>> =
-          (persisted as Partial<DesktopState>)?.iconCells ?? {};
-        const iconCells = { ...DEFAULT_CELLS };
-        for (const key of Object.keys(iconCells) as LauncherId[]) {
-          if (saved[key]) iconCells[key] = saved[key];
-        }
-        return { ...current, iconCells };
-      },
+      migrate: () => ({ iconCells: defaultIconCells() }),
+      // Drop launchers that no longer exist and backfill new ones.
+      merge: (persisted, current) => ({
+        ...current,
+        iconCells: mergeIconCells(
+          (persisted as Partial<DesktopState> | undefined)?.iconCells,
+          viewport(),
+        ),
+      }),
     },
   ),
 );

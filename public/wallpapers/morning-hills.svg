@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice">
+  <!-- "Morning Hills" — original DouglasOS wallpaper: layered flat-vector hills, a winding path and a morning sky. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a3f9e"/>
+      <stop offset="0.38" stop-color="#2468cf"/>
+      <stop offset="0.7" stop-color="#7fb6ec"/>
+      <stop offset="0.85" stop-color="#cfe6f8"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.78" cy="0.55" r="0.35">
+      <stop offset="0" stop-color="#fff7d6" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fff7d6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6d98c"/><stop offset="1" stop-color="#7fbf6a"/></linearGradient>
+    <linearGradient id="h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6dbb55"/><stop offset="1" stop-color="#4f9d40"/></linearGradient>
+    <linearGradient id="h3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f9238"/><stop offset="1" stop-color="#2f772d"/></linearGradient>
+    <linearGradient id="h4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a6e2b"/><stop offset="1" stop-color="#1c5121"/></linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#sun)"/>
+  <g fill="#ffffff" opacity="0.85">
+    <rect x="1180" y="190" width="300" height="38" rx="19"/>
+    <rect x="1250" y="160" width="160" height="44" rx="22"/>
+    <rect x="1560" y="300" width="230" height="30" rx="15"/>
+    <rect x="1610" y="276" width="110" height="34" rx="17"/>
+    <rect x="860" y="360" width="200" height="26" rx="13" opacity="0.7"/>
+  </g>
+  <path d="M0 760 C 260 690 520 640 820 668 S 1360 600 1600 620 1840 650 1920 640 V1080 H0 Z" fill="url(#h1)"/>
+  <path d="M0 830 C 300 770 560 740 900 776 S 1500 820 1920 720 V1080 H0 Z" fill="url(#h2)"/>
+  <path d="M1040 1080 C 1010 980 1080 930 1180 890 S 1330 820 1300 770" fill="none" stroke="#efe2b3" stroke-width="34" stroke-linecap="round"/>
+  <path d="M0 900 C 380 850 700 880 1000 930 S 1600 960 1920 880 V1080 H0 Z" fill="url(#h3)"/>
+  <path d="M0 980 C 420 940 860 970 1240 1010 S 1760 1000 1920 980 V1080 H0 Z" fill="url(#h4)"/>
+  <g fill="#1c5121" opacity="0.6">
+    <circle cx="1460" cy="742" r="16"/><circle cx="1490" cy="736" r="20"/><rect x="1484" y="745" width="5" height="16"/>
+    <circle cx="380" cy="842" r="18"/><circle cx="410" cy="836" r="22"/><rect x="404" y="846" width="6" height="18"/>
+  </g>
+</svg>

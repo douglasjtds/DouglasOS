@@ -6,8 +6,7 @@ import {
   type WindowInstance,
 } from "@/lib/store/windowStore";
 import {
-  DOCK_RESERVED,
-  MENU_BAR_H,
+  TASKBAR_H,
   maximizeRect,
   type Rect,
   type Viewport,
@@ -116,7 +115,7 @@ describe("windowStore", () => {
       store().openWindow("about");
       store().moveWindow("about", 300, 200);
       const { rect } = store().windows.about;
-      // y is clamped to >= MENU_BAR_H; 200 is comfortably below it.
+      // y is clamped to the work area; 200 is comfortably inside it.
       expect(rect.x).toBe(300);
       expect(rect.y).toBe(200);
     });
@@ -234,7 +233,7 @@ describe("reconcilePersisted", () => {
     );
     const { rect } = r.windows.about;
     expect(rect.width).toBeLessThanOrEqual(VP.width);
-    expect(rect.height).toBeLessThanOrEqual(VP.height - MENU_BAR_H - DOCK_RESERVED);
+    expect(rect.height).toBeLessThanOrEqual(VP.height - TASKBAR_H);
   });
 
   it("recomputes a maximized window to the current maximize rect", () => {

@@ -7,36 +7,43 @@
  * true by construction: at most one icon per cell.
  */
 
-import { MENU_BAR_H, DOCK_RESERVED, type Viewport } from "@/lib/store/geometry";
-import type { LauncherId } from "@/lib/apps/registry";
+import { workAreaHeight, type Viewport } from "@/lib/store/geometry";
 
 export interface Cell {
   col: number;
   row: number;
 }
 
-/** Horizontal/vertical distance between adjacent cells (icon footprint + gap). */
-export const COL_PITCH = 112;
-export const ROW_PITCH = 124;
+/**
+ * Distance between adjacent cells — mirrors the `desktop-cell` size token
+ * (`--spacing-desktop-cell-x/y` in app/globals.css: 88 × 96px pitch).
+ */
+export const COL_PITCH = 88;
+export const ROW_PITCH = 96;
 /** Left inset of the first column (also used as the right margin). */
-export const GRID_X = 32;
-/** Top of the first row — clear of the menu bar. */
-export const GRID_TOP = MENU_BAR_H + 20;
-/** Icon footprint, used only for bounds math (matches the `w-24` button). */
-const ICON_W = 96;
-const ICON_H = 104;
+export const GRID_X = 6;
+/** Top of the first row (the work area starts at the screen top). */
+export const GRID_TOP = 6;
+/**
+ * Icon footprint, used only for bounds math: the 76px label width
+ * (`--spacing-desktop-label`) × glyph + two label lines.
+ */
+const ICON_W = 76;
+const ICON_H = 88;
+
+/** Viewport assumed when no real one exists yet (SSR / module init). */
+export const FALLBACK_VIEWPORT: Viewport = { width: 1440, height: 900 };
 
 function clampInt(value: number, min: number, max: number): number {
   if (max < min) return min;
   return Math.min(Math.max(value, min), max);
 }
 
-/** How many whole cells fit between the menu bar/edges and the dock. */
+/** How many whole cells fit in the work area (above the taskbar). */
 export function gridDims(vp: Viewport): { cols: number; rows: number } {
-  const cols =
-    Math.floor((vp.width - 2 * GRID_X - ICON_W) / COL_PITCH) + 1;
+  const cols = Math.floor((vp.width - 2 * GRID_X - ICON_W) / COL_PITCH) + 1;
   const rows =
-    Math.floor((vp.height - GRID_TOP - DOCK_RESERVED - ICON_H) / ROW_PITCH) + 1;
+    Math.floor((workAreaHeight(vp) - GRID_TOP - ICON_H) / ROW_PITCH) + 1;
   return { cols: Math.max(1, cols), rows: Math.max(1, rows) };
 }
 
@@ -56,7 +63,7 @@ export function pixelToCell(x: number, y: number, vp: Viewport): Cell {
   return { col, row };
 }
 
-function cellKey(cell: Cell): string {
+export function cellKey(cell: Cell): string {
   return `${cell.col},${cell.row}`;
 }
 
@@ -93,18 +100,61 @@ export function nearestFreeCell(
 }
 
 /**
- * Default arrangement — an intentionally scattered, organic layout (not a tidy
- * corner block), mirroring the original free placement. Every launcher appears
- * exactly once with no shared cell. Cols are kept within 0–5 and rows within
- * 0–2 so the cells stay distinct even after clamping on the smallest desktop
- * viewport (~768×600), which guarantees icons never collapse onto each other.
+ * The classic arrangement: icons fill the first column top-to-bottom from the
+ * top-left, wrapping to the next column when the work area runs out of rows.
+ * `ids` order is the CTA order from the registry.
  */
-export const DEFAULT_CELLS: Record<LauncherId, Cell> = {
-  about: { col: 0, row: 0 },
-  experience: { col: 3, row: 0 },
-  projects: { col: 1, row: 1 },
-  "how-i-work-with-ai": { col: 4, row: 1 },
-  contact: { col: 5, row: 1 },
-  skills: { col: 0, row: 2 },
-  resume: { col: 2, row: 2 },
-};
+export function defaultCells<Id extends string>(
+  ids: readonly Id[],
+  vp: Viewport,
+): Record<Id, Cell> {
+  const { rows } = gridDims(vp);
+  const cells = {} as Record<Id, Cell>;
+  ids.forEach((id, i) => {
+    cells[id] = { col: Math.floor(i / rows), row: i % rows };
+  });
+  return cells;
+}
+
+export type Direction = "up" | "down" | "left" | "right";
+
+/**
+ * Keyboard navigation across the icon grid: the nearest icon in `dir` from
+ * `current`, preferring icons on the same row/column (perpendicular distance
+ * weighs 4× the distance travelled). Null when nothing lies that way.
+ */
+export function neighborIcon<Id extends string>(
+  cells: Record<Id, Cell>,
+  current: Id,
+  dir: Direction,
+): Id | null {
+  const from = cells[current];
+  if (!from) return null;
+  let best: Id | null = null;
+  let bestScore = Infinity;
+  for (const id of Object.keys(cells) as Id[]) {
+    if (id === current) continue;
+    const c = cells[id];
+    const dCol = c.col - from.col;
+    const dRow = c.row - from.row;
+    const primary =
+      dir === "down" ? dRow : dir === "up" ? -dRow : dir === "right" ? dCol : -dCol;
+    if (primary <= 0) continue;
+    const secondary = dir === "up" || dir === "down" ? Math.abs(dCol) : Math.abs(dRow);
+    const score = primary + secondary * 4;
+    if (score < bestScore) {
+      bestScore = score;
+      best = id;
+    }
+  }
+  return best;
+}
+
+/** Icons sorted in reading order for a column-first desktop (col, then row). */
+export function iconsInGridOrder<Id extends string>(cells: Record<Id, Cell>): Id[] {
+  return (Object.keys(cells) as Id[]).sort((a, b) => {
+    const ca = cells[a];
+    const cb = cells[b];
+    return ca.col - cb.col || ca.row - cb.row;
+  });
+}

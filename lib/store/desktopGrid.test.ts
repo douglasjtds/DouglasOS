@@ -1,13 +1,19 @@
 import { describe, expect, it } from "vitest";
 import {
-  DEFAULT_CELLS,
+  COL_PITCH,
+  GRID_TOP,
+  GRID_X,
+  ROW_PITCH,
   cellToPixel,
+  defaultCells,
   gridDims,
+  iconsInGridOrder,
   nearestFreeCell,
+  neighborIcon,
   pixelToCell,
   type Cell,
 } from "@/lib/store/desktopGrid";
-import type { Viewport } from "@/lib/store/geometry";
+import { TASKBAR_H, type Viewport } from "@/lib/store/geometry";
 
 const VP: Viewport = { width: 1440, height: 900 };
 
@@ -78,10 +84,81 @@ describe("nearestFreeCell", () => {
   });
 });
 
-describe("DEFAULT_CELLS", () => {
+describe("grid pitch", () => {
+  it("mirrors the desktop-cell token (88 × 96px)", () => {
+    expect(COL_PITCH).toBe(88);
+    expect(ROW_PITCH).toBe(96);
+  });
+
+  it("keeps the last row clear of the taskbar", () => {
+    const { rows } = gridDims(VP);
+    const bottomRowY = GRID_TOP + (rows - 1) * ROW_PITCH;
+    expect(bottomRowY + 88).toBeLessThanOrEqual(VP.height - TASKBAR_H);
+  });
+
+  it("places the first cell at the top-left inset", () => {
+    expect(cellToPixel({ col: 0, row: 0 }, VP)).toEqual({ x: GRID_X, y: GRID_TOP });
+  });
+});
+
+describe("defaultCells", () => {
+  const ids = ["a", "b", "c", "d", "e", "f", "g"] as const;
+
+  it("fills the first column top-to-bottom when there is room", () => {
+    const cells = defaultCells(ids, VP);
+    ids.forEach((id, i) => expect(cells[id]).toEqual({ col: 0, row: i }));
+  });
+
+  it("wraps to the next column on a short work area", () => {
+    const short: Viewport = { width: 1024, height: 600 };
+    const { rows } = gridDims(short);
+    expect(rows).toBeLessThan(ids.length);
+    const cells = defaultCells(ids, short);
+    expect(cells[ids[rows]]).toEqual({ col: 1, row: 0 });
+  });
+
   it("assigns every launcher a distinct cell (no overlap by construction)", () => {
-    const cells = Object.values(DEFAULT_CELLS);
-    const keys = cells.map((c) => `${c.col},${c.row}`);
-    expect(new Set(keys).size).toBe(cells.length);
+    for (const vp of [VP, { width: 768, height: 600 }]) {
+      const keys = Object.values(defaultCells(ids, vp)).map(
+        (c) => `${c.col},${c.row}`,
+      );
+      expect(new Set(keys).size).toBe(ids.length);
+    }
+  });
+});
+
+describe("neighborIcon", () => {
+  const cells = {
+    a: { col: 0, row: 0 },
+    b: { col: 0, row: 1 },
+    c: { col: 0, row: 2 },
+    d: { col: 1, row: 0 },
+  };
+
+  it("moves down and up within a column", () => {
+    expect(neighborIcon(cells, "a", "down")).toBe("b");
+    expect(neighborIcon(cells, "c", "up")).toBe("b");
+  });
+
+  it("moves across columns to the closest row", () => {
+    expect(neighborIcon(cells, "a", "right")).toBe("d");
+    expect(neighborIcon(cells, "d", "left")).toBe("a");
+  });
+
+  it("returns null at the edge of the grid", () => {
+    expect(neighborIcon(cells, "c", "down")).toBeNull();
+    expect(neighborIcon(cells, "a", "left")).toBeNull();
+  });
+});
+
+describe("iconsInGridOrder", () => {
+  it("sorts column-first (col, then row)", () => {
+    expect(
+      iconsInGridOrder({
+        x: { col: 1, row: 0 },
+        y: { col: 0, row: 2 },
+        z: { col: 0, row: 0 },
+      }),
+    ).toEqual(["z", "y", "x"]);
   });
 });

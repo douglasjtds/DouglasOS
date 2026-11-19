@@ -1,50 +1,98 @@
 "use client";
 
+import type { ComponentProps } from "react";
 import { useTranslations } from "next-intl";
 import { useWindowStore } from "@/lib/store/windowStore";
 import type { AppId } from "@/lib/apps/registry";
 import { cn } from "@/lib/utils";
 
-/** The three custom traffic-light controls. `data-no-drag` keeps the drag
- *  hook from starting a drag when these are clicked. */
-export function WindowControls({ id }: { id: AppId }) {
+export type ControlGlyph = "minimize" | "maximize" | "restore" | "close";
+
+/** White control glyphs drawn on a 21px canvas (own shapes). */
+function Glyph({ glyph }: { glyph: ControlGlyph }) {
+  return (
+    <svg viewBox="0 0 21 21" className="size-full" aria-hidden focusable="false">
+      {glyph === "minimize" && <rect x="5" y="13" width="7" height="3" fill="currentColor" />}
+      {glyph === "maximize" && (
+        <path d="M5 5h11v11H5zM7 8v6h7V8z" fill="currentColor" fillRule="evenodd" />
+      )}
+      {glyph === "restore" && (
+        <path
+          d="M8 4h9v9h-2v-5H8zM4 8h9v9H4zm2 3v4h5v-4z"
+          fill="currentColor"
+          fillRule="evenodd"
+        />
+      )}
+      {glyph === "close" && (
+        <path
+          d="M6 6l9 9M15 6l-9 9"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="square"
+        />
+      )}
+    </svg>
+  );
+}
+
+/**
+ * One XP title-bar control button (21px, white 1px border, glossy fill; the
+ * close button is red). Also used by message boxes (close only).
+ */
+export function TitleBarButton({
+  glyph,
+  className,
+  ...props
+}: ComponentProps<"button"> & { glyph: ControlGlyph }) {
+  const isClose = glyph === "close";
+  return (
+    <button
+      type="button"
+      className={cn(
+        "flex size-control-button shrink-0 items-center justify-center rounded-control border border-control-border text-text-inverse focus-inverse",
+        isClose
+          ? "bg-close-gradient hover:bg-close-hover-gradient active:bg-close-pressed active:bg-none"
+          : "bg-control-gradient hover:bg-control-hover-gradient active:bg-control-pressed active:bg-none",
+        className,
+      )}
+      {...props}
+    >
+      <Glyph glyph={glyph} />
+    </button>
+  );
+}
+
+/** Minimize / Maximize-or-Restore / Close. `data-no-drag` keeps clicks from dragging. */
+export function WindowControls({ id, active }: { id: AppId; active: boolean }) {
   const t = useTranslations("window");
+  const maximized = useWindowStore((s) => Boolean(s.windows[id]?.maximized));
   const closeWindow = useWindowStore((s) => s.closeWindow);
   const minimizeWindow = useWindowStore((s) => s.minimizeWindow);
   const toggleMaximize = useWindowStore((s) => s.toggleMaximize);
 
-  const controls = [
-    {
-      label: t("close"),
-      onClick: () => closeWindow(id),
-      className: "bg-win-close hover:bg-win-close-hover",
-    },
-    {
-      label: t("minimize"),
-      onClick: () => minimizeWindow(id),
-      className: "bg-win-minimize hover:bg-win-minimize-hover",
-    },
-    {
-      label: t("maximize"),
-      onClick: () => toggleMaximize(id),
-      className: "bg-win-maximize hover:bg-win-maximize-hover",
-    },
-  ];
-
   return (
-    <div className="flex items-center gap-2" data-no-drag>
-      {controls.map((c) => (
-        <button
-          key={c.label}
-          type="button"
-          aria-label={c.label}
-          onClick={c.onClick}
-          className={cn(
-            "size-3 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-base-1",
-            c.className,
-          )}
-        />
-      ))}
+    <div
+      className={cn("flex items-center gap-0.5", !active && "opacity-75")}
+      data-no-drag
+    >
+      <TitleBarButton
+        glyph="minimize"
+        aria-label={t("minimize")}
+        title={t("minimize")}
+        onClick={() => minimizeWindow(id)}
+      />
+      <TitleBarButton
+        glyph={maximized ? "restore" : "maximize"}
+        aria-label={maximized ? t("restore") : t("maximize")}
+        title={maximized ? t("restore") : t("maximize")}
+        onClick={() => toggleMaximize(id)}
+      />
+      <TitleBarButton
+        glyph="close"
+        aria-label={t("close")}
+        title={t("close")}
+        onClick={() => closeWindow(id)}
+      />
     </div>
   );
 }

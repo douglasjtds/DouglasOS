@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** target spec for v1.5, written in stage 0 (docs only). Stage 1 implements the desktop shell, stage 2 the touch (mobile) shell; later stages add the features marked with their stage number (e.g. *(stage 6)*). Until stage 1 lands, the code still runs the v1 shell (menu bar + dock + linear mobile fallback). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. Stage 2 implements the touch (mobile) shell; until then phones keep the linear `MobileFallback` (restyled with the Luna tokens). Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -107,11 +107,11 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 | `how-i-work-with-ai` | How I Work With AI | Como Trabalho com IA |
 
 - **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts *(stage 3)* follow the apps.
-- **Interaction (pointer):** single click **selects** (blue label highlight, tinted glyph); **double click opens**; click on empty desktop clears the selection. This is the faithful behavior; it is safe for the golden rule because CV and Contact are also one click away in Quick Launch and two clicks in the Start menu, and the first-logon tray balloon says "Double-click an icon to open it".
-- **Interaction (keyboard):** the desktop is one tab stop (roving tabindex); arrows move the selection across the grid; `Enter` opens; Home/End jump to first/last icon.
+- **Interaction (pointer):** **a single click opens** the icon (decision by Douglas after stage 0 — a deliberate deviation from the classic double-click: recruiters shouldn't have to know the convention, and it matches touch). Pressing an icon shows the selection (blue label highlight, tinted glyph) and the icon stays selected; click on empty desktop clears the selection. Dragging is unaffected: the existing `useDesktopIconDrag` `wasDragged` guard means a press that became a drag never opens.
+- **Interaction (keyboard):** the desktop is one tab stop (roving tabindex on a `listbox` of `option`s); focus = selection; arrows move the selection across the grid (nearest icon in that direction, `neighborIcon` in `lib/store/desktopGrid.ts`); `Enter` opens; Home/End jump to first/last icon; `F2` shows the "protected file" joke (see [Keyboard](#12-keyboard--accessibility)).
 - **Drag:** drag moves the icon and snaps to the nearest free cell (existing guard: a drag never counts as a click).
 - `resume.pdf` opening = **download** (no window), via `lib/download.ts`.
-- Future: lasso and multi-select *(stage 6)*, Recycle Bin with icon rescue jokes *(stage 6)*, desktop context menu *(stage 7)*, rename with `F2` (see [Keyboard](#12-keyboard--accessibility)).
+- Future: lasso and multi-select *(stage 6)*, Recycle Bin with icon rescue jokes *(stage 6)*, desktop context menu *(stage 7)*, no rename (`F2` is a joke by design, see [Keyboard](#12-keyboard--accessibility)).
 
 ### Desktop context menu *(stage 7)*
 Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetLayout`), **Refresh** (brief flash), **New ▸** (optional joke), separator, **Properties** (= Display Properties). On an icon: **Open**, **Delete** (recycle-bin joke, stage 6), **Properties** (mini dialog with the app description).
@@ -210,7 +210,8 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - **Minimize**: animates into its taskbar button; the button stays.
 - **Close**: removes the window from the store; focus returns to the previously focused window, or to the launcher that opened it.
 - **Sizes**: default per app (registry `defaultSize`), min 400×300, max = work area.
-- **Window icon menu** (click on the 16px title icon): Restore / Minimize / Maximize / Close — optional in stage 1, cheap with radix.
+- **Window icon menu** (click on the 16px title icon): Restore / Minimize / Maximize / Close — shipped in stage 1 (radix DropdownMenu).
+- **Stage 1 implementation notes:** windows live in one isolated stacking layer (`z-100`, `isolate`) so their ever-growing z-indexes never climb above the taskbar; the per-app **menu bar** and **status bar** are not shipped yet (no app has real items for them yet — "never fake menus"); the Display Properties window uses the beige `dialog` body (`surface: "dialog"` in the registry) instead of the white content pane.
 
 ### Window apps (stage 1)
 `about`, `experience`, `projects`, `skills`, `how-i-work-with-ai`, `contact`, plus the new `display` (Display Properties). `resume` stays a download action.
@@ -221,7 +222,8 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 - **Message boxes** (shutdown, errors such as "DouglasOS can't find '…'", confirmations): window chrome with close only, 32px semantic icon (own SVG: error / warning / info / question), message text, right-aligned buttons (`OK`, `Cancel`, …). Modal: focus trapped, initial focus on the default button, `Esc` = Cancel/close, `role="alertdialog"` for errors and confirmations.
 - **Tray balloons**: yellow rounded bubble with a tail pointing at the tray icon, bold title + 16px icon, text, close ×. `aria-live="polite"`, never steals focus, auto-dismiss ~8s (paused on hover/focus). **Max one balloon at a time**; queued otherwise.
-  - Stage 1 ships one: on the first logon of a session, "Welcome to DouglasOS — double-click an icon to open it. Your CV is one click away in the taskbar." (EN/PT), once per session.
+  - Stage 1 ships one: on the first logon of a session, "Welcome to DouglasOS — Click any icon to open it. Your CV is one click away on the taskbar." (EN/PT), once per session (`douglasos-welcomed` sessionStorage flag).
+- **Protected-file dialog** (`F2` on a desktop icon): warning message box, original humorous copy (EN: "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart." / PT equivalent), one button ("Fair enough" / "Justo"). Never renames.
 - **Tooltips**: yellow rectangles, ~500ms delay, on every icon-only control (Quick Launch, tray, window controls).
 - **Menus** (window menus, context menus, submenus): white, blue highlight, keyboard-complete (radix).
 
@@ -233,8 +235,8 @@ New `display` window app (kind `"window"`), opened from the Start menu (and the 
 
 - **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Hills" (default), "Dusk Hills", "Blueprint", "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
-- **Screen Saver tab:** optional, only if cheap (stage 1 decides); otherwise omitted (no dead tab).
-- The choice persists locally (new store or `desktopStore` extension, key `douglasos:display`).
+- **Screen Saver tab:** omitted in stage 1 (not cheap enough to do well; no dead tab). Listed as a future idea in `MVP-SCOPE.md`.
+- The choice persists locally in a new `displayStore` (`lib/store/displayStore.ts`, key `douglasos:display`; catalog + pure helpers in `lib/wallpapers.ts`). Solid colors are five fixed swatches (`--color-swatch-*` tokens).
 
 ---
 
@@ -274,7 +276,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 - Opening stance, then: Daily tooling · Discovery-first workflow · Productivity multipliers · What AI doesn't replace. Concrete examples over buzzwords (source material: `AI-WORKFLOW-LOG.md`).
 
 ### resume.pdf (`resume`, no window)
-- Opening it (desktop double-click/Enter, Start → Résumé (CV), Quick Launch, assistant/messenger/Run actions) **downloads** `public/resume.pdf` via `lib/download.ts`.
+- Opening it (desktop click/Enter, Start → Résumé (CV), Quick Launch, assistant/messenger/Run actions) **downloads** `public/resume.pdf` via `lib/download.ts`.
 - Document icon with a generic PDF band; tooltip "Download CV".
 
 ### Contact (`contact`)
@@ -324,7 +326,7 @@ External shortcuts (3), DouglasOS Explorer (4), mini Douglas assistant (5, a des
 | Maximize/restore focused window | double-click title | `Alt+Shift+↑` / `Alt+Shift+↓` | 1 |
 | Desktop: move selection | `←↑→↓`, Home/End | — | 1 |
 | Desktop: open selected | `Enter` | — | 1 |
-| Desktop: rename selected | `F2` | — | open question (see below) |
+| Desktop: `F2` on selected icon | `F2` → "protected file" dialog (no rename) | — | 1 |
 | Close menu/dialog/balloon | `Esc` (topmost transient first) | — | 1 |
 | Context menu | `Shift+F10` / `ContextMenu` key | — | 7 |
 | Select all / toggle / delete icon | `Ctrl+A`, `Space`/`Ctrl+Space`, `Delete` | — | 6 |
@@ -333,7 +335,8 @@ External shortcuts (3), DouglasOS Explorer (4), mini Douglas assistant (5, a des
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
 
 - A single shortcut registry (pure, in `lib/`, unit-tested) owns this map so later stages can't introduce conflicts.
-- **`F2` (rename) is an open question for Douglas** — options: (a) inline rename of the label, session-only; (b) inline rename persisted in `desktopStore`, reset by "Arrange Icons"; (c) skip rename and make `F2` show a playful "this file is protected" message. Until decided, `F2` does nothing.
+- **`F2` decided by Douglas: option (c)** — no rename; `F2` opens the humorous "protected file" message box ([§7](#7-dialogs-balloons-tooltips--menus)).
+- **Stage 1 implementation:** the registry is `lib/shortcuts.ts` (`matchShortcut`, `createMetaTapTracker`, unit-tested); `hooks/useShellShortcuts.ts` wires it to the shell. The Meta tap fires on keyup only when no other key was pressed and the page didn't lose focus in between (so `Cmd+Tab` away and back never opens Start). After `Esc`/`Alt+F4` closes a window, focus goes to the next window, else that app's desktop icon, else the Start button.
 
 ### Screen readers
 - Landmarks: desktop (`region` "Desktop", a `listbox`/grid of icons with `aria-selected`), each window a `dialog`-less `region`/`section` labelled by its title, taskbar landmark, Start menu `menu`.
@@ -377,8 +380,9 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 |-----|---------|-------|----------|
 | `douglasos:windows` | localStorage | `windowStore` | Open windows, rects, z-order, minimized/maximized (reconciled on load) |
 | `douglasos:desktop-icons` | localStorage | `desktopStore` | Icon cells (merge fills new launchers) |
-| `douglasos:display` | localStorage | display store *(stage 1)* | Wallpaper choice |
-| boot/logon seen | sessionStorage | boot/logon *(stage 1)* | Skip boot + logon for the rest of the session |
+| `douglasos:display` | localStorage | `displayStore` *(stage 1)* | Wallpaper + solid-color swatch |
+| `douglasos-booted` | sessionStorage | `shellStore` *(stage 1)* | Boot + logon seen: skip them for the rest of the session |
+| `douglasos-welcomed` | sessionStorage | `WelcomeBalloon` *(stage 1)* | Welcome balloon already shown this session |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
 Later stages add their own keys here (assistant dismissal, messenger history, volume).

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- "Blueprint" — original DouglasOS wallpaper: deep blue field, drafting grid, faint DouglasOS mark. -->
+  <defs>
+    <pattern id="fine" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <pattern id="major" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M200 0H0V200" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.5"/>
+    </pattern>
+    <radialGradient id="vignette" cx="0.6" cy="0.45" r="0.8">
+      <stop offset="0" stop-color="#1252a6"/>
+      <stop offset="1" stop-color="#062a5e"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+  <rect width="1920" height="1080" fill="url(#fine)"/>
+  <rect width="1920" height="1080" fill="url(#major)"/>
+  <g transform="translate(1180 300) scale(10)" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="0.25">
+    <rect x="3" y="3" width="42" height="42" rx="11"/>
+    <path d="M13 11h10.5a13 13 0 0 1 0 26H13zm6 5.5v15h4.2a7.5 7.5 0 0 0 0-15z"/>
+    <circle cx="36.5" cy="36.5" r="5.5"/>
+  </g>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.5">
+    <path d="M1180 760H1600M1180 750v20M1600 750v20"/>
+    <circle cx="1180" cy="300" r="14"/>
+  </g>
+</svg>

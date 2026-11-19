@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import type * as THREE from "three";
+import { SCENE_COLORS } from "@/components/os/desktop/sceneColors";
 
 const PARTICLE_COUNT = 90;
 const FIELD_RADIUS = 9;
@@ -70,9 +71,10 @@ function FrameLimiter() {
 }
 
 /**
- * The ambient 3D desktop background (DESIGN-GUIDELINES.md §3D Scene):
- * two low-density particle layers — cyan primary, purple sparse — drifting
- * slowly behind the desktop icons. Pointer events pass straight through.
+ * The optional "DouglasOS 3D (animated)" wallpaper (DESIGN-GUIDELINES.md →
+ * Wallpapers): two low-density particle layers — scene-local cyan primary,
+ * purple sparse — drifting slowly behind the desktop icons over the scene's
+ * night base. Pointer events pass straight through.
  */
 export default function AmbientScene() {
   return (
@@ -85,8 +87,8 @@ export default function AmbientScene() {
       aria-hidden
     >
       <FrameLimiter />
-      <ParticleField color="#00d9ff" count={PARTICLE_COUNT} size={0.055} speed={0.02} />
-      <ParticleField color="#7c3aed" count={Math.round(PARTICLE_COUNT / 3)} size={0.075} speed={-0.014} />
+      <ParticleField color={SCENE_COLORS.primary} count={PARTICLE_COUNT} size={0.055} speed={0.02} />
+      <ParticleField color={SCENE_COLORS.secondary} count={Math.round(PARTICLE_COUNT / 3)} size={0.075} speed={-0.014} />
     </Canvas>
   );
 }

@@ -1,0 +1,110 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithIntl } from "@/test/renderWithIntl";
+import { StartMenu } from "@/components/os/start-menu/StartMenu";
+import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
+import { useShellStore } from "@/lib/store/shellStore";
+
+const downloadSpy = vi.fn();
+vi.mock("@/lib/download", () => ({
+  downloadFile: (...args: unknown[]) => downloadSpy(...args),
+}));
+
+// While the (modal) menu is open Radix hides the rest of the page from the
+// accessibility tree, so the trigger is queried with `hidden: true`.
+const startButton = () => screen.getByRole("button", { name: "Start", hidden: true });
+
+describe("StartMenu", () => {
+  beforeEach(() => {
+    downloadSpy.mockClear();
+    useWindowStore.setState({ windows: {}, order: [], focusedId: null, topZ: Z_BASE, openCount: 0 });
+    useShellStore.setState({ phase: "desktop", startMenuOpen: false, dialog: null });
+  });
+
+  it("opens from the Start button and closes on Esc, returning focus", async () => {
+    renderWithIntl(<StartMenu />);
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+
+    await userEvent.click(startButton());
+    const menu = screen.getByRole("menu", { name: "Start menu" });
+    expect(within(menu).getByText("Douglas")).toBeInTheDocument();
+    expect(startButton()).toHaveAttribute("aria-expanded", "true");
+
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(useShellStore.getState().startMenuOpen).toBe(false);
+    expect(startButton()).toHaveFocus();
+  });
+
+  it("is driven by the shell store (keyboard shortcuts toggle it)", () => {
+    renderWithIntl(<StartMenu />);
+    act(() => useShellStore.getState().toggleStartMenu());
+    expect(screen.getByRole("menu", { name: "Start menu" })).toBeInTheDocument();
+    act(() => useShellStore.getState().toggleStartMenu());
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
+  it("Résumé (CV) downloads the PDF and closes the menu", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    await userEvent.click(screen.getByRole("menuitem", { name: "Résumé (CV)" }));
+    expect(downloadSpy).toHaveBeenCalledWith("/resume.pdf", "Douglas-Tertuliano-CV.pdf");
+    expect(useWindowStore.getState().windows).toEqual({});
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
+  it("Contact opens the Contact window", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    // Contact is both pinned (left) and a place (right); either opens it.
+    const items = screen.getAllByRole("menuitem", { name: /^Contact/ });
+    await userEvent.click(items[items.length - 1]);
+    expect(useWindowStore.getState().windows.contact).toBeDefined();
+    expect(useWindowStore.getState().focusedId).toBe("contact");
+  });
+
+  it("lists pinned programs and the places column", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    for (const name of [/About Douglas/, /How I Work With AI/, "Display Properties", "Help", "Log Off", "Turn Off"]) {
+      expect(screen.getByRole("menuitem", { name })).toBeInTheDocument();
+    }
+    expect(screen.getByRole("menuitem", { name: /All Programs/ })).toHaveAttribute(
+      "aria-haspopup",
+      "menu",
+    );
+  });
+
+  it("keyboard: arrows move through items, → crosses to the places column", async () => {
+    renderWithIntl(<StartMenu />);
+    startButton().focus();
+    await userEvent.keyboard("{Enter}");
+    const menu = screen.getByRole("menu", { name: "Start menu" });
+    // Opening from the keyboard lands on the first item.
+    expect(screen.getByRole("menuitem", { name: /About Douglas/ })).toHaveFocus();
+    await userEvent.keyboard("{ArrowDown}");
+    // Pinned "My Projects" (with its description) — the places one has no description.
+    expect(
+      screen.getByRole("menuitem", { name: /^My Projects.*built/ }),
+    ).toHaveFocus();
+
+    await userEvent.keyboard("{ArrowRight}");
+    const places = menu.querySelector('[data-start-column="right"]')!;
+    expect(places.contains(document.activeElement)).toBe(true);
+    await userEvent.keyboard("{ArrowLeft}");
+    expect(screen.getByRole("menuitem", { name: /About Douglas/ })).toHaveFocus();
+  });
+
+  it("Log Off returns to the logon screen; Turn Off asks for confirmation", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    await userEvent.click(screen.getByRole("menuitem", { name: "Turn Off" }));
+    expect(useShellStore.getState().dialog).toEqual({ kind: "turnOff" });
+
+    act(() => useShellStore.getState().closeDialog());
+    await userEvent.click(startButton());
+    await userEvent.click(screen.getByRole("menuitem", { name: "Log Off" }));
+    expect(useShellStore.getState().phase).toBe("logon");
+  });
+});

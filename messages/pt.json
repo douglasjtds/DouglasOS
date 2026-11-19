@@ -3,13 +3,10 @@
     "title": "DouglasOS — Douglas Tertuliano, Desenvolvedor Fullstack AI-First",
     "description": "O portfólio interativo de Douglas Tertuliano — Desenvolvedor Fullstack AI-First com 8 anos nos ecossistemas .NET, Node.js e React, especializado em Threat Intelligence e detecção de fraude. Explore o DouglasOS, baixe o CV, entre em contato."
   },
-  "menu": {
-    "closeAll": "Fechar todas as janelas"
-  },
   "apps": {
     "about": {
-      "title": "about.app",
-      "label": "Sobre",
+      "title": "Sobre o Douglas",
+      "description": "Quem eu sou, em dois parágrafos",
       "name": "Douglas Tertuliano",
       "headline": "Desenvolvedor Fullstack AI-First",
       "location": "Lagoa Santa, MG, Brasil · Remoto",
@@ -18,14 +15,27 @@
         "Sou especializado em APIs para domínios críticos como Threat Intelligence e detecção de fraude — da arquitetura de backend à implementação de frontend — com foco em performance, segurança e práticas de CI/CD na AWS. Hoje trabalho AI-first: ferramentas como Claude Code e GitHub Copilot fazem parte de como eu projeto, construo e entrego software todos os dias."
       ],
       "stats": [
-        { "label": "Experiência", "value": "8 anos" },
-        { "label": "Cargo atual", "value": "Fullstack @ Serasa Experian" },
-        { "label": "Foco", "value": "Threat Intelligence e fraude" }
-      ]
+        {
+          "label": "Experiência",
+          "value": "8 anos"
+        },
+        {
+          "label": "Cargo atual",
+          "value": "Fullstack @ Serasa Experian"
+        },
+        {
+          "label": "Foco",
+          "value": "Threat Intelligence e fraude"
+        }
+      ],
+      "downloadCv": "Baixar CV",
+      "contactLink": "Fale comigo",
+      "statsTitle": "Em resumo",
+      "photoAlt": "Imagem de usuário do Douglas"
     },
     "experience": {
-      "title": "experience.app",
-      "label": "Experiência",
+      "title": "Experiência",
+      "description": "8 anos, cinco empresas",
       "currentBadge": "Atual",
       "roles": [
         {
@@ -33,7 +43,12 @@
           "company": "Serasa Experian",
           "role": "Desenvolvedor Fullstack Pleno",
           "description": "Desenvolvo features de frontend em React para o ThreatX, o produto de Threat Intelligence da Serasa Experian — dando continuidade à plataforma criada originalmente na ClearSale após a aquisição. Contribuo nos backends em Node.js e .NET que sustentam os fluxos de detecção de fraude e ameaças, e uso ferramentas de IA como Claude Code e GitHub Copilot com MCPs internos para acelerar entregas em tarefas complexas.",
-          "tags": ["React", "Node.js", ".NET", "Ferramentas de IA"],
+          "tags": [
+            "React",
+            "Node.js",
+            ".NET",
+            "Ferramentas de IA"
+          ],
           "current": true
         },
         {
@@ -41,39 +56,61 @@
           "company": "ClearSale S.A.",
           "role": "Desenvolvedor .NET Pleno",
           "description": "Desenvolvi e mantive o produto de Threat Intelligence em Node.js e React, coletando e analisando fraudes, phishing, anúncios falsos e outros ataques ao e-commerce. Na squad de Payments, construí APIs com tecnologias BNPL (Buy Now Pay Later) e PISP (Iniciação de Pagamento), além de manter o sistema de billing da ClearSale usado por diversas empresas de marketplace.",
-          "tags": ["Node.js", "React", "C#/.NET", "Pagamentos"]
+          "tags": [
+            "Node.js",
+            "React",
+            "C#/.NET",
+            "Pagamentos"
+          ]
         },
         {
           "period": "2020.03 — 2022.08",
           "company": "Zup IT Innovation",
           "role": "Desenvolvedor .NET Pleno",
           "description": "Desenvolvi serviços de backend em .NET para o Itaú Unibanco, o maior banco privado da América Latina. Atuei como API Owner do time, responsável por todo o processo de CI/CD do API Gateway hospedado na AWS.",
-          "tags": ["C#/.NET", "AWS", "API Gateway", "CI/CD"]
+          "tags": [
+            "C#/.NET",
+            "AWS",
+            "API Gateway",
+            "CI/CD"
+          ]
         },
         {
           "period": "2019.08 — 2020.03",
           "company": "DTI Digital",
           "role": "Desenvolvedor .NET Júnior",
           "description": "Construí APIs em .NET Core para o Banco BS2, consumidas pelo time de frontend do aplicativo mobile do banco, e mantive um sistema interno legado em .NET Framework e Razor.",
-          "tags": [".NET Core", "Razor", "SQL"]
+          "tags": [
+            ".NET Core",
+            "Razor",
+            "SQL"
+          ]
         },
         {
           "period": "2017.09 — 2019.08",
           "company": "Rumo IT Solutions",
           "role": "Desenvolvedor Júnior / Estagiário",
           "description": "Comecei como estagiário e fui contratado como desenvolvedor júnior, alocado em um banco de crédito consignado — meus primeiros anos entregando código .NET em produção.",
-          "tags": ["C#/.NET", "SQL"]
+          "tags": [
+            "C#/.NET",
+            "SQL"
+          ]
         }
       ]
     },
     "projects": {
-      "title": "projects.app",
-      "label": "Projetos",
+      "title": "Meus Projetos",
+      "description": "O que construí e coloquei no ar",
       "items": [
         {
           "name": "Gasolinha",
           "description": "Um SaaS de controle de abastecimento de veículos, construído de ponta a ponta com um fluxo AI-first usando Claude Code. Motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo. Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
-          "tags": ["Next.js", "TypeScript", "Supabase", "Vercel"],
+          "tags": [
+            "Next.js",
+            "TypeScript",
+            "Supabase",
+            "Vercel"
+          ],
           "status": "No ar",
           "repo": "",
           "demo": "https://www.gasolinha.com.br"
@@ -81,7 +118,12 @@
         {
           "name": "DouglasOS",
           "description": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, dock e tela de boot. Projetado spec-first e construído com um fluxo AI-first.",
-          "tags": ["Next.js", "TypeScript", "Zustand", "Framer Motion"],
+          "tags": [
+            "Next.js",
+            "TypeScript",
+            "Zustand",
+            "Framer Motion"
+          ],
           "status": "No ar",
           "repo": "",
           "demo": ""
@@ -89,7 +131,10 @@
         {
           "name": "The Wedding Post",
           "description": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos. Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
-          "tags": ["Next.js", "TypeScript"],
+          "tags": [
+            "Next.js",
+            "TypeScript"
+          ],
           "status": "Em andamento",
           "repo": "",
           "demo": ""
@@ -97,21 +142,78 @@
       ]
     },
     "skills": {
-      "title": "skills.app",
-      "label": "Habilidades",
+      "title": "Habilidades",
+      "description": "Stack, ferramentas e domínios",
       "categories": [
-        { "name": "Backend", "items": ["C#", ".NET Core", ".NET Framework", "Node.js", "TypeScript"] },
-        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Razor"] },
-        { "name": "Bancos de dados", "items": ["Bancos SQL", "MongoDB"] },
-        { "name": "Cloud / DevOps", "items": ["AWS", "Pipelines de CI/CD", "API Gateway", "APIs REST", "Microsserviços", "Vercel", "Git"] },
-        { "name": "Ferramentas de IA", "items": ["Claude Code", "GitHub Copilot", "Cursor", "Servidores MCP"] },
-        { "name": "Domínios", "items": ["Threat Intelligence", "Detecção de fraude", "Fintech", "E-commerce e pagamentos"] },
-        { "name": "Idiomas", "items": ["Português (nativo)", "Inglês (profissional)"] }
+        {
+          "name": "Backend",
+          "items": [
+            "C#",
+            ".NET Core",
+            ".NET Framework",
+            "Node.js",
+            "TypeScript"
+          ]
+        },
+        {
+          "name": "Frontend",
+          "items": [
+            "React",
+            "Next.js",
+            "Tailwind CSS",
+            "shadcn/ui",
+            "Razor"
+          ]
+        },
+        {
+          "name": "Bancos de dados",
+          "items": [
+            "Bancos SQL",
+            "MongoDB"
+          ]
+        },
+        {
+          "name": "Cloud / DevOps",
+          "items": [
+            "AWS",
+            "Pipelines de CI/CD",
+            "API Gateway",
+            "APIs REST",
+            "Microsserviços",
+            "Vercel",
+            "Git"
+          ]
+        },
+        {
+          "name": "Ferramentas de IA",
+          "items": [
+            "Claude Code",
+            "GitHub Copilot",
+            "Cursor",
+            "Servidores MCP"
+          ]
+        },
+        {
+          "name": "Domínios",
+          "items": [
+            "Threat Intelligence",
+            "Detecção de fraude",
+            "Fintech",
+            "E-commerce e pagamentos"
+          ]
+        },
+        {
+          "name": "Idiomas",
+          "items": [
+            "Português (nativo)",
+            "Inglês (profissional)"
+          ]
+        }
       ]
     },
     "how-i-work-with-ai": {
-      "title": "how-i-work-with-ai.app",
-      "label": "Como trabalho com IA",
+      "title": "Como Trabalho com IA",
+      "description": "Meu fluxo AI-first, na prática",
       "intro": "Trato a IA como parte central do ferramental de engenharia, não como novidade. O objetivo é simples: entregar software melhor, mais rápido, sem abaixar a barra de qualidade. Isso significa usar IA de forma deliberada — com specs, revisão e critério — em vez de só mandar prompt e torcer.",
       "sections": [
         {
@@ -133,20 +235,117 @@
       ]
     },
     "contact": {
-      "title": "contact.app",
-      "label": "Contato",
+      "title": "Contato",
+      "description": "LinkedIn, GitHub, e-mail, WhatsApp",
       "heading": "Vamos conversar",
       "availability": "Aberto a oportunidades remotas — times internacionais são bem-vindos.",
       "copy": "Copiar",
-      "copied": "Copiado!"
+      "copied": "Copiado!",
+      "emailLabel": "E-mail"
+    },
+    "display": {
+      "title": "Propriedades de Vídeo",
+      "description": "Trocar o papel de parede",
+      "tabs": {
+        "desktop": "Área de Trabalho"
+      },
+      "preview": "Prévia do papel de parede selecionado",
+      "wallpaperLabel": "Papel de parede:",
+      "wallpapers": {
+        "morning-hills": "Colinas da Manhã",
+        "dusk-hills": "Colinas ao Entardecer",
+        "blueprint": "Planta Azul",
+        "solid": "Cor sólida",
+        "3d": "DouglasOS 3D (animado)"
+      },
+      "colorLabel": "Cor:",
+      "swatches": {
+        "navy": "Azul-marinho",
+        "teal": "Verde-azulado",
+        "forest": "Floresta",
+        "plum": "Ameixa",
+        "slate": "Ardósia"
+      },
+      "animatedNote": "Carrega depois que a área de trabalho está pronta e não trava nada.",
+      "unavailable": {
+        "reducedMotion": "Papéis de parede animados estão desligados porque seu sistema prefere movimento reduzido.",
+        "saveData": "Papéis de parede animados estão desligados porque a economia de dados está ativa.",
+        "mobile": "Papéis de parede animados não estão disponíveis neste dispositivo."
+      },
+      "ok": "OK",
+      "cancel": "Cancelar",
+      "apply": "Aplicar"
     }
   },
-  "resume": { "title": "resume.pdf", "label": "Currículo", "download": "Baixar CV" },
+  "resume": {
+    "title": "curriculo.pdf",
+    "download": "Baixar CV"
+  },
   "window": {
     "close": "Fechar",
     "minimize": "Minimizar",
     "maximize": "Maximizar",
-    "restore": "Restaurar"
+    "restore": "Restaurar",
+    "menu": "Menu da janela"
+  },
+  "desktop": {
+    "label": "Ícones da área de trabalho"
+  },
+  "taskbar": {
+    "label": "Barra de tarefas",
+    "start": "iniciar",
+    "startLabel": "Iniciar",
+    "quickLaunch": "Inicialização rápida",
+    "quickCv": "Baixar CV",
+    "quickContact": "Contato",
+    "windows": "Janelas abertas",
+    "tray": "Área de notificação",
+    "language": "Idioma"
+  },
+  "startMenu": {
+    "label": "Menu Iniciar",
+    "user": "Douglas",
+    "pinned": "Programas fixados",
+    "places": "Locais",
+    "allPrograms": "Todos os programas",
+    "myProjects": "Meus Projetos",
+    "resume": "Currículo (CV)",
+    "contact": "Contato",
+    "displayProperties": "Propriedades de Vídeo",
+    "help": "Ajuda",
+    "logOff": "Fazer logoff",
+    "turnOff": "Desligar"
+  },
+  "boot": {
+    "tagline": "Um portfólio que dá boot.",
+    "starting": "Iniciando o DouglasOS…",
+    "skip": "Pular"
+  },
+  "logon": {
+    "welcome": "boas-vindas",
+    "intro": "Esta área de trabalho é um portfólio. Fique à vontade.",
+    "subtitle": "Desenvolvedor Fullstack AI-First",
+    "tileLabel": "Entrar como Douglas",
+    "hint": "Clique no Douglas para entrar."
+  },
+  "shutdown": {
+    "dialogTitle": "Desligar o DouglasOS",
+    "dialogBody": "Encerrando por hoje? As janelas abertas serão fechadas; o papel de parede e os ícones continuam onde você deixou.",
+    "cancel": "Cancelar",
+    "confirm": "Desligar",
+    "shuttingDown": "O DouglasOS está desligando…",
+    "goodbye": "Até logo.",
+    "turnOn": "Ligar"
+  },
+  "protectedFile": {
+    "title": "Arquivo protegido",
+    "body": "“{name}” se recusou a ser renomeado. Diz que levou séculos para escolher esse nome e que os recrutadores já sabem ele de cor.",
+    "ok": "Justo"
+  },
+  "balloon": {
+    "title": "Bem-vindo ao DouglasOS",
+    "body": "Clique em qualquer ícone para abrir. Seu CV está a um clique na barra de tarefas.",
+    "close": "Fechar"
   },
   "mobile": {
     "banner": "Melhor no desktop — abra o DouglasOS em uma tela maior.",

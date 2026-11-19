@@ -2,7 +2,7 @@
 
 > Visual design system for DouglasOS from v1.5 onward. These tokens and rules are the **source of truth** for all UI work. Implement them as Tailwind v4 `@theme` tokens + CSS variables in `app/globals.css` (and TS constants where Framer Motion or geometry code needs them). Never hardcode a value that has a token.
 >
-> **Status:** target design for v1.5. Written in stage 0 (docs only). The code still runs the v1 "dark glass" shell until stage 1 (desktop) and stage 2 (mobile) land. See [Changelog](#changelog--why-the-identity-changed) for what changed and why.
+> **Status:** v1.5 design system, **implemented in stage 1** (desktop shell): tokens live in `app/globals.css`, motion in `lib/motion.ts`, hex mirrors for metadata/OG in `lib/theme.ts`, icons in `components/icons/`. The phone layout keeps the linear page (restyled with these tokens) until stage 2. See [Changelog](#changelog--why-the-identity-changed) for what changed and why.
 >
 > **Naming:** "DouglasOS XP" is the *internal* name of this design system. The product brand shown to visitors is just **DouglasOS** — never render "XP" as a product/edition name in the UI (see [What NOT to use](#what-not-to-use)).
 
@@ -483,7 +483,7 @@ Every animation has a static alternative:
 - Colorful, soft vertical gradients, light from the top-left, a slightly darker 1px outline, gentle rounded forms and a subtle drop shadow (in the SVG, not CSS).
 - Three-quarter or front view; friendly, glossy, but simple enough to read at 16px.
 - Palette drawn from the color tokens (blues, greens, ambers) plus a small set of icon-local accent colors documented in the icon module.
-- Each icon is a React SVG component (in `components/icons/` or `lib/icons/` — chosen in stage 1) with a **48px master** and a **simplified 16px variant**; 32/24px scale from the master.
+- Each icon is a React SVG component in **`components/icons/`** (`AppIcons.tsx` for launchers, `SystemIcons.tsx` for the brand mark, avatar, Start places and dialog glyphs) drawn on a **48px master**; 32/24/16px scale from it. *Stage 1 deviation:* there is no separately drawn 16px variant yet — the masters were kept simple enough to read at 16px (checked in the taskbar/Start menu screenshots); hand-tuned 16px variants are a polish item.
 - External shortcuts (stage 3) get a **shortcut-arrow overlay** of our own design in the bottom-left corner.
 - `lucide-react` is allowed **only inside window content** (e.g. list bullets, inline actions), never for desktop, Start menu, taskbar or title bar icons.
 
@@ -680,15 +680,32 @@ Conceptual shape of the `globals.css` rewrite in stage 1 (names are normative, s
 - Remove every v1 token (`base-*`, `accent*`, `glass-*`, `glow-*`, `win-*`, `blur-glass*`, `radius-dock`) once no component references it.
 - Keep the global `prefers-reduced-motion` reset.
 
+### Tokens added in stage 1
+
+Beyond the tables above, implementation needed a few extra tokens (all in `app/globals.css`):
+
+| Token | Value | Why |
+|-------|-------|-----|
+| `--color-swatch-{navy,teal,forest,plum,slate}` | `#004E98`, `#2A6B6B`, `#2F5F3A`, `#4F3F78`, `#3C4650` | Display Properties solid-color swatches (all dark enough for white desktop labels) |
+| `--spacing-menu-item` | 22px | Menu item height (was described in prose only) |
+| `--spacing-push-button-w/h` | 75 × 23px | Push button min size (from the component table) |
+| `--spacing-desktop-cell-x/y`, `--spacing-desktop-label` | 88 / 96 / 76px | The `desktop-cell` token split into utilities |
+| `--shadow-bevel-pressed` | inverted `bevel-raised` | Pressed raised elements |
+| `--gradient-start-pressed`, `--gradient-control-hover`, `--gradient-close-hover`, `--gradient-logon-divider` | from color tokens | Pressed Start, hovered controls, logon divider |
+| `--filter-icon-selected` (`icon-selected-tint` utility) | sepia/hue-rotate blue wash | Tinted glyph of a selected desktop icon |
+| `--text-shadow-desktop-label`, `--text-shadow-start-label` | as in Shadows table | Exposed as Tailwind `text-shadow-*` utilities |
+
+`lib/utils.ts` registers these custom utilities with tailwind-merge (otherwise `cn("text-system text-text")` silently drops the font size).
+
 ### Checklist for stage 1
 
-- [ ] All palette, type, size, radius and shadow tokens defined in `@theme`; gradients as `--gradient-*` + `@utility`.
-- [ ] Geist font loading removed; system stacks applied.
-- [ ] shadcn semantic tokens remapped; `color-scheme: light`; no `.dark`.
-- [ ] Geometry constants (`MENU_BAR_H` → taskbar, grid pitch) mirror the size tokens.
-- [ ] `lib/motion.ts` with the motion tokens; reduced-motion paths verified.
-- [ ] Contrast pairs above verified in the browser (not just on paper).
-- [ ] No banned asset/name anywhere (grep for "Windows", "Microsoft", "XP" in UI copy).
+- [x] All palette, type, size, radius and shadow tokens defined in `@theme`; gradients as `--gradient-*` + `@utility`.
+- [x] Geist font loading removed; system stacks applied.
+- [x] shadcn semantic tokens remapped; `color-scheme: light`; no `.dark`.
+- [x] Geometry constants (`MENU_BAR_H` → `TASKBAR_H`/`TITLEBAR_H`, grid pitch 88 × 96) mirror the size tokens.
+- [x] `lib/motion.ts` with the motion tokens; reduced-motion paths verified (e2e runs under `reducedMotion: "reduce"`).
+- [ ] Contrast pairs above verified in the browser with a tool (still pending a manual axe/DevTools pass; the logon screen moved all small text onto the dark bands because white on `logon-bg` is only ~4:1).
+- [x] No banned asset/name anywhere (grep for "Windows", "Microsoft", "XP" in UI copy — only internal code comments use the internal "XP" name).
 
 ---
 
