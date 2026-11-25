@@ -157,6 +157,9 @@
   --color-swatch-plum: #4f3f78;
   --color-swatch-slate: #3c4650;
 
+  /* Retro Cam (stage 9): the dark viewfinder behind the pixelated picture. */
+  --color-viewfinder: #1b1b1b;
+
   /* Fonts — system stacks only, never bundled */
   --font-sans: Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif;
   --font-title: "Trebuchet MS", Tahoma, Verdana, "DejaVu Sans", sans-serif;

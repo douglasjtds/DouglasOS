@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented. Stage 7 (Run… + command palette + desktop context menus, [§5](#run-and-the-command-palette-stage-7--done)), stage 8 (DouglasOS Media Player, [§15](#15-douglasos-media-player-stage-8)) and stage 9 (Retro Cam, [§16](#16-retro-cam-stage-9)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -205,7 +205,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Entertainment ▸** — Media Player *(8 — done)* — and, later, **Accessories ▸** — Paint *(10)*, Retro Cam *(9)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*). Folders come first in the list, each a cascading submenu (touch: a labelled inline group); an app joins one with `folder: "accessories" | "entertainment"` in the registry, and a folder only shows once something is in it.
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, later Paint *(10)* — and **Entertainment ▸** — Media Player *(8 — done)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*). Folders come first in the list (Accessories, then Entertainment), each a cascading submenu (touch: a labelled inline section); an app joins one with `folder: "accessories" | "entertainment"` in the registry (`PROGRAM_FOLDERS` sets the order, `programsInFolder()` lists the contents), and a folder only shows once something is in it. This is the single folder API — later apps use `folder`, not a separate field.
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -345,7 +345,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9, done — see [§16](#16-retro-cam-stage-9)), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -527,6 +527,43 @@ Unit: adapter state mapping, skip-on-error / give-up, loader (script once, retry
 
 ---
 
+## 16. Retro Cam *(stage 9)*
+
+**Purpose:** a fun, original "pixelated webcam" toy. Brand: "Retro Cam" with its own glossy desk-webcam icon (`components/icons/CameraIcons.tsx`) — never a real product's name or icon.
+
+### Pieces
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Palettes | `lib/camera/palettes.ts` | `PaletteId` = `douglasos` \| `classic16` \| `cga` \| `original`. **DouglasOS** = 16 Luna color tokens (`DOUGLASOS_PALETTE_TOKENS`, keyed by token name; a unit test parses `app/globals.css` and fails if a hex drifts — `globals.css` stays the single source). **16 colors** = the generic 16-color text-mode/VGA set. **CGA style** = black, cyan, magenta, white. **Original** = no quantization |
+| Pipeline | `lib/camera/pixelate.ts` | Pure, on RGBA buffers: `captureSize` → `downscale` (box average per block, optional mirror) → `quantize` (nearest palette color, weighted RGB distance, 15-bit lookup table memoized per palette) → `upscale` (nearest neighbor, for the saved PNG; on screen the browser enlarges with `image-rendering: pixelated`). Plus `addFrame`, `photoFilename`, `createFrameGate` (24 FPS cap), `createFpsMeter` |
+| Media | `lib/camera/media.ts` | `CameraStatus`, `cameraConstraints(mobile)`, `cameraErrorStatus(error)`, `hasCameraApi()`, `stopStream()` |
+| Lifecycle | `hooks/useCamera.ts` | Explicit `start()` / `stop()`; stops on unmount, window minimize/hidden, tab hidden, `pagehide`, track `ended`; discards a stream that arrives after a stop |
+| UI | `components/apps/CameraApp.tsx` | Registry `camera`, kind `window`, `surface: "bare"`, ~560×520, `onDesktop: false`, `folder: "accessories"` |
+
+### Window
+- **Toolbar:** **Turn on / Turn off** (toggle, `aria-pressed`), **Pixels:** Fine / Medium / Large (4 / 8 / 16 capture px per block → 80 / 40 / 20 blocks across on desktop), **Palette:** DouglasOS (default) / 16 colors / CGA style / Original (native `<select>`s with the XP field look — the platform picker is the accessible, touch-friendly choice), **Mirror** (toggle, on by default), **Frame** (checkbox, on by default), **Save photo** (disabled while the camera is off).
+- **Viewfinder:** dark `viewfinder` surface; only the pixelated canvas is shown (`role="img"`, labelled), never the raw video (a hidden, muted `playsInline` `<video>` feeds it).
+- **States** (`data-camera-status`): **idle** — beige card: "The camera is off" + the privacy promise + **Turn on camera** (default button); after an automatic stop it also says why ("…when the window was minimized" / "…when you left the tab" / "The camera was disconnected"). **requesting** — "Waiting for permission…". **active** — the live picture. **denied** — XP warning message box ("Camera blocked", how to allow it in the browser) with **Try again** and **OK** (default; `Esc` = OK); after OK the card keeps the explanation and a Try again. **unsupported** — XP error message box with the reason: no API / insecure context (no retry), no camera found, camera busy in another app (both with Try again).
+- **Status bar:** "Camera on/off" pane + "local processing · {n} FPS · no upload" (FPS only while on; measured over the last second of rendered frames, refreshed twice a second).
+- **Save photo:** the last rendered frame, enlarged to ~640px wide with hard pixel edges, optionally framed (Luna title-bar blue band + button-face mat), downloaded as `douglasos-cam-YYYYMMDD-HHMMSS.png` through a local `blob:` URL; a polite live region announces "Photo saved as …".
+- **Performance:** frames are captured at 320px wide (240px on phones), so the pipeline costs ~0.3 ms per frame (measured in Node on the pure functions); the loop is capped at **24 FPS** (measured 24 FPS steady with Chromium's fake camera at 1440×900 and with a stubbed stream on iPhone 13/WebKit). No worker or OffscreenCanvas — the measurement didn't call for one.
+
+### Privacy (hard rules)
+- The camera is requested **only from an explicit click** (Turn on / Turn on camera / Try again). Opening the window never asks; it never restarts by itself (restoring a minimized window leaves it off).
+- **Video only** (`audio: false`), front camera (`facingMode: "user"`), small resolution (640×480 ideal; 320×240 on phones).
+- **Every track is stopped** (`track.stop()`, the camera light goes off) when the visitor turns it off, **closes** the window (unmount), **minimizes** it, on a phone when **another window comes to the front**, when the **tab is hidden** (`visibilitychange`) or the page is left (`pagehide`), and when the device ends the track. A permission answer that arrives after any of these is stopped immediately.
+- **Frames never leave the page.** They live in memory only (the last frame, for Save photo, is dropped when the camera stops); nothing is uploaded, stored, logged or sent to analytics. The saved PNG is built on the device and downloaded through a `blob:` URL that is revoked right after.
+
+### Placement & mobile
+- **Start → All Programs → Accessories ▸ Retro Cam** only — no desktop icon, no Start pin (fun apps never crowd the CTAs). On phones All Programs is inline, so Accessories is a labelled sub-list with Retro Cam indented under it.
+- **Mobile:** full-screen window like every app; the toolbar wraps to two rows of 44px targets (16px text in the selects, so iOS doesn't zoom); the capture is smaller (240px wide, 320×240 requested) for battery/performance. Since only the focused window is visible on a phone, bringing any other window up (Quick Launch → Contact, the taskbar…) turns the camera off — CV and Contact stay one tap away on the taskbar.
+- **Reduced motion:** nothing animates besides the live picture the visitor chose to start; no transitions.
+
+### Persistence
+None. Settings (pixel size, palette, mirror, frame) reset with the window; no frame, photo or permission state is stored by the page.
+
+---
+
 ## Layering (z-index policy)
 
 | Layer | z-index | Notes |
@@ -576,7 +613,7 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos:media` | localStorage | `playbackStore` *(stage 8)* | Media Player volume (0–100) + mute; playback itself is never persisted and the player window isn't restored after a reload |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Later stages add their own keys here.
+Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Stage 9 (Retro Cam) adds no storage key: settings, frames and camera state live only in memory. Later stages add their own keys here.
 
 ---
 
@@ -608,7 +645,7 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 6 | Recycle Bin rescue + lasso/multi-select — **done** |
 | 7 | Run…, command palette, desktop context menu — **done** |
 | 8 | DouglasOS Media Player (YouTube playlist) + synced dance, tray volume/now-playing, All Programs → Entertainment (§15) — **done** |
-| 9 | Retro Cam (pixelated webcam) |
+| 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).

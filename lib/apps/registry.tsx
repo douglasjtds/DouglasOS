@@ -21,6 +21,7 @@ import {
 } from "@/components/icons/LinkIcons";
 import { MessengerIcon } from "@/components/icons/MessengerIcons";
 import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
+import { CameraIcon } from "@/components/icons/CameraIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -33,7 +34,8 @@ export type AppId =
   | "messenger"
   | "display"
   | "recycle-bin"
-  | "media-player";
+  | "media-player"
+  | "camera";
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -62,15 +64,20 @@ export interface AppRoutes {
  * own, its cell persisted separately (`desktopStore.binCell`), and never
  * lassoed, grouped or trashed with the others.
  */
-export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin" | "media-player">;
+export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin" | "media-player" | "camera">;
 
 /**
- * Folders inside Start → All Programs (DESKTOP-INTERFACE-SPEC §5). Fun apps
- * live there so they never sit above the CTAs; a folder shows only once an
- * app declares it.
+ * Folders inside Start → All Programs (DESKTOP-INTERFACE-SPEC §5), in display
+ * order. Fun apps live there so they never sit above the CTAs. A window app
+ * declares `folder` to be listed inside that folder instead of the flat list;
+ * a folder shows only once an app declares it (see `programsInFolder`).
+ * This is the single folder API (stages 8 and 9 each prototyped one): later
+ * apps (e.g. stage 10's Paint) use `folder`, not a separate field.
  */
 export const PROGRAM_FOLDERS = ["accessories", "entertainment"] as const;
 export type ProgramFolder = (typeof PROGRAM_FOLDERS)[number];
+/** Alias kept for stage 9 call sites. */
+export type ProgramFolderId = ProgramFolder;
 
 export interface WindowAppConfig {
   id: AppId;
@@ -81,7 +88,7 @@ export interface WindowAppConfig {
   onDesktop: boolean;
   /** Listed in Start → All Programs (default true; the Recycle Bin isn't). */
   inAllPrograms?: boolean;
-  /** Listed inside this All Programs folder instead of the top level. */
+  /** All Programs folder the app is listed in (flat list when absent). */
   folder?: ProgramFolder;
   /**
    * Restore the window after a reload (default true). The media player opts
@@ -276,6 +283,18 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 520, height: 510 },
     Content: lazy(() => import("@/components/apps/MediaPlayerApp")),
   },
+  // Retro Cam (stage 9): pixelated webcam, Start → All Programs → Accessories
+  // only (no desktop icon: fun apps never crowd the CTA icons).
+  {
+    id: "camera",
+    kind: "window",
+    icon: CameraIcon,
+    onDesktop: false,
+    folder: "accessories",
+    surface: "bare",
+    defaultSize: { width: 560, height: 520 },
+    Content: lazy(() => import("@/components/apps/CameraApp")),
+  },
 ];
 
 export const WINDOW_APPS: WindowAppConfig[] = LAUNCHERS.filter(
@@ -311,6 +330,11 @@ const WINDOW_APP_BY_ID = new Map<AppId, WindowAppConfig>(
 const LAUNCHER_BY_ID = new Map<LauncherId, LauncherConfig>(
   LAUNCHERS.map((l) => [l.id, l]),
 );
+
+/** Window apps listed inside an All Programs folder, in registry order. */
+export function programsInFolder(folder: ProgramFolder): WindowAppConfig[] {
+  return WINDOW_APPS.filter((app) => app.folder === folder);
+}
 
 export function getApp(id: AppId): WindowAppConfig {
   const app = WINDOW_APP_BY_ID.get(id);

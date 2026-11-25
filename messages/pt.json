@@ -409,6 +409,66 @@
     "media-player": {
       "title": "DouglasOS Media Player",
       "description": "Música enquanto você explora"
+    },
+    "camera": {
+      "title": "Retro Cam",
+      "description": "Webcam pixelada, processada no seu aparelho",
+      "toolbar": {
+        "label": "Controles da câmera",
+        "turnOn": "Ligar",
+        "turnOff": "Desligar",
+        "pixelSize": "Pixels:",
+        "palette": "Paleta:",
+        "mirror": "Espelhar",
+        "frame": "Moldura",
+        "save": "Salvar foto"
+      },
+      "pixelSizes": {
+        "fine": "Fino",
+        "medium": "Médio",
+        "large": "Grande"
+      },
+      "palettes": {
+        "douglasos": "DouglasOS",
+        "classic16": "16 cores",
+        "cga": "Estilo CGA",
+        "original": "Original"
+      },
+      "viewfinder": "Prévia pixelada da câmera",
+      "idle": {
+        "title": "A câmera está desligada",
+        "body": "A Retro Cam só liga a sua câmera quando você clica no botão. Cada quadro é pixelado aqui mesmo no seu navegador e nunca é enviado para lugar nenhum.",
+        "action": "Ligar câmera"
+      },
+      "requesting": {
+        "title": "Aguardando permissão…",
+        "body": "O navegador pergunta antes. Nada começa até você permitir."
+      },
+      "stopped": {
+        "minimized": "A câmera desligou quando a janela foi minimizada.",
+        "hidden": "A câmera desligou quando você saiu da aba.",
+        "ended": "A câmera foi desconectada."
+      },
+      "denied": {
+        "title": "Câmera bloqueada",
+        "body": "A Retro Cam não consegue ver a câmera porque a permissão foi negada. Para tentar de novo, permita a câmera para este site na barra de endereço ou nas configurações do navegador."
+      },
+      "unsupported": {
+        "title": "Nenhuma câmera disponível",
+        "no-api": "Este navegador não compartilha a câmera com páginas da web, ou a página não está numa conexão segura.",
+        "no-camera": "A Retro Cam não encontrou uma câmera neste aparelho.",
+        "busy": "A câmera está em uso por outro aplicativo. Feche esse aplicativo e tente de novo."
+      },
+      "retry": "Tentar de novo",
+      "ok": "OK",
+      "status": {
+        "active": "Câmera ligada",
+        "off": "Câmera desligada",
+        "local": "processamento local",
+        "fps": "{fps} FPS",
+        "noUpload": "sem upload"
+      },
+      "saved": "Foto salva como {name}"
     }
   },
   "resume": {

@@ -88,6 +88,22 @@ describe("StartMenu", () => {
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
+  it("All Programs → Accessories ▸ Retro Cam opens the camera window", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    screen.getByRole("menuitem", { name: /All Programs/ }).focus();
+    await userEvent.keyboard("{ArrowRight}");
+    // Retro Cam isn't in the flat list, only inside its folder.
+    expect(document.querySelector('[data-all-programs] [data-program="camera"]')).toBeNull();
+    const folder = document.querySelector<HTMLElement>('[data-program-folder="accessories"]')!;
+    expect(folder).toHaveAttribute("aria-haspopup", "menu");
+    folder.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.click(screen.getByRole("menuitem", { name: "Retro Cam" }));
+    expect(useWindowStore.getState().focusedId).toBe("camera");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
   it("My Projects ▸ lists the case studies and opens the Explorer at one", async () => {
     renderWithIntl(<StartMenu />);
     await userEvent.click(startButton());

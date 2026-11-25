@@ -513,7 +513,7 @@ Every animation has a static alternative:
 | `whatsapp` *(link)* | Green chat bubble with typing dots — no handset/logo |
 | `email` *(link)* | Blue-lined envelope with an orange "@" seal (distinct from `contact`'s beige envelope + card) |
 | `display` (stage 1) | Monitor showing a tiny "Morning Waves" wallpaper |
-| Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera, paint, "don't open this" |
+| Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera (stage 9 — done: glossy round desk webcam with a blue lens and a green "on" light, `components/icons/CameraIcons.tsx`, plus a small yellow program-folder glyph for All Programs ▸ Accessories), paint, "don't open this" |
 
 ### Brand mark (DouglasOS logo)
 
@@ -711,6 +711,14 @@ Beyond the tables above, implementation needed a few extra tokens (all in `app/g
 | `--text-shadow-desktop-label`, `--text-shadow-start-label` | as in Shadows table | Exposed as Tailwind `text-shadow-*` utilities |
 
 `lib/utils.ts` registers these custom utilities with tailwind-merge (otherwise `cn("text-system text-text")` silently drops the font size).
+
+### Tokens added in stage 9 (Retro Cam)
+
+| Token | Value | Why |
+|-------|-------|-----|
+| `--color-viewfinder` | `#1B1B1B` | Dark viewfinder behind the pixelated camera picture |
+
+The Retro Cam "DouglasOS" palette is not a new token set: it reuses 16 existing Luna color tokens, mirrored as hex in `lib/camera/palettes.ts` (canvas code can't read CSS variables) and kept in sync by a unit test that parses `app/globals.css`.
 
 ### Tokens added in stage 2 (mobile)
 

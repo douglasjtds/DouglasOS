@@ -409,6 +409,66 @@
     "media-player": {
       "title": "DouglasOS Media Player",
       "description": "Music while you look around"
+    },
+    "camera": {
+      "title": "Retro Cam",
+      "description": "Pixelated webcam, processed on your device",
+      "toolbar": {
+        "label": "Camera controls",
+        "turnOn": "Turn on",
+        "turnOff": "Turn off",
+        "pixelSize": "Pixels:",
+        "palette": "Palette:",
+        "mirror": "Mirror",
+        "frame": "Frame",
+        "save": "Save photo"
+      },
+      "pixelSizes": {
+        "fine": "Fine",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "palettes": {
+        "douglasos": "DouglasOS",
+        "classic16": "16 colors",
+        "cga": "CGA style",
+        "original": "Original"
+      },
+      "viewfinder": "Pixelated camera preview",
+      "idle": {
+        "title": "The camera is off",
+        "body": "Retro Cam only turns your camera on when you click the button. Every frame is pixelated right here in your browser and never uploaded.",
+        "action": "Turn on camera"
+      },
+      "requesting": {
+        "title": "Waiting for permission…",
+        "body": "Your browser asks first. Nothing starts until you allow it."
+      },
+      "stopped": {
+        "minimized": "The camera turned off when the window was minimized.",
+        "hidden": "The camera turned off when you left the tab.",
+        "ended": "The camera was disconnected."
+      },
+      "denied": {
+        "title": "Camera blocked",
+        "body": "Retro Cam can't see the camera because permission was denied. To try again, allow the camera for this site in your browser's address bar or settings."
+      },
+      "unsupported": {
+        "title": "No camera available",
+        "no-api": "This browser can't share a camera with web pages, or the page isn't on a secure connection.",
+        "no-camera": "Retro Cam couldn't find a camera on this device.",
+        "busy": "The camera is busy in another app. Close that app and try again."
+      },
+      "retry": "Try again",
+      "ok": "OK",
+      "status": {
+        "active": "Camera on",
+        "off": "Camera off",
+        "local": "local processing",
+        "fps": "{fps} FPS",
+        "noUpload": "no upload"
+      },
+      "saved": "Photo saved as {name}"
     }
   },
   "resume": {

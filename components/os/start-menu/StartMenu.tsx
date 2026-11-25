@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef, type KeyboardEvent, type ReactNode } from "react";
+import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { DropdownMenu } from "radix-ui";
 import { useShellStore } from "@/lib/store/shellStore";
@@ -10,9 +10,10 @@ import {
   PROGRAM_FOLDERS,
   getLauncher,
   launcherTitleKey,
+  programsInFolder,
+  type LauncherConfig,
   type LauncherId,
   type ProgramFolder,
-  type WindowAppConfig,
 } from "@/lib/apps/registry";
 import { ProgramFolderIcon } from "@/components/icons/MediaIcons";
 import {
@@ -29,30 +30,36 @@ import { menuSurfaceClass } from "@/components/os/menuStyles";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { PROJECTS, PROJECTS_HOME_ROUTE } from "@/lib/content/projects";
 import { CaseStudyIcon } from "@/components/icons/BrowserIcons";
+import { AccessoriesFolderIcon } from "@/components/icons/CameraIcons";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * All Programs: every launcher in registry order, apps first, then the
- * external shortcuts (stage 3) after a separator. System items that opt out
- * (the Recycle Bin) aren't listed.
+ * All Programs: the program folders first, like the original (Accessories ▸
+ * Retro Cam, stage 9; Entertainment ▸ Media Player, stage 8 — empty folders
+ * are skipped), then every other launcher in registry order, then the external
+ * shortcuts (stage 3) after a separator. System items that opt out (the
+ * Recycle Bin) aren't listed; apps with a `folder` are listed only inside it.
+ * Desktop: folders cascade as submenus; touch: inline labelled sections.
  */
-const ALL_PROGRAMS = [
-  ...LAUNCHERS.filter(
-    (l) => l.kind !== "link" && !(l.kind === "window" && (l.inAllPrograms === false || l.folder)),
-  ),
-  ...LAUNCHERS.filter((l) => l.kind === "link"),
-];
-const FIRST_LINK_ID = LAUNCHERS.find((l) => l.kind === "link")?.id;
+const PROGRAM_APPS = LAUNCHERS.filter(
+  (l) => l.kind !== "link" && !(l.kind === "window" && (l.inAllPrograms === false || l.folder)),
+);
+const PROGRAM_LINKS = LAUNCHERS.filter((l) => l.kind === "link");
+const FOLDERS = PROGRAM_FOLDERS.map((id) => ({ id, programs: programsInFolder(id) })).filter(
+  (f) => f.programs.length > 0,
+);
 
-/**
- * All Programs folders (stage 8: Entertainment ▸ Media Player), listed first
- * like the original; empty folders are skipped.
- */
-const FOLDERS: { id: ProgramFolder; apps: WindowAppConfig[] }[] = PROGRAM_FOLDERS.map((id) => ({
-  id,
-  apps: LAUNCHERS.filter((l): l is WindowAppConfig => l.kind === "window" && l.folder === id),
-})).filter((f) => f.apps.length > 0);
+/** Folder icons: Accessories shows a tool folder, others the plain one. */
+const FOLDER_ICONS: Record<ProgramFolder, IconComponent> = {
+  accessories: AccessoriesFolderIcon,
+  entertainment: ProgramFolderIcon,
+};
+
+function FolderIcon({ folder }: { folder: ProgramFolder }) {
+  const Icon = FOLDER_ICONS[folder];
+  return <Icon size={16} />;
+}
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
 const PINNED: LauncherId[] = ["about", "projects", "how-i-work-with-ai", "contact"];
@@ -149,6 +156,32 @@ export function StartMenu() {
 
   const label = (id: LauncherId) => t(launcherTitleKey(id));
   const mobile = useIsMobile();
+
+  /** One All Programs entry (cascading submenu on the pointer desktop). */
+  const desktopProgram = (l: LauncherConfig) => (
+    <DropdownMenu.Item
+      key={l.id}
+      data-program={l.id}
+      onSelect={() => select(() => launch(l.id), l.kind === "window")}
+      className={cn(itemBase, "h-menu-item px-2")}
+    >
+      <l.icon size={16} />
+      {label(l.id)}
+    </DropdownMenu.Item>
+  );
+
+  /** One All Programs entry in the touch shell's inline list (`nested` = inside a folder). */
+  const mobileProgram = (l: LauncherConfig, nested = false) => (
+    <DropdownMenu.Item
+      key={l.id}
+      data-program={l.id}
+      onSelect={() => select(() => launch(l.id), l.kind === "window")}
+      className={cn(itemBase, "px-2 text-text", nested && "pl-8")}
+    >
+      <l.icon size={16} />
+      {label(l.id)}
+    </DropdownMenu.Item>
+  );
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -247,7 +280,7 @@ export function StartMenu() {
                     {t("startMenu.allPrograms")}
                     <AllProgramsIcon size={18} />
                   </DropdownMenu.Label>
-                  {/* Touch: folders become labelled inline groups (no cascading). */}
+                  {/* Touch: folders are inline, labelled sub-lists (no cascading), first like the original. */}
                   {FOLDERS.map((folder) => (
                     <DropdownMenu.Group
                       key={folder.id}
@@ -256,37 +289,15 @@ export function StartMenu() {
                       className="flex flex-col"
                     >
                       <DropdownMenu.Label className="flex min-h-touch-target items-center gap-2 px-2 font-bold text-text">
-                        <ProgramFolderIcon size={16} />
+                        <FolderIcon folder={folder.id} />
                         {t(`startMenu.folders.${folder.id}`)}
                       </DropdownMenu.Label>
-                      {folder.apps.map((app) => (
-                        <DropdownMenu.Item
-                          key={app.id}
-                          data-program={app.id}
-                          onSelect={() => select(() => launch(app.id))}
-                          className={cn(itemBase, "pr-2 pl-8 text-text")}
-                        >
-                          <app.icon size={16} />
-                          {label(app.id)}
-                        </DropdownMenu.Item>
-                      ))}
+                      {folder.programs.map((l) => mobileProgram(l, true))}
                     </DropdownMenu.Group>
                   ))}
-                  {ALL_PROGRAMS.map((l) => (
-                    <Fragment key={l.id}>
-                      {l.id === FIRST_LINK_ID && (
-                        <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-right-border" />
-                      )}
-                      <DropdownMenu.Item
-                        data-program={l.id}
-                        onSelect={() => select(() => launch(l.id), l.kind === "window")}
-                        className={cn(itemBase, "px-2 text-text")}
-                      >
-                        <l.icon size={16} />
-                        {label(l.id)}
-                      </DropdownMenu.Item>
-                    </Fragment>
-                  ))}
+                  {PROGRAM_APPS.map((l) => mobileProgram(l))}
+                  <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-right-border" />
+                  {PROGRAM_LINKS.map((l) => mobileProgram(l))}
                 </DropdownMenu.Group>
               ) : (
               <DropdownMenu.Sub>
@@ -310,7 +321,7 @@ export function StartMenu() {
                           data-program-folder={folder.id}
                           className={cn(itemBase, "h-menu-item px-2")}
                         >
-                          <ProgramFolderIcon size={16} />
+                          <FolderIcon folder={folder.id} />
                           <span className="flex-1">{t(`startMenu.folders.${folder.id}`)}</span>
                           <ChevronRight className="size-3 shrink-0" aria-hidden />
                         </DropdownMenu.SubTrigger>
@@ -318,38 +329,16 @@ export function StartMenu() {
                           <DropdownMenu.SubContent
                             data-program-folder-menu={folder.id}
                             sideOffset={2}
-                            className={cn(menuSurfaceClass, "z-1200 min-w-52")}
+                            className={cn(menuSurfaceClass, "z-1200 min-w-44")}
                           >
-                            {folder.apps.map((app) => (
-                              <DropdownMenu.Item
-                                key={app.id}
-                                data-program={app.id}
-                                onSelect={() => select(() => launch(app.id))}
-                                className={cn(itemBase, "h-menu-item px-2")}
-                              >
-                                <app.icon size={16} />
-                                {label(app.id)}
-                              </DropdownMenu.Item>
-                            ))}
+                            {folder.programs.map((l) => desktopProgram(l))}
                           </DropdownMenu.SubContent>
                         </DropdownMenu.Portal>
                       </DropdownMenu.Sub>
                     ))}
-                    {ALL_PROGRAMS.map((l) => (
-                      <Fragment key={l.id}>
-                        {l.id === FIRST_LINK_ID && (
-                          <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
-                        )}
-                        <DropdownMenu.Item
-                          data-program={l.id}
-                          onSelect={() => select(() => launch(l.id), l.kind === "window")}
-                          className={cn(itemBase, "h-menu-item px-2")}
-                        >
-                          <l.icon size={16} />
-                          {label(l.id)}
-                        </DropdownMenu.Item>
-                      </Fragment>
-                    ))}
+                    {PROGRAM_APPS.map((l) => desktopProgram(l))}
+                    <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
+                    {PROGRAM_LINKS.map((l) => desktopProgram(l))}
                   </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
               </DropdownMenu.Sub>

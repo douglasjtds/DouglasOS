@@ -14,6 +14,8 @@ const PORT = Number(process.env.PORT ?? 3000);
 const BASE_URL = `http://localhost:${PORT}`;
 /** Specs for the touch shell; they run only on the phone projects. */
 const MOBILE_SPECS = /mobile\.spec\.ts/;
+/** Desktop Retro Cam spec, also run with Chromium's fake camera. */
+const CAMERA_SPECS = /camera\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -30,6 +32,19 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] }, testIgnore: MOBILE_SPECS },
     { name: "firefox", use: { ...devices["Desktop Firefox"] }, testIgnore: MOBILE_SPECS },
     { name: "webkit", use: { ...devices["Desktop Safari"] }, testIgnore: MOBILE_SPECS },
+    // Retro Cam (stage 9) with Chromium's built-in fake camera (a synthetic
+    // test pattern, auto-accepted permission). Only the camera spec runs here;
+    // the other engines have no equivalent switch and skip the live-camera tests.
+    {
+      name: "chromium-camera",
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],
+        },
+      },
+      testMatch: CAMERA_SPECS,
+    },
     // Touch shell (< 768px) on real phone descriptors (touch, mobile viewport,
     // DPR). Firefox has no mobile emulation (`isMobile`), so phones run on
     // WebKit (iPhone) and Chromium (Android).

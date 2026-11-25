@@ -8,9 +8,11 @@ import {
   DESKTOP_ICON_IDS,
   LAUNCHERS,
   LINK_LAUNCHERS,
+  PROGRAM_FOLDERS,
   getLauncher,
   isAppId,
   launcherTitleKey,
+  programsInFolder,
 } from "@/lib/apps/registry";
 
 /** Resolve a dotted i18n key in a message catalog. */
@@ -95,5 +97,25 @@ describe("registry: DouglasOS Media Player (stage 8)", () => {
       persistWindow: false,
     });
     expect(DESKTOP_ICON_IDS).not.toContain("media-player");
+    expect(programsInFolder("entertainment").map((a) => a.id)).toContain("media-player");
+  });
+});
+
+describe("registry: Retro Cam (stage 9)", () => {
+  it("is a window app in All Programs → Accessories, never a desktop icon", () => {
+    expect(isAppId("camera")).toBe(true);
+    expect(getLauncher("camera")).toMatchObject({ kind: "window", onDesktop: false, folder: "accessories" });
+    expect(DESKTOP_ICON_IDS).not.toContain("camera");
+    expect(PROGRAM_FOLDERS).toContain("accessories");
+    expect(programsInFolder("accessories").map((a) => a.id)).toContain("camera");
+  });
+});
+
+describe("registry: All Programs folders (unified API)", () => {
+  it("lists Accessories then Entertainment, and every folder app is a window app with a known folder", () => {
+    expect([...PROGRAM_FOLDERS]).toEqual(["accessories", "entertainment"]);
+    for (const folder of PROGRAM_FOLDERS) {
+      for (const app of programsInFolder(folder)) expect(app.folder).toBe(folder);
+    }
   });
 });
