@@ -44,6 +44,16 @@ export interface ProjectCaseStudy {
 
 export const PROJECTS: ProjectCaseStudy[] = [
   {
+    slug: "landing-pages",
+    name: "Landing pages",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["landing pages for small businesses", "landing page", "douglastertuliano.vercel.app"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+    links: { demo: "https://douglastertuliano.vercel.app/" },
+    images: [],
+  },
+  {
     slug: "gasolinha",
     name: "Gasolinha",
     // TODO(douglas): start year.
@@ -54,6 +64,57 @@ export const PROJECTS: ProjectCaseStudy[] = [
     links: { demo: "https://www.gasolinha.com.br" },
     // TODO(douglas): screenshots in public/projects/gasolinha/.
     images: [],
+  },
+  {
+    slug: "poupensa",
+    name: "Poupensa",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["grocery list"],
+    tags: ["Next.js", "TypeScript", "SaaS"],
+    links: { demo: "https://poupensa.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "link-to-whatsapp",
+    name: "Link to WhatsApp",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["link para whatsapp", "whatsapp link"],
+    tags: ["Next.js", "TypeScript"],
+    links: { demo: "https://link-to-whatsapp.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "santo-rosario",
+    name: "Santo Rosário",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["santo rosario", "rosary", "rosario", "terço", "terco"],
+    tags: ["Next.js", "TypeScript", "i18n"],
+    links: { demo: "https://santo-rosario-dojotes.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "qr-code-generator",
+    name: "QR Code Generator",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["qr code", "gerador de qr code"],
+    tags: ["JavaScript", "GitHub Pages"],
+    links: { demo: "https://douglasjtds.github.io/qr-code-generator/" },
+    images: [],
+  },
+  {
+    slug: "prospecting-tool",
+    name: "Lead prospecting tool",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["prospecting", "lead prospecting", "ferramenta de prospecção", "crm"],
+    tags: ["Next.js", "TypeScript", "Google Maps"],
+    // Personal use: no public link.
+    links: {},
+    images: [{ file: "screenshot.png", width: 1200, height: 970, altKey: "imageAlt" }],
   },
   {
     slug: "douglasos",
@@ -72,7 +133,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
     year: null,
     aliases: ["wedding post", "wedding"],
     tags: ["Next.js", "TypeScript"],
-    // TODO(douglas): demo/repo URLs once it ships.
+    // Personal project: no public link.
     links: {},
     // TODO(douglas): screenshots in public/projects/the-wedding-post/.
     images: [],

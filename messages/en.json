@@ -158,6 +158,17 @@
         }
       },
       "caseStudies": {
+        "landing-pages": {
+          "category": "Business",
+          "status": "Live",
+          "summary": "My landing-page studio site: custom one-page sites for freelancers and small businesses, matched to each brand's visual identity, built to convert through WhatsApp and delivered in up to 10 business days. The site itself showcases live client pages and packages.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
         "gasolinha": {
           "category": "SaaS",
           "status": "Live",
@@ -168,6 +179,62 @@
             "role": "I own the full stack — database, auth and production deployment on a custom domain.",
             "result": ""
           }
+        },
+        "poupensa": {
+          "category": "SaaS",
+          "status": "Live",
+          "summary": "A SaaS that builds your grocery list from what your household actually consumes, so you buy what you need and stop wasting money.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "link-to-whatsapp": {
+          "category": "Utility",
+          "status": "Live",
+          "summary": "A small utility that generates a direct link to a WhatsApp chat — type the phone number and an optional pre-filled message, and share the link anywhere.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "santo-rosario": {
+          "category": "Web app",
+          "status": "Live",
+          "summary": "A calm, distraction-free guide to praying the Rosary: the mysteries of the day, the full Rosary, or all 20 mysteries — in Portuguese and English.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "qr-code-generator": {
+          "category": "Utility",
+          "status": "Live",
+          "summary": "Generates a QR code from any text or link, right in the browser.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "prospecting-tool": {
+          "category": "Internal tool",
+          "status": "In progress",
+          "summary": "A personal CRM I'm building to sell landing pages. It pulls businesses from Google Maps (city, niche, rating, reviews, whether they have a website), builds a daily queue — who replied, auto-replies to get past, overdue follow-ups — suggests the next action with a ready-to-send message, opens WhatsApp in one click and tracks each lead through the funnel: to contact → contacted → replied → meeting → proposal → closed. Personal use, so no public link.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          },
+          "imageAlt": "Screenshot of the prospecting tool: a daily lead queue on the left and the selected lead's status, next action and ready-to-send WhatsApp message on the right (business names are fictitious)."
         },
         "douglasos": {
           "category": "Portfolio",
@@ -182,8 +249,8 @@
         },
         "the-wedding-post": {
           "category": "Personal project",
-          "status": "In progress",
-          "summary": "A personal wedding-event project: a site where guests follow the celebration and share moments.",
+          "status": "Personal",
+          "summary": "The RSVP site for my own wedding, where guests confirmed attendance and followed the celebration. A personal project, so no public link.",
           "sections": {
             "problem": "",
             "approach": "Built with the same discovery-first, AI-assisted Next.js workflow.",

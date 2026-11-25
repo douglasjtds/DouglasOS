@@ -158,6 +158,17 @@
         }
       },
       "caseStudies": {
+        "landing-pages": {
+          "category": "Negócio",
+          "status": "No ar",
+          "summary": "O site do meu serviço de landing pages: páginas únicas sob medida para autônomos e pequenos negócios, alinhadas à identidade visual de cada marca, feitas para converter pelo WhatsApp e entregues em até 10 dias úteis. O próprio site mostra páginas de clientes no ar e os pacotes.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
         "gasolinha": {
           "category": "SaaS",
           "status": "No ar",
@@ -168,6 +179,62 @@
             "role": "Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
             "result": ""
           }
+        },
+        "poupensa": {
+          "category": "SaaS",
+          "status": "No ar",
+          "summary": "Um SaaS que monta a sua lista de compras a partir do que a casa realmente consome, para comprar só o necessário e parar de desperdiçar dinheiro.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "link-to-whatsapp": {
+          "category": "Utilitário",
+          "status": "No ar",
+          "summary": "Uma ferramenta simples que gera um link direto para uma conversa no WhatsApp: digite o telefone e uma mensagem opcional e compartilhe o link onde quiser.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "santo-rosario": {
+          "category": "App web",
+          "status": "No ar",
+          "summary": "Um guia tranquilo e sem distrações para rezar o terço: o terço do dia, o rosário completo ou os 20 mistérios, em português e inglês.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "qr-code-generator": {
+          "category": "Utilitário",
+          "status": "No ar",
+          "summary": "Gera um QR Code a partir de qualquer texto ou link, direto no navegador.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "prospecting-tool": {
+          "category": "Ferramenta interna",
+          "status": "Em construção",
+          "summary": "Um CRM pessoal que estou construindo para vender landing pages. Ele puxa negócios do Google Maps (cidade, nicho, nota, avaliações, se tem site), monta uma fila diária (quem respondeu, respostas automáticas para furar, follow-ups vencidos), sugere a próxima ação com a mensagem pronta, abre o WhatsApp com um clique e acompanha cada lead no funil: a contatar → contatado → respondeu → reunião → proposta → fechado. É de uso pessoal, por isso não tem link público.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          },
+          "imageAlt": "Print da ferramenta de prospecção: fila diária de leads à esquerda e, à direita, o status do lead selecionado, a próxima ação e a mensagem pronta para o WhatsApp (nomes das empresas fictícios)."
         },
         "douglasos": {
           "category": "Portfólio",
@@ -182,8 +249,8 @@
         },
         "the-wedding-post": {
           "category": "Projeto pessoal",
-          "status": "Em andamento",
-          "summary": "Um projeto pessoal de casamento: um site em que os convidados acompanham a celebração e compartilham momentos.",
+          "status": "Pessoal",
+          "summary": "O site de confirmação de presença do meu casamento, onde os convidados confirmavam presença e acompanhavam a celebração. Projeto pessoal, por isso sem link público.",
           "sections": {
             "problem": "",
             "approach": "Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",

@@ -5,6 +5,7 @@ import { renderWithIntl } from "@/test/renderWithIntl";
 import { StartMenu } from "@/components/os/start-menu/StartMenu";
 import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { useShellStore } from "@/lib/store/shellStore";
+import { PROJECTS } from "@/lib/content/projects";
 
 const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
@@ -95,12 +96,7 @@ describe("StartMenu", () => {
     trigger.focus();
     await userEvent.keyboard("{ArrowRight}");
     const entries = [...document.querySelectorAll("[data-projects-submenu] [data-project-entry]")];
-    expect(entries.map((e) => e.getAttribute("data-project-entry"))).toEqual([
-      "home",
-      "gasolinha",
-      "douglasos",
-      "the-wedding-post",
-    ]);
+    expect(entries.map((e) => e.getAttribute("data-project-entry"))).toEqual(["home", ...PROJECTS.map((p) => p.slug)]);
     await userEvent.click(screen.getByRole("menuitem", { name: "The Wedding Post" }));
     const { windows, focusedId } = useWindowStore.getState();
     expect(focusedId).toBe("projects");

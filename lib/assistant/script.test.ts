@@ -16,7 +16,7 @@ import {
   tipMessage,
   type AssistantMessage,
 } from "@/lib/assistant/script";
-import { FEATURED_PROJECT_SLUG } from "@/lib/content/projects";
+import { FEATURED_PROJECT_SLUG, getProject } from "@/lib/content/projects";
 
 function lookup(catalog: unknown, key: string): unknown {
   return key.split(".").reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], catalog);
@@ -88,7 +88,7 @@ describe("assistant script", () => {
   });
 
   it("names the featured project in the Explorer tip", () => {
-    expect(projectsTipMessage().values?.project).toBe(FEATURED_PROJECT_SLUG);
+    expect(projectsTipMessage().values?.project).toBe(getProject(FEATURED_PROJECT_SLUG)!.name.toLowerCase());
   });
 });
 

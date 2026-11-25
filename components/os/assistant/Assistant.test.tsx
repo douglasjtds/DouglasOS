@@ -11,6 +11,7 @@ import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { greetingMessage } from "@/lib/assistant/script";
 import { bubbleRect } from "@/lib/assistant/layout";
 import { downloadFile } from "@/lib/download";
+import { FEATURED_PROJECT_SLUG } from "@/lib/content/projects";
 
 vi.mock("@/lib/download", () => ({ downloadFile: vi.fn() }));
 
@@ -59,7 +60,7 @@ describe("Assistant", () => {
     greet();
     await userEvent.click(screen.getByRole("button", { name: "Show me a project" }));
     const projects = useWindowStore.getState().windows.projects;
-    expect(projects?.history?.entries[projects.history.index]).toBe("gasolinha");
+    expect(projects?.history?.entries[projects.history.index]).toBe(FEATURED_PROJECT_SLUG);
     // Opened from here, so the "first time in Projects" tip is spent.
     expect(useAssistantStore.getState().fired).toContain("projects");
   });
