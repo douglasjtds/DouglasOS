@@ -405,6 +405,10 @@
       "empty": "This folder is empty.",
       "note": "Nothing stays here for long: anything you drag in, I bring right back. Go ahead, try it with an icon.",
       "noteTouch": "Nothing stays here for long: press and hold any icon, pick Delete and watch me bring it right back."
+    },
+    "media-player": {
+      "title": "DouglasOS Media Player",
+      "description": "Music while you look around"
     }
   },
   "resume": {
@@ -480,7 +484,11 @@
     "help": "Help",
     "run": "Run…",
     "logOff": "Log Off",
-    "turnOff": "Turn Off"
+    "turnOff": "Turn Off",
+    "folders": {
+      "accessories": "Accessories",
+      "entertainment": "Entertainment"
+    }
   },
   "boot": {
     "tagline": "A portfolio that boots.",
@@ -856,5 +864,53 @@
   },
   "static": {
     "label": "DouglasOS — text version of the portfolio"
+  },
+  "mediaPlayer": {
+    "nowPlaying": "Now playing",
+    "screenLabel": "Video screen (YouTube player)",
+    "source": "Source: YouTube playlist",
+    "untitled": "Untitled video",
+    "track": "Track {index} of {total}",
+    "status": {
+      "idle": "Press Play to start the playlist.",
+      "loading": "Connecting to YouTube…",
+      "ready": "Ready. Press Play.",
+      "buffering": "Buffering…",
+      "playing": "Playing",
+      "paused": "Paused",
+      "ended": "Playlist finished",
+      "error": "This playlist can't be played here"
+    },
+    "notices": {
+      "skipped": "Skipped a video that can't be played outside YouTube.",
+      "hiddenPause": "Paused: the video has to stay on screen to play."
+    },
+    "controls": {
+      "label": "Playback controls",
+      "play": "Play",
+      "pause": "Pause",
+      "stop": "Stop",
+      "previous": "Previous track",
+      "next": "Next track",
+      "volume": "Volume",
+      "mute": "Mute",
+      "unmute": "Unmute"
+    },
+    "visualizer": "Visualizer (decorative)",
+    "openOnYouTube": "Open on YouTube",
+    "error": {
+      "title": "DouglasOS Media Player",
+      "unplayable": "None of the videos in this playlist can be played here. You can still listen to it on YouTube.",
+      "loadFailed": "YouTube couldn't be reached. Check your connection, or open the playlist on YouTube.",
+      "ok": "OK"
+    },
+    "tray": {
+      "nowPlaying": "Now playing: {title}. Show DouglasOS Media Player",
+      "nowPlayingUntitled": "Music is playing. Show DouglasOS Media Player",
+      "volume": "Volume: {level}%",
+      "muted": "Volume: muted",
+      "panel": "Volume control",
+      "showPlayer": "Show player"
+    }
   }
 }

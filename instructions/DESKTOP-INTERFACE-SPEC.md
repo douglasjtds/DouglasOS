@@ -173,8 +173,8 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
    - Buttons are the minimize/restore animation target.
 4. **Tray (notification area)** — separated by the tray edge, right-aligned:
    - **Language** `EN` / `PT` toggle (reuses `LocaleToggle`; switches locale in place, windows stay).
-   - **Volume** — only once something plays sound *(stage 8)*.
-   - **Messenger "online"** icon *(stage 5b — done; left of the language toggle, see [§14](#14-douglasos-messenger-stage-5b))*, **now-playing** note *(stage 8)*.
+   - **Volume** *(stage 8 — done)* — only while DouglasOS Media Player is open: speaker icon (red cross when muted) opening a small panel with a slider + Mute; see [§15](#15-douglasos-media-player-stage-8).
+   - **Messenger "online"** icon *(stage 5b — done; left of the language toggle, see [§14](#14-douglasos-messenger-stage-5b))*, **now-playing** note *(stage 8 — done; only while music plays, left of the volume icon; click focuses the player)*.
    - **Clock** (HH:mm, reuses `Clock`); tooltip with the full localized date.
    - Tray icons can anchor **balloons** ([§7](#7-dialogs-balloons-tooltips--menus)).
 
@@ -205,7 +205,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; later: folders **Accessories ▸** — Paint *(10)*, Retro Cam *(9)* — and **Entertainment ▸** — Media Player *(8)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*).
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Entertainment ▸** — Media Player *(8 — done)* — and, later, **Accessories ▸** — Paint *(10)*, Retro Cam *(9)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*). Folders come first in the list, each a cascading submenu (touch: a labelled inline group); an app joins one with `folder: "accessories" | "entertainment"` in the registry, and a folder only shows once something is in it.
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -345,7 +345,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -357,7 +357,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 - **Layout:** full-screen desktop (`100dvh`, `viewport-fit=cover`, safe-area padding on the desktop, windows and session screens), taskbar at the bottom, no horizontal scroll (e2e-checked). `touch-manipulation` on the shell removes the double-tap-zoom delay.
 - **Icon grid:** like a phone home screen — larger cells, filled **row-first** and centered (`mobileIconLayout` in `lib/store/desktopGrid.ts`, unit-tested for no overlap at 320–767px), so About, **resume.pdf** and Contact share the first row. The layout is derived from the container width (ResizeObserver) and **never persisted**, so it can't disturb the desktop arrangement in `desktopStore`. If a short screen can't fit every row, the desktop scrolls vertically instead of stacking icons.
-- **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
+- **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). The phone tray is packed tight (no gaps between its 44px buttons, no AM/PM on the clock — the label and tooltip keep the full time), so with the Media Player's tray button added a 390px phone still shows one full window button. Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
 - **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
 - **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. In-app "Back" lives in the Explorer toolbar (stage 4; see [§10](#my-projects-projects) → Mobile).
 - **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** (stage 6, the Recycle Bin rescue joke) / **Properties** (stage 7); on empty desktop it opens the desktop menu (Refresh, New ▸, Properties; no Arrange Icons on phones). Start → **Run…** works on phones too (dialog docked at the top). Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
@@ -493,6 +493,38 @@ Full-screen window like every app; header compacts (icon-only Back and Contact, 
 ### Persistence
 `douglasos:messenger` (sessionStorage): conversation, pending lines, view, suggestions, unread, form open, draft, greeted, nudge count — gone when the tab closes. `douglasos-messenger-toast` (sessionStorage): the toast already showed.
 
+## 15. DouglasOS Media Player *(stage 8)*
+
+**Purpose:** music while the visitor looks around, and mini Douglas dances to it. Original name, icon and skin ("DouglasOS Media Player": glossy blue screen + green play triangle icon, navy "now playing" display) — never another media player's name, logo, icons or sounds. Fun only: it lives in Start → All Programs → **Entertainment** (no desktop icon, no pin, never above the CTAs) and plays only when the visitor presses Play.
+
+### Source (decision)
+A public, embeddable **YouTube playlist** through the official IFrame Player API. The id is one constant, `YOUTUBE_PLAYLIST_ID` in `lib/media/source.ts` (currently `PLdw3FCGShY-U`, a **third-party playlist** that its owner may change, reorder or delete at any time — swap the constant to change the music). Implemented behind a source adapter (`MediaSourceAdapter` in `lib/media/types.ts`: play / pause / stop / next / prev / setVolume / mute / getTrackTitle / onEvent / destroy), so a radio stream or local files can be added later as another adapter; only `lib/media/youtube.ts` ships.
+- **Privacy & loading:** embed host `https://www.youtube-nocookie.com`; the API script (`https://www.youtube.com/iframe_api`) is injected **only when the player window mounts**, never on page load. The window is not restored after a reload (`persistWindow: false` in the registry → dropped by `reconcilePersisted`), so a reload never loads YouTube on its own. The playlist is cued, not autoplayed. No CSP is configured in `next.config.ts`; if one is added it must allow `script-src https://www.youtube.com` and `frame-src https://www.youtube-nocookie.com`.
+- **YouTube's terms:** the player stays **visible**, at least 200 × 200 px (the window's "screen", `aspect-video`, `min-h/min-w 200px`), never hidden for audio-only and never covered by our skin. Hence **minimizing pauses** (and, on phones, switching to another full-screen window pauses): a hidden player may not keep playing. The status bar says why ("Paused: the video has to stay on screen to play."). Restoring does not auto-resume — Play is always the visitor's. The title shown is the one YouTube provides for the current video.
+- **Unplayable videos:** errors 101/150 (embedding disabled), 100 (removed/private) and 5 are skipped automatically to the next track (wrapping), with a short status line; when every track failed in a row (or error 2), an XP error message box offers **Open on YouTube** (`lib/openLink.ts`, new tab, `noopener noreferrer`) or OK. Same dialog if the API script can't load (network/15s timeout).
+
+### Window
+- Registry: `media-player` (stable id), kind `window`, `surface: "bare"`, 520 × 510, `onDesktop: false`, `folder: "entertainment"`, `persistWindow: false`.
+- Top → bottom: **now playing** display (label, title from YouTube with ellipsis + tooltip, status line as `role="status"` `aria-live="polite"`, "Track n of N"); the **screen** (YouTube iframe, labelled region); the **visualizer**; **transport** (Previous, Play/Pause, Stop, Next as round XP push buttons with accessible names + tooltips) and **volume** (mute toggle + slider); **status bar** ("Source: YouTube playlist" or the latest notice, plus an "Open on YouTube" link — attribution and an escape hatch).
+- **Visualizer:** a decorative, deterministic canvas (`lib/media/visualizer.ts`: bar levels are a pure function of time — the audio is in YouTube's cross-origin iframe, so there's no AnalyserNode). Token colors (`progress` → `hot`), ~30fps via throttled `requestAnimationFrame`, runs only while playing and visible (stops when paused/minimized; skips frames while the tab is hidden). Reduced motion: one static frame.
+- **Media Session API:** metadata (title, "YouTube", the app name) and play/pause/stop/next/previous handlers where supported. Limitation: the audio belongs to the iframe, so browsers may show YouTube's own session instead of ours.
+- Close = stop: the adapter is destroyed and the store goes back to `idle`.
+
+### State
+`lib/store/playbackStore.ts` (Zustand): `status` (`idle` | `loading` | `ready` | `buffering` | `playing` | `paused` | `ended` | `error`), `title`, `position`, `notice` (`skipped` | `hiddenPause`), `failure` (`unplayable` | `loadFailed`), `volume` (0–100, default 60) and `muted`. Only volume + mute persist (`douglasos:media`, localStorage, sanitized on load). Inside a playlist YouTube reports `ended`/`unstarted` between tracks; while the visitor wants music those map to `buffering` (`mapPlayerState`), so only the last track's end is `ended`.
+
+### mini Douglas dances
+`lib/media/danceSync.ts` (installed once by the player): `playing` → `assistant.dance()` (no duration: until stopped); buffering keeps the dance; paused / stopped / ended / error / window closed → `stopDance()`, which says the "Phew!… Back to work: want to see a project?" line whose first shortcut is **Show me a project** (`openProject` → `FEATURED_PROJECT_SLUG`). Everything goes through the assistant's own store, so "Not now" (dismissed) means no dance and no line, and the line waits for the single balloon slot like any other. Reduced motion: no dance moves — the static music note marks `dancing`.
+
+### Tray
+While the player window is open: a **volume** icon (panel with slider + Mute, the same persisted values as the window). While music plays: a **now-playing** note (tooltip/name "Now playing: {title}…"); click restores/focuses the player. Phones: a single 44px button (the note while playing, the speaker otherwise) whose panel also has **Show player**, so the tray doesn't grow by two targets on a 360px screen.
+
+### Mobile
+Full-screen window like every app; the screen keeps 16:9 above 200px tall; 44px controls; play by tap. Switching to another window (only one is visible on phones) pauses, for the same visibility reason. **Background playback stops when the screen locks or the browser goes to the background** — a YouTube embed limitation, not worked around.
+
+### Tests
+Unit: adapter state mapping, skip-on-error / give-up, loader (script once, retry, timeout), adapter commands against a fake `YT` (`test/fakeYouTube.ts`), playback store, assistant integration (`danceSync`), visualizer, registry + `reconcilePersisted`. E2E (`e2e/media-player*.spec.ts`): a fake IFrame API is served for `https://www.youtube.com/iframe_api` and every other YouTube host is blocked (`e2e/fakeYouTube.ts`) — no network. Flows: no YouTube request before opening → play → tray note + dance → next → stop → "Phew!" with "Show me a project"; tray note focuses; minimize pauses; volume/mute persist; all videos unplayable → dialog → playlist popup; phone: All Programs → Entertainment → play by tap.
+
 ---
 
 ## Layering (z-index policy)
@@ -541,9 +573,10 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos-assistant` | sessionStorage | `assistantStore` *(stage 5)* | `{ dismissed, fired }`: "Not now" picked, and which automatic appearances already played |
 | `douglasos:messenger` | sessionStorage | `messengerStore` *(stage 5b)* | Conversation history, pending lines, view, suggestions, unread, draft, form open, greeted |
 | `douglasos-messenger-toast` | sessionStorage | `MessengerToast` *(stage 5b)* | The tray toast already showed this session |
+| `douglasos:media` | localStorage | `playbackStore` *(stage 8)* | Media Player volume (0–100) + mute; playback itself is never persisted and the player window isn't restored after a reload |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Later stages add their own keys here (volume).
+Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Later stages add their own keys here.
 
 ---
 
@@ -574,7 +607,7 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast, §14) — **done** |
 | 6 | Recycle Bin rescue + lasso/multi-select — **done** |
 | 7 | Run…, command palette, desktop context menu — **done** |
-| 8 | DouglasOS Media Player + synced dance, tray volume/now-playing |
+| 8 | DouglasOS Media Player (YouTube playlist) + synced dance, tray volume/now-playing, All Programs → Entertainment (§15) — **done** |
 | 9 | Retro Cam (pixelated webcam) |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" |
 

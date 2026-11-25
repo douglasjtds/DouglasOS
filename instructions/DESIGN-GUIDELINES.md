@@ -145,7 +145,16 @@ All values below become `--color-*` tokens in the Tailwind v4 `@theme` block. To
 | `icon-warning` | `#F2C230` | Warning icon (own SVG, yellow triangle + !) |
 | `icon-info` | `#2A6FD6` | Information icon (own SVG, blue circle + i) |
 | `icon-success` | `#2E8B2E` | Success / "online" indicators |
-| `progress` | `#2FB52F` | In-window progress bar blocks |
+| `progress` | `#2FB52F` | In-window progress bar blocks; bottom of the Media Player visualizer bars (top: `hot`) |
+
+### DouglasOS Media Player *(stage 8)*
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `media-screen` | `#000000` | Video screen letterbox + visualizer well |
+| `media-display` | `#0A1E4A` | "Now playing" display panel |
+| `media-display-text` | `#D6E6FF` | Track title on the display |
+| `media-display-muted` | `#8FB0E6` | Labels/status on the display (AA on `media-display`) |
 
 ### Desktop, boot & logon
 

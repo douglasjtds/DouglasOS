@@ -99,9 +99,15 @@ type PersistedWindowState = Pick<
 /** App ids that still exist — persisted windows for removed apps are dropped. */
 const KNOWN_APP_IDS = new Set<AppId>(WINDOW_APPS.map((a) => a.id));
 
+/** Apps whose window isn't restored after a reload (`persistWindow: false`). */
+const SESSION_ONLY_APP_IDS = new Set<AppId>(
+  WINDOW_APPS.filter((a) => a.persistWindow === false).map((a) => a.id),
+);
+
 /**
  * Rebuild a valid window state from whatever was persisted, against the CURRENT
- * viewport: drop windows whose app no longer exists, re-clamp every rect so a
+ * viewport: drop windows whose app no longer exists (or opts out of being
+ * restored, like the media player), re-clamp every rect so a
  * smaller screen can't strand a window off-screen or oversized, recompute
  * maximized windows, and keep `topZ` above the highest restored window. Pure
  * (viewport injected) so it's testable and SSR-safe.
@@ -122,7 +128,7 @@ export function reconcilePersisted(
   const windows: Record<string, WindowInstance> = {};
   let topZ = Z_BASE;
   for (const [id, w] of Object.entries(persisted.windows)) {
-    if (!KNOWN_APP_IDS.has(id as AppId)) continue;
+    if (!KNOWN_APP_IDS.has(id as AppId) || SESSION_ONLY_APP_IDS.has(id as AppId)) continue;
     const fitted = clampRect(clampSize(w.rect, vp), vp);
     const { history, ...rest } = w;
     const { routes } = getApp(id as AppId);

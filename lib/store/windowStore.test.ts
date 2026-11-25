@@ -200,6 +200,22 @@ describe("reconcilePersisted", () => {
     expect(r.topZ).toBe(Z_BASE);
   });
 
+  it("never restores the media player after a reload (YouTube loads only on open)", () => {
+    const r = reconcilePersisted(
+      {
+        windows: { about: win("about"), "media-player": win("media-player") },
+        order: ["about", "media-player"],
+        focusedId: "media-player",
+        topZ: 105,
+        openCount: 2,
+      },
+      VP,
+    );
+    expect(Object.keys(r.windows)).toEqual(["about"]);
+    expect(r.order).toEqual(["about"]);
+    expect(r.focusedId).toBeNull();
+  });
+
   it("drops windows whose app no longer exists and clears stale focus", () => {
     const r = reconcilePersisted(
       {

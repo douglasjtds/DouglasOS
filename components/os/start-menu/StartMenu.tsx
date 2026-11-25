@@ -7,10 +7,14 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { launch } from "@/lib/apps/launch";
 import {
   LAUNCHERS,
+  PROGRAM_FOLDERS,
   getLauncher,
   launcherTitleKey,
   type LauncherId,
+  type ProgramFolder,
+  type WindowAppConfig,
 } from "@/lib/apps/registry";
+import { ProgramFolderIcon } from "@/components/icons/MediaIcons";
 import {
   AllProgramsIcon,
   DouglasOSLogo,
@@ -34,10 +38,21 @@ import { cn } from "@/lib/utils";
  * (the Recycle Bin) aren't listed.
  */
 const ALL_PROGRAMS = [
-  ...LAUNCHERS.filter((l) => l.kind !== "link" && !(l.kind === "window" && l.inAllPrograms === false)),
+  ...LAUNCHERS.filter(
+    (l) => l.kind !== "link" && !(l.kind === "window" && (l.inAllPrograms === false || l.folder)),
+  ),
   ...LAUNCHERS.filter((l) => l.kind === "link"),
 ];
 const FIRST_LINK_ID = LAUNCHERS.find((l) => l.kind === "link")?.id;
+
+/**
+ * All Programs folders (stage 8: Entertainment ▸ Media Player), listed first
+ * like the original; empty folders are skipped.
+ */
+const FOLDERS: { id: ProgramFolder; apps: WindowAppConfig[] }[] = PROGRAM_FOLDERS.map((id) => ({
+  id,
+  apps: LAUNCHERS.filter((l): l is WindowAppConfig => l.kind === "window" && l.folder === id),
+})).filter((f) => f.apps.length > 0);
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
 const PINNED: LauncherId[] = ["about", "projects", "how-i-work-with-ai", "contact"];
@@ -232,6 +247,31 @@ export function StartMenu() {
                     {t("startMenu.allPrograms")}
                     <AllProgramsIcon size={18} />
                   </DropdownMenu.Label>
+                  {/* Touch: folders become labelled inline groups (no cascading). */}
+                  {FOLDERS.map((folder) => (
+                    <DropdownMenu.Group
+                      key={folder.id}
+                      data-program-folder={folder.id}
+                      aria-label={t(`startMenu.folders.${folder.id}`)}
+                      className="flex flex-col"
+                    >
+                      <DropdownMenu.Label className="flex min-h-touch-target items-center gap-2 px-2 font-bold text-text">
+                        <ProgramFolderIcon size={16} />
+                        {t(`startMenu.folders.${folder.id}`)}
+                      </DropdownMenu.Label>
+                      {folder.apps.map((app) => (
+                        <DropdownMenu.Item
+                          key={app.id}
+                          data-program={app.id}
+                          onSelect={() => select(() => launch(app.id))}
+                          className={cn(itemBase, "pr-2 pl-8 text-text")}
+                        >
+                          <app.icon size={16} />
+                          {label(app.id)}
+                        </DropdownMenu.Item>
+                      ))}
+                    </DropdownMenu.Group>
+                  ))}
                   {ALL_PROGRAMS.map((l) => (
                     <Fragment key={l.id}>
                       {l.id === FIRST_LINK_ID && (
@@ -264,6 +304,37 @@ export function StartMenu() {
                     sideOffset={2}
                     className={cn(menuSurfaceClass, "z-1200 min-w-52")}
                   >
+                    {FOLDERS.map((folder) => (
+                      <DropdownMenu.Sub key={folder.id}>
+                        <DropdownMenu.SubTrigger
+                          data-program-folder={folder.id}
+                          className={cn(itemBase, "h-menu-item px-2")}
+                        >
+                          <ProgramFolderIcon size={16} />
+                          <span className="flex-1">{t(`startMenu.folders.${folder.id}`)}</span>
+                          <ChevronRight className="size-3 shrink-0" aria-hidden />
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.SubContent
+                            data-program-folder-menu={folder.id}
+                            sideOffset={2}
+                            className={cn(menuSurfaceClass, "z-1200 min-w-52")}
+                          >
+                            {folder.apps.map((app) => (
+                              <DropdownMenu.Item
+                                key={app.id}
+                                data-program={app.id}
+                                onSelect={() => select(() => launch(app.id))}
+                                className={cn(itemBase, "h-menu-item px-2")}
+                              >
+                                <app.icon size={16} />
+                                {label(app.id)}
+                              </DropdownMenu.Item>
+                            ))}
+                          </DropdownMenu.SubContent>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Sub>
+                    ))}
                     {ALL_PROGRAMS.map((l) => (
                       <Fragment key={l.id}>
                         {l.id === FIRST_LINK_ID && (

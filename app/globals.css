@@ -133,6 +133,12 @@
   --color-icon-success: #2e8b2e;
   --color-progress: #2fb52f;
 
+  /* DouglasOS Media Player (stage 8): video screen + "now playing" display */
+  --color-media-screen: #000000;
+  --color-media-display: #0a1e4a;
+  --color-media-display-text: #d6e6ff;
+  --color-media-display-muted: #8fb0e6;
+
   /* Desktop, boot & logon */
   --color-desktop: #004e98;
   --color-boot-bg: #000000;

@@ -405,6 +405,10 @@
       "empty": "Esta pasta está vazia.",
       "note": "Aqui nada fica por muito tempo: o que você arrastar pra cá, eu trago de volta. Pode testar com um ícone.",
       "noteTouch": "Aqui nada fica por muito tempo: segure qualquer ícone, escolha Excluir e veja eu trazer de volta."
+    },
+    "media-player": {
+      "title": "DouglasOS Media Player",
+      "description": "Música enquanto você explora"
     }
   },
   "resume": {
@@ -480,7 +484,11 @@
     "help": "Ajuda",
     "run": "Executar…",
     "logOff": "Fazer logoff",
-    "turnOff": "Desligar"
+    "turnOff": "Desligar",
+    "folders": {
+      "accessories": "Acessórios",
+      "entertainment": "Entretenimento"
+    }
   },
   "boot": {
     "tagline": "Um portfólio que dá boot.",
@@ -856,5 +864,53 @@
   },
   "static": {
     "label": "DouglasOS — versão em texto do portfólio"
+  },
+  "mediaPlayer": {
+    "nowPlaying": "Tocando agora",
+    "screenLabel": "Tela de vídeo (player do YouTube)",
+    "source": "Fonte: playlist do YouTube",
+    "untitled": "Vídeo sem título",
+    "track": "Faixa {index} de {total}",
+    "status": {
+      "idle": "Aperte Play para começar a playlist.",
+      "loading": "Conectando ao YouTube…",
+      "ready": "Pronto. Aperte Play.",
+      "buffering": "Carregando…",
+      "playing": "Tocando",
+      "paused": "Pausado",
+      "ended": "A playlist terminou",
+      "error": "Esta playlist não pode tocar aqui"
+    },
+    "notices": {
+      "skipped": "Pulei um vídeo que só pode tocar no YouTube.",
+      "hiddenPause": "Pausado: o vídeo precisa ficar visível para tocar."
+    },
+    "controls": {
+      "label": "Controles de reprodução",
+      "play": "Tocar",
+      "pause": "Pausar",
+      "stop": "Parar",
+      "previous": "Faixa anterior",
+      "next": "Próxima faixa",
+      "volume": "Volume",
+      "mute": "Silenciar",
+      "unmute": "Ativar som"
+    },
+    "visualizer": "Visualizador (decorativo)",
+    "openOnYouTube": "Abrir no YouTube",
+    "error": {
+      "title": "DouglasOS Media Player",
+      "unplayable": "Nenhum vídeo desta playlist pode tocar aqui. Você ainda pode ouvir no YouTube.",
+      "loadFailed": "Não foi possível conectar ao YouTube. Confira sua conexão ou abra a playlist no YouTube.",
+      "ok": "OK"
+    },
+    "tray": {
+      "nowPlaying": "Tocando agora: {title}. Mostrar o DouglasOS Media Player",
+      "nowPlayingUntitled": "Música tocando. Mostrar o DouglasOS Media Player",
+      "volume": "Volume: {level}%",
+      "muted": "Volume: mudo",
+      "panel": "Controle de volume",
+      "showPlayer": "Mostrar player"
+    }
   }
 }

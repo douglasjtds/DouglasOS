@@ -84,3 +84,16 @@ describe("registry: DouglasOS Messenger (stage 5b)", () => {
     }
   });
 });
+
+describe("registry: DouglasOS Media Player (stage 8)", () => {
+  it("has the stable id, lives in All Programs → Entertainment and has no desktop icon", () => {
+    expect(isAppId("media-player")).toBe(true);
+    expect(getLauncher("media-player")).toMatchObject({
+      kind: "window",
+      onDesktop: false,
+      folder: "entertainment",
+      persistWindow: false,
+    });
+    expect(DESKTOP_ICON_IDS).not.toContain("media-player");
+  });
+});

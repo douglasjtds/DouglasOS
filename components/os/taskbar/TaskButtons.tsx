@@ -71,7 +71,7 @@ export function TaskButtons() {
   return (
     <ul
       aria-label={t("windows")}
-      className="flex min-w-0 flex-1 items-center gap-1 px-1.5 max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none]"
+      className="flex min-w-0 flex-1 items-center gap-1 px-1.5 max-md:px-0.5 max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none]"
     >
       {order.map((id) => (
         <TaskButton key={id} id={id} />

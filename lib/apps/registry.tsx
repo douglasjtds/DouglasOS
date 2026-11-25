@@ -20,6 +20,7 @@ import {
   WhatsAppLinkIcon,
 } from "@/components/icons/LinkIcons";
 import { MessengerIcon } from "@/components/icons/MessengerIcons";
+import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -31,7 +32,8 @@ export type AppId =
   | "contact"
   | "messenger"
   | "display"
-  | "recycle-bin";
+  | "recycle-bin"
+  | "media-player";
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -60,7 +62,15 @@ export interface AppRoutes {
  * own, its cell persisted separately (`desktopStore.binCell`), and never
  * lassoed, grouped or trashed with the others.
  */
-export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin">;
+export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin" | "media-player">;
+
+/**
+ * Folders inside Start → All Programs (DESKTOP-INTERFACE-SPEC §5). Fun apps
+ * live there so they never sit above the CTAs; a folder shows only once an
+ * app declares it.
+ */
+export const PROGRAM_FOLDERS = ["accessories", "entertainment"] as const;
+export type ProgramFolder = (typeof PROGRAM_FOLDERS)[number];
 
 export interface WindowAppConfig {
   id: AppId;
@@ -71,6 +81,13 @@ export interface WindowAppConfig {
   onDesktop: boolean;
   /** Listed in Start → All Programs (default true; the Recycle Bin isn't). */
   inAllPrograms?: boolean;
+  /** Listed inside this All Programs folder instead of the top level. */
+  folder?: ProgramFolder;
+  /**
+   * Restore the window after a reload (default true). The media player opts
+   * out so the YouTube API never loads on the initial page load.
+   */
+  persistWindow?: boolean;
   /**
    * Window body style: "pane" (default) frames the content in a white sunken
    * pane; "dialog" keeps the beige button-face body (property sheets);
@@ -245,6 +262,19 @@ export const LAUNCHERS: LauncherConfig[] = [
     inAllPrograms: false,
     defaultSize: { width: 520, height: 380 },
     Content: lazy(() => import("@/components/apps/RecycleBinApp")),
+  },
+  // DouglasOS Media Player (stage 8): Start → All Programs → Entertainment
+  // only (no desktop icon, so a phone's first row stays About / CV / Contact).
+  {
+    id: "media-player",
+    kind: "window",
+    icon: MediaPlayerIcon,
+    onDesktop: false,
+    folder: "entertainment",
+    persistWindow: false,
+    surface: "bare",
+    defaultSize: { width: 520, height: 510 },
+    Content: lazy(() => import("@/components/apps/MediaPlayerApp")),
   },
 ];
 
