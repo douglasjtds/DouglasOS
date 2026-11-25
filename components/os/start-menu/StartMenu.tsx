@@ -16,6 +16,7 @@ import {
   DouglasOSLogo,
   HelpIcon,
   LogOffIcon,
+  RunIcon,
   TurnOffIcon,
   UserAvatar,
 } from "@/components/icons/SystemIcons";
@@ -364,6 +365,13 @@ export function StartMenu() {
                 icon={HelpIcon}
                 label={t("startMenu.help")}
                 onSelect={() => select(() => launch("about"))}
+              />
+              <PlaceItem
+                testId="run"
+                bold={false}
+                icon={RunIcon}
+                label={t("startMenu.run")}
+                onSelect={() => select(() => openDialog({ kind: "run" }))}
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithIntl } from "@/test/renderWithIntl";
 import { Desktop } from "@/components/os/Desktop";
@@ -22,6 +22,7 @@ vi.mock("@/lib/openLink", () => ({
 }));
 
 const icon = (name: string) => screen.getByRole("option", { name });
+const background = () => document.querySelector("[data-desktop-background]")!;
 
 describe("Desktop icons", () => {
   beforeEach(() => {
@@ -325,6 +326,56 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     await userEvent.click(del);
     expect(useDesktopStore.getState().rescue?.ids).toEqual(["contact"]);
     expect(useWindowStore.getState().windows.contact).toBeUndefined();
+  });
+
+  it("icon menu → Properties shows the app's description; Open launches it", async () => {
+    renderWithIntl(
+      <>
+        <Desktop />
+        <ShellDialogs />
+      </>,
+    );
+    fireEvent.contextMenu(icon("Contact"));
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Properties" }));
+    const dialog = await screen.findByRole("dialog", { name: "Contact Properties" });
+    expect(dialog).toHaveTextContent("LinkedIn, GitHub, e-mail, WhatsApp");
+    expect(dialog).toHaveTextContent("In a window");
+    expect(screen.getByRole("button", { name: "OK" })).toHaveFocus();
+    await userEvent.click(screen.getByRole("button", { name: "Open" }));
+    expect(useWindowStore.getState().windows.contact).toBeDefined();
+    expect(useShellStore.getState().dialog).toBeNull();
+  });
+
+  it("right-click on empty desktop opens the background menu, not an icon's", async () => {
+    renderWithIntl(<Desktop />);
+    const home = useDesktopStore.getState().iconCells.contact;
+    useDesktopStore.getState().moveIcon("contact", 600, 400);
+    expect(useDesktopStore.getState().iconCells.contact).not.toEqual(home);
+    fireEvent.contextMenu(background());
+    const arrange = await screen.findByRole("menuitem", { name: "Arrange Icons" });
+    expect(screen.getByRole("menuitem", { name: "Refresh" })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: "New" })).toBeInTheDocument();
+    expect(screen.queryByRole("menuitem", { name: "Delete" })).not.toBeInTheDocument();
+    await userEvent.click(arrange);
+    expect(useDesktopStore.getState().iconCells.contact).toEqual(home);
+  });
+
+  it("right-click on an icon opens only the icon menu", async () => {
+    renderWithIntl(<Desktop />);
+    fireEvent.contextMenu(icon("Skills"));
+    await screen.findByRole("menuitem", { name: "Open" });
+    expect(screen.queryByRole("menuitem", { name: "Arrange Icons" })).not.toBeInTheDocument();
+  });
+
+  it("background menu → Properties opens Display Properties; Refresh blinks the icons", async () => {
+    renderWithIntl(<Desktop />);
+    fireEvent.contextMenu(background());
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Refresh" }));
+    expect(screen.getByRole("listbox")).toHaveAttribute("data-refreshing", "true");
+    await waitFor(() => expect(screen.getByRole("listbox")).not.toHaveAttribute("data-refreshing"));
+    fireEvent.contextMenu(background());
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Properties" }));
+    expect(useWindowStore.getState().windows.display).toBeDefined();
   });
 
   it("the bin opens its (empty) window on a single click and has no Delete", async () => {

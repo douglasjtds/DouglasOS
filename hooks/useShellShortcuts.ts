@@ -3,12 +3,14 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { useWindowStore } from "@/lib/store/windowStore";
 import {
   createMetaTapTracker,
+  isApplePlatform,
   isTextField,
   matchShortcut,
   type ShortcutAction,
 } from "@/lib/shortcuts";
 import { cycleWindow } from "@/lib/taskbar";
 import type { AppId } from "@/lib/apps/registry";
+import { contextMenuTarget, openContextMenuOn } from "@/lib/contextMenu";
 
 function focusWindowElement(id: AppId) {
   requestAnimationFrame(() =>
@@ -48,6 +50,16 @@ function perform(action: ShortcutAction) {
     case "toggleStartMenu":
       shell.toggleStartMenu();
       return;
+    case "openRun":
+      if (shell.dialog === null) shell.openDialog({ kind: "run" });
+      return;
+    case "openPalette":
+      if (shell.dialog?.kind === "palette") shell.closeDialog();
+      else if (shell.dialog === null) shell.openDialog({ kind: "palette" });
+      return;
+    case "openContextMenu":
+      // Handled in the key listener (it needs the focused element).
+      return;
     case "closeWindow":
       if (!focused) return;
       windows.closeWindow(focused);
@@ -78,6 +90,7 @@ function perform(action: ShortcutAction) {
 export function useShellShortcuts() {
   useEffect(() => {
     const meta = createMetaTapTracker();
+    const applePlatform = isApplePlatform(typeof navigator === "undefined" ? undefined : navigator);
 
     function onKeyDown(e: KeyboardEvent) {
       meta.keydown(e);
@@ -85,8 +98,16 @@ export function useShellShortcuts() {
       const action = matchShortcut(e, {
         inTextField: isTextField(e.target),
         overlayOpen: overlayOpen(),
+        applePlatform,
       });
       if (!action) return;
+      if (action === "openContextMenu") {
+        const target = contextMenuTarget(document.activeElement, document);
+        if (!target) return;
+        e.preventDefault();
+        openContextMenuOn(target);
+        return;
+      }
       e.preventDefault();
       perform(action);
     }

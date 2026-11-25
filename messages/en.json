@@ -440,7 +440,14 @@
     "label": "Desktop icons",
     "menu": {
       "open": "Open",
-      "delete": "Delete"
+      "delete": "Delete",
+      "properties": "Properties",
+      "arrangeIcons": "Arrange Icons",
+      "refresh": "Refresh",
+      "new": "New",
+      "newFolder": "Folder",
+      "newShortcut": "Shortcut",
+      "newTextDocument": "Text Document"
     }
   },
   "taskbar": {
@@ -471,6 +478,7 @@
     "contact": "Contact",
     "displayProperties": "Display Properties",
     "help": "Help",
+    "run": "Run…",
     "logOff": "Log Off",
     "turnOff": "Turn Off"
   },
@@ -500,6 +508,66 @@
     "title": "Protected file",
     "body": "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart.",
     "ok": "Fair enough"
+  },
+  "run": {
+    "title": "Run",
+    "intro": "Type the name of a program, project or link, and DouglasOS will open it for you.",
+    "openLabel": "Open:",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "suggestions": "Suggestions",
+    "types": {
+      "app": "Program",
+      "download": "Download",
+      "link": "Link",
+      "project": "Project",
+      "command": "Command"
+    },
+    "notFound": {
+      "title": "DouglasOS",
+      "body": "DouglasOS couldn't find “{query}”. Check the spelling, or try “projects”, “cv” or “contact”.",
+      "ok": "OK"
+    },
+    "cmd": {
+      "title": "DouglasOS Command Prompt",
+      "body": "No terminal in here: this Run box already does the job. Type “projects”, “cv” or “contact” and press Enter.",
+      "ok": "Got it"
+    }
+  },
+  "palette": {
+    "label": "Command palette",
+    "placeholder": "Search apps, projects and links…",
+    "results": "Results",
+    "empty": "DouglasOS couldn't find “{query}”.",
+    "emptyHint": "Try “projects”, “cv” or “contact”.",
+    "hint": "↑↓ to choose · Enter to open · Esc to close"
+  },
+  "properties": {
+    "title": "{name} Properties",
+    "type": "Type:",
+    "description": "Description:",
+    "location": "Location:",
+    "desktop": "Desktop",
+    "opens": "Opens:",
+    "types": {
+      "app": "Program",
+      "download": "PDF document",
+      "link": "Internet shortcut",
+      "mail": "E-mail shortcut",
+      "system": "System folder"
+    },
+    "opensWindow": "In a window",
+    "opensDownload": "Downloads the file",
+    "opensTab": "In a new browser tab",
+    "opensMail": "In your mail app",
+    "open": "Open",
+    "ok": "OK"
+  },
+  "newItem": {
+    "title": "New",
+    "body": "DouglasOS is a portfolio, not a file system, so nothing new gets created here. Douglas does ship new things regularly, though: they live in My Projects.",
+    "projects": "Show projects",
+    "ok": "OK"
   },
   "balloon": {
     "title": "Welcome to DouglasOS",

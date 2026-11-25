@@ -126,7 +126,7 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 - **Interaction (keyboard):** the desktop is one tab stop (roving tabindex on a `listbox` of `option`s); focus = selection; arrows move the selection across the grid (nearest icon in that direction, `neighborIcon` in `lib/store/desktopGrid.ts`); `Enter` opens; Home/End jump to first/last icon; `F2` shows the "protected file" joke (see [Keyboard](#12-keyboard--accessibility)).
 - **Drag:** drag moves the icon and snaps to the nearest free cell (existing guard: a drag never counts as a click).
 - `resume.pdf` opening = **download** (no window), via `lib/download.ts`.
-- Lasso, multi-select and the Recycle Bin: see [Recycle Bin](#recycle-bin-stage-6--done) below. Future: desktop (background) context menu *(stage 7)*; no rename (`F2` is a joke by design, see [Keyboard](#12-keyboard--accessibility)).
+- Lasso, multi-select and the Recycle Bin: see [Recycle Bin](#recycle-bin-stage-6--done) below. Desktop (background) context menu: see [Desktop context menu](#desktop-context-menu-stage-7--done) *(stage 7)*; no rename (`F2` is a joke by design, see [Keyboard](#12-keyboard--accessibility)).
 
 ### Recycle Bin *(stage 6 — done)*
 The bin never keeps anything: whatever is "deleted" is rescued straight back by mini Douglas with a line of his own. Nothing on the desktop can ever actually be removed.
@@ -145,11 +145,17 @@ The bin never keeps anything: whatever is "deleted" is rescued straight back by 
 - **The line:** `trashIcons` picks the line and `announceRescue` delivers it. **Decision — "Not now" still gets the joke, without the character:** if mini Douglas is available, `replace()` puts the line in his bubble immediately (a direct reaction takes the bubble over a waiting tip); if he was dismissed this session, the **bin itself** shows the same line in an XP balloon anchored to it (`TrashNotice`, placed by `binBalloonPlacement`: above the bin when there's room, otherwise **below** it — the top-right default — with the tail flipped to point up; shifted left/right to stay on screen, tail on the bin; balloon-slot owner `recycleBin`, layer 1300; bottom sheet on phones), lazy-loaded only when needed. The character never comes back uninvited, and the balloon offers the same CV/Contact shortcuts. Both close themselves after 15s (auto line), × or Esc closes them, neither takes focus.
 - **Multi-select (pointer):** single click opens (and selects only that icon); **Ctrl/Cmd+click toggles** without opening (on macOS Ctrl+click is the system context click, so Cmd is the toggle there); pressing an icon that is part of a multi-selection keeps the group, and dragging it moves **the whole group keeping the offsets** (`moveGroup`: dragged icon first, then grid order, against non-moving icons + the bin). A press on empty desktop clears the selection; dragging from empty desktop draws the **lasso** (XP blue translucent rectangle, `lasso-border` / `lasso-fill` tokens, layer 10) and selects every icon it touches, live; Ctrl/Cmd+lasso adds to the selection. The lasso starts only on the desktop surface itself, so it never competes with icon drag (icons stop the press) or windows (a higher layer). A press that left the icon before the drag threshold still starts the drag (window-level watcher until capture).
 - **Keyboard:** see [§12](#12-keyboard--accessibility) — arrows move focus + selection (Ctrl/Cmd+arrows move focus only), `Space` selects, `Ctrl/Cmd+Space` toggles, `Ctrl/Cmd+A` selects every icon (not the bin), `Esc` clears the selection (before Esc-closes-window), `Delete` (or `Backspace`, for Mac keyboards) "deletes" the selection — or the focused icon if it isn't selected. The listbox is `aria-multiselectable`; each icon exposes `aria-selected`.
-- **Icon context menu (minimal, stage-7 hook point):** `IconContextMenu` (Radix ContextMenu) wraps every icon: right-click, or **press and hold ~700ms on touch**, opens **Open** (bold, default) and **Delete** (same rescue joke; on a multi-selection it deletes the group). Items are data (`IconMenuItem { id, label, onSelect, primary? }`), so stage 7 adds Properties, `Shift+F10`/ContextMenu key and the desktop-background menu without replacing the mechanism. A long-press that opened the menu never also opens the icon.
+- **Icon context menu (minimal, stage-7 hook point):** `IconContextMenu` (Radix ContextMenu) wraps every icon: right-click, or **press and hold ~700ms on touch**, opens **Open** (bold, default) and **Delete** (same rescue joke; on a multi-selection it deletes the group). Items are data (`IconMenuItem { id, label, onSelect, primary? }`, plus `separatorBefore?` / `items?` for submenus since stage 7), so stage 7 added Properties, `Shift+F10`/ContextMenu key and the desktop-background menu without replacing the mechanism. A long-press that opened the menu never also opens the icon.
 - **Mobile:** no lasso and no drag — the bin included (as before). The bin sits on its **own trailing row, right-most column** (`mobileBinPlacement`), below the links, so About / CV / Contact keep the first row. *(6b: unchanged on purpose — a top-right slot on the phone's row-first grid would take a first-row cell and push Contact to the second row; the touch layout is derived, never persisted, so the desktop's `binCell` doesn't apply.)* Long-press → **Delete** plays the rescue in place (the icon shrinks and fades back in on its own slot, since the bin may be scrolled away) and the line appears in mini Douglas's bottom sheet, or in the bin's bottom-sheet balloon when he was dismissed. Menu items are 44px tall.
 
-### Desktop context menu *(stage 7)*
-Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetLayout`), **Refresh** (brief flash), **New ▸** (optional joke), separator, **Properties** (= Display Properties). On an icon: **Open**, **Delete** (recycle-bin joke — both already shipped in stage 6 through `IconContextMenu`, see [Recycle Bin](#recycle-bin-stage-6--done)), **Properties** (mini dialog with the app description, stage 7).
+### Desktop context menu *(stage 7 — done)*
+One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as data `IconMenuItem { id, label, onSelect?, primary?, separatorBefore?, items? }`, layer 1200, XP white menu with blue highlight, keyboard-complete).
+
+- **Background** (right-click on empty desktop, long-press ~700ms on touch, `Shift+F10` / ContextMenu key when nothing has focus): **Arrange Icons** (= `resetLayout`; the bin goes back top-right), **Refresh** (the icon layer blinks off for 150ms — a single blink, no motion, same under reduced motion), separator, **New ▸** Folder / Shortcut / Text Document → an info message box joke ("DouglasOS is a portfolio, not a file system…" with **Show projects** / OK; nothing is ever created), separator, **Properties** (= Display Properties). `data-desktop-menu`.
+- **Icon** (right-click, long-press, `Shift+F10` / ContextMenu key on the focused icon): **Open** (bold), **Delete** (Recycle Bin rescue joke, stage 6; not on the bin), separator, **Properties** → a mini XP property box (`IconPropertiesDialog`): 32px icon + name, Type (Program / PDF document / Internet shortcut / E-mail shortcut / System folder), Description (the same copy as the Start menu / icon hint), Location (Desktop), Opens (in a window / downloads the file / in a new tab / in your mail app), buttons **Open** and **OK** (default, focused). Read-only: no rename (F2 stays the joke). `data-icon-menu`.
+- **No double menus:** the background trigger is a transparent layer *under* the icons (`data-desktop-background`, a sibling, never their ancestor), so a press on an icon can't also arm the background's long-press, and a right-click on an icon opens only its menu. The layer counts as empty desktop for the lasso.
+- **Keyboard:** the shell turns `Shift+F10` / the ContextMenu key into a `contextmenu` event on the focused icon, or on the background when focus is on the page itself (`lib/contextMenu.ts`); inside windows the key is left to the browser. Radix then focuses the first item; arrows, Enter, → for New ▸, Esc close.
+- **Mobile:** same menus by long-press, 44px items; **Arrange Icons is hidden** (the touch grid is derived from the screen width, so it would do nothing).
 
 ---
 
@@ -190,7 +196,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 │ [32] Contact            │ ───────────────        │
 │                         │ [24] Display Properties│
 │                         │ [24] Help              │
-│ ───────────────         │ [24] Run…   (stage 7)  │
+│ ───────────────         │ [24] Run…              │
 │ All Programs ▸          │                        │
 ├──────────────────────────────────────────┤
 │                        [Log Off] [Turn Off]│ ← footer (blue gradient)
@@ -208,7 +214,13 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - separator
 - **Display Properties** — opens the `display` app.
 - **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
-- **Run…** — *(stage 7)* opens the Run dialog. **Items appear only when their stage ships — no dead entries.**
+- **Run…** — *(stage 7 — done)* opens the Run dialog (last item of the places column, so CV/Contact keep their spots; also on phones). **Items appear only when their stage ships — no dead entries.**
+
+### Run… and the command palette *(stage 7 — done)*
+- **One brain:** `lib/run/resolver.ts` (pure, unit-tested) resolves what was typed in this order: fun command (`cmd`, `terminal`… → a light "no terminal in here" info box) → a **launcher** by id, localized title or alias (`contact`/`contato`, `cv`/`resume`/`currículo`/`resume.pdf`, `linkedin`, `zap`, `lixeira`, `wallpaper`…) → a **project** through the Explorer address resolver (`gasolinha`, `gasolinha.exe`, `C:\DouglasOS\Projects\poupensa`) → a confident **intent** from the assistant's matcher (`hire me`, `quero o currículo`; score ≥ 3) → **not found**. Launchers come from the registry, so a later app is runnable by its id and title as soon as it is registered; extra aliases go in `LAUNCHER_ALIASES` (TODO list for stages 8–10 in the file). Actions run through `launch()` (`lib/run/execute.ts`), like every other surface.
+- **Run dialog** (`RunDialog`, Radix Dialog in the XP message-box chrome, layer 1400, lazy-loaded on first open): Run icon + intro line, **Open:** field (monospace) as an ARIA **combobox** with a **listbox** of up to 6 suggestions (icon, name, kind). ↑/↓ highlight and put that suggestion's command in the field ("what you see is what runs"); Enter / **OK** runs the field; a click runs a row; Esc closes the list first, then the dialog; **Cancel** closes. Unknown → error box "DouglasOS couldn't find “x”. Check the spelling, or try “projects”, “cv” or “contact”." (EN/PT, original wording), OK returns to the field with the text selected. After opening a window, focus goes to it. Opened from Start → Run…, `Alt+Shift+R`, or `Meta+R` where the browser lets it through (never on Apple platforms: Cmd+R reloads there).
+- **Command palette** (`CommandPalette`, `Ctrl+K` / `Cmd+K`, lazy-loaded): same resolver, list always visible (empty query = every launcher then every project, CTA order: About, CV, Contact…), ↑/↓ (wrapping), PageUp/PageDown, Ctrl+Home/End, Enter or click opens, Esc or `Ctrl/Cmd+K` again closes; no match → "DouglasOS couldn't find “x”." + hints in a status line. Fun commands stay in Run. No new dependency (own listbox on Radix Dialog, no cmdk).
+- **Mobile:** Run is in the Start panel; the dialog docks 16px below the top so the keyboard never covers the field (16px input text: no iOS zoom), suggestions are 44px rows. The palette has no touch entry point (it's the keyboard path); Run covers phones.
 
 **Footer:**
 - **Log Off** — back to the logon screen (no state lost).
@@ -267,7 +279,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 
 ## 8. Display Properties app
 
-New `display` window app (kind `"window"`), opened from the Start menu (and the desktop context menu, stage 7).
+New `display` window app (kind `"window"`), opened from the Start menu and the desktop context menu → Properties (stage 7 — done).
 
 - **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
@@ -333,7 +345,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -348,7 +360,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
 - **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
 - **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. In-app "Back" lives in the Explorer toolbar (stage 4; see [§10](#my-projects-projects) → Mobile).
-- **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** since stage 6 (the Recycle Bin rescue joke); stage 7 adds the rest. Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
+- **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** (stage 6, the Recycle Bin rescue joke) / **Properties** (stage 7); on empty desktop it opens the desktop menu (Refresh, New ▸, Properties; no Arrange Icons on phones). Start → **Run…** works on phones too (dialog docked at the top). Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
 - **Boot/logon:** boot ~1s (`BOOT_MOBILE_MS`; reduced motion stays at 0.6s), Skip is a 44px button; the logon stacks (brand above the user tile, thinner bands) and its hint says "Tap Douglas to come in." Same once-per-session rule.
 - **Welcome balloon:** same once-per-session balloon with "tap" copy; on every width it now dismisses itself as soon as the Start menu or a window opens, so it never covers the menu or a window's buttons.
 - **3D wallpaper:** **not offered on mobile** (Display Properties shows it disabled with the reason). Stage 2 decision: no exception. The static wallpaper already scores 98–99 on Lighthouse mobile; the R3F chunk plus a WebGL context on mid-range phones isn't worth the battery and LCP risk for an ambient effect.
@@ -378,12 +390,13 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Desktop: open selected | `Enter` | — | 1 |
 | Desktop: `F2` on selected icon | `F2` → "protected file" dialog (no rename) | — | 1 |
 | Close menu/dialog/balloon | `Esc` (topmost transient first) | — | 1 |
-| Context menu | `Shift+F10` / `ContextMenu` key | — | 7 |
+| Context menu (focused icon, or the desktop when nothing has focus) | `Shift+F10` / `ContextMenu` key | right-click / long-press | 7 — done |
 | Desktop: select all / select / toggle / clear | `Ctrl+A`, `Space`, `Ctrl+Space`, `Esc` (focus on an icon; `Cmd` works for `Ctrl` on macOS) | — | 6 — done |
 | Desktop: move focus without selecting | `Ctrl+←↑→↓` | — | 6 — done |
 | Desktop: delete (Recycle Bin rescue joke) | `Delete` | `Backspace` (Mac keyboards) | 6 — done |
-| Run… | `Meta+R` (best effort) | `Alt+Shift+R` | 7 |
-| Command palette | `Ctrl+K` / `Cmd+K` | — | 7 |
+| Run… | `Meta+R` (best effort; never on macOS/iOS, where Cmd+R reloads) | `Alt+Shift+R`; Start → Run… | 7 — done |
+| Command palette | `Ctrl+K` / `Cmd+K` (not while typing in a field; inside the palette it closes it) | — | 7 — done |
+| Run / palette: move, run, close | `↑`/`↓`, `Enter`, `Esc` (Run: Esc closes the suggestions first) | — | 7 — done |
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
 | Messenger: close form / window | `Esc` (form first; from the composer it closes the window) | — | 5b |
 
@@ -507,7 +520,7 @@ Full-screen window like every app; header compacts (icon-only Back and Contact, 
 
 ## CTA Hierarchy
 
-1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, assistant bubble (stage 5), Messenger header + quick reply + answers (5b), later Run.
+1. **Download CV** — desktop `resume.pdf` (2nd icon), Quick Launch (1 click), Start → Résumé (CV) (2 clicks), About window button, assistant bubble (stage 5), Messenger header + quick reply + answers (5b), Run / palette (`cv`, `resume`, `currículo`; 7).
 2. **Contact** — desktop (3rd icon), Quick Launch, Start (left pinned + right column).
 3. **How I Work With AI** and **Experience** — pinned in Start / desktop.
 4. Everything else (About, Projects, Skills, fun apps).
@@ -560,7 +573,7 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 5 | "mini Douglas" scripted assistant (layer + single balloon slot, §13) — **done** |
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast, §14) — **done** |
 | 6 | Recycle Bin rescue + lasso/multi-select — **done** |
-| 7 | Run…, command palette, desktop context menu |
+| 7 | Run…, command palette, desktop context menu — **done** |
 | 8 | DouglasOS Media Player + synced dance, tray volume/now-playing |
 | 9 | Retro Cam (pixelated webcam) |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" |

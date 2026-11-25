@@ -243,6 +243,69 @@ test.describe("touch shell", () => {
     expect(bin.y).toBeGreaterThan(before.y + before.height);
   });
 
+  test("press and hold: an icon gets its own menu (with Properties), empty desktop gets the desktop menu", async ({
+    page,
+  }) => {
+    await gotoDesktop(page);
+    const hold = async (target: ReturnType<Page["locator"]>, point: { x: number; y: number }) => {
+      await target.dispatchEvent("pointerdown", {
+        pointerType: "touch",
+        pointerId: 9,
+        isPrimary: true,
+        button: 0,
+        buttons: 1,
+        clientX: point.x,
+        clientY: point.y,
+      });
+    };
+    const release = (target: ReturnType<Page["locator"]>, point: { x: number; y: number }) =>
+      target.dispatchEvent("pointerup", { pointerType: "touch", pointerId: 9, clientX: point.x, clientY: point.y });
+
+    const contact = desktopIcon(page, "contact");
+    const box = (await contact.boundingBox())!;
+    const onIcon = { x: box.x + box.width / 2, y: box.y + box.height / 3 };
+    await hold(contact, onIcon);
+    const properties = page.locator('[data-icon-menu] [data-icon-menu-item="properties"]');
+    await expect(properties).toBeVisible({ timeout: 3000 });
+    await release(contact, onIcon);
+    // Only the icon's menu: the desktop menu's long-press never armed.
+    await page.waitForTimeout(300);
+    await expect(page.locator("[data-desktop-menu]")).toHaveCount(0);
+    await properties.tap();
+    const dialog = page.getByTestId("icon-properties-dialog");
+    await expect(dialog).toContainText("Contact");
+    await dialog.getByRole("button", { name: "OK" }).tap();
+    await expect(dialog).toHaveCount(0);
+
+    // Empty desktop, below the last row of icons.
+    const surface = page.locator('[data-desktop-surface="true"]').last();
+    const bin = (await desktopIcon(page, "recycle-bin").boundingBox())!;
+    const vp = page.viewportSize()!;
+    const empty = { x: vp.width - 30, y: bin.y + bin.height / 2 };
+    await hold(surface, empty);
+    const menu = page.locator("[data-desktop-menu]");
+    await expect(menu).toBeVisible({ timeout: 3000 });
+    await release(surface, empty);
+    await expect(menu.locator('[data-icon-menu-item="refresh"]')).toBeVisible();
+    // No "Arrange Icons" on phones: the touch grid is derived from the width.
+    await expect(menu.locator('[data-icon-menu-item="arrange"]')).toHaveCount(0);
+    await expect(page.locator("[data-icon-menu]")).toHaveCount(0);
+  });
+
+  test("Start → Run… works on a phone (field near the top, CV by typing 'cv')", async ({ page }) => {
+    await gotoDesktop(page);
+    await startButton(page).tap();
+    await page.locator('[data-start-item="run"]').tap();
+    const field = page.locator("[data-run-input]");
+    await expect(field).toBeVisible();
+    const fieldBox = (await field.boundingBox())!;
+    expect(fieldBox.y).toBeLessThan(page.viewportSize()!.height / 2);
+    const downloadPromise = page.waitForEvent("download");
+    await field.fill("cv");
+    await field.press("Enter");
+    expect((await downloadPromise).suggestedFilename()).toContain(".pdf");
+  });
+
   test("Messenger: full screen from the tray, chips scroll sideways, composer above the taskbar, CV one tap away", async ({
     page,
   }) => {

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   SHORTCUTS,
   createMetaTapTracker,
+  isApplePlatform,
   matchShortcut,
   type KeyInput,
 } from "@/lib/shortcuts";
@@ -67,6 +68,38 @@ describe("matchShortcut", () => {
   it("ignores unrelated keys", () => {
     expect(matchShortcut(key({ key: "a", code: "KeyA" }), idle)).toBeNull();
     expect(matchShortcut(key({ code: "KeyZ", altKey: true, shiftKey: true }), idle)).toBeNull();
+  });
+
+  it("opens Run with Alt+Shift+R everywhere and Meta+R only off Apple platforms", () => {
+    expect(matchShortcut(key({ key: "®", code: "KeyR", altKey: true, shiftKey: true }), idle)).toBe("openRun");
+    expect(matchShortcut(key({ key: "r", code: "KeyR", metaKey: true }), idle)).toBe("openRun");
+    // Cmd+R keeps reloading the page on macOS.
+    expect(
+      matchShortcut(key({ key: "r", code: "KeyR", metaKey: true }), { ...idle, applePlatform: true }),
+    ).toBeNull();
+    // Plain Ctrl+R (reload) is never taken.
+    expect(matchShortcut(key({ key: "r", code: "KeyR", ctrlKey: true }), idle)).toBeNull();
+  });
+
+  it("opens the command palette with Ctrl+K or Cmd+K, but not while typing", () => {
+    expect(matchShortcut(key({ key: "k", code: "KeyK", ctrlKey: true }), idle)).toBe("openPalette");
+    expect(matchShortcut(key({ key: "k", code: "KeyK", metaKey: true }), idle)).toBe("openPalette");
+    expect(
+      matchShortcut(key({ key: "k", code: "KeyK", ctrlKey: true }), { ...idle, inTextField: true }),
+    ).toBeNull();
+  });
+
+  it("maps Shift+F10 and the ContextMenu key to the context menu", () => {
+    expect(matchShortcut(key({ key: "F10", shiftKey: true }), idle)).toBe("openContextMenu");
+    expect(matchShortcut(key({ key: "ContextMenu" }), idle)).toBe("openContextMenu");
+    expect(matchShortcut(key({ key: "F10" }), idle)).toBeNull();
+  });
+
+  it("detects Apple platforms", () => {
+    expect(isApplePlatform({ platform: "MacIntel", userAgent: "" })).toBe(true);
+    expect(isApplePlatform({ platform: "", userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)" })).toBe(true);
+    expect(isApplePlatform({ platform: "Win32", userAgent: "" })).toBe(false);
+    expect(isApplePlatform(undefined)).toBe(false);
   });
 
   it("has no duplicate key bindings in the registry", () => {

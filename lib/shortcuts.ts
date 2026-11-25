@@ -15,7 +15,10 @@ export type ShortcutAction =
   | "previousWindow"
   | "closeWindow"
   | "maximizeWindow"
-  | "restoreWindow";
+  | "restoreWindow"
+  | "openRun"
+  | "openPalette"
+  | "openContextMenu";
 
 export interface KeyInput {
   key: string;
@@ -31,6 +34,11 @@ export interface ShortcutContext {
   inTextField: boolean;
   /** A menu, dialog or balloon is open (Esc belongs to it first). */
   overlayOpen: boolean;
+  /**
+   * macOS/iOS: Cmd+R is the browser's reload there, so `Meta+R` never opens
+   * Run on Apple platforms (Alt+Shift+R does).
+   */
+  applePlatform?: boolean;
 }
 
 /** Documented rows, also used by tests to guarantee no duplicates. */
@@ -41,6 +49,9 @@ export const SHORTCUTS: { action: ShortcutAction; keys: string[] }[] = [
   { action: "closeWindow", keys: ["Alt+F4", "Escape"] },
   { action: "maximizeWindow", keys: ["Alt+Shift+ArrowUp"] },
   { action: "restoreWindow", keys: ["Alt+Shift+ArrowDown"] },
+  { action: "openRun", keys: ["Meta+R (best effort, not on Apple)", "Alt+Shift+R"] },
+  { action: "openPalette", keys: ["Ctrl+K", "Meta+K"] },
+  { action: "openContextMenu", keys: ["Shift+F10", "ContextMenu"] },
 ];
 
 const ALT_SHIFT_CODES: Record<string, ShortcutAction> = {
@@ -49,6 +60,7 @@ const ALT_SHIFT_CODES: Record<string, ShortcutAction> = {
   KeyQ: "previousWindow",
   ArrowUp: "maximizeWindow",
   ArrowDown: "restoreWindow",
+  KeyR: "openRun",
 };
 
 export function matchShortcut(
@@ -64,6 +76,21 @@ export function matchShortcut(
 
   if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey) {
     return ALT_SHIFT_CODES[e.code] ?? null;
+  }
+  // Command palette: Ctrl+K, or Cmd+K on macOS.
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.code === "KeyK") {
+    return "openPalette";
+  }
+  // Run: Meta+R where the browser lets it through (Win+R is OS-owned on
+  // Windows), never on Apple platforms where Cmd+R reloads the page.
+  if (e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && e.code === "KeyR" && !ctx.applePlatform) {
+    return "openRun";
+  }
+  if (
+    (e.key === "F10" && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) ||
+    (e.key === "ContextMenu" && !e.ctrlKey && !e.altKey && !e.metaKey)
+  ) {
+    return "openContextMenu";
   }
   if (e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey && e.key === "F4") {
     return "closeWindow";
@@ -101,6 +128,14 @@ export function createMetaTapTracker() {
       armed = false;
     },
   };
+}
+
+/** Best-effort Apple platform check (Cmd is the Meta key there). */
+export function isApplePlatform(
+  nav: Pick<Navigator, "platform" | "userAgent"> | undefined,
+): boolean {
+  if (!nav) return false;
+  return /Mac|iPhone|iPad|iPod/i.test(nav.platform || nav.userAgent);
 }
 
 /** True when the event target is a text-entry control. */

@@ -33,7 +33,7 @@ import { iconsInLasso, lassoRect, mergeSelections } from "@/lib/store/desktopSel
 import type { Rect } from "@/lib/store/geometry";
 import { DraggableIcon, DraggableRecycleBin } from "@/components/os/desktop/DraggableIcon";
 import { DesktopIcon } from "@/components/os/desktop/DesktopIcon";
-import type { IconMenuItem } from "@/components/os/desktop/IconContextMenu";
+import { IconContextMenu, type IconMenuItem } from "@/components/os/desktop/IconContextMenu";
 import { Wallpaper } from "@/components/os/desktop/Wallpaper";
 import { RecycleBinFullIcon } from "@/components/icons/RecycleBinIcons";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -42,6 +42,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useRescuePhase } from "@/hooks/useRescuePhase";
 import { useViewport } from "@/hooks/useViewport";
 import { DURATION, EASE } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 const ARROWS: Record<string, Direction> = {
   ArrowUp: "up",
@@ -49,6 +50,9 @@ const ARROWS: Record<string, Direction> = {
   ArrowLeft: "left",
   ArrowRight: "right",
 };
+
+/** How long "Refresh" blanks the icons (a single blink, not an animation). */
+const REFRESH_FLASH_MS = 150;
 
 /** Pixels of movement before a press on empty desktop becomes a lasso. */
 const LASSO_THRESHOLD = 4;
@@ -121,8 +125,9 @@ function MobileIconSlot({
  * drag on empty desktop draws the lasso (Ctrl/Cmd adds to the selection),
  * dragging a selected icon moves the whole group, and dropping on the bin
  * (wherever it sits — top-right by default, draggable on its own) triggers
- * the rescue. Right-click / long-press opens the icon's menu (Open,
- * Delete).
+ * the rescue. Right-click / long-press (or Shift+F10 / the ContextMenu key)
+ * opens the icon's menu (Open, Delete, Properties); on empty desktop it opens
+ * the background menu (Arrange Icons, Refresh, New ▸, Properties — stage 7).
  *
  * Below 768px (DESKTOP-INTERFACE-SPEC §11) the grid switches to the touch
  * layout: bigger cells filled row-first like a phone home screen, derived from
@@ -142,6 +147,7 @@ export function Desktop() {
   const openDialog = useShellStore((s) => s.openDialog);
   const [focusId, setFocusId] = useState<DesktopItemId | null>(null);
   const [lasso, setLasso] = useState<Rect | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const lassoSession = useRef<LassoSession | null>(null);
   // Focus that comes from a press must not re-select (Ctrl+click toggling off).
   const pointerFocus = useRef(false);
@@ -171,8 +177,50 @@ export function Desktop() {
   function menuFor(id: DesktopItemId): IconMenuItem[] {
     const items: IconMenuItem[] = [{ id: "open", label: t("menu.open"), primary: true, onSelect: () => open(id) }];
     if (id !== RECYCLE_BIN_ID) items.push({ id: "delete", label: t("menu.delete"), onSelect: () => deleteFrom(id) });
+    items.push({
+      id: "properties",
+      label: t("menu.properties"),
+      separatorBefore: true,
+      onSelect: () => openDialog({ kind: "iconProperties", iconId: id }),
+    });
     return items;
   }
+
+  function refresh() {
+    setRefreshing(true);
+    window.setTimeout(() => setRefreshing(false), REFRESH_FLASH_MS);
+  }
+
+  /** The desktop background's menu (stage 7). */
+  const newItem = () => openDialog({ kind: "newItem" });
+  const backgroundMenu: IconMenuItem[] = [
+    // The touch grid is derived from the screen width: nothing to arrange there.
+    ...(mobile ? [] : [{ id: "arrange", label: t("menu.arrangeIcons"), onSelect: () => store().resetLayout() }]),
+    { id: "refresh", label: t("menu.refresh"), onSelect: refresh },
+    {
+      id: "new",
+      label: t("menu.new"),
+      separatorBefore: true,
+      items: [
+        { id: "new-folder", label: t("menu.newFolder"), onSelect: newItem },
+        { id: "new-shortcut", label: t("menu.newShortcut"), onSelect: newItem },
+        { id: "new-text", label: t("menu.newTextDocument"), onSelect: newItem },
+      ],
+    },
+    { id: "properties", label: t("menu.properties"), separatorBefore: true, onSelect: () => launch("display") },
+  ];
+
+  /**
+   * The desktop background's context-menu trigger: a transparent layer under
+   * the icons (a sibling, never their ancestor), so a press on an icon can't
+   * also arm the background menu's long-press, and a right-click on an icon
+   * opens only its own menu. It counts as "empty desktop" for the lasso.
+   */
+  const background = (
+    <IconContextMenu menu="desktop" items={backgroundMenu}>
+      <div aria-hidden data-desktop-surface="true" data-desktop-background className="absolute inset-0" />
+    </IconContextMenu>
+  );
 
   function onPress(id: DesktopItemId, e: PointerEvent) {
     pointerFocus.current = true;
@@ -306,24 +354,28 @@ export function Desktop() {
       <Wallpaper />
       <div
         ref={surfaceRef}
+        data-refreshing={refreshing || undefined}
         role="listbox"
         aria-label={t("label")}
         aria-multiselectable="true"
         aria-orientation={mobile ? "horizontal" : "vertical"}
         data-desktop-surface="true"
-        className={
+        className={cn(
           mobile
             ? "absolute inset-0 z-10 overflow-y-auto overscroll-contain pt-safe-top px-safe"
-            : "absolute inset-0 z-10"
-        }
+            : "absolute inset-0 z-10",
+          refreshing && "opacity-0",
+        )}
       >
         {mobileLayout && mobileBin ? (
           // Sized wrapper so the scroll height matches the icon grid.
           <div
             data-desktop-surface="true"
             className="relative"
-            style={{ height: mobileBin.height }}
+            // At least the screen's height, so the whole empty area takes the long-press.
+            style={{ height: mobileBin.height, minHeight: "100%" }}
           >
+            {background}
             {DESKTOP_LAUNCHERS.map((launcher) => (
               <MobileIconSlot key={launcher.id} id={launcher.id} position={mobileLayout.positions[launcher.id]}>
                 <DesktopIcon
@@ -347,6 +399,7 @@ export function Desktop() {
           </div>
         ) : (
           <>
+            {background}
             {DESKTOP_LAUNCHERS.map((launcher) => (
               <DraggableIcon
                 key={launcher.id}

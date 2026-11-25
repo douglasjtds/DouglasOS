@@ -440,7 +440,14 @@
     "label": "Ícones da área de trabalho",
     "menu": {
       "open": "Abrir",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "properties": "Propriedades",
+      "arrangeIcons": "Organizar ícones",
+      "refresh": "Atualizar",
+      "new": "Novo",
+      "newFolder": "Pasta",
+      "newShortcut": "Atalho",
+      "newTextDocument": "Documento de texto"
     }
   },
   "taskbar": {
@@ -471,6 +478,7 @@
     "contact": "Contato",
     "displayProperties": "Propriedades de Vídeo",
     "help": "Ajuda",
+    "run": "Executar…",
     "logOff": "Fazer logoff",
     "turnOff": "Desligar"
   },
@@ -500,6 +508,66 @@
     "title": "Arquivo protegido",
     "body": "“{name}” se recusou a ser renomeado. Diz que levou séculos para escolher esse nome e que os recrutadores já sabem ele de cor.",
     "ok": "Justo"
+  },
+  "run": {
+    "title": "Executar",
+    "intro": "Digite o nome de um programa, projeto ou link e o DouglasOS vai abri-lo para você.",
+    "openLabel": "Abrir:",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "suggestions": "Sugestões",
+    "types": {
+      "app": "Programa",
+      "download": "Download",
+      "link": "Link",
+      "project": "Projeto",
+      "command": "Comando"
+    },
+    "notFound": {
+      "title": "DouglasOS",
+      "body": "O DouglasOS não encontrou “{query}”. Confira a grafia ou tente “projetos”, “cv” ou “contato”.",
+      "ok": "OK"
+    },
+    "cmd": {
+      "title": "Prompt de comando do DouglasOS",
+      "body": "Aqui não tem terminal: esta caixa Executar já faz o trabalho. Digite “projetos”, “cv” ou “contato” e aperte Enter.",
+      "ok": "Entendi"
+    }
+  },
+  "palette": {
+    "label": "Paleta de comandos",
+    "placeholder": "Buscar apps, projetos e links…",
+    "results": "Resultados",
+    "empty": "O DouglasOS não encontrou “{query}”.",
+    "emptyHint": "Tente “projetos”, “cv” ou “contato”.",
+    "hint": "↑↓ para escolher · Enter para abrir · Esc para fechar"
+  },
+  "properties": {
+    "title": "Propriedades de {name}",
+    "type": "Tipo:",
+    "description": "Descrição:",
+    "location": "Local:",
+    "desktop": "Área de trabalho",
+    "opens": "Abre:",
+    "types": {
+      "app": "Programa",
+      "download": "Documento PDF",
+      "link": "Atalho da internet",
+      "mail": "Atalho de e-mail",
+      "system": "Pasta do sistema"
+    },
+    "opensWindow": "Em uma janela",
+    "opensDownload": "Baixa o arquivo",
+    "opensTab": "Em uma nova aba do navegador",
+    "opensMail": "No seu app de e-mail",
+    "open": "Abrir",
+    "ok": "OK"
+  },
+  "newItem": {
+    "title": "Novo",
+    "body": "O DouglasOS é um portfólio, não um sistema de arquivos: aqui nada novo é criado. Mas o Douglas lança coisas novas com frequência, e elas ficam em Meus Projetos.",
+    "projects": "Ver projetos",
+    "ok": "OK"
   },
   "balloon": {
     "title": "Bem-vindo ao DouglasOS",

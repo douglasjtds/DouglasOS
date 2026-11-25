@@ -209,3 +209,36 @@ export function AllProgramsIcon(props: IconProps) {
     </RoundBadge>
   );
 }
+
+/**
+ * Run… (stage 7): a white command card with a blue prompt chevron and a
+ * green "go" arrow leaving it. Original drawing, not the classic glyph.
+ */
+export function RunIcon(props: IconProps) {
+  const id = useSvgIds("card", "go");
+  return (
+    <Svg {...props}>
+      <defs>
+        <linearGradient id={id.card} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="1" stopColor={C.paperShade} />
+        </linearGradient>
+        <linearGradient id={id.go} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={C.greenLight} />
+          <stop offset="1" stopColor={C.green} />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="8" width="32" height="30" rx="4" fill={`url(#${id.card})`} stroke={C.outline} strokeWidth="1.4" />
+      <rect x="4" y="8" width="32" height="7" rx="3" fill={C.blue} />
+      <path d="M10 22l5 4-5 4" fill="none" stroke={C.blue} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M18 31h9" stroke={C.paperLine} strokeWidth="3" strokeLinecap="round" />
+      <path
+        d="M30 24h8v-6l9 10-9 10v-6h-8z"
+        fill={`url(#${id.go})`}
+        stroke={C.greenDark}
+        strokeWidth="1.3"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}

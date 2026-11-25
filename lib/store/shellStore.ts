@@ -14,7 +14,13 @@ export const BOOTED_KEY = "douglasos-booted";
 /** Modal dialogs owned by the shell (one at a time). */
 export type ShellDialog =
   | { kind: "turnOff" }
-  | { kind: "protectedFile"; iconId: DesktopIconId | "recycle-bin" };
+  | { kind: "protectedFile"; iconId: DesktopIconId | "recycle-bin" }
+  // Stage 7: Run…, the command palette, an icon's Properties and the
+  // desktop menu's "New ▸" joke.
+  | { kind: "run" }
+  | { kind: "palette" }
+  | { kind: "iconProperties"; iconId: DesktopIconId | "recycle-bin" }
+  | { kind: "newItem" };
 
 function sessionStore(): Pick<Storage, "getItem" | "setItem"> | null {
   try {
