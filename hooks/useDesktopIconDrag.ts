@@ -1,11 +1,10 @@
 import {
   useRef,
-  useState,
   type PointerEvent as ReactPointerEvent,
   type RefObject,
 } from "react";
-import { useDesktopStore } from "@/lib/store/desktopStore";
-import { cellToPixel } from "@/lib/store/desktopGrid";
+import { onlyIcons, useDesktopStore } from "@/lib/store/desktopStore";
+import { hitsBin } from "@/lib/store/recycleBin";
 import type { DesktopIconId } from "@/lib/apps/registry";
 
 /** Pixels of movement before a press is treated as a drag (not a click). */
@@ -15,8 +14,12 @@ interface DragSession {
   pointerId: number;
   startX: number;
   startY: number;
-  originX: number;
-  originY: number;
+  /** The icons that move together (the selection, if this icon is in it). */
+  ids: DesktopIconId[];
+  /** The element that takes pointer capture once the press becomes a drag. */
+  element: Element;
+  /** Removes the window listeners that watch the press until it's a drag. */
+  stopWatching: () => void;
 }
 
 export interface IconDragHandlers {
@@ -28,8 +31,6 @@ export interface IconDragHandlers {
 
 export interface IconDrag {
   handlers: IconDragHandlers;
-  /** Live top-left pixel while dragging (for instant follow), else null. */
-  live: { x: number; y: number } | null;
   /**
    * True once the press passed the drag threshold — read by the icon's click
    * handler so a drop never also opens the app. Cleared on the next press.
@@ -37,47 +38,83 @@ export interface IconDrag {
   wasDragged: RefObject<boolean>;
 }
 
+function viewport() {
+  return { width: window.innerWidth, height: window.innerHeight };
+}
+
 /**
- * Free-pixel pointer drag for a desktop icon, mirroring `useDrag` but with
- * snap-on-release: the icon follows the cursor live, then `moveIcon` settles it
- * into the nearest free grid cell. Reads the store imperatively via
- * `getState()`; `live` drives the follow render.
+ * Free-pixel pointer drag for a desktop icon with snap-on-release. Pressing
+ * an icon that is part of a multi-selection drags the whole group (stage 6).
+ * The live offset is published to `desktopStore.drag`, so every icon of the
+ * group follows the pointer; on release the group either settles into the
+ * nearest free cells (`moveIcons`, offsets kept) or — when the pointer is
+ * over the Recycle Bin — is "deleted" (`trashIcons`: rescued straight back).
+ *
+ * The icon's own pointerdown (selection) runs first, since it bubbles up from
+ * the child, so the group read here is already up to date. Ctrl/Cmd presses
+ * only toggle the selection and never start a drag.
  */
 export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
   const session = useRef<DragSession | null>(null);
   const wasDragged = useRef(false);
-  const [live, setLive] = useState<{ x: number; y: number } | null>(null);
 
   function onPointerDown(e: ReactPointerEvent) {
-    if (e.button !== 0) return;
-    const vp = { width: window.innerWidth, height: window.innerHeight };
-    const cell = useDesktopStore.getState().iconCells[id];
-    const origin = cellToPixel(cell, vp);
     wasDragged.current = false;
+    if (e.button !== 0 || e.ctrlKey || e.metaKey) return;
+    const { selectedIds } = useDesktopStore.getState();
+    const group = onlyIcons(selectedIds);
+    session.current?.stopWatching();
+    const pointerId = e.pointerId;
+    // NB: capture is deferred to the first real move. Capturing here would
+    // retarget the subsequent `click` to this wrapper, swallowing the icon's
+    // open/download click. Until then, a window listener watches the press, so
+    // a fast first move that already left the icon still starts the drag.
+    const watch = (ev: PointerEvent) => {
+      if (ev.pointerId === pointerId) move(ev.pointerId, ev.clientX, ev.clientY);
+    };
+    const stop = (ev: PointerEvent) => {
+      if (ev.pointerId === pointerId) stopWatching();
+    };
+    function stopWatching() {
+      window.removeEventListener("pointermove", watch);
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+    }
+    window.addEventListener("pointermove", watch);
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
     session.current = {
-      pointerId: e.pointerId,
+      pointerId,
       startX: e.clientX,
       startY: e.clientY,
-      originX: origin.x,
-      originY: origin.y,
+      ids: group.includes(id) && group.length > 1 ? group : [id],
+      element: e.currentTarget,
+      stopWatching,
     };
-    // NB: capture is deferred to the first real move (see onPointerMove). Capturing
-    // here would retarget the subsequent `click` to this wrapper, swallowing the
-    // icon button's open/download click.
   }
 
   function onPointerMove(e: ReactPointerEvent) {
+    move(e.pointerId, e.clientX, e.clientY);
+  }
+
+  function move(pointerId: number, clientX: number, clientY: number) {
     const drag = session.current;
-    if (!drag || e.pointerId !== drag.pointerId) return;
-    const dx = e.clientX - drag.startX;
-    const dy = e.clientY - drag.startY;
+    if (!drag || pointerId !== drag.pointerId) return;
+    const dx = clientX - drag.startX;
+    const dy = clientY - drag.startY;
     if (!wasDragged.current && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
       wasDragged.current = true;
+      drag.stopWatching();
       // Only now capture, so a plain click never does — the press has become a drag.
-      e.currentTarget.setPointerCapture(e.pointerId);
+      if (drag.element.isConnected) drag.element.setPointerCapture(pointerId);
     }
     if (wasDragged.current) {
-      setLive({ x: drag.originX + dx, y: drag.originY + dy });
+      useDesktopStore.getState().setDrag({
+        ids: drag.ids,
+        dx,
+        dy,
+        overBin: hitsBin({ x: clientX, y: clientY }, viewport()),
+      });
     }
   }
 
@@ -85,19 +122,17 @@ export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
     const drag = session.current;
     if (!drag || e.pointerId !== drag.pointerId) return;
     session.current = null;
+    drag.stopWatching();
     if (e.currentTarget.hasPointerCapture(drag.pointerId)) {
       e.currentTarget.releasePointerCapture(drag.pointerId);
     }
+    const store = useDesktopStore.getState();
     if (wasDragged.current) {
-      useDesktopStore
-        .getState()
-        .moveIcon(
-          id,
-          drag.originX + (e.clientX - drag.startX),
-          drag.originY + (e.clientY - drag.startY),
-        );
+      const dropped = e.type === "pointerup" && hitsBin({ x: e.clientX, y: e.clientY }, viewport());
+      if (dropped) store.trashIcons(drag.ids);
+      else store.moveIcons(drag.ids, id, e.clientX - drag.startX, e.clientY - drag.startY);
     }
-    setLive(null);
+    store.setDrag(null);
   }
 
   return {
@@ -107,7 +142,6 @@ export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
       onPointerUp: endDrag,
       onPointerCancel: endDrag,
     },
-    live,
     wasDragged,
   };
 }

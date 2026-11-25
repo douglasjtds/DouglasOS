@@ -398,6 +398,13 @@
       "ok": "OK",
       "cancel": "Cancelar",
       "apply": "Aplicar"
+    },
+    "recycle-bin": {
+      "title": "Lixeira",
+      "description": "Para onde vão os ícones excluídos (e de onde eles voltam na hora)",
+      "empty": "Esta pasta está vazia.",
+      "note": "Aqui nada fica por muito tempo: o que você arrastar pra cá, eu trago de volta. Pode testar com um ícone.",
+      "noteTouch": "Aqui nada fica por muito tempo: segure qualquer ícone, escolha Excluir e veja eu trazer de volta."
     }
   },
   "resume": {
@@ -430,7 +437,11 @@
     "menu": "Menu da janela"
   },
   "desktop": {
-    "label": "Ícones da área de trabalho"
+    "label": "Ícones da área de trabalho",
+    "menu": {
+      "open": "Abrir",
+      "delete": "Excluir"
+    }
   },
   "taskbar": {
     "label": "Barra de tarefas",
@@ -568,6 +579,75 @@
       "experience": "Oito anos até aqui, hoje como desenvolvedor fullstack na Serasa Experian. A trajetória completa está em Experiência.",
       "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude. Mais em Sobre o Douglas.",
       "fallback": "Essa ainda não está no meu roteiro. Tente “CV”, “projetos”, “stack” ou “remoto”, ou pergunte pro Douglas de verdade pelo Contato."
+    },
+    "trash": {
+      "title": "Resgatado da Lixeira",
+      "titleCleanup": "Tudo resgatado",
+      "binTitle": "Lixeira",
+      "binOpened": "Vazia, como sempre. Eu não deixo nada ir embora: o que cai aqui, eu trago de volta.",
+      "lines": {
+        "about": {
+          "v1": "Já vai me jogar fora? A gente acabou de se conhecer. Me coloquei de volta no desktop.",
+          "v2": "Apagar o \"Sobre\" é um jeito ousado de conhecer alguém. Restaurado.",
+          "v3": "Não é tão fácil se livrar de mim. O Sobre o Douglas voltou pro lugar."
+        },
+        "resume": {
+          "v1": "Meu currículo no lixo? Tem oito anos de trabalho nessa página! Já voltou. Quer baixar uma cópia?",
+          "v2": "Cuidado, esse é o arquivo mais importante deste desktop. Tirei da lixeira. Baixa pra garantir?",
+          "v3": "Reciclar meu currículo? Pelo menos guarda uma cópia antes. O original eu já devolvi."
+        },
+        "contact": {
+          "v1": "Sem o Contato você ia ter que adivinhar meu e-mail. Poupei o trabalho e devolvi.",
+          "v2": "Apagar o Contato antes mesmo de dizer oi? Vou fingir que foi clique errado. Restaurado.",
+          "v3": "O Contato não pode sair: é ali que as boas conversas começam. De volta ao desktop."
+        },
+        "projects": {
+          "v1": "Esses projetos me custaram muito café. Eles ficam. De volta ao desktop.",
+          "v2": "Jogar Meus Projetos fora? Tem um histórico de Git inteiro aí dentro. Restaurado.",
+          "v3": "Não vale jogar os projetos fora antes de abrir pelo menos um. Voltaram pro lugar."
+        },
+        "experience": {
+          "v1": "Oito anos de experiência não cabem numa lixeira. Eu conferi. Restaurado.",
+          "v2": "Apagar minha experiência não vai me deixar júnior de novo. Voltou."
+        },
+        "skills": {
+          "v1": "Minhas habilidades no lixo? Ainda preciso delas na próxima sprint. Restaurado.",
+          "v2": "Habilidade não se recicla. Dá pra aprender novas, e essas eu também vou guardar."
+        },
+        "aiWorkflow": {
+          "v1": "Jogar fora como eu trabalho com IA? Até a IA achou má ideia. Restaurado.",
+          "v2": "Essa é minha seção favorita. Pedi com jeitinho e ela voltou sozinha."
+        },
+        "messenger": {
+          "v1": "Apagar o Messenger no meio da conversa? Que feio. Voltou, e eu continuo online.",
+          "v2": "Não dá pra me dar ghosting assim tão fácil. Messenger restaurado."
+        },
+        "linkedin": {
+          "v1": "É por lá que os recrutadores me acham, prefiro manter. O linkedin.url voltou.",
+          "v2": "Apagar meu LinkedIn? Minhas recomendações nunca iam me perdoar. Restaurado."
+        },
+        "github": {
+          "v1": "Meu GitHub no lixo? Aqueles quadradinhos verdes deram trabalho. Restaurado.",
+          "v2": "O GitHub fica: é lá que mora o código que roda de verdade. De volta ao desktop."
+        },
+        "whatsapp": {
+          "v1": "Sem WhatsApp não tem aquele \"oi, tem um minuto?\". Já pesquei de volta.",
+          "v2": "Jogar o WhatsApp fora? Minha mãe ia ser a primeira a reclamar. Restaurado."
+        },
+        "email": {
+          "v1": "Minha caixa de entrada é o único lugar onde eu gosto de receber coisas. O me-escreva.eml voltou.",
+          "v2": "Apagar o atalho de e-mail não te descadastra de nada. Não tem do que se descadastrar. Restaurado."
+        },
+        "generic": "Boa tentativa. Nada sai deste desktop enquanto eu estiver de olho. Já voltou pro lugar.",
+        "cleanup": {
+          "v1": "Mutirão de limpeza com {count} ícones? Desculpa, nada neste desktop é descartável. Tá tudo de volta.",
+          "v2": "Exclusão em massa detectada. Restauração em massa executada. Os {count} ícones estão em casa."
+        },
+        "cleanupWithCv": {
+          "v1": "Você jogou fora {count} ícones, inclusive meu currículo! Tá tudo de volta. Baixa o CV agora, antes que ele dê outro passeio?",
+          "v2": "Exclusão em massa, com currículo e tudo? Restaurei os {count}. O CV tá a um clique aqui embaixo, só dizendo."
+        }
+      }
     }
   },
   "messenger": {

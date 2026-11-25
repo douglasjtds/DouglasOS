@@ -12,6 +12,7 @@ import {
   ResumeIcon,
   SkillsIcon,
 } from "@/components/icons/AppIcons";
+import { RecycleBinIcon } from "@/components/icons/RecycleBinIcons";
 import {
   EmailLinkIcon,
   GitHubLinkIcon,
@@ -29,7 +30,8 @@ export type AppId =
   | "how-i-work-with-ai"
   | "contact"
   | "messenger"
-  | "display";
+  | "display"
+  | "recycle-bin";
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -51,16 +53,23 @@ export interface AppRoutes {
   isValid: (route: string) => boolean;
 }
 
-/** Launchers that also live as desktop icons (Display Properties doesn't). */
-export type DesktopIconId = Exclude<LauncherId, "display">;
+/**
+ * Launchers that live as movable desktop icons. Display Properties has no
+ * icon; the Recycle Bin has one, but it is pinned to the bottom-right cell
+ * and drawn by the desktop itself (stage 6, `lib/store/recycleBin.ts`), so it
+ * is never dragged, lassoed, trashed or persisted with the others.
+ */
+export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin">;
 
 export interface WindowAppConfig {
   id: AppId;
   kind: "window";
   icon: IconComponent;
   defaultSize: { width: number; height: number };
-  /** Whether the launcher gets a desktop icon (all but system apps). */
+  /** Whether the launcher gets a (movable) desktop icon (all but system apps). */
   onDesktop: boolean;
+  /** Listed in Start → All Programs (default true; the Recycle Bin isn't). */
+  inAllPrograms?: boolean;
   /**
    * Window body style: "pane" (default) frames the content in a white sunken
    * pane; "dialog" keeps the beige button-face body (property sheets);
@@ -223,6 +232,18 @@ export const LAUNCHERS: LauncherConfig[] = [
     surface: "dialog",
     defaultSize: { width: 420, height: 500 },
     Content: lazy(() => import("@/components/apps/DisplayApp")),
+  },
+  // Recycle Bin (stage 6): a window app whose icon the desktop pins to the
+  // bottom-right cell itself. Its window is always empty — mini Douglas
+  // never lets anything stay in it.
+  {
+    id: "recycle-bin",
+    kind: "window",
+    icon: RecycleBinIcon,
+    onDesktop: false,
+    inAllPrograms: false,
+    defaultSize: { width: 520, height: 380 },
+    Content: lazy(() => import("@/components/apps/RecycleBinApp")),
   },
 ];
 

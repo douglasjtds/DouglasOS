@@ -14,7 +14,7 @@ export const BOOTED_KEY = "douglasos-booted";
 /** Modal dialogs owned by the shell (one at a time). */
 export type ShellDialog =
   | { kind: "turnOff" }
-  | { kind: "protectedFile"; iconId: DesktopIconId };
+  | { kind: "protectedFile"; iconId: DesktopIconId | "recycle-bin" };
 
 function sessionStore(): Pick<Storage, "getItem" | "setItem"> | null {
   try {

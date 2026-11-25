@@ -1,11 +1,15 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  BIN_FULL_MS,
   defaultIconCells,
   mergeIconCells,
   useDesktopStore,
 } from "@/lib/store/desktopStore";
 import { cellToPixel, defaultCells } from "@/lib/store/desktopGrid";
 import { DESKTOP_ICON_IDS } from "@/lib/apps/registry";
+import { binCell } from "@/lib/store/recycleBin";
+import { useAssistantStore } from "@/lib/store/assistantStore";
+import { announceRescue, useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
 
 const store = () => useDesktopStore.getState();
 
@@ -129,5 +133,90 @@ describe("mergeIconCells", () => {
     expect(store().iconCells.about).toEqual({ col: 6, row: 5 });
     expect(store().iconCells.linkedin).toEqual({ col: 1, row: 0 });
     localStorage.removeItem("douglasos:desktop-icons");
+  });
+});
+
+describe("desktopStore: selection, group move and the Recycle Bin (stage 6)", () => {
+  beforeEach(() => {
+    store().resetLayout();
+    useDesktopStore.setState({ selectedIds: [], drag: null, rescue: null, binFull: false, trashCounts: {} });
+    useAssistantStore.setState({ dismissed: false, visible: false, queue: [], state: "idle" });
+    useTrashNoticeStore.setState({ notice: null, seq: 0 });
+  });
+
+  it("selects, toggles, selects all (never the bin) and clears", () => {
+    store().select(["about"]);
+    store().toggleSelected("resume");
+    expect(store().selectedIds).toEqual(["about", "resume"]);
+    store().toggleSelected("about");
+    expect(store().selectedIds).toEqual(["resume"]);
+    store().toggleSelected("recycle-bin");
+    expect(store().selectedIds).toEqual(["recycle-bin"]);
+    store().toggleSelected("contact");
+    expect(store().selectedIds).toEqual(["contact"]);
+    store().selectAll();
+    expect([...store().selectedIds].sort()).toEqual([...DESKTOP_ICON_IDS].sort());
+    store().clearSelection();
+    expect(store().selectedIds).toEqual([]);
+  });
+
+  it("moves a group keeping offsets and never onto the bin's cell", () => {
+    store().moveIcons(["about", "resume"], "about", 88 * 5, 0);
+    expect(store().iconCells.about).toEqual({ col: 5, row: 0 });
+    expect(store().iconCells.resume).toEqual({ col: 5, row: 1 });
+    const bin = binCell(VP);
+    const px = cellToPixel(bin, VP);
+    store().moveIcon("skills", px.x, px.y);
+    expect(store().iconCells.skills).not.toEqual(bin);
+  });
+
+  it("trashing never removes or moves icons: it cues the rescue and the line", () => {
+    const before = store().iconCells;
+    const message = store().trashIcons(["whatsapp"]);
+    expect(store().iconCells).toBe(before);
+    expect(store().rescue).toEqual({ ids: ["whatsapp"], seq: 1 });
+    expect(store().binFull).toBe(true);
+    expect(message?.textKey).toBe("assistant.trash.lines.whatsapp.v1");
+    // mini Douglas is around: the line goes straight to his bubble.
+    expect(useAssistantStore.getState().queue[0]).toEqual(message);
+    // The next rescue of the same icon rotates the line.
+    expect(store().trashIcons(["whatsapp"])?.textKey).toBe("assistant.trash.lines.whatsapp.v2");
+    expect(store().rescue?.seq).toBe(2);
+  });
+
+  it("ignores the bin itself and returns null when there's nothing to rescue", () => {
+    expect(store().trashIcons(["recycle-bin"])).toBeNull();
+    expect(store().rescue).toBeNull();
+    const batch = store().trashIcons(["recycle-bin", "linkedin", "github", "resume"]);
+    expect(store().rescue?.ids).toEqual(["linkedin", "github", "resume"]);
+    expect(batch?.textKey).toBe("assistant.trash.lines.cleanupWithCv.v1");
+  });
+
+  it("falls back to the bin's own balloon when mini Douglas was dismissed", () => {
+    useAssistantStore.setState({ dismissed: true });
+    const message = store().trashIcons(["email"]);
+    expect(announceRescue).toBeDefined();
+    expect(useAssistantStore.getState().queue).toEqual([]);
+    expect(useAssistantStore.getState().visible).toBe(false);
+    expect(useTrashNoticeStore.getState().notice).toEqual(message);
+  });
+
+  it("the bin's 'full' glyph wears off on its own", () => {
+    vi.useFakeTimers();
+    try {
+      store().trashIcons(["about"]);
+      expect(store().binFull).toBe(true);
+      vi.advanceTimersByTime(BIN_FULL_MS);
+      expect(store().binFull).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("only persists the icon cells", () => {
+    store().select(["about"]);
+    store().trashIcons(["about"]);
+    const saved = JSON.parse(localStorage.getItem("douglasos:desktop-icons") ?? "{}");
+    expect(Object.keys(saved.state)).toEqual(["iconCells"]);
   });
 });

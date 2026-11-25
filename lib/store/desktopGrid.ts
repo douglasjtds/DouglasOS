@@ -28,8 +28,8 @@ export const GRID_TOP = 6;
  * Icon footprint, used only for bounds math: the 76px label width
  * (`--spacing-desktop-label`) × glyph + two label lines.
  */
-const ICON_W = 76;
-const ICON_H = 88;
+export const ICON_W = 76;
+export const ICON_H = 88;
 
 /** Viewport assumed when no real one exists yet (SSR / module init). */
 export const FALLBACK_VIEWPORT: Viewport = { width: 1440, height: 900 };

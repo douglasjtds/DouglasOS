@@ -398,6 +398,13 @@
       "ok": "OK",
       "cancel": "Cancel",
       "apply": "Apply"
+    },
+    "recycle-bin": {
+      "title": "Recycle Bin",
+      "description": "Where deleted icons go (and come straight back from)",
+      "empty": "This folder is empty.",
+      "note": "Nothing stays here for long: anything you drag in, I bring right back. Go ahead, try it with an icon.",
+      "noteTouch": "Nothing stays here for long: press and hold any icon, pick Delete and watch me bring it right back."
     }
   },
   "resume": {
@@ -430,7 +437,11 @@
     "menu": "Window menu"
   },
   "desktop": {
-    "label": "Desktop icons"
+    "label": "Desktop icons",
+    "menu": {
+      "open": "Open",
+      "delete": "Delete"
+    }
   },
   "taskbar": {
     "label": "Taskbar",
@@ -568,6 +579,75 @@
       "experience": "Eight years so far, today as a fullstack developer at Serasa Experian. The whole path is in Experience.",
       "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention. More in About Douglas.",
       "fallback": "That one isn't in my script yet. Try “CV”, “projects”, “stack” or “remote”, or ask the real me through Contact."
+    },
+    "trash": {
+      "title": "Rescued from the Recycle Bin",
+      "titleCleanup": "Everything rescued",
+      "binTitle": "Recycle Bin",
+      "binOpened": "Empty, as always. I don't let anything go: whatever lands in here, I bring back.",
+      "lines": {
+        "about": {
+          "v1": "Throwing me away already? We just met. I put myself back on the desktop.",
+          "v2": "Deleting the About page is a bold way to get to know someone. Restored.",
+          "v3": "I'm not that easy to get rid of. About Douglas is back where it was."
+        },
+        "resume": {
+          "v1": "My CV in the trash? Eight years of work went into that page! It's back. Want a copy while you're here?",
+          "v2": "Careful, that's the most important file on this desktop. I pulled it out. Download it so it's safe?",
+          "v3": "Recycling my résumé? At least keep a copy first. I already put the original back."
+        },
+        "contact": {
+          "v1": "Without Contact you'd have to guess my e-mail. I saved you the trouble and put it back.",
+          "v2": "Deleting Contact before even saying hi? I'll pretend that was a misclick. Restored.",
+          "v3": "Contact can't go: that's where the good conversations start. Back on the desktop."
+        },
+        "projects": {
+          "v1": "Those projects cost me a lot of coffee. They're staying. Back on the desktop.",
+          "v2": "Trashing My Projects? There's a whole Git history in there. Restored.",
+          "v3": "No throwing the projects away before you've opened at least one. Back where they were."
+        },
+        "experience": {
+          "v1": "Eight years of experience don't fit in a recycle bin. I checked. Restored.",
+          "v2": "Deleting my experience won't make me a junior again. It's back."
+        },
+        "skills": {
+          "v1": "My skills, in the trash? I still need those for the next sprint. Restored.",
+          "v2": "You can't recycle skills. You can learn new ones, and I'm keeping these too."
+        },
+        "aiWorkflow": {
+          "v1": "Throwing away how I work with AI? Even the AI said that was a bad idea. Restored.",
+          "v2": "That's my favorite section. I asked it nicely and it came back on its own."
+        },
+        "messenger": {
+          "v1": "Deleting the Messenger mid-conversation? Rude. It's back, and I'm still online.",
+          "v2": "You can't ghost me that easily. Messenger restored."
+        },
+        "linkedin": {
+          "v1": "That's where recruiters find me, so I'd rather keep it. linkedin.url is back.",
+          "v2": "Deleting my LinkedIn? My endorsements would never forgive me. Restored."
+        },
+        "github": {
+          "v1": "My GitHub in the trash? Those little green squares took effort. Restored.",
+          "v2": "GitHub stays: that's where the code that actually runs lives. Back on the desktop."
+        },
+        "whatsapp": {
+          "v1": "No WhatsApp means no quick \"hey, got a minute?\". I fished it back out.",
+          "v2": "Trashing WhatsApp? My mom would be the first to complain. Restored."
+        },
+        "email": {
+          "v1": "My inbox is the one place I actually enjoy getting mail. write-me.eml is back.",
+          "v2": "Deleting the e-mail shortcut won't unsubscribe you. There's nothing to unsubscribe from. Restored."
+        },
+        "generic": "Nice try. Nothing leaves this desktop on my watch. It's back where it was.",
+        "cleanup": {
+          "v1": "A {count}-icon cleanup drive? Sorry, nothing on this desktop is disposable. Everything's back.",
+          "v2": "Bulk delete detected. Bulk restore performed. All {count} icons are home."
+        },
+        "cleanupWithCv": {
+          "v1": "You threw out {count} icons, my CV included! Everything's back. Grab the CV now, before it takes another trip?",
+          "v2": "Mass deletion, CV and all? I restored all {count}. The CV is one click away right below, just saying."
+        }
+      }
     }
   },
   "messenger": {

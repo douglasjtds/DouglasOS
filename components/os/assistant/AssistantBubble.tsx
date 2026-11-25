@@ -22,6 +22,12 @@ export interface AssistantBubbleProps {
   onAction: (action: AssistantAction) => void;
   onClose: () => void;
   onSearch: (query: string) => void;
+  /**
+   * Who is speaking: mini Douglas (default) or the Recycle Bin's own balloon
+   * that carries his rescue line while he's dismissed (stage 6). Only changes
+   * the `data-*` hook.
+   */
+  source?: "assistant" | "recycleBin";
 }
 
 /**
@@ -40,6 +46,7 @@ export function AssistantBubble({
   onAction,
   onClose,
   onSearch,
+  source = "assistant",
 }: AssistantBubbleProps) {
   const t = useTranslations();
   const ids = useId();
@@ -63,7 +70,8 @@ export function AssistantBubble({
   return (
     <motion.section
       aria-labelledby={`${ids}-title`}
-      data-assistant-bubble
+      data-assistant-bubble={source === "assistant" ? "" : undefined}
+      data-trash-notice={source === "recycleBin" ? "" : undefined}
       data-message={message.id}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

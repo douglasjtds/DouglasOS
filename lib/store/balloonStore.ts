@@ -3,11 +3,12 @@ import { create } from "zustand";
 /**
  * The single balloon slot (DESKTOP-INTERFACE-SPEC → Layering). Everything
  * that pops up near the tray — the welcome balloon, the mini Douglas bubble
- * and, from stage 5b, the Messenger toast — asks for the slot and shows only
+ * from stage 5b, the Messenger toast and, from stage 6, the Recycle Bin's
+ * rescue balloon (when mini Douglas was dismissed) — asks for the slot and shows only
  * while it holds it, so two of them are never on screen at once. First come,
  * first served; releasing hands the slot to the next owner in line.
  */
-export type BalloonOwner = "welcome" | "assistant" | "messenger";
+export type BalloonOwner = "welcome" | "assistant" | "messenger" | "recycleBin";
 
 /** Add `owner` to the end of the line (no-op if already waiting or showing). */
 export function enqueueBalloon(queue: readonly BalloonOwner[], owner: BalloonOwner): readonly BalloonOwner[] {

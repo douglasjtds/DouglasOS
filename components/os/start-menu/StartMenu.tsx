@@ -29,10 +29,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * All Programs: every launcher in registry order, apps first, then the
- * external shortcuts (stage 3) after a separator.
+ * external shortcuts (stage 3) after a separator. System items that opt out
+ * (the Recycle Bin) aren't listed.
  */
 const ALL_PROGRAMS = [
-  ...LAUNCHERS.filter((l) => l.kind !== "link"),
+  ...LAUNCHERS.filter((l) => l.kind !== "link" && !(l.kind === "window" && l.inAllPrograms === false)),
   ...LAUNCHERS.filter((l) => l.kind === "link"),
 ];
 const FIRST_LINK_ID = LAUNCHERS.find((l) => l.kind === "link")?.id;

@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -111,7 +111,7 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 | `whatsapp` *(stage 3, link)* | whatsapp.exe | whatsapp.exe |
 | `email` *(stage 3, link)* | write-me.eml | me-escreva.eml |
 
-- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI, DouglasOS Messenger *(5b — last of the apps, see [§14](#14-douglasos-messenger-stage-5b) → Placement)*. Recycle Bin *(stage 6)* pinned to the bottom-right cell. External shortcuts follow the apps.
+- **Default order** (CTA hierarchy): About Douglas, resume.pdf, Contact, My Projects, Experience, Skills, How I Work With AI, DouglasOS Messenger *(5b — last of the apps, see [§14](#14-douglasos-messenger-stage-5b) → Placement)*. Recycle Bin *(stage 6 — done)* pinned to the bottom-right cell. External shortcuts follow the apps.
 
 ### External shortcuts *(stage 3 — done)*
 - Four `kind: "link"` launchers in `lib/apps/registry.tsx` (`LinkConfig { id, kind, titleKey, icon, href, external }`): `linkedin`, `github`, `whatsapp`, `email`. The ids are **stable** (they are the Recycle Bin rescue targets in stage 6). URLs come only from `lib/profile.ts`; `email` is `mailto:`.
@@ -126,10 +126,30 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 - **Interaction (keyboard):** the desktop is one tab stop (roving tabindex on a `listbox` of `option`s); focus = selection; arrows move the selection across the grid (nearest icon in that direction, `neighborIcon` in `lib/store/desktopGrid.ts`); `Enter` opens; Home/End jump to first/last icon; `F2` shows the "protected file" joke (see [Keyboard](#12-keyboard--accessibility)).
 - **Drag:** drag moves the icon and snaps to the nearest free cell (existing guard: a drag never counts as a click).
 - `resume.pdf` opening = **download** (no window), via `lib/download.ts`.
-- Future: lasso and multi-select *(stage 6)*, Recycle Bin with icon rescue jokes *(stage 6)*, desktop context menu *(stage 7)*, no rename (`F2` is a joke by design, see [Keyboard](#12-keyboard--accessibility)).
+- Lasso, multi-select and the Recycle Bin: see [Recycle Bin](#recycle-bin-stage-6--done) below. Future: desktop (background) context menu *(stage 7)*; no rename (`F2` is a joke by design, see [Keyboard](#12-keyboard--accessibility)).
+
+### Recycle Bin *(stage 6 — done)*
+The bin never keeps anything: whatever is "deleted" is rescued straight back by mini Douglas with a line of his own. Nothing on the desktop can ever actually be removed.
+
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Geometry | `lib/store/recycleBin.ts` | `RECYCLE_BIN_ID`, `binCell(vp)` (bottom-right cell), `iconRect`, `binHitRect` (footprint + 8px slop), `hitsBin(point, vp)` (drop hit-test on the **pointer** position), `mobileBinPlacement(layout, width)` |
+| Selection + group move | `lib/store/desktopSelection.ts` | `lassoRect`, `rectsIntersect`, `iconsInLasso` (touching is enough), `toggleInSelection`, `mergeSelections`, `moveGroup(cells, ids, anchor, dx, dy, vp, reserved)` |
+| Store | `lib/store/desktopStore.ts` | Not persisted: `selectedIds`, `drag { ids, dx, dy, overBin }`, `rescue { ids, seq }`, `binFull`, `trashCounts`. Actions: `select`, `toggleSelected`, `selectAll`, `clearSelection`, `setDrag`, `moveIcons(ids, anchor, dx, dy)`, `trashIcons(ids)` (returns the line or null). Only `iconCells` is persisted (unchanged key, no version bump) |
+| Lines | `lib/assistant/trash.ts` + `assistant.trash.*` in `messages/{en,pt}.json` | `trashMessage(ids, counts)`: one icon → its own line (`TRASH_LINES`, 2–3 rotating variations per id), several → the "cleanup" line with `{count}` (`cleanupWithCv` + Download CV first when the CV was in the batch), unknown id → generic line. Message id `trash`, `auto: true`; shortcuts always include CV (+ Contact or the app itself). `recycleBinOpenedMessage()` for the window |
+| Delivery | `lib/store/trashNoticeStore.ts` | `announceRescue(message)`: see below |
+| UI | `components/os/Desktop.tsx`, `desktop/DraggableIcon.tsx`, `desktop/DesktopIcon.tsx`, `desktop/IconContextMenu.tsx`, `desktop/TrashNotice.tsx` (+ `LazyTrashNotice`), `apps/RecycleBinApp.tsx`, `icons/RecycleBinIcons.tsx`; hooks `useRescuePhase`, `useViewport`, `useDesktopIconDrag` | |
+
+- **The bin:** own wire-mesh basket SVG (empty / "full" with crumpled paper), label "Recycle Bin" / "Lixeira". It is a `window` app in the registry (`recycle-bin`, `onDesktop: false`, `inAllPrograms: false`) whose icon the desktop draws itself, **pinned** to the bottom-right cell (the cell mini Douglas left free in stage 5): never dragged, never persisted, never lassoed, never part of Ctrl+A, never trashed. Every other icon treats its cell as taken (moves, group moves, defaults and merged layouts dodge it). A single click (or Enter) opens its window: always empty ("This folder is empty." + a note that nothing stays here), and mini Douglas says the "Empty, as always…" line if he's around. Nothing in it can delete or empty anything. Its context menu has **Open** only; `F2` gives the protected-file joke like any icon.
+- **Drop:** dragging an icon (or a selected group) over the bin highlights it as the drop target; releasing with the **pointer** inside the bin's footprint (+8px) is a "delete". The icons shrink into the bin (~250ms), the bin shows "full" for 1.4s, and after a beat they fade back in **on their own cells** (they never left them in the store). Reduced motion: no animation, the icons simply stay put; the bin still flips to "full". Anything else is a normal move.
+- **The line:** `trashIcons` picks the line and `announceRescue` delivers it. **Decision — "Not now" still gets the joke, without the character:** if mini Douglas is available, `replace()` puts the line in his bubble immediately (a direct reaction takes the bubble over a waiting tip); if he was dismissed this session, the **bin itself** shows the same line in an XP balloon above it (`TrashNotice`, balloon-slot owner `recycleBin`, layer 1300; bottom sheet on phones), lazy-loaded only when needed. The character never comes back uninvited, and the balloon offers the same CV/Contact shortcuts. Both close themselves after 15s (auto line), × or Esc closes them, neither takes focus.
+- **Multi-select (pointer):** single click opens (and selects only that icon); **Ctrl/Cmd+click toggles** without opening (on macOS Ctrl+click is the system context click, so Cmd is the toggle there); pressing an icon that is part of a multi-selection keeps the group, and dragging it moves **the whole group keeping the offsets** (`moveGroup`: dragged icon first, then grid order, against non-moving icons + the bin). A press on empty desktop clears the selection; dragging from empty desktop draws the **lasso** (XP blue translucent rectangle, `lasso-border` / `lasso-fill` tokens, layer 10) and selects every icon it touches, live; Ctrl/Cmd+lasso adds to the selection. The lasso starts only on the desktop surface itself, so it never competes with icon drag (icons stop the press) or windows (a higher layer). A press that left the icon before the drag threshold still starts the drag (window-level watcher until capture).
+- **Keyboard:** see [§12](#12-keyboard--accessibility) — arrows move focus + selection (Ctrl/Cmd+arrows move focus only), `Space` selects, `Ctrl/Cmd+Space` toggles, `Ctrl/Cmd+A` selects every icon (not the bin), `Esc` clears the selection (before Esc-closes-window), `Delete` (or `Backspace`, for Mac keyboards) "deletes" the selection — or the focused icon if it isn't selected. The listbox is `aria-multiselectable`; each icon exposes `aria-selected`.
+- **Icon context menu (minimal, stage-7 hook point):** `IconContextMenu` (Radix ContextMenu) wraps every icon: right-click, or **press and hold ~700ms on touch**, opens **Open** (bold, default) and **Delete** (same rescue joke; on a multi-selection it deletes the group). Items are data (`IconMenuItem { id, label, onSelect, primary? }`), so stage 7 adds Properties, `Shift+F10`/ContextMenu key and the desktop-background menu without replacing the mechanism. A long-press that opened the menu never also opens the icon.
+- **Mobile:** no lasso and no drag (as before). The bin sits on its **own trailing row, right-most column** (`mobileBinPlacement`), below the links, so About / CV / Contact keep the first row. Long-press → **Delete** plays the rescue in place (the icon shrinks and fades back in on its own slot, since the bin may be scrolled away) and the line appears in mini Douglas's bottom sheet, or in the bin's bottom-sheet balloon when he was dismissed. Menu items are 44px tall.
 
 ### Desktop context menu *(stage 7)*
-Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetLayout`), **Refresh** (brief flash), **New ▸** (optional joke), separator, **Properties** (= Display Properties). On an icon: **Open**, **Delete** (recycle-bin joke, stage 6), **Properties** (mini dialog with the app description).
+Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetLayout`), **Refresh** (brief flash), **New ▸** (optional joke), separator, **Properties** (= Display Properties). On an icon: **Open**, **Delete** (recycle-bin joke — both already shipped in stage 6 through `IconContextMenu`, see [Recycle Bin](#recycle-bin-stage-6--done)), **Properties** (mini dialog with the app description, stage 7).
 
 ---
 
@@ -238,7 +258,7 @@ Right-click on empty desktop (long-press on touch): **Arrange Icons** (= `resetL
 - **Message boxes** (shutdown, errors such as "DouglasOS can't find '…'", confirmations): window chrome with close only, 32px semantic icon (own SVG: error / warning / info / question), message text, right-aligned buttons (`OK`, `Cancel`, …). Modal: focus trapped, initial focus on the default button, `Esc` = Cancel/close, `role="alertdialog"` for errors and confirmations.
 - **Tray balloons**: yellow rounded bubble with a tail pointing at the tray icon, bold title + 16px icon, text, close ×. `aria-live="polite"`, never steals focus, auto-dismiss ~8s (paused on hover/focus). **Max one balloon at a time**; queued otherwise.
   - Stage 1 ships one: on the first logon of a session, "Welcome to DouglasOS — Click any icon to open it. Your CV is one click away on the taskbar." (EN/PT), once per session (`douglasos-welcomed` sessionStorage flag).
-  - **Single balloon slot** *(stage 5)*: the welcome balloon, the assistant bubble and (stage 5b) the Messenger toast share one first-come-first-served slot, `lib/store/balloonStore.ts` (`request(owner)` / `release(owner)`, head of the line = on screen). Each shows only while it holds the slot; see [Layering](#layering-z-index-policy).
+  - **Single balloon slot** *(stage 5)*: the welcome balloon, the assistant bubble, (stage 5b) the Messenger toast and (stage 6) the Recycle Bin's rescue balloon share one first-come-first-served slot, `lib/store/balloonStore.ts` (`request(owner)` / `release(owner)`, head of the line = on screen). Each shows only while it holds the slot; see [Layering](#layering-z-index-policy).
 - **Protected-file dialog** (`F2` on a desktop icon): warning message box, original humorous copy (EN: "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart." / PT equivalent), one button ("Fair enough" / "Justo"). Never renames.
 - **Tooltips**: yellow rectangles, ~500ms delay, on every icon-only control (Quick Launch, tray, window controls).
 - **Menus** (window menus, context menus, submenus): white, blue highlight, keyboard-complete (radix).
@@ -313,7 +333,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7), DouglasOS Media Player (8), Retro Cam (9), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
 
 ---
 
@@ -328,7 +348,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
 - **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
 - **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. In-app "Back" lives in the Explorer toolbar (stage 4; see [§10](#my-projects-projects) → Mobile).
-- **Gestures:** single tap opens an icon. **Long-press** is reserved for the stage-7 context menu: icons already suppress text selection and the iOS callout so the gesture is free, but nothing is bound to it yet (no dead menu). **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
+- **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** since stage 6 (the Recycle Bin rescue joke); stage 7 adds the rest. Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
 - **Boot/logon:** boot ~1s (`BOOT_MOBILE_MS`; reduced motion stays at 0.6s), Skip is a 44px button; the logon stacks (brand above the user tile, thinner bands) and its hint says "Tap Douglas to come in." Same once-per-session rule.
 - **Welcome balloon:** same once-per-session balloon with "tap" copy; on every width it now dismisses itself as soon as the Start menu or a window opens, so it never covers the menu or a window's buttons.
 - **3D wallpaper:** **not offered on mobile** (Display Properties shows it disabled with the reason). Stage 2 decision: no exception. The static wallpaper already scores 98–99 on Lighthouse mobile; the R3F chunk plus a WebGL context on mid-range phones isn't worth the battery and LCP risk for an ambient effect.
@@ -359,7 +379,9 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Desktop: `F2` on selected icon | `F2` → "protected file" dialog (no rename) | — | 1 |
 | Close menu/dialog/balloon | `Esc` (topmost transient first) | — | 1 |
 | Context menu | `Shift+F10` / `ContextMenu` key | — | 7 |
-| Select all / toggle / delete icon | `Ctrl+A`, `Space`/`Ctrl+Space`, `Delete` | — | 6 |
+| Desktop: select all / select / toggle / clear | `Ctrl+A`, `Space`, `Ctrl+Space`, `Esc` (focus on an icon; `Cmd` works for `Ctrl` on macOS) | — | 6 — done |
+| Desktop: move focus without selecting | `Ctrl+←↑→↓` | — | 6 — done |
+| Desktop: delete (Recycle Bin rescue joke) | `Delete` | `Backspace` (Mac keyboards) | 6 — done |
 | Run… | `Meta+R` (best effort) | `Alt+Shift+R` | 7 |
 | Command palette | `Ctrl+K` / `Cmd+K` | — | 7 |
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
@@ -393,7 +415,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Triggers | `hooks/useAssistantTriggers.ts` | See below |
 
 ### Public API for later stages
-- `say(message)` — queue a line (stage 6 Recycle Bin rescue jokes). Dropped after "Not now" and when a line with the same `id` is already queued. Lines said during a dance wait until it ends.
+- `say(message)` — queue a line. (Stage 6 uses `replace()` for the rescue lines — a direct reaction takes the bubble — and `say()` for the bin window's comment; see [Recycle Bin](#recycle-bin-stage-6--done).) Dropped after "Not now" and when a line with the same `id` is already queued. Lines said during a dance wait until it ends.
 - `dance(options?)` / `stopDance(options?)` — stage 8 calls `dance()` (no duration) when music starts and `stopDance()` when it stops; `stopDance` says the "Phew!" line unless `{ quiet: true }`. A click uses `dance({ durationMs: 3500 })`.
 - Also: `show()`, `replace(message)`, `closeMessage()`, `nextTip()`, `dismiss()`, `trigger(id, message?)` (once per session), `markFired(id)`.
 - Intents: `matchIntent(text)` → `IntentMatch { intent, score, projectSlug? }` or `IntentFallback { intent: "fallback", score: 0, suggestions }`; `rankIntents`, `normalizeText`, `tokenize`, `findProjectSlug`, `isFallback`, `INTENT_IDS`, `FALLBACK_SUGGESTIONS`. Intents: `cv`, `contact` (incl. hire/contratar), `projects` (+ slug from slug/brand/alias), `skills`/stack, `availability` (remote/location), `ai-workflow`, `experience`, `about`. EN + PT keywords, accent/case/punctuation-insensitive, stems by prefix (`contrat*`), phrases ("entrar em contato"); ties go to CV, then Contact.
@@ -470,7 +492,7 @@ Full-screen window like every app; header compacts (icon-only Back and Contact, 
 | Assistant character + bubble *(stage 5)* | 1050 | above windows, below the taskbar; never covers the focused window's title bar (see below) |
 | Taskbar | 1100 | |
 | Start menu, context menus, dropdowns | 1200 | |
-| Tray balloons, messenger toast *(5b — done)* | 1300 | one at a time, shared slot with the assistant bubble |
+| Tray balloons, messenger toast *(5b — done)*, Recycle Bin rescue balloon *(6 — done)* | 1300 | one at a time, shared slot with the assistant bubble |
 | Modal dialogs (shutdown, Run, errors) | 1400 | |
 | Boot / logon / shutdown screens | 2000 | |
 
@@ -508,7 +530,7 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos-messenger-toast` | sessionStorage | `MessengerToast` *(stage 5b)* | The tray toast already showed this session |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Later stages add their own keys here (volume).
+Stage 6 adds no storage: selection, drag, rescue state and line rotation live only in memory (the icon cells keep using `douglasos:desktop-icons`). Later stages add their own keys here (volume).
 
 ---
 
@@ -537,7 +559,7 @@ Later stages add their own keys here (volume).
 | 4 | DouglasOS Explorer for projects (address bar, history, not-found dialog), `openWindow` with a route — **done** |
 | 5 | "mini Douglas" scripted assistant (layer + single balloon slot, §13) — **done** |
 | 5b | DouglasOS Messenger (scripted chat, real message via mailto/WhatsApp, tray icon, toast, §14) — **done** |
-| 6 | Recycle Bin rescue + lasso/multi-select |
+| 6 | Recycle Bin rescue + lasso/multi-select — **done** |
 | 7 | Run…, command palette, desktop context menu |
 | 8 | DouglasOS Media Player + synced dance, tray volume/now-playing |
 | 9 | Retro Cam (pixelated webcam) |

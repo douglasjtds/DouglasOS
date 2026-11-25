@@ -212,6 +212,37 @@ test.describe("touch shell", () => {
     await expect(character).toHaveCount(0);
   });
 
+  test("Recycle Bin: press and hold an icon → Delete → it stays put and the rescue line shows", async ({ page }) => {
+    await gotoDesktop(page);
+    const whatsapp = desktopIcon(page, "whatsapp");
+    const before = (await whatsapp.boundingBox())!;
+    const point = { x: before.x + before.width / 2, y: before.y + before.height / 3 };
+    // Playwright has no long-press: dispatch a held touch pointer (Radix opens the menu after ~700ms).
+    await whatsapp.dispatchEvent("pointerdown", {
+      pointerType: "touch",
+      pointerId: 7,
+      isPrimary: true,
+      button: 0,
+      buttons: 1,
+      clientX: point.x,
+      clientY: point.y,
+    });
+    const del = page.locator('[data-icon-menu-item="delete"]');
+    await expect(del).toBeVisible({ timeout: 3000 });
+    await whatsapp.dispatchEvent("pointerup", { pointerType: "touch", pointerId: 7, clientX: point.x, clientY: point.y });
+    expect((await del.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await del.tap();
+
+    const notice = page.locator("[data-trash-notice]");
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText("Rescued from the Recycle Bin");
+    await expect.poll(async () => (await whatsapp.boundingBox())!).toEqual(before);
+    await expect(windows(page)).toHaveCount(0);
+    // The bin sits on its own row below the links.
+    const bin = (await desktopIcon(page, "recycle-bin").boundingBox())!;
+    expect(bin.y).toBeGreaterThan(before.y + before.height);
+  });
+
   test("Messenger: full screen from the tray, chips scroll sideways, composer above the taskbar, CV one tap away", async ({
     page,
   }) => {
