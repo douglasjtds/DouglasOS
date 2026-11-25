@@ -29,6 +29,6 @@ export function closeMessengerWindow(): void {
       (next && document.querySelector<HTMLElement>(`[data-window="${next}"]`)) ||
       document.querySelector<HTMLElement>("[data-tray-messenger]") ||
       document.querySelector<HTMLElement>("[data-start-button]");
-    target?.focus();
+    target?.focus({ preventScroll: true });
   });
 }

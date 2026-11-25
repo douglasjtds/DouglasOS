@@ -7,7 +7,9 @@ import { taskButtonAction } from "@/lib/taskbar";
 import { cn } from "@/lib/utils";
 
 function focusWindowElement(id: AppId) {
-  document.querySelector<HTMLElement>(`[data-window="${id}"]`)?.focus();
+  // preventScroll: on restore the window still sits at its minimized spot
+  // (partly below the viewport); a plain focus() would scroll the shell.
+  document.querySelector<HTMLElement>(`[data-window="${id}"]`)?.focus({ preventScroll: true });
 }
 
 function TaskButton({ id }: { id: AppId }) {

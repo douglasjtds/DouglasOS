@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, screen, within } from "@testing-library/react";
+import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithIntl } from "@/test/renderWithIntl";
 import { Taskbar } from "@/components/os/taskbar/Taskbar";
@@ -69,6 +69,27 @@ describe("Taskbar", () => {
     await userEvent.click(taskButton(/About Douglas/));
     expect(win().focusedId).toBe("about");
     expect(taskButton(/About Douglas/)).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("restoring focuses the window without scrolling the shell", async () => {
+    // A restored window still sits at its minimized spot (partly below the
+    // viewport) when it gets focus; a plain focus() scrolls the shell up.
+    act(() => {
+      win().openWindow("projects");
+      win().minimizeWindow("projects");
+    });
+    const section = document.createElement("section");
+    section.dataset.window = "projects";
+    section.tabIndex = -1;
+    document.body.append(section);
+    const focusSpy = vi.spyOn(section, "focus");
+    try {
+      renderWithIntl(<Taskbar />);
+      await userEvent.click(taskButton(/My Projects/));
+      await waitFor(() => expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true }));
+    } finally {
+      section.remove();
+    }
   });
 
   it("removes a window's button when it closes", () => {

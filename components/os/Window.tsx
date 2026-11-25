@@ -50,7 +50,7 @@ export function Window({ id }: { id: AppId }) {
 
   // Move focus into the window when it opens (a11y); harmless if unmounted.
   useEffect(() => {
-    rootRef.current?.focus();
+    rootRef.current?.focus({ preventScroll: true });
   }, []);
 
   const minimized = instance?.minimized ?? false;

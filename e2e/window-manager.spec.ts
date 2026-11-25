@@ -50,6 +50,44 @@ test.describe("window manager", () => {
     await expect(taskButton(page, "about")).toHaveAttribute("aria-pressed", "true");
   });
 
+  test("minimize/restore via the taskbar never scrolls the shell", async ({ page }) => {
+    // A minimized window is tweened onto its taskbar button and hangs partly
+    // below the viewport. The shell must stay pinned: it once got scrolled
+    // up on restore, leaving an empty band under the taskbar.
+    const shell = page.locator("[data-shell]");
+    await desktopIcon(page, "about").click();
+    await desktopIcon(page, "projects").click();
+    const projects = windowById(page, "projects");
+
+    for (let i = 0; i < 2; i++) {
+      await taskButton(page, "projects").click();
+      await expect(projects).toHaveCSS("opacity", "0");
+      await taskButton(page, "projects").click();
+      await expect(projects).toHaveCSS("opacity", "1");
+      await expect(projects).toBeFocused();
+    }
+    await taskButton(page, "about").click();
+    await expect(windowById(page, "about")).toBeFocused();
+    await taskButton(page, "projects").click();
+    await expect(projects).toBeFocused();
+    expect(await shell.evaluate((el) => el.scrollTop)).toBe(0);
+
+    // The shell is not a scroll container at all, so nothing can offset it.
+    await taskButton(page, "projects").click();
+    await expect(projects).toHaveCSS("opacity", "0");
+    expect(
+      await shell.evaluate((el) => {
+        el.scrollTop = 200;
+        return el.scrollTop;
+      }),
+    ).toBe(0);
+    const viewport = page.viewportSize()!;
+    const taskbarBottom = await page
+      .locator("[data-taskbar]")
+      .evaluate((el) => el.getBoundingClientRect().bottom);
+    expect(Math.round(taskbarBottom)).toBe(viewport.height);
+  });
+
   test("clicking the focused window's taskbar button minimizes it", async ({ page }) => {
     await desktopIcon(page, "about").click();
     await taskButton(page, "about").click();

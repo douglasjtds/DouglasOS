@@ -34,7 +34,7 @@ export function DesktopShell() {
         <div
           data-shell
           inert={phase !== "desktop"}
-          className="relative h-dvh w-full touch-manipulation overflow-hidden bg-desktop"
+          className="relative h-dvh w-full touch-manipulation overflow-clip bg-desktop"
         >
           <Desktop />
           <WindowManager />

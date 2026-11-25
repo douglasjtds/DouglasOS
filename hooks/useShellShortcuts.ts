@@ -12,7 +12,7 @@ import type { AppId } from "@/lib/apps/registry";
 
 function focusWindowElement(id: AppId) {
   requestAnimationFrame(() =>
-    document.querySelector<HTMLElement>(`[data-window="${id}"]`)?.focus(),
+    document.querySelector<HTMLElement>(`[data-window="${id}"]`)?.focus({ preventScroll: true }),
   );
 }
 
