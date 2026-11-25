@@ -55,9 +55,10 @@ export interface AppRoutes {
 
 /**
  * Launchers that live as movable desktop icons. Display Properties has no
- * icon; the Recycle Bin has one, but it is pinned to the bottom-right cell
- * and drawn by the desktop itself (stage 6, `lib/store/recycleBin.ts`), so it
- * is never dragged, lassoed, trashed or persisted with the others.
+ * icon; the Recycle Bin has one, but it is drawn by the desktop itself
+ * (stage 6, `lib/store/recycleBin.ts`): top-right by default, draggable on its
+ * own, its cell persisted separately (`desktopStore.binCell`), and never
+ * lassoed, grouped or trashed with the others.
  */
 export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin">;
 
@@ -233,8 +234,8 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 420, height: 500 },
     Content: lazy(() => import("@/components/apps/DisplayApp")),
   },
-  // Recycle Bin (stage 6): a window app whose icon the desktop pins to the
-  // bottom-right cell itself. Its window is always empty — mini Douglas
+  // Recycle Bin (stage 6): a window app whose icon the desktop draws itself
+  // (top-right by default, draggable). Its window is always empty — mini Douglas
   // never lets anything stay in it.
   {
     id: "recycle-bin",

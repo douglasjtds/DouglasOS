@@ -9,7 +9,7 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
-import { binCell, iconRect } from "@/lib/store/recycleBin";
+import { defaultBinCell, iconRect } from "@/lib/store/recycleBin";
 import { cellToPixel } from "@/lib/store/desktopGrid";
 
 const downloadSpy = vi.fn();
@@ -33,7 +33,7 @@ describe("Desktop icons", () => {
     useDesktopStore.setState({ selectedIds: [], drag: null, rescue: null, binFull: false, trashCounts: {} });
   });
 
-  it("renders the launchers as one listbox, in CTA order, links last, the Recycle Bin pinned, without Display Properties", () => {
+  it("renders the launchers as one listbox, in CTA order, links last, the Recycle Bin after them, without Display Properties", () => {
     renderWithIntl(<Desktop />);
     // The label is the last child (the glyph is aria-hidden SVG).
     const options = screen
@@ -112,7 +112,7 @@ describe("Desktop icons", () => {
     expect(icon("resume.pdf")).toHaveFocus();
     expect(icon("resume.pdf")).toHaveAttribute("aria-selected", "true");
     await userEvent.keyboard("{End}");
-    // The Recycle Bin is pinned to the bottom-right cell: last in grid order.
+    // The Recycle Bin defaults to the top-right cell: last in grid order.
     expect(icon("Recycle Bin")).toHaveFocus();
     await userEvent.keyboard("{Home}");
     expect(icon("About Douglas")).toHaveFocus();
@@ -210,7 +210,8 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     renderWithIntl(<Desktop />);
     const origin = useDesktopStore.getState().iconCells.whatsapp;
     const from = cellToPixel(origin, VP);
-    const bin = iconRect(binCell(VP), VP);
+    const bin = iconRect(useDesktopStore.getState().binCell, VP);
+    expect(useDesktopStore.getState().binCell).toEqual(defaultBinCell(VP));
     const wrapper = icon("whatsapp.exe").parentElement!;
     fireEvent.pointerDown(icon("whatsapp.exe"), { button: 0, pointerId: 1, clientX: from.x + 30, clientY: from.y + 20 });
     fireEvent.pointerDown(wrapper, { button: 0, pointerId: 1, clientX: from.x + 30, clientY: from.y + 20 });
@@ -224,6 +225,50 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     expect(useDesktopStore.getState().rescue?.ids).toEqual(["whatsapp"]);
     expect(useDesktopStore.getState().binFull).toBe(true);
     expect(useTrashNoticeStore.getState().notice?.textKey).toMatch(/^assistant\.trash\.lines\.whatsapp\./);
+  });
+
+  it("the bin drags on its own to a free cell (no joke, no window), then still takes drops there", () => {
+    renderWithIntl(<Desktop />);
+    const start = iconRect(useDesktopStore.getState().binCell, VP);
+    const target = cellToPixel({ col: 6, row: 3 }, VP);
+    const binOption = icon("Recycle Bin");
+    const binWrapper = binOption.parentElement!;
+    expect(binWrapper).toHaveAttribute("data-recycle-bin");
+    // Even with a group selected, the bin moves alone.
+    useDesktopStore.getState().select(["about", "resume"]);
+    fireEvent.pointerDown(binOption, { button: 0, pointerId: 5, clientX: start.x + 30, clientY: start.y + 20 });
+    fireEvent.pointerDown(binWrapper, { button: 0, pointerId: 5, clientX: start.x + 30, clientY: start.y + 20 });
+    fireEvent.pointerMove(binWrapper, { pointerId: 5, clientX: target.x + 30, clientY: target.y + 20 });
+    expect(useDesktopStore.getState().drag).toMatchObject({ ids: ["recycle-bin"], overBin: false });
+    fireEvent.pointerUp(binWrapper, { pointerId: 5, clientX: target.x + 30, clientY: target.y + 20 });
+    fireEvent.click(binOption);
+    expect(useDesktopStore.getState().binCell).toEqual({ col: 6, row: 3 });
+    expect(useDesktopStore.getState().iconCells.about).toEqual({ col: 0, row: 0 });
+    expect(useDesktopStore.getState().rescue).toBeNull();
+    expect(useWindowStore.getState().windows["recycle-bin"]).toBeUndefined();
+
+    // Drop Skills where the bin now is: the rescue runs.
+    const skills = icon("Skills");
+    const from = cellToPixel(useDesktopStore.getState().iconCells.skills, VP);
+    const wrapper = skills.parentElement!;
+    fireEvent.pointerDown(skills, { button: 0, pointerId: 6, clientX: from.x + 30, clientY: from.y + 20 });
+    fireEvent.pointerDown(wrapper, { button: 0, pointerId: 6, clientX: from.x + 30, clientY: from.y + 20 });
+    fireEvent.pointerMove(wrapper, { pointerId: 6, clientX: target.x + 30, clientY: target.y + 30 });
+    expect(useDesktopStore.getState().drag?.overBin).toBe(true);
+    fireEvent.pointerUp(wrapper, { pointerId: 6, clientX: target.x + 30, clientY: target.y + 30 });
+    expect(useDesktopStore.getState().rescue?.ids).toEqual(["skills"]);
+
+    // Its old top-right cell is just a drop spot now: a plain move.
+    const contact = icon("Contact");
+    const c = cellToPixel(useDesktopStore.getState().iconCells.contact, VP);
+    const cw = contact.parentElement!;
+    fireEvent.pointerDown(contact, { button: 0, pointerId: 7, clientX: c.x + 30, clientY: c.y + 20 });
+    fireEvent.pointerDown(cw, { button: 0, pointerId: 7, clientX: c.x + 30, clientY: c.y + 20 });
+    fireEvent.pointerMove(cw, { pointerId: 7, clientX: start.x + 30, clientY: start.y + 20 });
+    expect(useDesktopStore.getState().drag?.overBin).toBe(false);
+    fireEvent.pointerUp(cw, { pointerId: 7, clientX: start.x + 30, clientY: start.y + 20 });
+    expect(useDesktopStore.getState().iconCells.contact).toEqual(defaultBinCell(VP));
+    expect(useDesktopStore.getState().rescue?.seq).toBe(1);
   });
 
   it("a fast first move that already left the icon still starts the drag", () => {

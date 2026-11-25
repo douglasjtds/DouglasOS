@@ -2,12 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BIN_FULL_MS,
   defaultIconCells,
-  mergeIconCells,
+  defaultLayout,
+  mergeDesktopLayout,
   useDesktopStore,
 } from "@/lib/store/desktopStore";
 import { cellToPixel, defaultCells } from "@/lib/store/desktopGrid";
 import { DESKTOP_ICON_IDS } from "@/lib/apps/registry";
-import { binCell } from "@/lib/store/recycleBin";
+import { defaultBinCell } from "@/lib/store/recycleBin";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { announceRescue, useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
 
@@ -68,21 +69,23 @@ describe("desktopStore", () => {
   });
 });
 
-describe("mergeIconCells", () => {
+describe("mergeDesktopLayout", () => {
   it("returns the defaults when nothing was saved", () => {
-    expect(mergeIconCells(undefined, VP)).toEqual(defaultIconCells(VP));
+    expect(mergeDesktopLayout(undefined, VP)).toEqual(defaultLayout(VP));
   });
 
   it("keeps saved cells, drops unknown ids and backfills new launchers", () => {
-    const merged = mergeIconCells(
+    const merged = mergeDesktopLayout(
       {
-        about: { col: 5, row: 3 },
-        // An icon saved on the cell "resume" would default to.
-        contact: { col: 0, row: 1 },
-        "removed-app": { col: 9, row: 9 },
+        iconCells: {
+          about: { col: 5, row: 3 },
+          // An icon saved on the cell "resume" would default to.
+          contact: { col: 0, row: 1 },
+          "removed-app": { col: 9, row: 9 },
+        },
       },
       VP,
-    );
+    ).iconCells;
     expect(merged.about).toEqual({ col: 5, row: 3 });
     expect(merged.contact).toEqual({ col: 0, row: 1 });
     expect(merged).not.toHaveProperty("removed-app");
@@ -108,7 +111,7 @@ describe("mergeIconCells", () => {
       ...defaultCells(legacyIds, VP),
       skills: { col: 4, row: 4 },
     };
-    const merged = mergeIconCells(saved, VP);
+    const merged = mergeDesktopLayout({ iconCells: saved }, VP).iconCells;
     for (const id of legacyIds) expect(merged[id]).toEqual(saved[id]);
     expect(merged.linkedin).toEqual({ col: 1, row: 0 });
     expect(merged.email).toEqual({ col: 1, row: 3 });
@@ -117,7 +120,7 @@ describe("mergeIconCells", () => {
   });
 
   it("moves a new shortcut to a free neighbour when a saved icon sits on its default cell", () => {
-    const merged = mergeIconCells({ about: { col: 1, row: 0 } }, VP);
+    const merged = mergeDesktopLayout({ iconCells: { about: { col: 1, row: 0 } } }, VP).iconCells;
     expect(merged.about).toEqual({ col: 1, row: 0 });
     expect(merged.linkedin).not.toEqual({ col: 1, row: 0 });
     const keys = Object.values(merged).map((c) => `${c.col},${c.row}`);
@@ -132,6 +135,38 @@ describe("mergeIconCells", () => {
     await useDesktopStore.persist.rehydrate();
     expect(store().iconCells.about).toEqual({ col: 6, row: 5 });
     expect(store().iconCells.linkedin).toEqual({ col: 1, row: 0 });
+    // Saved before the bin was movable: it gets its top-right default.
+    expect(store().binCell).toEqual(defaultBinCell(VP));
+    localStorage.removeItem("douglasos:desktop-icons");
+  });
+
+  it("gives a layout saved without a bin cell the top-right default, or the nearest free cell", () => {
+    const topRight = defaultBinCell(VP);
+    expect(mergeDesktopLayout({ iconCells: defaultIconCells(VP) }, VP).binCell).toEqual(topRight);
+    // An icon was dragged onto the top-right cell before the bin moved there.
+    const merged = mergeDesktopLayout({ iconCells: { ...defaultIconCells(VP), skills: topRight } }, VP);
+    expect(merged.iconCells.skills).toEqual(topRight);
+    expect(merged.binCell).not.toEqual(topRight);
+    expect(Math.max(Math.abs(merged.binCell.col - topRight.col), Math.abs(merged.binCell.row - topRight.row))).toBe(1);
+  });
+
+  it("keeps a saved bin cell, ignores a malformed one and never lets a new launcher take it", () => {
+    const merged = mergeDesktopLayout({ iconCells: {}, binCell: { col: 1, row: 0 } }, VP);
+    expect(merged.binCell).toEqual({ col: 1, row: 0 });
+    // linkedin defaults to (1,0): it dodges the bin.
+    expect(merged.iconCells.linkedin).not.toEqual({ col: 1, row: 0 });
+    const keys = [...Object.values(merged.iconCells), merged.binCell].map((c) => `${c.col},${c.row}`);
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(mergeDesktopLayout({ binCell: { col: "x" } }, VP).binCell).toEqual(defaultBinCell(VP));
+  });
+
+  it("rehydrates the bin's saved cell", async () => {
+    localStorage.setItem(
+      "douglasos:desktop-icons",
+      JSON.stringify({ state: { iconCells: defaultIconCells(VP), binCell: { col: 7, row: 4 } }, version: 3 }),
+    );
+    await useDesktopStore.persist.rehydrate();
+    expect(store().binCell).toEqual({ col: 7, row: 4 });
     localStorage.removeItem("douglasos:desktop-icons");
   });
 });
@@ -164,10 +199,40 @@ describe("desktopStore: selection, group move and the Recycle Bin (stage 6)", ()
     store().moveIcons(["about", "resume"], "about", 88 * 5, 0);
     expect(store().iconCells.about).toEqual({ col: 5, row: 0 });
     expect(store().iconCells.resume).toEqual({ col: 5, row: 1 });
-    const bin = binCell(VP);
+    const bin = store().binCell;
+    expect(bin).toEqual(defaultBinCell(VP));
     const px = cellToPixel(bin, VP);
     store().moveIcon("skills", px.x, px.y);
     expect(store().iconCells.skills).not.toEqual(bin);
+  });
+
+  it("starts the bin top-right; dragging it snaps to a free cell, persists, and Arrange puts it back", () => {
+    expect(store().binCell).toEqual(defaultBinCell(VP));
+    const from = cellToPixel(store().binCell, VP);
+    const to = cellToPixel({ col: 8, row: 5 }, VP);
+    store().moveBin(to.x - from.x + 10, to.y - from.y - 12);
+    expect(store().binCell).toEqual({ col: 8, row: 5 });
+    const saved = JSON.parse(localStorage.getItem("douglasos:desktop-icons") ?? "{}");
+    expect(saved.state.binCell).toEqual({ col: 8, row: 5 });
+    // Icons now dodge the bin's new cell, and its old cell is free again.
+    store().moveIcon("skills", to.x, to.y);
+    expect(store().iconCells.skills).not.toEqual({ col: 8, row: 5 });
+    store().moveIcon("experience", from.x, from.y);
+    expect(store().iconCells.experience).toEqual(defaultBinCell(VP));
+    store().resetLayout();
+    expect(store().binCell).toEqual(defaultBinCell(VP));
+    expect(store().iconCells).toEqual(defaultIconCells(VP));
+  });
+
+  it("the bin never lands on an icon, and a drop on its own cell changes nothing", () => {
+    const before = store().binCell;
+    store().moveBin(3, -2);
+    expect(store().binCell).toBe(before);
+    const from = cellToPixel(before, VP);
+    const about = cellToPixel(store().iconCells.about, VP);
+    store().moveBin(about.x - from.x, about.y - from.y);
+    expect(store().binCell).not.toEqual(store().iconCells.about);
+    expect(store().iconCells.about).toEqual({ col: 0, row: 0 });
   });
 
   it("trashing never removes or moves icons: it cues the rescue and the line", () => {
@@ -213,10 +278,10 @@ describe("desktopStore: selection, group move and the Recycle Bin (stage 6)", ()
     }
   });
 
-  it("only persists the icon cells", () => {
+  it("only persists the icon cells and the bin's cell", () => {
     store().select(["about"]);
     store().trashIcons(["about"]);
     const saved = JSON.parse(localStorage.getItem("douglasos:desktop-icons") ?? "{}");
-    expect(Object.keys(saved.state)).toEqual(["iconCells"]);
+    expect(Object.keys(saved.state)).toEqual(["iconCells", "binCell"]);
   });
 });

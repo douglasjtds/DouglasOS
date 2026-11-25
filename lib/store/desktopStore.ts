@@ -15,7 +15,7 @@ import {
   nearestFreeCell,
   type Cell,
 } from "@/lib/store/desktopGrid";
-import { binCell } from "@/lib/store/recycleBin";
+import { RECYCLE_BIN_ID, defaultBinCell } from "@/lib/store/recycleBin";
 import { moveGroup, toggleInSelection } from "@/lib/store/desktopSelection";
 import { bumpTrashCount, trashMessage, type TrashLineCounts } from "@/lib/assistant/trash";
 import type { AssistantMessage } from "@/lib/assistant/script";
@@ -34,47 +34,73 @@ function viewport(): Viewport {
 export function defaultIconCells(
   vp: Viewport = viewport(),
 ): Record<DesktopIconId, Cell> {
-  const cells = defaultCells(DESKTOP_ICON_GROUPS, vp);
-  // On a very small grid the default columns could reach the Recycle Bin's
-  // pinned bottom-right cell; nudge such an icon to the nearest free cell.
-  const bin = binCell(vp);
-  const clash = DESKTOP_ICON_IDS.find((id) => cellKey(cells[id]) === cellKey(bin));
-  if (clash) {
-    const others = DESKTOP_ICON_IDS.filter((id) => id !== clash).map((id) => cells[id]);
-    cells[clash] = nearestFreeCell(bin, [...others, bin], vp);
-  }
-  return cells;
+  return defaultCells(DESKTOP_ICON_GROUPS, vp);
 }
 
 /**
- * Rebuild the icon layout from whatever was persisted: keep saved cells for
- * launchers that still exist, and place any new launcher on its default cell
- * (or the nearest free one if a saved icon already sits there). Pure.
+ * The Recycle Bin's default cell given where the icons are: the top-right
+ * corner, or the nearest free cell if an icon already sits there (only on a
+ * very narrow grid by default, or in an older saved layout).
  */
-export function mergeIconCells(
-  saved: Partial<Record<string, Cell>> | undefined,
+export function defaultBinCellFor(icons: Partial<Record<DesktopIconId, Cell>>, vp: Viewport): Cell {
+  const occupied = Object.values(icons).filter((c): c is Cell => c !== undefined);
+  return nearestFreeCell(defaultBinCell(vp), occupied, vp);
+}
+
+/** Icon cells + the bin's cell: everything that is persisted. */
+export interface DesktopLayout {
+  iconCells: Record<DesktopIconId, Cell>;
+  binCell: Cell;
+}
+
+/** The default arrangement ("Arrange Icons"): icons top-left, bin top-right. */
+export function defaultLayout(vp: Viewport = viewport()): DesktopLayout {
+  const iconCells = defaultIconCells(vp);
+  return { iconCells, binCell: defaultBinCellFor(iconCells, vp) };
+}
+
+function isCell(value: unknown): value is Cell {
+  const c = value as Cell | null | undefined;
+  return typeof c?.col === "number" && typeof c?.row === "number";
+}
+
+/**
+ * Rebuild the layout from whatever was persisted: keep saved cells for
+ * launchers that still exist, keep the bin's saved cell (a layout saved before
+ * the bin was movable has none: it gets the top-right default, or the nearest
+ * free cell if an icon sits there), and place any new launcher on its default
+ * cell (or the nearest free one). Pure.
+ */
+export function mergeDesktopLayout(
+  saved: { iconCells?: Partial<Record<string, Cell>>; binCell?: unknown } | undefined,
   vp: Viewport,
-): Record<DesktopIconId, Cell> {
+): DesktopLayout {
   const defaults = defaultIconCells(vp);
-  const result = {} as Record<DesktopIconId, Cell>;
-  const occupied: Cell[] = [binCell(vp)];
+  const iconCells = {} as Record<DesktopIconId, Cell>;
+  const occupied: Cell[] = [];
   for (const id of DESKTOP_ICON_IDS) {
-    const cell = saved?.[id];
-    if (cell) {
-      result[id] = cell;
+    const cell = saved?.iconCells?.[id];
+    if (isCell(cell)) {
+      iconCells[id] = cell;
       occupied.push(cell);
     }
   }
+  const savedBin = saved?.binCell;
+  const binCell =
+    isCell(savedBin) && !occupied.some((c) => cellKey(c) === cellKey(savedBin))
+      ? savedBin
+      : nearestFreeCell(defaultBinCell(vp), occupied, vp);
+  occupied.push(binCell);
   for (const id of DESKTOP_ICON_IDS) {
-    if (result[id]) continue;
+    if (iconCells[id]) continue;
     const cell = nearestFreeCell(defaults[id], occupied, vp);
-    result[id] = cell;
+    iconCells[id] = cell;
     occupied.push(cell);
   }
-  return result;
+  return { iconCells, binCell };
 }
 
-/** A desktop item: a movable launcher icon or the pinned Recycle Bin. */
+/** A desktop item: a launcher icon or the Recycle Bin. */
 export type DesktopItemId = DesktopIconId | "recycle-bin";
 
 const ICON_ID_SET = new Set<string>(DESKTOP_ICON_IDS);
@@ -84,9 +110,12 @@ export function onlyIcons(ids: readonly string[]): DesktopIconId[] {
   return [...new Set(ids)].filter((id): id is DesktopIconId => ICON_ID_SET.has(id));
 }
 
-/** A drag in progress: which icons follow the pointer and by how much. */
+/**
+ * A drag in progress: which items follow the pointer and by how much (a
+ * launcher group, or the Recycle Bin alone).
+ */
 export interface IconDragState {
-  ids: DesktopIconId[];
+  ids: DesktopItemId[];
   dx: number;
   dy: number;
   /** The pointer is over the Recycle Bin (it highlights as a drop target). */
@@ -107,6 +136,8 @@ let binFullTimer: ReturnType<typeof setTimeout> | null = null;
 interface DesktopState {
   /** Grid cell each desktop icon currently occupies. */
   iconCells: Record<DesktopIconId, Cell>;
+  /** The Recycle Bin's cell (top-right by default; draggable, persisted). */
+  binCell: Cell;
   /** Selected desktop items (not persisted). The bin can be selected alone. */
   selectedIds: DesktopItemId[];
   /** The drag in progress, if any (not persisted). */
@@ -127,7 +158,12 @@ interface DesktopState {
    * `anchor` first, then grid order; the bin's cell is reserved).
    */
   moveIcons: (ids: readonly DesktopIconId[], anchor: DesktopIconId, dx: number, dy: number) => void;
-  /** Restore the default arrangement ("Arrange Icons"). */
+  /**
+   * Move the Recycle Bin by a pixel offset: it snaps to the nearest cell no
+   * icon occupies. Only a direct drag moves it (it never joins a group).
+   */
+  moveBin: (dx: number, dy: number) => void;
+  /** Restore the default arrangement ("Arrange Icons"): icons top-left, bin top-right. */
   resetLayout: () => void;
 
   /** Replace the selection. */
@@ -153,7 +189,7 @@ interface DesktopState {
 export const useDesktopStore = create<DesktopState>()(
   persist(
     (set, get) => ({
-      iconCells: defaultIconCells(),
+      ...defaultLayout(),
       selectedIds: [],
       drag: null,
       rescue: null,
@@ -169,11 +205,18 @@ export const useDesktopStore = create<DesktopState>()(
       moveIcons: (ids, anchor, dx, dy) =>
         set((state) => {
           const vp = viewport();
-          const next = moveGroup(state.iconCells, ids, anchor, dx, dy, vp, [binCell(vp)]);
+          const next = moveGroup(state.iconCells, ids, anchor, dx, dy, vp, [state.binCell]);
           return next === state.iconCells ? state : { iconCells: next };
         }),
 
-      resetLayout: () => set({ iconCells: defaultIconCells() }),
+      moveBin: (dx, dy) =>
+        set((state) => {
+          const cells = { ...state.iconCells, [RECYCLE_BIN_ID]: state.binCell } as Record<DesktopItemId, Cell>;
+          const next = moveGroup(cells, [RECYCLE_BIN_ID], RECYCLE_BIN_ID, dx, dy, viewport());
+          return next === cells ? state : { binCell: next[RECYCLE_BIN_ID] };
+        }),
+
+      resetLayout: () => set(defaultLayout()),
 
       select: (ids) => set({ selectedIds: [...new Set(ids)] }),
       toggleSelected: (id) =>
@@ -206,18 +249,16 @@ export const useDesktopStore = create<DesktopState>()(
       name: "douglasos:desktop-icons",
       // v3: the XP grid (88×96 pitch, column-first) replaced the v1 scattered
       // layout, so any older arrangement is dropped. Drags persist again from v3.
-      // New launchers (e.g. the stage-3 external shortcuts) need no version
-      // bump: `merge` keeps every saved cell and backfills the newcomers.
+      // New launchers (e.g. the stage-3 external shortcuts) and the movable
+      // bin's cell need no version bump: `merge` keeps every saved cell and
+      // backfills what's missing (the bin gets its top-right default).
       version: 3,
-      partialize: (state) => ({ iconCells: state.iconCells }),
-      migrate: () => ({ iconCells: defaultIconCells() }),
-      // Drop launchers that no longer exist and backfill new ones.
+      partialize: (state) => ({ iconCells: state.iconCells, binCell: state.binCell }),
+      migrate: () => defaultLayout(),
+      // Drop launchers that no longer exist and backfill new ones + the bin.
       merge: (persisted, current) => ({
         ...current,
-        iconCells: mergeIconCells(
-          (persisted as Partial<DesktopState> | undefined)?.iconCells,
-          viewport(),
-        ),
+        ...mergeDesktopLayout(persisted as Partial<DesktopLayout> | undefined, viewport()),
       }),
     },
   ),

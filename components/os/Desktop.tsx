@@ -21,7 +21,6 @@ import { launch } from "@/lib/apps/launch";
 import { useDesktopStore, type DesktopItemId } from "@/lib/store/desktopStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import {
-  cellToPixel,
   iconsInGridOrder,
   iconsInRowOrder,
   mobileIconLayout,
@@ -29,10 +28,10 @@ import {
   type Cell,
   type Direction,
 } from "@/lib/store/desktopGrid";
-import { RECYCLE_BIN_ID, binCell, mobileBinPlacement } from "@/lib/store/recycleBin";
+import { RECYCLE_BIN_ID, mobileBinPlacement } from "@/lib/store/recycleBin";
 import { iconsInLasso, lassoRect, mergeSelections } from "@/lib/store/desktopSelection";
 import type { Rect } from "@/lib/store/geometry";
-import { DraggableIcon } from "@/components/os/desktop/DraggableIcon";
+import { DraggableIcon, DraggableRecycleBin } from "@/components/os/desktop/DraggableIcon";
 import { DesktopIcon } from "@/components/os/desktop/DesktopIcon";
 import type { IconMenuItem } from "@/components/os/desktop/IconContextMenu";
 import { Wallpaper } from "@/components/os/desktop/Wallpaper";
@@ -121,13 +120,14 @@ function MobileIconSlot({
  * Pointer: a single click opens, Ctrl/Cmd+click toggles without opening, a
  * drag on empty desktop draws the lasso (Ctrl/Cmd adds to the selection),
  * dragging a selected icon moves the whole group, and dropping on the bin
- * triggers the rescue. Right-click / long-press opens the icon's menu (Open,
+ * (wherever it sits — top-right by default, draggable on its own) triggers
+ * the rescue. Right-click / long-press opens the icon's menu (Open,
  * Delete).
  *
  * Below 768px (DESKTOP-INTERFACE-SPEC §11) the grid switches to the touch
  * layout: bigger cells filled row-first like a phone home screen, derived from
- * the container width (never persisted), no icon drag, no lasso, the bin on a
- * trailing row, and the container scrolls vertically if a short screen can't
+ * the container width (never persisted), no icon drag (the bin included), no
+ * lasso, the bin on a trailing row, and the container scrolls vertically if a short screen can't
  * fit every row.
  */
 export function Desktop() {
@@ -135,6 +135,7 @@ export function Desktop() {
   const mobile = useIsMobile();
   const vp = useViewport();
   const savedCells = useDesktopStore((s) => s.iconCells);
+  const savedBinCell = useDesktopStore((s) => s.binCell);
   const selectedIds = useDesktopStore((s) => s.selectedIds);
   const binFull = useDesktopStore((s) => s.binFull);
   const overBin = useDesktopStore((s) => s.drag?.overBin ?? false);
@@ -150,7 +151,7 @@ export function Desktop() {
   const mobileLayout = mobile ? mobileIconLayout(DESKTOP_ICON_GROUPS, surfaceWidth) : null;
   const mobileBin = mobileLayout ? mobileBinPlacement(mobileLayout, surfaceWidth) : null;
   const iconCells: Record<DesktopIconId, Cell> = mobileLayout?.cells ?? savedCells;
-  const binAt = mobileBin?.cell ?? binCell(vp);
+  const binAt = mobileBin?.cell ?? savedBinCell;
   const allCells = { ...iconCells, [RECYCLE_BIN_ID]: binAt } as Record<DesktopItemId, Cell>;
   const ordered = mobileLayout ? iconsInRowOrder(allCells) : iconsInGridOrder(allCells);
   const tabStop = focusId ?? selectedIds[0] ?? ordered[0];
@@ -279,19 +280,16 @@ export function Desktop() {
     menuItems: menuFor(id),
   });
 
-  const binIcon = (
-    <DesktopIcon
-      launcher={BIN_LAUNCHER}
-      glyph={binFull ? RecycleBinFullIcon : undefined}
-      dropTarget={overBin}
-      {...iconProps(RECYCLE_BIN_ID)}
-      onPress={onPress}
-      onActivate={onActivate}
-      onFocusIcon={onFocusIcon}
-      onKeyDown={onIconKeyDown}
-    />
-  );
-  const binPos = mobileBin?.position ?? cellToPixel(binAt, vp);
+  const binProps = {
+    launcher: BIN_LAUNCHER,
+    glyph: binFull ? RecycleBinFullIcon : undefined,
+    dropTarget: overBin,
+    ...iconProps(RECYCLE_BIN_ID),
+    onPress,
+    onActivate,
+    onFocusIcon,
+    onKeyDown: onIconKeyDown,
+  };
 
   return (
     <div
@@ -342,9 +340,9 @@ export function Desktop() {
               role="none"
               data-recycle-bin
               className="absolute left-0 top-0"
-              style={{ transform: `translate(${binPos.x}px, ${binPos.y}px)` }}
+              style={{ transform: `translate(${mobileBin.position.x}px, ${mobileBin.position.y}px)` }}
             >
-              {binIcon}
+              <DesktopIcon {...binProps} />
             </div>
           </div>
         ) : (
@@ -360,15 +358,8 @@ export function Desktop() {
                 onKeyDown={onIconKeyDown}
               />
             ))}
-            {/* Pinned (never dragged); under any icon flying over or into it. */}
-            <div
-              role="none"
-              data-recycle-bin
-              className="absolute left-0 top-0 z-0"
-              style={{ transform: `translate(${binPos.x}px, ${binPos.y}px)` }}
-            >
-              {binIcon}
-            </div>
+            {/* Draggable on its own; under any icon flying over or into it. */}
+            <DraggableRecycleBin {...binProps} />
             {lasso && (
               <div
                 aria-hidden

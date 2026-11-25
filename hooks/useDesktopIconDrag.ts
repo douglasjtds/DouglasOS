@@ -3,8 +3,8 @@ import {
   type PointerEvent as ReactPointerEvent,
   type RefObject,
 } from "react";
-import { onlyIcons, useDesktopStore } from "@/lib/store/desktopStore";
-import { hitsBin } from "@/lib/store/recycleBin";
+import { onlyIcons, useDesktopStore, type DesktopItemId } from "@/lib/store/desktopStore";
+import { RECYCLE_BIN_ID, hitsBin } from "@/lib/store/recycleBin";
 import type { DesktopIconId } from "@/lib/apps/registry";
 
 /** Pixels of movement before a press is treated as a drag (not a click). */
@@ -14,8 +14,8 @@ interface DragSession {
   pointerId: number;
   startX: number;
   startY: number;
-  /** The icons that move together (the selection, if this icon is in it). */
-  ids: DesktopIconId[];
+  /** The items that move together (the selection, if this icon is in it; the bin alone). */
+  ids: DesktopItemId[];
   /** The element that takes pointer capture once the press becomes a drag. */
   element: Element;
   /** Removes the window listeners that watch the press until it's a drag. */
@@ -42,6 +42,11 @@ function viewport() {
   return { width: window.innerWidth, height: window.innerHeight };
 }
 
+/** Is the pointer over the Recycle Bin, on its current cell? */
+function overBin(x: number, y: number) {
+  return hitsBin({ x, y }, useDesktopStore.getState().binCell, viewport());
+}
+
 /**
  * Free-pixel pointer drag for a desktop icon with snap-on-release. Pressing
  * an icon that is part of a multi-selection drags the whole group (stage 6).
@@ -50,11 +55,16 @@ function viewport() {
  * nearest free cells (`moveIcons`, offsets kept) or — when the pointer is
  * over the Recycle Bin — is "deleted" (`trashIcons`: rescued straight back).
  *
+ * The Recycle Bin uses the same hook: it always drags alone (it never joins
+ * a selection group), never counts as "over the bin" and settles through
+ * `moveBin`, so dragging the bin itself never triggers the rescue joke.
+ *
  * The icon's own pointerdown (selection) runs first, since it bubbles up from
  * the child, so the group read here is already up to date. Ctrl/Cmd presses
  * only toggle the selection and never start a drag.
  */
-export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
+export function useDesktopIconDrag(id: DesktopItemId): IconDrag {
+  const isBin = id === RECYCLE_BIN_ID;
   const session = useRef<DragSession | null>(null);
   const wasDragged = useRef(false);
 
@@ -87,7 +97,7 @@ export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
       pointerId,
       startX: e.clientX,
       startY: e.clientY,
-      ids: group.includes(id) && group.length > 1 ? group : [id],
+      ids: !isBin && group.includes(id) && group.length > 1 ? group : [id],
       element: e.currentTarget,
       stopWatching,
     };
@@ -113,7 +123,7 @@ export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
         ids: drag.ids,
         dx,
         dy,
-        overBin: hitsBin({ x: clientX, y: clientY }, viewport()),
+        overBin: !isBin && overBin(clientX, clientY),
       });
     }
   }
@@ -128,9 +138,11 @@ export function useDesktopIconDrag(id: DesktopIconId): IconDrag {
     }
     const store = useDesktopStore.getState();
     if (wasDragged.current) {
-      const dropped = e.type === "pointerup" && hitsBin({ x: e.clientX, y: e.clientY }, viewport());
-      if (dropped) store.trashIcons(drag.ids);
-      else store.moveIcons(drag.ids, id, e.clientX - drag.startX, e.clientY - drag.startY);
+      const dx = e.clientX - drag.startX;
+      const dy = e.clientY - drag.startY;
+      if (isBin) store.moveBin(dx, dy);
+      else if (e.type === "pointerup" && overBin(e.clientX, e.clientY)) store.trashIcons(drag.ids);
+      else store.moveIcons(onlyIcons(drag.ids), id as DesktopIconId, dx, dy);
     }
     store.setDrag(null);
   }

@@ -8,7 +8,9 @@ import {
   intersects,
   tailOffset,
 } from "@/lib/assistant/layout";
-import { cellToPixel, gridDims } from "@/lib/store/desktopGrid";
+import { cellToPixel } from "@/lib/store/desktopGrid";
+import { defaultBinCell, iconRect } from "@/lib/store/recycleBin";
+import { defaultIconCells } from "@/lib/store/desktopStore";
 import { TASKBAR_H, centerRect, maximizeRect, type Viewport } from "@/lib/store/geometry";
 
 const VIEWPORTS: Viewport[] = [
@@ -21,16 +23,20 @@ const VIEWPORTS: Viewport[] = [
 
 describe("characterRect", () => {
   for (const vp of VIEWPORTS) {
-    it(`stands on the taskbar and leaves the bottom-right cell free at ${vp.width}×${vp.height}`, () => {
+    it(`stands on the taskbar in the bottom-right corner, clear of the default icons and bin, at ${vp.width}×${vp.height}`, () => {
       const rect = characterRect(vp);
       expect(rect).toMatchObject(CHARACTER_SIZE);
       expect(rect.y + rect.height).toBe(vp.height - TASKBAR_H);
       expect(rect.x + rect.width).toBeLessThanOrEqual(vp.width);
-      const { cols, rows } = gridDims(vp);
-      const corner = cellToPixel({ col: cols - 1, row: rows - 1 }, vp);
-      expect(intersects(rect, { ...corner, width: 76, height: 88 })).toBe(false);
-      // Default icons fill the first two columns from the top-left.
+      // Default icons fill the first two columns from the top-left...
       expect(rect.x).toBeGreaterThan(cellToPixel({ col: 1, row: 0 }, vp).x + 76);
+      // ...and neither he nor his bubble covers the bin's top-right default.
+      const bin = iconRect(defaultBinCell(vp), vp);
+      expect(intersects(rect, bin)).toBe(false);
+      expect(intersects(bubbleRect(vp), bin)).toBe(false);
+      for (const cell of Object.values(defaultIconCells(vp))) {
+        expect(intersects(bubbleRect(vp), iconRect(cell, vp))).toBe(false);
+      }
     });
   }
 });

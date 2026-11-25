@@ -8,7 +8,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useRescuePhase } from "@/hooks/useRescuePhase";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { cellToPixel } from "@/lib/store/desktopGrid";
-import { binCell } from "@/lib/store/recycleBin";
+import { RECYCLE_BIN_ID } from "@/lib/store/recycleBin";
 import { DURATION, EASE } from "@/lib/motion";
 import type { DesktopIconId, LauncherConfig } from "@/lib/apps/registry";
 
@@ -30,6 +30,7 @@ export function DraggableIcon(
 ) {
   const id = props.launcher.id;
   const cell = useDesktopStore((s) => s.iconCells[id]);
+  const binCell = useDesktopStore((s) => s.binCell);
   const dx = useDesktopStore((s) => (s.drag?.ids.includes(id) ? s.drag.dx : null));
   const dy = useDesktopStore((s) => (s.drag?.ids.includes(id) ? s.drag.dy : null));
   const { handlers, wasDragged } = useDesktopIconDrag(id);
@@ -44,7 +45,8 @@ export function DraggableIcon(
   let animate: TargetAndTransition;
   let transition: Transition;
   if (rescue.phase === "entering") {
-    const bin = cellToPixel(binCell(vp), vp);
+    // Into the bin wherever it currently sits.
+    const bin = cellToPixel(binCell, vp);
     animate = { x: bin.x, y: bin.y, scale: 0.3, opacity: 0 };
     transition = { duration: DURATION.slow, ease: EASE.in };
   } else if (rescue.phase === "returning") {
@@ -73,6 +75,43 @@ export function DraggableIcon(
       animate={animate}
       transition={transition}
       onAnimationComplete={rescue.onAnimationComplete}
+      {...handlers}
+    >
+      <DesktopIcon {...props} wasDragged={wasDragged} />
+    </motion.div>
+  );
+}
+
+/**
+ * The Recycle Bin on the desktop grid: draggable like any icon (it follows
+ * the pointer, then springs to the nearest free cell — `moveBin`), but it
+ * always moves alone and dropping it never runs the rescue joke. Idle, it
+ * sits under the other icons (layer 0) so anything dropped into it flies
+ * over it; while dragged it rises above them.
+ */
+export function DraggableRecycleBin(
+  props: Omit<ComponentProps<typeof DesktopIcon>, "wasDragged">,
+) {
+  const cell = useDesktopStore((s) => s.binCell);
+  const dx = useDesktopStore((s) => (s.drag?.ids.includes(RECYCLE_BIN_ID) ? s.drag.dx : null));
+  const dy = useDesktopStore((s) => (s.drag?.ids.includes(RECYCLE_BIN_ID) ? s.drag.dy : null));
+  const { handlers, wasDragged } = useDesktopIconDrag(RECYCLE_BIN_ID);
+  const reducedMotion = useReducedMotion();
+
+  const vp = { width: window.innerWidth, height: window.innerHeight };
+  const target = cellToPixel(cell, vp);
+  const dragging = dx !== null && dy !== null;
+  const pos = dragging ? { x: target.x + dx, y: target.y + dy } : target;
+
+  return (
+    <motion.div
+      role="none"
+      data-recycle-bin
+      className="absolute left-0 top-0 touch-none"
+      style={{ zIndex: dragging ? 2 : 0 }}
+      initial={false}
+      animate={{ x: pos.x, y: pos.y }}
+      transition={dragging || reducedMotion ? { duration: 0 } : SNAP_SPRING}
       {...handlers}
     >
       <DesktopIcon {...props} wasDragged={wasDragged} />

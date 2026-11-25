@@ -18,6 +18,12 @@ export interface AssistantBubbleProps {
   style?: CSSProperties;
   /** Tail position from the balloon's left edge (px). */
   tailX?: number;
+  /**
+   * Edge the tail sticks out of: `bottom` (default, pointing down at mini
+   * Douglas or at a bin below the balloon) or `top` (the bin's balloon when it
+   * opens below the bin).
+   */
+  tailSide?: "top" | "bottom";
   reducedMotion: boolean;
   onAction: (action: AssistantAction) => void;
   onClose: () => void;
@@ -42,6 +48,7 @@ export function AssistantBubble({
   variant,
   style,
   tailX,
+  tailSide = "bottom",
   reducedMotion,
   onAction,
   onClose,
@@ -156,12 +163,16 @@ export function AssistantBubble({
         )}
       </div>
 
-      {/* Tail pointing down at the character. */}
+      {/* Tail pointing at the character (down) or at the bin (down or up). */}
       {!sheet && tailX !== undefined && (
         <span
           aria-hidden
+          data-tail={tailSide}
           style={{ left: tailX - 6 }}
-          className="absolute -bottom-[7px] size-3 rotate-45 border-b border-r border-info-border bg-info"
+          className={cn(
+            "absolute size-3 rotate-45 border-info-border bg-info",
+            tailSide === "top" ? "-top-[7px] border-l border-t" : "-bottom-[7px] border-b border-r",
+          )}
         />
       )}
     </motion.section>

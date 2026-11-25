@@ -7,7 +7,8 @@ import { selectActiveBalloon, useBalloonStore } from "@/lib/store/balloonStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { runShellAction } from "@/lib/assistant/actions";
 import type { AssistantAction } from "@/lib/assistant/script";
-import { binCell, iconRect } from "@/lib/store/recycleBin";
+import { binBalloonPlacement } from "@/lib/store/recycleBin";
+import { useDesktopStore } from "@/lib/store/desktopStore";
 import { BUBBLE_SIZE } from "@/lib/assistant/layout";
 import { AssistantBubble } from "@/components/os/assistant/AssistantBubble";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -15,15 +16,14 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useViewport } from "@/hooks/useViewport";
 import { isTextField } from "@/lib/shortcuts";
 
-const EDGE_GAP = 8;
-const BIN_GAP = 10;
-
 /**
  * The Recycle Bin's own balloon (stage 6): carries mini Douglas's rescue line
  * when he was dismissed this session ("Not now"), so the joke still lands
  * without bringing the character back (see `announceRescue`). Same XP
  * balloon as his bubble, minus the search field; takes the shared balloon
- * slot (owner `recycleBin`); desktop: above the bin, tail pointing at it;
+ * slot (owner `recycleBin`); desktop: anchored to the bin's current cell —
+ * above it, or below it when there's no room above (the top-right default) —
+ * shifted to stay on screen, tail pointing at it (`binBalloonPlacement`);
  * phones: bottom sheet. Polite live region, never takes focus, closes itself
  * after a while (auto line), × or Esc closes it. Lazy-loaded by the shell only
  * once a notice exists.
@@ -36,6 +36,7 @@ export default function TrashNotice() {
   const mobile = useIsMobile();
   const reduced = useReducedMotion();
   const vp = useViewport();
+  const binCell = useDesktopStore((s) => s.binCell);
 
   const wanted = notice !== null && phase === "desktop";
   const visible = wanted && holdsSlot;
@@ -73,12 +74,17 @@ export default function TrashNotice() {
 
   let style;
   let tailX;
+  let tailSide: "top" | "bottom" | undefined;
   if (!mobile) {
-    const bin = iconRect(binCell(vp), vp);
-    const width = Math.min(BUBBLE_SIZE.width, vp.width - 2 * EDGE_GAP);
-    const x = vp.width - EDGE_GAP - width;
-    style = { left: x, bottom: vp.height - (bin.y - BIN_GAP), width, maxHeight: BUBBLE_SIZE.maxHeight };
-    tailX = Math.min(Math.max(bin.x + bin.width / 2 - x, 16), width - 16);
+    const place = binBalloonPlacement(binCell, vp, BUBBLE_SIZE);
+    style = {
+      left: place.x,
+      width: place.width,
+      maxHeight: place.maxHeight,
+      ...(place.side === "above" ? { bottom: place.offset } : { top: place.offset }),
+    };
+    tailX = place.tailX;
+    tailSide = place.side === "above" ? "bottom" : "top";
   }
 
   return (
@@ -90,6 +96,7 @@ export default function TrashNotice() {
         variant={mobile ? "sheet" : "balloon"}
         style={style}
         tailX={tailX}
+        tailSide={tailSide}
         reducedMotion={reduced}
         onAction={onAction}
         onClose={onClose}
