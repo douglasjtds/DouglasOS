@@ -15,6 +15,9 @@ import { FEATURED_PROJECT_SLUG } from "@/lib/content/projects";
 
 vi.mock("@/lib/download", () => ({ downloadFile: vi.fn() }));
 
+const motion = vi.hoisted(() => ({ reduced: false }));
+vi.mock("@/hooks/useReducedMotion", () => ({ useReducedMotion: () => motion.reduced }));
+
 function bubble() {
   return document.querySelector("[data-assistant-bubble]");
 }
@@ -26,6 +29,7 @@ function greet() {
 describe("Assistant", () => {
   beforeEach(() => {
     vi.mocked(downloadFile).mockClear();
+    motion.reduced = false;
     useAssistantStore.getState().stopDance({ quiet: true });
     useAssistantStore.setState(initialAssistantState(null));
     useBalloonStore.setState({ queue: [] });
@@ -149,5 +153,52 @@ describe("Assistant", () => {
     expect(useAssistantStore.getState().queue).toHaveLength(1);
     act(() => useWindowStore.getState().moveWindow("about", 300, 40));
     expect(bubble()).not.toBeNull();
+  });
+
+  describe("cursor gaze", () => {
+    function character() {
+      return document.querySelector<HTMLElement>("[data-assistant-character]")!;
+    }
+    function expression() {
+      return document.querySelector("[data-expression]")?.getAttribute("data-expression");
+    }
+    function pointAt(x: number, y: number) {
+      act(() => {
+        window.dispatchEvent(new MouseEvent("pointermove", { clientX: x, clientY: y }));
+      });
+      return act(() => new Promise((resolve) => setTimeout(resolve, 40)));
+    }
+    function placeCharacter() {
+      character().getBoundingClientRect = () =>
+        ({ left: 800, top: 500, width: 96, height: 112, x: 800, y: 500, right: 896, bottom: 612, toJSON() {} }) as DOMRect;
+    }
+
+    it("lights up when the cursor is over him", async () => {
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().show());
+      placeCharacter();
+      expect(expression()).toBe("neutral");
+      await pointAt(848, 556);
+      expect(expression()).toBe("happy");
+      await pointAt(10, 10);
+      expect(expression()).toBe("neutral");
+    });
+
+    it("doesn't react while dancing", async () => {
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().dance());
+      placeCharacter();
+      await pointAt(848, 556);
+      expect(expression()).toBe("neutral");
+    });
+
+    it("stays still under reduced motion", async () => {
+      motion.reduced = true;
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().show());
+      placeCharacter();
+      await pointAt(848, 556);
+      expect(expression()).toBe("neutral");
+    });
   });
 });
