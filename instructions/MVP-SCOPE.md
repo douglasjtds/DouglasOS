@@ -339,7 +339,7 @@ A stage is done only when **all** of these hold:
 - [ ] **EN/PT:** all new UI copy in `messages/en.json` and `messages/pt.json`; no hardcoded strings.
 - [ ] **Tests:** Vitest for new pure logic (`lib/`) and stores; component tests for new UI; Playwright e2e for the stage's main flow (resilient selectors).
 - [ ] **Brand safety:** no Microsoft names/logos/assets/sounds/verbatim text; no copy or visuals from the reference portfolio.
-- [ ] **Green pipeline:** `npm run lint`, `npm run test`, `npm run build`, relevant e2e.
+- [ ] **Green pipeline:** `pnpm run lint`, `pnpm run test`, `pnpm run build`, relevant e2e.
 - [ ] **Docs:** `DESKTOP-INTERFACE-SPEC.md` updated (and this file if status changes); entry in `AI-WORKFLOW-LOG.md`.
 
 ### Status
