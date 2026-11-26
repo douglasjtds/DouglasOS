@@ -532,7 +532,8 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 
 | Wallpaper | Type | Notes |
 |-----------|------|-------|
-| **"Morning Waves"** (default, `morning-waves`) | Static, original | Abstract, no landscape: a diagonal deep-navy → bright Luna-blue field, three flowing light ribbons sweeping across the lower third (pale-blue, mid-blue, deep-blue) with white crest lines and one Start-green accent line, a soft glow behind a faint DouglasOS mark centered in the upper half, a few sparkles. Replaced the stage-1 "Morning Hills" (green hills + blue sky + clouds), which read too close to the famous hill photograph. |
+| **"Green Meadow"** (default, `green-meadow`) | Static, CC0 photo | Rolling green canola hills under a blue sky with white clouds (Pixabay, "stevepb", CC0; source and edits in `public/wallpapers/CREDITS.md`). The closest *legal* nod to the era's hill wallpaper: a different, public-domain photograph, with the upper sky deepened to Luna blue and the left edge slightly darkened for label legibility. Douglas's taste call over the abstract default (see AI-WORKFLOW-LOG). |
+| "Morning Waves" (`morning-waves`) | Static, original | The previous default. Abstract, no landscape: a diagonal deep-navy → bright Luna-blue field, three flowing light ribbons sweeping across the lower third (pale-blue, mid-blue, deep-blue) with white crest lines and one Start-green accent line, a soft glow behind a faint DouglasOS mark centered in the upper half, a few sparkles. Replaced the stage-1 "Morning Hills" (green hills + blue sky + clouds), which read too close to the famous hill photograph. |
 | "Dusk Hills" | Static, original | Layered rolling hills at sunset (purple-to-orange sky, slate hills, stars) — the warm-palette alternative. |
 | "Blueprint" | Static, original | Deep blue field with a faint DouglasOS-logo / grid pattern. |
 | Solid color | Static | Fixed swatches (default `desktop` `#004E98` + up to 5 more); no free color picker. |
@@ -540,11 +541,11 @@ Wallpapers are the only personalization. They're chosen in **Display Properties*
 
 ### Rules for static wallpapers
 
-- **Original artwork only.** Explicitly *not* the famous green-hill photograph or anything derived from it: no photography, no single smooth hill under a blue sky with white clouds as the whole composition. Ours is visibly illustrated and layered.
-- Stored in `public/wallpapers/` as optimized SVG (≤ 80KB, SVGO) or, if the illustration needs it, AVIF/WebP ≤ 200KB at 2560px wide.
-- Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing. **LCP:** CSS background images *do* count as LCP candidates (stage 2 measured the wallpaper as the LCP element), so the server HTML paints the default wallpaper in `ShellGate`'s placeholder, over the same box as the shell's wallpaper (Chrome ignores full-viewport backgrounds as candidates), and the page preloads it with `fetchpriority="high"`. Keep the default small (the SVG is ~3KB).
-- **Label legibility:** the area under the default icon column (left ~200px, top 70%) must be mid-to-dark (the deep part of the sky / hills) so white labels with `shadow-desktop-label` stay readable.
-- Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (the default's mark is centered and its ribbons span the full width, so it survives a 9:19.5 crop).
+- **Original artwork or public-domain (CC0) photography only.** Never the famous green-hill photograph itself, nor any edit, trace, recreation or AI re-generation of it. An unrelated CC0 landscape photo (e.g. "Green Meadow") is allowed; record its source, author, license and edits in `public/wallpapers/CREDITS.md`.
+- Stored in `public/wallpapers/` as optimized SVG (≤ 80KB, SVGO) or AVIF/WebP ≤ 200KB at 2560px wide (photos: a light blur before encoding keeps grass texture within budget).
+- Rendered as a CSS background (`center bottom / cover`) over `var(--color-desktop)`, so there is never a flash of nothing. **LCP:** CSS background images *do* count as LCP candidates (stage 2 measured the wallpaper as the LCP element), so the server HTML paints the default wallpaper in `ShellGate`'s placeholder, over the same box as the shell's wallpaper (Chrome ignores full-viewport backgrounds as candidates), and the page preloads it with `fetchpriority="high"`. Keep the default small: the "Green Meadow" AVIF is ~196KiB, at the 200KB cap; never ship a heavier default.
+- **Label legibility:** the area under the default icon column (left ~200px, top 70%) must be mid-to-dark (for "Green Meadow": the deepened sky and darkened left edge baked into the asset) so white labels with `shadow-desktop-label` stay readable.
+- Mobile uses the same art cropped center-bottom; provide a portrait-friendly composition (the default's hills span the full width, so it survives a 9:19.5 crop).
 - Persisted ids of retired wallpapers (e.g. `morning-hills`) are unknown to `sanitizeDisplay` and fall back to the current default.
 
 ### "DouglasOS 3D (animated)" rules (carried over from v1)
@@ -615,7 +616,7 @@ DouglasOS imitates mechanics, never property. The following are **banned** in co
 
 - ❌ The names **"Windows"**, **"Microsoft"**, **"Windows XP"**, and "XP" as a product/edition name in the UI ("DouglasOS XP" is an internal doc name only).
 - ❌ The **flag logo** or anything resembling it (four colored panes, waving flag, window-pane grid as a logo).
-- ❌ The **"Bliss" wallpaper**, photos or derivatives of it, or any composition that reads as it.
+- ❌ The **"Bliss" wallpaper** itself, or any edit, trace, recreation or AI re-generation of it. (A different CC0 landscape photo with a similar mood is allowed: see [Wallpapers](#wallpapers).)
 - ❌ **Original system icons** (My Computer, Recycle Bin, folders, Internet Explorer "e", Media Player, MSN/Windows Live, Outlook, Paint, Solitaire, etc.) — no extraction, tracing or "inspired copy" of individual icons.
 - ❌ **Original sounds** (startup, logon/logoff, error "ding", balloon, messenger nudge/login).
 - ❌ **Microsoft fonts bundled or self-hosted** (Tahoma, Verdana, Trebuchet MS, Segoe UI, Lucida Console, Franklin Gothic). System-stack references only.

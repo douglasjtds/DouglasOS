@@ -12,8 +12,8 @@ const store = () => useDisplayStore.getState();
 describe("displayStore", () => {
   beforeEach(() => store().resetDisplay());
 
-  it("defaults to the Morning Waves wallpaper", () => {
-    expect(store().wallpaper).toBe("morning-waves");
+  it("defaults to the Green Meadow wallpaper", () => {
+    expect(store().wallpaper).toBe("green-meadow");
     expect(store().swatch).toBe(DEFAULT_DISPLAY.swatch);
   });
 
@@ -44,6 +44,15 @@ describe("displayStore", () => {
     expect(store().wallpaper).toBe(DEFAULT_DISPLAY.wallpaper);
     expect(store().swatch).toBe("teal");
   });
+
+  it("keeps a persisted Morning Waves choice (the previous default)", async () => {
+    localStorage.setItem(
+      "douglasos:display",
+      JSON.stringify({ state: { wallpaper: "morning-waves", swatch: "navy" }, version: 1 }),
+    );
+    await useDisplayStore.persist.rehydrate();
+    expect(store().wallpaper).toBe("morning-waves");
+  });
 });
 
 describe("wallpaper helpers", () => {
@@ -62,11 +71,11 @@ describe("wallpaper helpers", () => {
 
   it("falls back to the default static wallpaper when 3D is blocked", () => {
     expect(effectiveWallpaper("3d", null)).toBe("3d");
-    expect(effectiveWallpaper("3d", "reducedMotion")).toBe("morning-waves");
+    expect(effectiveWallpaper("3d", "reducedMotion")).toBe("green-meadow");
     expect(effectiveWallpaper("blueprint", "reducedMotion")).toBe("blueprint");
     // Stage 11: the secret wallpaper paints only once every egg was found.
-    expect(effectiveWallpaper("golden-egg", null)).toBe("morning-waves");
-    expect(effectiveWallpaper("golden-egg", null, false)).toBe("morning-waves");
+    expect(effectiveWallpaper("golden-egg", null)).toBe("green-meadow");
+    expect(effectiveWallpaper("golden-egg", null, false)).toBe("green-meadow");
     expect(effectiveWallpaper("golden-egg", null, true)).toBe("golden-egg");
   });
 });
