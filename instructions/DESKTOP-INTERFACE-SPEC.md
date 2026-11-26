@@ -205,8 +205,8 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* — and **Entertainment ▸** — Media Player *(8 — done)*).
-- **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* —, **Entertainment ▸** — Media Player *(8 — done)* — and **Games ▸** — Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball *(12)*).
+- **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment" | "games"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -680,6 +680,47 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ---
 
+## 21. Games *(stage 12)*
+
+Six classics as original DouglasOS games: generic names (EN Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball; PT Campo Minado, Paciência, FreeCell, Copas, Paciência Spider, Pinball), original icons, card faces/back and pinball table, **no sound**, no verbatim text from any original game. Fun only: they never cover, delay or gate the CV or Contact.
+
+### Where they live
+
+- **Start → All Programs ▸ Games ▸** — the six games (`folder: "games"`, `onDesktop: false`).
+- **Desktop "Games" folder** (`games`, fun-apps icon group, `inAllPrograms: false`): a folder window with a large-icon view of the games. Desktop: click selects, double-click / Enter opens, arrows move the selection, status bar shows "6 objects" or the selected game's description. Touch: one tap opens.
+- **Run…** / palette: ids, titles and EN/PT aliases (`lib/run/resolver.ts`).
+
+### Pieces
+
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Registry | `lib/apps/registry.tsx` | `GAME_IDS`, `GameId`, `isGameId`; each game is a `surface: "bare"` window app |
+| Seeded RNG | `lib/games/rng.ts` | `createRng(seed)` (mulberry32), `shuffle`, `randomSeed` — engines take an `Rng`, tests are deterministic |
+| Cards | `lib/games/cards.ts` | suits, ranks, colors, `createDeck({ decks, suits })` (Spider's 1/2/4 suits), `shuffledDeck` |
+| Card UI | `components/apps/games/shared/PlayingCard.tsx` | `PlayingCard` (face / lattice back, selected outline), `CardSlot`, `useCardLabel` ("Queen of hearts"); size from the `card-w`/`card-h` tokens (touch variants under 768px), overridable per table with `--card-w` / `--card-h` |
+| Frame | `components/apps/games/shared/GameShell.tsx` | menu bar from data (`useStandardGameMenu`: New game F2, Undo Ctrl+Z, options, Exit), play area, status cells; `GameOverDialog` (XP message box, Play again / Close) |
+| Copy | `messages/games/<id>.{en,pt}.json` → `games.<id>` | merged in `messages/index.ts`; titles stay in `apps.<id>`, shared strings in `apps.games.common` |
+| Engines | `lib/games/<id>/` | pure, unit-tested; the UI only renders state and dispatches moves |
+
+### Common rules
+
+- Keyboard-complete (menus, every move reachable without a mouse), visible focus, accessible names for cards and cells, a polite status region for score/time.
+- Cards move by **click/tap to select, then click/tap the destination** (works everywhere); drag with Pointer Events where it helps on desktop.
+- Reduced motion: deal/win animations become instant; Pinball stays playable (motion is the game, the player starts it).
+- Mobile: the window is full-screen; boards fit a portrait phone (cards shrink via the touch tokens), touch targets stay usable, press-and-hold = right-click where a game needs it (Mines flag).
+- No persistence beyond the window session unless a game documents it (no storage keys by default).
+
+### The games
+
+- **Mines** — beginner 9×9/10, intermediate 16×16/40, expert 30×16/99; first click is always safe; flag (right-click / long-press), chord on numbers; mine counter, timer, original face button = new game.
+- **Solitaire (Klondike)** — draw 1 or 3, unlimited redeals, double-click sends a card to its foundation, undo, standard scoring, auto-complete when all cards are face up.
+- **FreeCell** — numbered deals (seeded), four free cells, supermove limit `(freeCells + 1) × 2^emptyColumns`, undo, safe auto-moves to the foundations.
+- **Hearts** — you vs three simple AIs; passing left/right/across/hold; 2♣ leads, no points on the first trick, hearts broken; shooting the moon; game ends at 100.
+- **Spider Solitaire** — 1, 2 or 4 suits; deal a row (not with an empty column); completed King→Ace runs leave the table; undo; score.
+- **Pinball** — an original 2D table on a `<canvas>` (own theme, not any existing table), fixed-timestep physics in a pure engine; launcher, two flippers (Z and / keys, or left/right halves of the table on touch), bumpers and targets, 3 balls, score; pauses when the window is minimized, unfocused or the tab is hidden.
+
+---
+
 ## Layering (z-index policy)
 
 | Layer | z-index | Notes |
@@ -766,5 +807,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
 | 11 | Easter-egg counter: registry + store, tray toast, Achievements window, reward + secret wallpaper (§20) — **done** (stage 7–10 hooks pending, see §20 → Integration) |
+| 12 | Games: All Programs ▸ Games, desktop Games folder, six original games (§21) |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).

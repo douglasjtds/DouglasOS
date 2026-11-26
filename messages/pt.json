@@ -520,6 +520,86 @@
     "achievements": {
       "title": "Conquistas",
       "description": "Easter eggs que você encontrou"
+    },
+    "games": {
+      "title": "Jogos",
+      "description": "Jogos clássicos de cartas e lógica para uma pausa",
+      "heading": "Jogos",
+      "intro": "Alguns clássicos para uma pausa rápida. O CV e o contato continuam a um clique.",
+      "open": "Abrir",
+      "objects": "{count, plural, one {# objeto} other {# objetos}}",
+      "menuBar": "Barra de menus da pasta Jogos",
+      "menu": {
+        "file": "Arquivo",
+        "open": "Abrir",
+        "close": "Fechar"
+      },
+      "common": {
+        "menuBar": "Barra de menus do jogo",
+        "game": "Jogo",
+        "newGame": "Novo jogo",
+        "undo": "Desfazer",
+        "options": "Opções",
+        "help": "Ajuda",
+        "exit": "Sair",
+        "playAgain": "Jogar de novo",
+        "close": "Fechar",
+        "won": "Você venceu!",
+        "lost": "Fim de jogo",
+        "time": "Tempo: {seconds}",
+        "score": "Pontos: {score}",
+        "moves": "Jogadas: {moves}",
+        "cards": {
+          "name": "{rank} de {suit}",
+          "faceDown": "Carta virada para baixo",
+          "empty": "Pilha vazia",
+          "ranks": {
+            "1": "Ás",
+            "2": "Dois",
+            "3": "Três",
+            "4": "Quatro",
+            "5": "Cinco",
+            "6": "Seis",
+            "7": "Sete",
+            "8": "Oito",
+            "9": "Nove",
+            "10": "Dez",
+            "11": "Valete",
+            "12": "Dama",
+            "13": "Rei"
+          },
+          "suits": {
+            "spades": "espadas",
+            "hearts": "copas",
+            "diamonds": "ouros",
+            "clubs": "paus"
+          }
+        }
+      }
+    },
+    "mines": {
+      "title": "Campo Minado",
+      "description": "Limpe o campo sem pisar em uma mina"
+    },
+    "solitaire": {
+      "title": "Paciência",
+      "description": "Monte os quatro naipes do Ás ao Rei"
+    },
+    "freecell": {
+      "title": "FreeCell",
+      "description": "Todas as cartas abertas — e quatro células livres"
+    },
+    "hearts": {
+      "title": "Copas",
+      "description": "Fuja das copas e da dama de espadas"
+    },
+    "spider": {
+      "title": "Paciência Spider",
+      "description": "Dois baralhos, oito sequências do Rei ao Ás"
+    },
+    "pinball": {
+      "title": "Pinball",
+      "description": "Flippers, bumpers e um recorde para bater"
     }
   },
   "easterEgg": {
@@ -650,7 +730,8 @@
     "turnOff": "Desligar",
     "folders": {
       "accessories": "Acessórios",
-      "entertainment": "Entretenimento"
+      "entertainment": "Entretenimento",
+      "games": "Jogos"
     }
   },
   "boot": {
@@ -909,6 +990,10 @@
         "cleanupWithCv": {
           "v1": "Você jogou fora {count} ícones, inclusive meu currículo! Tá tudo de volta. Baixa o CV agora, antes que ele dê outro passeio?",
           "v2": "Exclusão em massa, com currículo e tudo? Restaurei os {count}. O CV tá a um clique aqui embaixo, só dizendo."
+        },
+        "games": {
+          "v1": "Apagando a pasta Jogos? Todo portfólio precisa de um cafezinho. Restaurada, com baralho e tudo.",
+          "v2": "Os jogos ficam: alguém precisa bater meu recorde no Campo Minado. De volta ao desktop."
         }
       }
     }

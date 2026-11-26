@@ -6,12 +6,14 @@ import { mobileIconLayout } from "@/lib/store/desktopGrid";
 import {
   DESKTOP_ICON_GROUPS,
   DESKTOP_ICON_IDS,
+  GAME_IDS,
   LAUNCHERS,
   LINK_LAUNCHERS,
   PROGRAM_FOLDERS,
   folderOf,
   getLauncher,
   isAppId,
+  isGameId,
   launcherTitleKey,
   programsInFolder,
 } from "@/lib/apps/registry";
@@ -61,7 +63,7 @@ describe("registry: external shortcuts", () => {
 
   it("groups the desktop icons as apps first, then links, then fun apps", () => {
     expect([...DESKTOP_ICON_GROUPS.flat()].sort()).toEqual([...DESKTOP_ICON_IDS].sort());
-    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["media-player", "camera", "paint"]);
+    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["media-player", "camera", "paint", "games"]);
     expect(DESKTOP_ICON_GROUPS[1]).toEqual(LINK_LAUNCHERS.map((l) => l.id));
     expect(DESKTOP_ICON_GROUPS[0].slice(0, 3)).toEqual(["about", "resume", "contact"]);
   });
@@ -114,8 +116,8 @@ describe("registry: Retro Cam (stage 9)", () => {
 });
 
 describe("registry: All Programs folders (unified API)", () => {
-  it("lists Accessories then Entertainment, and every program in a folder declares it", () => {
-    expect([...PROGRAM_FOLDERS]).toEqual(["accessories", "entertainment"]);
+  it("lists Accessories, Entertainment then Games, and every program in a folder declares it", () => {
+    expect([...PROGRAM_FOLDERS]).toEqual(["accessories", "entertainment", "games"]);
     for (const folder of PROGRAM_FOLDERS) {
       for (const app of programsInFolder(folder)) expect(folderOf(app)).toBe(folder);
     }
@@ -170,5 +172,30 @@ describe("registry: DouglasOS Paint (stage 10)", () => {
         ? Object.entries(node).flatMap(([k, v]) => keys(v, `${prefix}${k}.`))
         : [prefix];
     expect(keys(lookup(pt, "apps.paint"))).toEqual(keys(lookup(en, "apps.paint")));
+  });
+});
+
+describe("registry: Games (stage 12)", () => {
+  it("lists the six games in All Programs ▸ Games, never as desktop icons", () => {
+    expect(programsInFolder("games").map((a) => a.id)).toEqual([...GAME_IDS]);
+    for (const id of GAME_IDS) {
+      expect(getLauncher(id)).toMatchObject({ kind: "window", onDesktop: false, folder: "games", surface: "bare" });
+      expect(DESKTOP_ICON_IDS).not.toContain(id);
+      for (const messages of [en, pt]) {
+        expect(lookup(messages, `apps.${id}.title`)).toEqual(expect.any(String));
+        expect(lookup(messages, `apps.${id}.description`)).toEqual(expect.any(String));
+      }
+    }
+    expect(isGameId("mines")).toBe(true);
+    expect(isGameId("paint")).toBe(false);
+  });
+
+  it("has a Games folder window on the desktop (fun group), not in the flat All Programs list", () => {
+    expect(getLauncher("games")).toMatchObject({ kind: "window", onDesktop: true, inAllPrograms: false });
+    expect(folderOf(getLauncher("games"))).toBeUndefined();
+    expect(DESKTOP_ICON_GROUPS[2].at(-1)).toBe("games");
+    for (const messages of [en, pt]) {
+      expect(lookup(messages, "startMenu.folders.games")).toEqual(expect.any(String));
+    }
   });
 });
