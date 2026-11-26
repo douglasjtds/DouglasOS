@@ -19,11 +19,10 @@ import { actionsForIntent, type ShellAction } from "@/lib/assistant/actions";
  *    currículo`) when it's confident (score ≥ `MIN_INTENT_SCORE`).
  * 5. Otherwise: not found ("DouglasOS couldn't find '<x>'…").
  *
- * TODO(stages 8–10 integration): add aliases to `LAUNCHER_ALIASES` when the
- * apps merge — "music", "player", "radio" → `media-player`; "cam", "webcam",
- * "camera" → `camera`; "paint", "mspaint", "draw" → `paint`; "dontopen",
+ * TODO(stage 10 integration): add aliases to `LAUNCHER_ALIASES` when the
+ * apps merge — "paint", "mspaint", "draw" → `paint`; "dontopen",
  * "dont open this" → `dont-open-this`. Their ids and titles already work
- * without this table.
+ * without this table. (Stages 8 and 9 are wired: `media-player`, `camera`.)
  */
 
 /** Something Run / the palette can execute. */
@@ -89,6 +88,8 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   email: ["e-mail", "mail", "mailto", "write me"],
   display: ["display properties", "propriedades de video", "wallpaper", "papel de parede", "desk.cpl", "desk"],
   "recycle-bin": ["bin", "trash", "lixeira", "lixo"],
+  "media-player": ["music", "player", "radio", "musica", "media player", "wmplayer"],
+  camera: ["cam", "webcam", "camera", "retro cam", "camera retro"],
 };
 
 /** Fun commands and their names. */
