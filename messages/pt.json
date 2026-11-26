@@ -792,6 +792,10 @@
         "title": "Ufa!",
         "text": "Não dançava assim desde o dia em que um deploy passou de primeira. De volta ao trabalho: quer ver um projeto?"
       },
+      "afterKickflip": {
+        "title": "Acertei!",
+        "text": "Kickflip limpo, de primeira — tipo deploy na sexta que dá certo. Quer ver algo que eu construí?"
+      },
       "projectsTip": {
         "title": "Dica rápida",
         "text": "Esta janela é um navegador em miniatura. Digite o nome de um projeto, tipo “{project}”, na barra de endereço e aperte Enter."
@@ -1133,6 +1137,10 @@
       "assistant-dance": {
         "title": "Pausa para dançar",
         "hint": "Alguém pequeno no desktop tem uns passinhos."
+      },
+      "assistant-kickflip": {
+        "title": "Do a Kickflip!",
+        "hint": "Tem skatista que só precisa de um empurrãozinho."
       },
       "messenger-nudge": {
         "title": "Chamar a atenção",

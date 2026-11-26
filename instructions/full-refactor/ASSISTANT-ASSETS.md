@@ -83,3 +83,5 @@ If the edge has a green fringe, raise the `despill` effect or lower the chromake
 3. `npm run build && npm run start`, check desktop Chrome, Safari, an iPhone and reduced motion (poster only).
 
 **Heads-up:** the placeholder follows the cursor with its eyes and makes faces (curious / happy / sleepy / surprised — DESKTOP-INTERFACE-SPEC §13 → Cursor gaze). Recorded clips can't do that, so once `ready` is true the character just plays the idle/talk/dance loops and the gaze is ignored.
+
+**Kickflip (optional, future):** the "Do a Kickflip!" easter egg has its own `kickflipping` state (~1.2 s, one-shot). There's no clip for it yet: `clipForState` maps it to `dance`. A future `kickflip.webm` / `kickflip.mov` (one ~1.2 s kickflip, not looped) would need a new `CharacterClip` and `ready` to stay false until it exists.

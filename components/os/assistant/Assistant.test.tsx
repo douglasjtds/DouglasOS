@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithIntl } from "@/test/renderWithIntl";
@@ -6,9 +6,10 @@ import Assistant from "@/components/os/assistant/Assistant";
 import { WelcomeBalloon } from "@/components/os/taskbar/WelcomeBalloon";
 import { initialAssistantState, useAssistantStore } from "@/lib/store/assistantStore";
 import { useBalloonStore } from "@/lib/store/balloonStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
-import { greetingMessage } from "@/lib/assistant/script";
+import { ASSISTANT_TIMING, greetingMessage } from "@/lib/assistant/script";
 import { bubbleRect } from "@/lib/assistant/layout";
 import { downloadFile } from "@/lib/download";
 import { FEATURED_PROJECT_SLUG } from "@/lib/content/projects";
@@ -120,6 +121,56 @@ describe("Assistant", () => {
     expect(bubble()).toBeNull();
     act(() => useAssistantStore.getState().stopDance());
     expect(screen.getByRole("heading", { name: "Phew!" })).toBeInTheDocument();
+  });
+
+  describe('"Do a Kickflip!" easter egg', () => {
+    function character() {
+      return screen.getByRole("button", { name: "mini Douglas, desktop assistant" });
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      useEasterEggStore.getState().reset();
+    });
+    afterEach(() => vi.useRealTimers());
+
+    it("three quick clicks: he stops dancing and kickflips, then says the line", () => {
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().show());
+      fireEvent.click(character());
+      expect(useAssistantStore.getState().state).toBe("dancing");
+      fireEvent.click(character());
+      expect(useAssistantStore.getState().state).toBe("dancing");
+      fireEvent.click(character());
+      expect(useAssistantStore.getState().state).toBe("kickflipping");
+      expect(character()).toHaveAttribute("data-state", "kickflipping");
+      expect(useEasterEggStore.getState().found).toHaveProperty("assistant-kickflip");
+      act(() => vi.advanceTimersByTime(ASSISTANT_TIMING.kickflip));
+      expect(useAssistantStore.getState().queue[0].id).toBe("afterKickflip");
+    });
+
+    it("slow clicks don't count as the combo", () => {
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().show());
+      fireEvent.click(character());
+      fireEvent.click(character());
+      act(() => vi.advanceTimersByTime(ASSISTANT_TIMING.kickflipWindow + 1));
+      fireEvent.click(character());
+      expect(useAssistantStore.getState().state).not.toBe("kickflipping");
+      expect(useEasterEggStore.getState().found).not.toHaveProperty("assistant-kickflip");
+    });
+
+    it("under reduced motion the combo still counts and he says the line", () => {
+      motion.reduced = true;
+      renderWithIntl(<Assistant />);
+      act(() => useAssistantStore.getState().show());
+      fireEvent.click(character());
+      fireEvent.click(character());
+      fireEvent.click(character());
+      expect(useAssistantStore.getState().state).not.toBe("kickflipping");
+      expect(useEasterEggStore.getState().found).toHaveProperty("assistant-kickflip");
+      expect(useAssistantStore.getState().queue[0].id).toBe("afterKickflip");
+    });
   });
 
   it("waits for the welcome balloon: one balloon at a time", async () => {

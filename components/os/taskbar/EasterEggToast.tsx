@@ -24,7 +24,7 @@ export const EASTER_EGG_TOAST_MS = 8000;
 
 /**
  * Easter-egg tray toast (stage 11, DESKTOP-INTERFACE-SPEC → Easter eggs):
- * "🎉 Easter egg found! (4/12)" + the egg's title, one per discovery, in the
+ * "🎉 Easter egg found! (4/13)" + the egg's title, one per discovery, in the
  * order they were found (`easterEggStore.pending`, persisted — so an egg
  * found on the real 404 page is announced here the next time the desktop
  * loads).
@@ -49,7 +49,7 @@ export function EasterEggToast() {
   const startOpen = useShellStore((s) => s.startMenuOpen);
   const dialogOpen = useShellStore((s) => s.dialog !== null);
   const assistantDismissed = useAssistantStore((s) => s.dismissed);
-  const dancing = useAssistantStore((s) => s.state === "dancing" && !s.dismissed);
+  const dancing = useAssistantStore((s) => (s.state === "dancing" || s.state === "kickflipping") && !s.dismissed);
   const mobile = useIsMobile();
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);

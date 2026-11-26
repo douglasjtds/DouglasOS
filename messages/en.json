@@ -792,6 +792,10 @@
         "title": "Phew!",
         "text": "Haven't danced like that since a deploy went green on the first try. Back to work: want to see a project?"
       },
+      "afterKickflip": {
+        "title": "Landed it!",
+        "text": "Clean kickflip, first try — like a deploy on a Friday that actually works. Want to see something I built?"
+      },
       "projectsTip": {
         "title": "Quick tip",
         "text": "This window is a tiny browser. Type a project name like “{project}” in the address bar and press Enter."
@@ -1133,6 +1137,10 @@
       "assistant-dance": {
         "title": "Dance break",
         "hint": "Someone small on the desktop has moves."
+      },
+      "assistant-kickflip": {
+        "title": "Do a Kickflip!",
+        "hint": "Some skaters just need a little encouragement."
       },
       "messenger-nudge": {
         "title": "Nudge, nudge",

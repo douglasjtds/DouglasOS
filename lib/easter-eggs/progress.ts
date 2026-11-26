@@ -46,7 +46,7 @@ export function discoverEgg(progress: EggProgress, id: string, now: number): { p
 }
 
 /**
- * The toast's "(n/12)": how many eggs had been found when `id` was — so a
+ * The toast's "(n/13)": how many eggs had been found when `id` was — so a
  * toast shown late (queued behind another balloon, or after the 404 page)
  * still reads the number it earned. Ties keep registry order.
  */
