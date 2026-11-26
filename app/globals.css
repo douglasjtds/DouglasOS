@@ -35,6 +35,18 @@
  * TS mirrors: lib/theme.ts (hex values for metadata/OG), lib/motion.ts
  * (motion), lib/store/geometry.ts + desktopGrid.ts (sizes).
  */
+/* Solid-color wallpaper swatches (Display Properties). All dark enough for
+   white desktop labels with shadow-desktop-label. `static`: they are only read
+   through var() in inline styles (lib/wallpapers.ts → swatchVar), never through
+   a utility class, so Tailwind would otherwise drop them from the output. */
+@theme static {
+  --color-swatch-navy: #004e98;
+  --color-swatch-teal: #2a6b6b;
+  --color-swatch-forest: #2f5f3a;
+  --color-swatch-plum: #4f3f78;
+  --color-swatch-slate: #3c4650;
+}
+
 @theme {
   /* Taskbar & tray */
   --color-taskbar: #245ddb;
@@ -148,14 +160,6 @@
   --color-logon-bg: #5a7edc;
   --color-logon-band: #00309c;
   --color-logon-divider: #f5a86c;
-
-  /* Solid-color wallpaper swatches (Display Properties). All dark enough for
-     white desktop labels with shadow-desktop-label. */
-  --color-swatch-navy: #004e98;
-  --color-swatch-teal: #2a6b6b;
-  --color-swatch-forest: #2f5f3a;
-  --color-swatch-plum: #4f3f78;
-  --color-swatch-slate: #3c4650;
 
   /* Retro Cam (stage 9): the dark viewfinder behind the pixelated picture. */
   --color-viewfinder: #1b1b1b;
