@@ -43,8 +43,8 @@ describe("captureSize / gridSize", () => {
   it("blocks get bigger from Fine to Large", () => {
     expect(BLOCK_SIZE.fine).toBeLessThan(BLOCK_SIZE.medium);
     expect(BLOCK_SIZE.medium).toBeLessThan(BLOCK_SIZE.large);
-    expect(gridSize(320, 240, BLOCK_SIZE.medium)).toEqual({ cols: 40, rows: 30 });
-    expect(gridSize(320, 240, BLOCK_SIZE.large)).toEqual({ cols: 20, rows: 15 });
+    expect(gridSize(320, 240, BLOCK_SIZE.fine)).toEqual({ cols: 160, rows: 120 });
+    expect(gridSize(320, 240, BLOCK_SIZE.medium)).toEqual({ cols: 107, rows: 80 });
     expect(gridSize(3, 3, 16)).toEqual({ cols: 1, rows: 1 });
     expect(isPixelSize("large")).toBe(true);
     expect(isPixelSize("huge")).toBe(false);
@@ -108,6 +108,27 @@ describe("quantize", () => {
     quantize(a, PALETTES.classic16);
     quantize(b, PALETTES.classic16);
     expect(Array.from(a)).toEqual(Array.from(b));
+  });
+
+  it("ordered dithering mixes the two nearest colors for in-between tones", () => {
+    const palette: Rgb[] = [
+      [0, 0, 0],
+      [128, 128, 128],
+      [255, 255, 255],
+    ];
+    const flat = image(4, 4, () => [64, 64, 64]);
+    const dithered = image(4, 4, () => [64, 64, 64]);
+    quantize(flat, palette);
+    quantize(dithered, palette, 4);
+    const grays = (buf: Uint8ClampedArray) => {
+      const out: number[] = [];
+      for (let i = 0; i < buf.length; i += 4) out.push(buf[i]);
+      return out;
+    };
+    expect(new Set(grays(flat)).size).toBe(1);
+    const mixed = grays(dithered);
+    expect(mixed.filter((v) => v === 0)).toHaveLength(8);
+    expect(mixed.filter((v) => v === 128)).toHaveLength(8);
   });
 
   it("Original leaves the colors alone", () => {

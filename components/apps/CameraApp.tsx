@@ -160,7 +160,7 @@ export default function CameraApp() {
 
       const s = settingsRef.current;
       const { cols, rows } = gridSize(width, height, BLOCK_SIZE[s.pixelSize]);
-      const pixels = quantize(downscale(source, width, height, cols, rows, s.mirror), PALETTES[s.palette]);
+      const pixels = quantize(downscale(source, width, height, cols, rows, s.mirror), PALETTES[s.palette], cols);
       if (canvas.width !== cols) canvas.width = cols;
       if (canvas.height !== rows) canvas.height = rows;
       ctx.putImageData(new ImageData(pixels, cols, rows), 0, 0);
