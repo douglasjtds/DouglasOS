@@ -18,11 +18,6 @@ import { actionsForIntent, type ShellAction } from "@/lib/assistant/actions";
  * 4. A free-text question through the intent matcher (`hire me`, `quero o
  *    currículo`) when it's confident (score ≥ `MIN_INTENT_SCORE`).
  * 5. Otherwise: not found ("DouglasOS couldn't find '<x>'…").
- *
- * TODO(stage 10 integration): add aliases to `LAUNCHER_ALIASES` when the
- * apps merge — "paint", "mspaint", "draw" → `paint`; "dontopen",
- * "dont open this" → `dont-open-this`. Their ids and titles already work
- * without this table. (Stages 8 and 9 are wired: `media-player`, `camera`.)
  */
 
 /** Something Run / the palette can execute. */
@@ -90,6 +85,8 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   "recycle-bin": ["bin", "trash", "lixeira", "lixo"],
   "media-player": ["music", "player", "radio", "musica", "media player", "wmplayer"],
   camera: ["cam", "webcam", "camera", "retro cam", "camera retro"],
+  paint: ["paint", "mspaint", "draw", "desenhar", "pbrush"],
+  "dont-open-this": ["dontopen", "dont open this", "nao abra isso", "dont open", "nao abra"],
 };
 
 /** Fun commands and their names. */

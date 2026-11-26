@@ -51,6 +51,22 @@ describe("resolveRun", () => {
     }
   });
 
+  it("resolves Paint and DON'T OPEN THIS.exe by their classic names (stage 10)", () => {
+    for (const q of ["paint", "mspaint", "Draw", "desenhar"]) {
+      expect(target(q)).toEqual({ kind: "launcher", id: "paint" });
+    }
+    for (const q of ["dontopen", "dont open this", "Don't open this", "não abra isso", "DON'T OPEN THIS.exe"]) {
+      expect(target(q)).toEqual({ kind: "launcher", id: "dont-open-this" });
+    }
+  });
+
+  it("resolves the windowless easter egg by its localized file name", () => {
+    expect(target("NÃO ABRA ISSO.exe", { "dont-open-this": "NÃO ABRA ISSO.exe" })).toEqual({
+      kind: "launcher",
+      id: "dont-open-this",
+    });
+  });
+
   it("resolves every project by slug, brand name and address", () => {
     for (const p of PROJECTS) {
       expect(target(p.slug)).toEqual({ kind: "launcher", id: "projects", route: p.slug });
@@ -104,6 +120,11 @@ describe("searchRun", () => {
   it("suggests the Media Player and Retro Cam in the palette by alias", () => {
     expect(keys("music")[0]).toBe("launcher:media-player");
     expect(keys("webcam")[0]).toBe("launcher:camera");
+  });
+
+  it("suggests Paint and the easter egg in the palette by alias", () => {
+    expect(keys("mspaint")[0]).toBe("launcher:paint");
+    expect(keys("dontopen")[0]).toBe("launcher:dont-open-this");
   });
 
   it("puts the exact match first, then prefix matches", () => {
