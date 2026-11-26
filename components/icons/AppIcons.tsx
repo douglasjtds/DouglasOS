@@ -281,3 +281,31 @@ export function DisplayIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** `achievements` (stage 11) — golden trophy cup on a little plinth. */
+export function AchievementsIcon(props: IconProps) {
+  const id = useSvgIds("cup", "base");
+  return (
+    <Svg {...props}>
+      <defs>
+        <linearGradient id={id.cup} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={C.yellowLight} />
+          <stop offset="0.6" stopColor={C.yellow} />
+          <stop offset="1" stopColor={C.yellowDark} />
+        </linearGradient>
+        <linearGradient id={id.base} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={C.leatherLight} />
+          <stop offset="1" stopColor={C.leatherDark} />
+        </linearGradient>
+      </defs>
+      <GroundShadow rx={13} />
+      <path d="M13 9H8.5c0 7 2.5 11 7.5 12M35 9h4.5c0 7-2.5 11-7.5 12" fill="none" stroke={C.yellowDark} strokeWidth="2.4" />
+      <path d="M12 6h24v6c0 9-5 15-12 15S12 21 12 12z" fill={`url(#${id.cup})`} stroke={C.yellowDark} strokeWidth="1" />
+      <path d="M21 27h6v6h-6z" fill={C.yellow} stroke={C.yellowDark} strokeWidth="1" />
+      <rect x="15" y="33" width="18" height="9" rx="1.5" fill={`url(#${id.base})`} stroke={C.leatherDark} strokeWidth="1" />
+      <rect x="19" y="36" width="10" height="3" rx="0.8" fill={C.yellowLight} />
+      <path d="M17 9c0 5 1.5 9 4 11" fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" opacity="0.7" />
+      <path d="M24 10.5l1.6 3.3 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z" fill="#ffffff" opacity="0.85" />
+    </Svg>
+  );
+}

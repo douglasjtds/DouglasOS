@@ -29,6 +29,7 @@ import {
 import type { IconComponent } from "@/components/icons/types";
 import { menuSurfaceClass } from "@/components/os/menuStyles";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useEasterEggProgress } from "@/lib/store/easterEggStore";
 import { PROJECTS, PROJECTS_HOME_ROUTE } from "@/lib/content/projects";
 import { CaseStudyIcon } from "@/components/icons/BrowserIcons";
 import { AccessoriesFolderIcon } from "@/components/icons/CameraIcons";
@@ -118,7 +119,7 @@ function PlaceItem({
     <DropdownMenu.Item
       data-start-item={testId}
       onSelect={onSelect}
-      className={cn(itemBase, "px-1.5 py-1 text-startmenu-right-text", bold && "font-bold")}
+      className={cn(itemBase, "group/place px-1.5 py-1 text-startmenu-right-text", bold && "font-bold")}
     >
       <Icon size={24} />
       <span className="truncate">{label}</span>
@@ -163,6 +164,7 @@ export function StartMenu() {
 
   const label = (id: LauncherId) => t(launcherTitleKey(id));
   const mobile = useIsMobile();
+  const eggs = useEasterEggProgress();
 
   /** One All Programs entry (cascading submenu on the pointer desktop). */
   const desktopProgram = (l: LauncherConfig) => (
@@ -432,6 +434,20 @@ export function StartMenu() {
                 icon={HelpIcon}
                 label={t("startMenu.help")}
                 onSelect={() => select(() => launch("about"))}
+              />
+              <PlaceItem
+                testId="achievements"
+                bold={false}
+                icon={getLauncher("achievements").icon}
+                label={
+                  <>
+                    {label("achievements")}{" "}
+                    <span data-egg-counter className="text-text-muted group-data-[highlighted]/place:text-text-inverse">
+                      {t("easterEggs.counter", { count: eggs.count, total: eggs.total })}
+                    </span>
+                  </>
+                }
+                onSelect={() => select(() => launch("achievements"))}
               />
               <PlaceItem
                 testId="run"

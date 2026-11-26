@@ -379,7 +379,8 @@
         "dusk-hills": "Dusk Hills",
         "blueprint": "Blueprint",
         "solid": "Solid color",
-        "3d": "DouglasOS 3D (animated)"
+        "3d": "DouglasOS 3D (animated)",
+        "golden-egg": "Golden Egg (secret)"
       },
       "colorLabel": "Color:",
       "swatches": {
@@ -397,7 +398,11 @@
       },
       "ok": "OK",
       "cancel": "Cancel",
-      "apply": "Apply"
+      "apply": "Apply",
+      "secret": {
+        "locked": "???",
+        "hint": "(find every easter egg to unlock it)"
+      }
     },
     "recycle-bin": {
       "title": "Recycle Bin",
@@ -511,6 +516,10 @@
       },
       "canvas": "Drawing canvas, {width} by {height} pixels",
       "dimensions": "{width} × {height}px"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Easter eggs you've found"
     }
   },
   "easterEgg": {
@@ -758,7 +767,8 @@
         "skills": "Open Skills",
         "about": "Open About Douglas",
         "experience": "Open Experience",
-        "aiWorkflow": "Open How I Work With AI"
+        "aiWorkflow": "Open How I Work With AI",
+        "display": "Open Display Properties"
       }
     },
     "messages": {
@@ -787,6 +797,10 @@
       },
       "answer": {
         "title": "mini Douglas says"
+      },
+      "eggsComplete": {
+        "title": "You found them all!",
+        "text": "Every single easter egg! That's the attention to detail Douglas brings to code reviews. Your prize: a secret wallpaper in Display Properties. And since you're clearly thorough, his CV is right here."
       }
     },
     "tips": {
@@ -1064,6 +1078,79 @@
       "muted": "Volume: muted",
       "panel": "Volume control",
       "showPlayer": "Show player"
+    }
+  },
+  "easterEggs": {
+    "counter": "{count}/{total}",
+    "toast": {
+      "title": "🎉 Easter egg found! ({count}/{total})",
+      "close": "Close",
+      "viewAll": "See all achievements"
+    },
+    "achievements": {
+      "summary": "Easter eggs found: {count} of {total}",
+      "progressLabel": "Easter egg progress",
+      "listTitle": "Easter eggs",
+      "unknown": "???",
+      "foundOn": "Found on {date}",
+      "complete": "All found! The secret wallpaper is unlocked.",
+      "openDisplay": "Open Display Properties",
+      "reset": "Reset progress",
+      "ok": "OK",
+      "resetTitle": "Reset progress",
+      "resetBody": "Forget every easter egg you've found? The secret wallpaper will be locked again.",
+      "resetConfirm": "Reset",
+      "resetCancel": "Cancel"
+    },
+    "eggs": {
+      "protected-file": {
+        "title": "Protected file",
+        "hint": "Some names are not up for discussion."
+      },
+      "assistant-dance": {
+        "title": "Dance break",
+        "hint": "Someone small on the desktop has moves."
+      },
+      "messenger-nudge": {
+        "title": "Nudge, nudge",
+        "hint": "Chats can get impatient too."
+      },
+      "trash-rescue": {
+        "title": "Rescue mission",
+        "hint": "Things don't stay thrown away around here."
+      },
+      "trash-cleanup": {
+        "title": "Spring cleaning",
+        "hint": "Why throw things away one at a time?"
+      },
+      "run-cmd": {
+        "title": "Old habits",
+        "hint": "Some commands get typed on muscle memory."
+      },
+      "desktop-new": {
+        "title": "Something new",
+        "hint": "Right-click the void and ask for something new."
+      },
+      "music-dance": {
+        "title": "Dance floor",
+        "hint": "Every song deserves a dancer."
+      },
+      "egg-404": {
+        "title": "Big blue oops",
+        "hint": "Some files really mean it when they say don't."
+      },
+      "egg-runaway": {
+        "title": "Runaway desktop",
+        "hint": "Curiosity has consequences."
+      },
+      "egg-scold": {
+        "title": "Told you so",
+        "hint": "Someone will have opinions about that click."
+      },
+      "real-404": {
+        "title": "Off the map",
+        "hint": "Not every address leads somewhere."
+      }
     }
   }
 }

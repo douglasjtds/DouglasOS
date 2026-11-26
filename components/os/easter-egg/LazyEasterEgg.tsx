@@ -2,7 +2,7 @@
 
 import { lazy, Suspense } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useEasterEggStore } from "@/lib/store/easterEggStore";
+import { useDontOpenThisStore } from "@/lib/store/dontOpenThisStore";
 
 const EasterEggPlayer = lazy(() => import("@/components/os/easter-egg/EasterEggPlayer"));
 
@@ -12,7 +12,7 @@ const EasterEggPlayer = lazy(() => import("@/components/os/easter-egg/EasterEggP
  * player on every open, so each egg starts from its first frame.
  */
 export function LazyEasterEgg() {
-  const { active, seq } = useEasterEggStore(useShallow((s) => ({ active: s.active, seq: s.seq })));
+  const { active, seq } = useDontOpenThisStore(useShallow((s) => ({ active: s.active, seq: s.seq })));
   if (!active) return null;
   return (
     <Suspense fallback={null}>

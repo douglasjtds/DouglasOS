@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { useEasterEggStore } from "@/lib/store/easterEggStore";
+import { useDontOpenThisStore } from "@/lib/store/dontOpenThisStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { runShellAction, type ShellAction } from "@/lib/assistant/actions";
 import { easterEggMessage } from "@/lib/assistant/easterEgg";
@@ -26,7 +26,7 @@ export interface EggProps {
  * through `say()` — a no-op after "Not now", so the egg never brings him back.
  */
 export default function EasterEggPlayer({ egg }: { egg: EasterEggId }) {
-  const close = useEasterEggStore((s) => s.close);
+  const close = useDontOpenThisStore((s) => s.close);
   const returnFocus = useRef<HTMLElement | null>(null);
   const done = useRef(false);
 

@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented. Stage 7 (Run… + command palette + desktop context menus, [§5](#run-and-the-command-palette-stage-7--done)), stage 8 (DouglasOS Media Player, [§15](#15-douglasos-media-player-stage-8)) stage 9 (Retro Cam, [§16](#16-retro-cam-stage-9)) and stage 10 (DouglasOS Paint, "DON'T OPEN THIS.exe" and the 404 page, [§17](#17-douglasos-paint-stage-10--done)–[§19](#19-404-page-stage-10--done)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented. Stage 7 (Run… + command palette + desktop context menus, [§5](#run-and-the-command-palette-stage-7--done)), stage 8 (DouglasOS Media Player, [§15](#15-douglasos-media-player-stage-8)) stage 9 (Retro Cam, [§16](#16-retro-cam-stage-9)) and stage 10 (DouglasOS Paint, "DON'T OPEN THIS.exe" and the 404 page, [§17](#17-douglasos-paint-stage-10--done)–[§19](#19-404-page-stage-10--done)) are implemented. Stage 11 (easter-egg counter + Achievements, [§20](#20-easter-eggs--achievements-stage-11--done)) is implemented; its stage 7–10 hooks are listed there.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -215,6 +215,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 - separator
 - **Display Properties** — opens the `display` app.
 - **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
+- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/12` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
 - **Run…** — *(stage 7 — done)* opens the Run dialog (last item of the places column, so CV/Contact keep their spots; also on phones). **Items appear only when their stage ships — no dead entries.**
 
 ### Run… and the command palette *(stage 7 — done)*
@@ -271,7 +272,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 - **Message boxes** (shutdown, errors such as "DouglasOS can't find '…'", confirmations): window chrome with close only, 32px semantic icon (own SVG: error / warning / info / question), message text, right-aligned buttons (`OK`, `Cancel`, …). Modal: focus trapped, initial focus on the default button, `Esc` = Cancel/close, `role="alertdialog"` for errors and confirmations.
 - **Tray balloons**: yellow rounded bubble with a tail pointing at the tray icon, bold title + 16px icon, text, close ×. `aria-live="polite"`, never steals focus, auto-dismiss ~8s (paused on hover/focus). **Max one balloon at a time**; queued otherwise.
   - Stage 1 ships one: on the first logon of a session, "Welcome to DouglasOS — Click any icon to open it. Your CV is one click away on the taskbar." (EN/PT), once per session (`douglasos-welcomed` sessionStorage flag).
-  - **Single balloon slot** *(stage 5)*: the welcome balloon, the assistant bubble, (stage 5b) the Messenger toast and (stage 6) the Recycle Bin's rescue balloon share one first-come-first-served slot, `lib/store/balloonStore.ts` (`request(owner)` / `release(owner)`, head of the line = on screen). Each shows only while it holds the slot; see [Layering](#layering-z-index-policy).
+  - **Single balloon slot** *(stage 5)*: the welcome balloon, the assistant bubble, (stage 5b) the Messenger toast, (stage 6) the Recycle Bin's rescue balloon and (stage 11) the easter-egg toast — which always lets the others go first — share one first-come-first-served slot, `lib/store/balloonStore.ts` (`request(owner)` / `release(owner)`, head of the line = on screen). Each shows only while it holds the slot; see [Layering](#layering-z-index-policy).
 - **Protected-file dialog** (`F2` on a desktop icon): warning message box, original humorous copy (EN: "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart." / PT equivalent), one button ("Fair enough" / "Justo"). Never renames.
 - **Tooltips**: yellow rectangles, ~500ms delay, on every icon-only control (Quick Launch, tray, window controls).
 - **Menus** (window menus, context menus, submenus): white, blue highlight, keyboard-complete (radix).
@@ -282,7 +283,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 New `display` window app (kind `"window"`), opened from the Start menu and the desktop context menu → Properties (stage 7 — done).
 
-- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
+- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", the secret "Golden Egg" *(stage 11: "???" until every easter egg is found, [§20](#20-easter-eggs--achievements-stage-11--done))*, "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
 - **Screen Saver tab:** omitted in stage 1 (not cheap enough to do well; no dead tab). Listed as a future idea in `MVP-SCOPE.md`.
 - The choice persists locally in a new `displayStore` (`lib/store/displayStore.ts`, key `douglasos:display`; catalog + pure helpers in `lib/wallpapers.ts`). Solid colors are five fixed swatches (`--color-swatch-*` tokens).
@@ -346,7 +347,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9, done — see [§16](#16-retro-cam-stage-9)), DouglasOS Paint + "DON'T OPEN THIS.exe" (10, done — see [§17](#17-douglasos-paint-stage-10--done) and [§18](#18-dont-open-thisexe-stage-10--done); the real 404 page is [§19](#19-404-page-stage-10--done)). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9, done — see [§16](#16-retro-cam-stage-9)), DouglasOS Paint + "DON'T OPEN THIS.exe" (10, done — see [§17](#17-douglasos-paint-stage-10--done) and [§18](#18-dont-open-thisexe-stage-10--done); the real 404 page is [§19](#19-404-page-stage-10--done)), Achievements (11, done — a property sheet opened from the Start menu's places column, see [§20](#20-easter-eggs--achievements-stage-11--done)). Each stage must update this section.
 
 ---
 
@@ -589,9 +590,9 @@ Launcher `paint`.
 
 Launcher `dont-open-this`.
 
-A windowless launcher (`kind: "action"` in the registry) in All Programs ▸ Accessories; PT label "NÃO ABRA ISSO.exe"; own icon (program file sealed with caution tape). Each open plays the **next of three eggs** (A → B → C → A…, count in sessionStorage `douglasos-dont-open-this`, `lib/easterEgg.ts`). Shared rules (`EasterEggPlayer`): the animated part of each lasts < 5s, no flashes (fades only), **Esc or a click anywhere outside the egg's own buttons leaves at once** (Esc is caught before the window manager, so it never closes a window), focus returns where it was, every egg offers **CV and Contact**, and after a plain dismissal mini Douglas comments through `say()` (a no-op after "Not now" — the egg never brings him back; no comment when the visitor picked CV/Contact). The eggs' code is lazy-loaded on first open. Purely visual: nothing is persisted.
+A windowless launcher (`kind: "action"` in the registry) in All Programs ▸ Accessories, played by `useDontOpenThisStore` (`lib/store/dontOpenThisStore.ts`); PT label "NÃO ABRA ISSO.exe"; own icon (program file sealed with caution tape). Each open plays the **next of three eggs** (A → B → C → A…, count in sessionStorage `douglasos-dont-open-this`, `lib/easterEgg.ts`). Shared rules (`EasterEggPlayer`): the animated part of each lasts < 5s, no flashes (fades only), **Esc or a click anywhere outside the egg's own buttons leaves at once** (Esc is caught before the window manager, so it never closes a window), focus returns where it was, every egg offers **CV and Contact**, and after a plain dismissal mini Douglas comments through `say()` (a no-op after "Not now" — the egg never brings him back; no comment when the visitor picked CV/Contact). The eggs' code is lazy-loaded on first open. Purely visual: nothing is persisted.
 - **A — "404" blue screen** (`not-found`): full-screen DouglasOS blue screen in the modal layer (z-1400), Luna title-bar blue `--color-titlebar` (never the original crash screen's blue, text, frowning face or QR code). DouglasOS logo, "DouglasOS couldn't find the page you were looking for.", "Error 404: PAGE_NOT_FOUND", an egg-specific "probable cause", a "searching every folder" bar that fills to 100% (0.6–3s), then recovery options **Download CV / Talk to Douglas / Back to desktop** (focus moves to Download CV). Reduced motion: the finished screen at once. Built as the reusable `BlueScreen` component, also the site's real 404 (below).
-- **B — runaway desktop** (`scramble`): every desktop icon scatters to a random on-screen spot with a small tilt (1.2s), holds, flies back (1.5s), then the CV icon pulses once and a balloon beside it says "Everything's back in place — well, almost: your CV is still waiting" with **Download CV / Contact / Close** (shared balloon slot, owner `easterEgg`; closes itself after 8s). It animates the icons' own elements with transforms and resets them; `desktopStore` is never touched. Reduced motion: the icons dim for 0.6s, the balloon shows at once. Phones: the balloon is a bottom sheet.
+- **B — runaway desktop** (`scramble`): every desktop icon scatters to a random on-screen spot with a small tilt (1.2s), holds, flies back (1.5s), then the CV icon pulses once and a balloon beside it says "Everything's back in place — well, almost: your CV is still waiting" with **Download CV / Contact / Close** (shared balloon slot, owner `dontOpenThis` — a regular owner, unlike stage 11's yielding `easterEgg` toast; closes itself after 8s). It animates the icons' own elements with transforms and resets them; `desktopStore` is never touched. Reduced motion: the icons dim for 0.6s, the balloon shows at once. Phones: the balloon is a bottom sheet.
 - **C — access denied** (`access-denied`): an XP warning box "Access denied — This file is confidential. Yes, even for curious recruiters."; at 0.5s mini Douglas's sticky note ("NO! — mini Douglas") slaps onto its corner; at 1.5s his scolding line appears with **Talk to me / My CV / OK**. The line lives in the box itself, so it works whether or not he's on the desktop (the fallback the trash notice needed is built in). Reduced motion: the finished box, note already stuck.
 
 ---
@@ -599,6 +600,81 @@ A windowless launcher (`kind: "action"` in the registry) in All Programs ▸ Acc
 ## 19. 404 page *(stage 10 — done)*
 
 Unknown URLs render the same `BlueScreen` (variant `page`) through `app/[locale]/not-found.tsx`; `app/[locale]/[...rest]/page.tsx` throws `notFound()` for any unknown path under a locale (unprefixed paths are sent to `/en/...` by the proxy), so `/en/whatever` and `/pt/qualquer` get the localized screen, `<html lang>` and HTTP **404** (Next adds `noindex`). There's no shell on this page, so the recovery options are plain links: **Download CV** = `public/resume.pdf` download, **Talk to Douglas** = `/{locale}#open=contact` (the shell's `useOpenFromHash` opens the Contact window once it mounts — after boot/logon in a fresh session — then drops the hash; `lib/apps/deepLink.ts` only accepts window app ids), **Back to desktop** = `/{locale}`. Everything is server-rendered and visible at once (works without JS); only the progress bar animates.
+
+---
+
+## 20. Easter eggs & Achievements *(stage 11 — done)*
+
+A discreet discovery counter for the jokes hidden across the shell: a tray toast per first discovery, an **Achievements** window with the progress, and a reward when all of them are found. It never covers, delays or gates the CV or Contact.
+
+### Pieces
+
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (12), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
+| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/12" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
+| Store | `lib/store/easterEggStore.ts` | `found: Record<id, timestamp>`, `pending` (announcements still to show), `discover(id)` → `true` only the first time, `acknowledge(expected?)`, `reset()`; selectors `selectFoundCount` / `selectComplete`, hook `useEasterEggProgress()` → `{ count, total, complete }`. Persisted in **localStorage** `douglasos:easter-eggs` (version 1; `migrate` + `merge` both go through `sanitizeProgress`) |
+| Reward | `lib/easter-eggs/reward.ts` | `completionMessage()` (mini Douglas line `eggsComplete`: Download CV, Display Properties, Contact) and `deliverCompletionReward()` |
+| Toast | `components/os/taskbar/EasterEggToast.tsx` | Mounted last in `DesktopShell` |
+| Window | `components/apps/AchievementsApp.tsx` | Registry app `achievements` (`surface: "dialog"`, no desktop icon, not in All Programs) |
+| Secret wallpaper | `public/wallpapers/golden-egg.svg`, `lib/wallpapers.ts` (`SECRET_WALLPAPER`, `effectiveWallpaper(choice, blocker, secretUnlocked)`) | Original art: a glossy golden egg with a DouglasOS "D" band on a deep-blue sunburst |
+| Copy | `easterEggs.*`, `apps.achievements.*`, `apps.display.secret.*`, `assistant.messages.eggsComplete` in `messages/{en,pt}.json` | Original copy |
+
+### The eggs
+
+| Id | How it's found | Stage | Hook |
+|----|----------------|-------|------|
+| `protected-file` | `F2` on a desktop icon | 1 | `Desktop.tsx` (`onIconKeyDown`, after `openDialog`) — **wired** |
+| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 12/12) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `messenger-nudge` | "Nudge" in the Messenger (only a nudge that went out, not one refused by the cooldown) | 5b | `Conversation.tsx` (`nudge`) — **wired** |
+| `trash-rescue` | Throw one icon in the Recycle Bin (drag, `Delete`, context menu, long-press) | 6 | `desktopStore.trashIcons` — **wired** |
+| `trash-cleanup` | Throw several icons at once | 6 | `desktopStore.trashIcons` — **wired** |
+| `run-cmd` | Type `cmd` in Run… | 7 | pending (see below) |
+| `desktop-new` | Desktop context menu → New ▸ joke | 7 | pending |
+| `music-dance` | mini Douglas dancing to the media player | 8 | pending |
+| `egg-404` | DON'T OPEN THIS.exe → 404 blue screen | 10 | pending |
+| `egg-runaway` | DON'T OPEN THIS.exe → the desktop runs away | 10 | pending |
+| `egg-scold` | DON'T OPEN THIS.exe → mini Douglas scolds | 10 | pending |
+| `real-404` | Visiting the real 404 page | 10 | pending |
+
+### Integration — calls still to add (stages 7–10)
+
+`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Add exactly one call at each hook, at the moment the joke actually plays:
+
+| Stage | Hook (where) | Call |
+|-------|--------------|------|
+| 7 | Run dialog resolves the input `cmd` (the joke response) | `useEasterEggStore.getState().discover("run-cmd")` |
+| 7 | Desktop context menu → New ▸ item selected (the joke shows) | `useEasterEggStore.getState().discover("desktop-new")` |
+| 8 | Media player starts playback **and** mini Douglas dances to it (where `useAssistantStore.getState().dance()` is called for the music) | `useEasterEggStore.getState().discover("music-dance")` |
+| 10 | "DON'T OPEN THIS.exe" outcome = 404 blue screen shown | `useEasterEggStore.getState().discover("egg-404")` |
+| 10 | "DON'T OPEN THIS.exe" outcome = desktop runs away | `useEasterEggStore.getState().discover("egg-runaway")` |
+| 10 | "DON'T OPEN THIS.exe" outcome = mini Douglas scolds | `useEasterEggStore.getState().discover("egg-scold")` |
+| 10 | The real 404 page (`app/[locale]/not-found.tsx` or equivalent), in a client effect on mount | `useEasterEggStore.getState().discover("real-404")` |
+
+Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothing else is needed: the toast, the counter, the reward and the wallpaper unlock follow from the store. The real 404 page has no shell, so there the discovery is only persisted; its toast is queued in `pending` and shows **the next time the desktop loads** (decision: a persisted "pending toast" queue, shown once, in discovery order).
+
+### Toast
+
+- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/12)" / "🎉 Easter egg encontrado! (4/12)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
+- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances (otherwise the slot rule would hide him mid-dance).
+- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/12".
+- **Phones:** bottom sheet above the taskbar (full width, safe-area padding), like the other balloons; 44px targets.
+
+### Achievements window
+
+- Start menu → right column, **below Help**, normal weight, with a muted `4/12` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
+- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 12" + a segmented progress bar (12 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
+- **Reset progress** (disabled at 0) opens an XP confirm message box ("Reset" / "Cancel", Cancel is the default and Esc). Reset forgets every egg and pending toast and re-locks the secret wallpaper (the desktop falls back to the default if it was in use; the choice itself is kept).
+
+### Reward (all found)
+
+- After the last egg's toast, the reward plays once: if mini Douglas is around, `say(completionMessage())` — a special original line ("Every single easter egg! …") offering **Download CV** first, then Display Properties and Contact; he takes the slot in his own turn. If he was dismissed this session, the **toast itself** shows the same line in an XP balloon (`AssistantBubble`, `data-easter-egg-reward`; bottom sheet on phones) — he never comes back uninvited. The line isn't automatic: it stays until closed.
+- **Secret wallpaper "Golden Egg"** (`golden-egg`): listed in Display Properties between Blueprint and Solid color. Locked: shown as "??? (find every easter egg to unlock it)", disabled; `effectiveWallpaper` never paints it while locked. Unlocked: "Golden Egg (secret)", selectable like any static wallpaper (works on phones; it's an SVG).
+
+### Golden rule & a11y
+
+- The toast and reward sit in the balloon layer (1300) like the others and wait behind every other balloon; CV/Contact stay on the taskbar and in Start. The window opens only on request.
+- Keyboard-complete (Start item, window buttons, confirm box via Radix); reduced motion: opacity-only, instant. Every egg remains findable under reduced motion.
 
 ---
 
@@ -612,7 +688,7 @@ Unknown URLs render the same `BlueScreen` (variant `page`) through `app/[locale]
 | Assistant character + bubble *(stage 5)* | 1050 | above windows, below the taskbar; never covers the focused window's title bar (see below) |
 | Taskbar | 1100 | |
 | Start menu, context menus, dropdowns | 1200 | |
-| Tray balloons, messenger toast *(5b — done)*, Recycle Bin rescue balloon *(6 — done)* | 1300 | one at a time, shared slot with the assistant bubble |
+| Tray balloons, messenger toast *(5b — done)*, Recycle Bin rescue balloon *(6 — done)*, easter-egg toast *(11 — done)* | 1300 | one at a time, shared slot with the assistant bubble; the easter-egg toast yields to every other owner |
 | Modal dialogs (shutdown, Run, errors), "DON'T OPEN THIS.exe" blue screen and access-denied box *(10)* | 1400 | the runaway-desktop balloon *(10)* sits at 1300 in the balloon slot |
 | Boot / logon / shutdown screens | 2000 | |
 
@@ -649,7 +725,8 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos:messenger` | sessionStorage | `messengerStore` *(stage 5b)* | Conversation history, pending lines, view, suggestions, unread, draft, form open, greeted |
 | `douglasos-messenger-toast` | sessionStorage | `MessengerToast` *(stage 5b)* | The tray toast already showed this session |
 | `douglasos:media` | localStorage | `playbackStore` *(stage 8)* | Media Player volume (0–100) + mute; playback itself is never persisted and the player window isn't restored after a reload |
-| `douglasos-dont-open-this` | sessionStorage | `easterEggStore` *(stage 10)* | How many times "DON'T OPEN THIS.exe" was opened (picks egg A/B/C) |
+| `douglasos-dont-open-this` | sessionStorage | `dontOpenThisStore` *(stage 10; renamed from `easterEggStore` at integration so stage 11 owns that name)* | How many times "DON'T OPEN THIS.exe" was opened (picks egg A/B/C) |
+| `douglasos:easter-eggs` | localStorage | `easterEggStore` *(stage 11)* | `{ found: { id: timestamp }, pending: [...] }`, version 1; unknown ids dropped on load |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
 Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Stage 9 (Retro Cam) adds no storage key: settings, frames and camera state live only in memory. Stage 10's Paint stores nothing (drawings live only in the open window); its egg counter is the sessionStorage key above. Later stages add their own keys here.
@@ -686,5 +763,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 8 | DouglasOS Media Player (YouTube playlist) + synced dance, tray volume/now-playing, All Programs → Entertainment (§15) — **done** |
 | 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
+| 11 | Easter-egg counter: registry + store, tray toast, Achievements window, reward + secret wallpaper (§20) — **done** (stage 7–10 hooks pending, see §20 → Integration) |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { animate } from "framer-motion";
 import { ArrowLeft, PencilLine } from "lucide-react";
 import { useMessengerStore } from "@/lib/store/messengerStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import {
   MESSENGER_TIMING,
   messageSentReply,
@@ -74,6 +75,7 @@ export function Conversation() {
       return;
     }
     store.postSystem("messenger.conversation.nudgeSent");
+    useEasterEggStore.getState().discover("messenger-nudge");
     // The window shakes (~0.5s); under reduced motion the notice alone marks it.
     const frame = root.current?.closest<HTMLElement>("[data-window]");
     if (frame && !reduced) {

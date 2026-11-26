@@ -30,10 +30,11 @@ export interface AssistantBubbleProps {
   onSearch: (query: string) => void;
   /**
    * Who is speaking: mini Douglas (default) or the Recycle Bin's own balloon
-   * that carries his rescue line while he's dismissed (stage 6). Only changes
-   * the `data-*` hook.
+   * that carries his rescue line while he's dismissed (stage 6), or the
+   * easter-egg toast carrying his "all found" reward line (stage 11). Only
+   * changes the `data-*` hook.
    */
-  source?: "assistant" | "recycleBin";
+  source?: "assistant" | "recycleBin" | "easterEgg";
 }
 
 /**
@@ -79,6 +80,7 @@ export function AssistantBubble({
       aria-labelledby={`${ids}-title`}
       data-assistant-bubble={source === "assistant" ? "" : undefined}
       data-trash-notice={source === "recycleBin" ? "" : undefined}
+      data-easter-egg-reward={source === "easterEgg" ? "" : undefined}
       data-message={message.id}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

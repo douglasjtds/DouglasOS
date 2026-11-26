@@ -9,6 +9,7 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import { defaultBinCell, iconRect } from "@/lib/store/recycleBin";
 import { cellToPixel } from "@/lib/store/desktopGrid";
 
@@ -129,9 +130,12 @@ describe("Desktop icons", () => {
         <ShellDialogs />
       </>,
     );
+    useEasterEggStore.getState().reset();
     await userEvent.tab();
     await userEvent.keyboard("{F2}");
     const dialog = screen.getByRole("alertdialog", { name: "Protected file" });
+    // Stage 11: it's also an easter egg.
+    expect(useEasterEggStore.getState().found).toHaveProperty("protected-file");
     expect(dialog).toHaveTextContent("“About Douglas” refused to be renamed");
     await userEvent.click(screen.getByRole("button", { name: "Fair enough" }));
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();

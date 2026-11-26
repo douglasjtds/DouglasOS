@@ -2,7 +2,7 @@ import { getLauncher, type LauncherId } from "@/lib/apps/registry";
 import { downloadFile } from "@/lib/download";
 import { openLink } from "@/lib/openLink";
 import { useWindowStore, type WindowDestination } from "@/lib/store/windowStore";
-import { useEasterEggStore } from "@/lib/store/easterEggStore";
+import { useDontOpenThisStore } from "@/lib/store/dontOpenThisStore";
 
 /**
  * Activate a launcher the same way from every surface (desktop icon, Start
@@ -18,7 +18,7 @@ export function launch(id: LauncherId, destination?: WindowDestination): void {
     openLink(launcher.href, launcher.external);
   } else if (launcher.kind === "action") {
     // Stage 10: the only action is "DON'T OPEN THIS.exe".
-    useEasterEggStore.getState().open();
+    useDontOpenThisStore.getState().open();
   } else {
     useWindowStore.getState().openWindow(launcher.id, destination);
   }

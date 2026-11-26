@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useAssistantStore } from "@/lib/store/assistantStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import { selectActiveBalloon, useBalloonStore } from "@/lib/store/balloonStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useWindowStore } from "@/lib/store/windowStore";
@@ -133,6 +134,9 @@ export default function Assistant() {
   function onCharacterClick() {
     const store = useAssistantStore.getState();
     if (store.state === "dancing") return;
+    // Easter egg (stage 11). Under reduced motion there's no dance, but the
+    // click still counts, so every visitor can find all of them.
+    useEasterEggStore.getState().discover("assistant-dance");
     if (reduced) {
       store.replace(helpMessage());
       return;

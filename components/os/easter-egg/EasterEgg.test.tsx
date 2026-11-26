@@ -3,7 +3,7 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { renderWithIntl } from "@/test/renderWithIntl";
 import { LazyEasterEgg } from "@/components/os/easter-egg/LazyEasterEgg";
 import { NotFoundPage } from "@/components/os/easter-egg/NotFoundPage";
-import { useEasterEggStore } from "@/lib/store/easterEggStore";
+import { useDontOpenThisStore } from "@/lib/store/dontOpenThisStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { useBalloonStore } from "@/lib/store/balloonStore";
 import { EASTER_EGG_MESSAGE_ID } from "@/lib/assistant/easterEgg";
@@ -32,7 +32,7 @@ describe("DON'T OPEN THIS.exe", () => {
   beforeEach(() => {
     sessionStorage.clear();
     downloadSpy.mockClear();
-    useEasterEggStore.setState({ active: null, seq: 0 });
+    useDontOpenThisStore.setState({ active: null, seq: 0 });
     useBalloonStore.setState({ queue: [] });
     say = vi.spyOn(useAssistantStore.getState(), "say");
   });
@@ -51,7 +51,7 @@ describe("DON'T OPEN THIS.exe", () => {
     fireEvent.keyDown(document.body, { key: "Escape" });
     window.removeEventListener("keydown", windowListener);
 
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
     expect(windowListener).not.toHaveBeenCalled(); // the window manager never sees it
     expect(say).toHaveBeenCalledWith(expect.objectContaining({ id: EASTER_EGG_MESSAGE_ID }));
     expect(document.querySelector("[data-easter-egg]")).toBeNull();
@@ -61,14 +61,14 @@ describe("DON'T OPEN THIS.exe", () => {
     await openEgg();
     fireEvent.click(document.querySelector('[data-egg-action="cv"]')!);
     expect(downloadSpy).toHaveBeenCalledWith("/resume.pdf", "Douglas-Tertuliano-CV.pdf");
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
     expect(say).not.toHaveBeenCalled();
   });
 
   it("A: a click anywhere outside the buttons leaves", async () => {
     const egg = await openEgg();
     fireEvent.pointerDown(egg);
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
   });
 
   it("B on the second open: icons move only visually and come back on Esc", async () => {
@@ -80,7 +80,7 @@ describe("DON'T OPEN THIS.exe", () => {
     const egg = await openEgg();
     expect(egg).toHaveAttribute("data-easter-egg", "scramble");
     fireEvent.keyDown(document.body, { key: "Escape" });
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
     expect(icon.style.transform).toBe("");
     icon.remove();
   });
@@ -93,7 +93,7 @@ describe("DON'T OPEN THIS.exe", () => {
     expect(screen.getByText("NO!")).toBeInTheDocument();
     expect(document.querySelector('[data-egg-action="cv"]')).not.toBeNull();
     fireEvent.click(document.querySelector('[data-egg-action="ok"]')!);
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
     expect(say).toHaveBeenCalledTimes(1);
   });
 
@@ -101,9 +101,9 @@ describe("DON'T OPEN THIS.exe", () => {
     sessionStorage.setItem("douglasos-dont-open-this", "2");
     const egg = await openEgg();
     fireEvent.pointerDown(screen.getByText("Access denied"));
-    expect(useEasterEggStore.getState().active).toBe("access-denied");
+    expect(useDontOpenThisStore.getState().active).toBe("access-denied");
     fireEvent.pointerDown(egg);
-    expect(useEasterEggStore.getState().active).toBeNull();
+    expect(useDontOpenThisStore.getState().active).toBeNull();
   });
 });
 

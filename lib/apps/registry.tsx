@@ -4,6 +4,7 @@ import { PROFILE, RESUME } from "@/lib/profile";
 import { PROJECTS_HOME_ROUTE, isProjectRoute } from "@/lib/content/projects";
 import {
   AboutIcon,
+  AchievementsIcon,
   AiIcon,
   ContactIcon,
   DisplayIcon,
@@ -37,7 +38,8 @@ export type AppId =
   | "recycle-bin"
   | "media-player"
   | "camera"
-  | "paint";
+  | "paint"
+  | "achievements";
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -71,7 +73,7 @@ export interface AppRoutes {
  */
 export type DesktopIconId = Exclude<
   LauncherId,
-  "display" | "recycle-bin" | "media-player" | "camera" | "paint" | ActionId
+  "display" | "recycle-bin" | "media-player" | "camera" | "paint" | "achievements" | ActionId
 >;
 
 /**
@@ -339,6 +341,19 @@ export const LAUNCHERS: LauncherConfig[] = [
     icon: DontOpenThisIcon,
     onDesktop: false,
     folder: "accessories",
+  },
+  // Achievements (stage 11): the easter-egg progress, a property sheet. Only
+  // reachable from the Start menu's places column (discreet: no desktop icon,
+  // not in All Programs) and from the easter-egg toast.
+  {
+    id: "achievements",
+    kind: "window",
+    icon: AchievementsIcon,
+    onDesktop: false,
+    inAllPrograms: false,
+    surface: "dialog",
+    defaultSize: { width: 440, height: 520 },
+    Content: lazy(() => import("@/components/apps/AchievementsApp")),
   },
 ];
 

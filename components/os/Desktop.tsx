@@ -20,6 +20,7 @@ import {
 import { launch } from "@/lib/apps/launch";
 import { useDesktopStore, type DesktopItemId } from "@/lib/store/desktopStore";
 import { useShellStore } from "@/lib/store/shellStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import {
   iconsInGridOrder,
   iconsInRowOrder,
@@ -259,6 +260,7 @@ export function Desktop() {
     } else if (e.key === "F2") {
       e.preventDefault();
       openDialog({ kind: "protectedFile", iconId: current });
+      useEasterEggStore.getState().discover("protected-file");
       return;
     } else if (e.key === " ") {
       e.preventDefault();

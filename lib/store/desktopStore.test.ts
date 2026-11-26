@@ -11,6 +11,7 @@ import { DESKTOP_ICON_IDS } from "@/lib/apps/registry";
 import { defaultBinCell } from "@/lib/store/recycleBin";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { announceRescue, useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 const store = () => useDesktopStore.getState();
 
@@ -255,6 +256,16 @@ describe("desktopStore: selection, group move and the Recycle Bin (stage 6)", ()
     const batch = store().trashIcons(["recycle-bin", "linkedin", "github", "resume"]);
     expect(store().rescue?.ids).toEqual(["linkedin", "github", "resume"]);
     expect(batch?.textKey).toBe("assistant.trash.lines.cleanupWithCv.v1");
+  });
+
+  it("finds the trash easter eggs: one icon, then several at once (stage 11)", () => {
+    useEasterEggStore.getState().reset();
+    store().trashIcons(["recycle-bin"]);
+    expect(useEasterEggStore.getState().found).toEqual({});
+    store().trashIcons(["whatsapp"]);
+    expect(Object.keys(useEasterEggStore.getState().found)).toEqual(["trash-rescue"]);
+    store().trashIcons(["linkedin", "github"]);
+    expect(useEasterEggStore.getState().found).toHaveProperty("trash-cleanup");
   });
 
   it("falls back to the bin's own balloon when mini Douglas was dismissed", () => {

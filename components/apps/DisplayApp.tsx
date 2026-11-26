@@ -5,8 +5,10 @@ import { useTranslations } from "next-intl";
 import { useDisplayStore } from "@/lib/store/displayStore";
 import { useWindowStore } from "@/lib/store/windowStore";
 import { useAnimatedWallpaperBlocker } from "@/hooks/useAnimatedWallpaperBlocker";
+import { selectComplete, useEasterEggStore } from "@/lib/store/easterEggStore";
 import { SCENE_COLORS } from "@/components/os/desktop/sceneColors";
 import {
+  SECRET_WALLPAPER,
   SWATCH_IDS,
   WALLPAPER_IDS,
   WALLPAPER_IMAGES,
@@ -53,7 +55,9 @@ function MonitorPreview({ draft, label }: { draft: DisplaySettings; label: strin
 
 /**
  * Display Properties (DESKTOP-INTERFACE-SPEC §8): pick a wallpaper — three
- * original static ones, a solid color or the optional animated 3D scene.
+ * original static ones, a solid color or the optional animated 3D scene —
+ * plus the secret "Golden Egg" (stage 11), listed as "???" with a hint until
+ * every easter egg was found.
  * Choices are a draft until Apply/OK; Cancel discards. The Screen Saver tab is
  * intentionally omitted (no dead tabs).
  */
@@ -63,6 +67,7 @@ export default function DisplayApp() {
   const savedSwatch = useDisplayStore((s) => s.swatch);
   const applyDisplay = useDisplayStore((s) => s.applyDisplay);
   const blocker = useAnimatedWallpaperBlocker();
+  const secretUnlocked = useEasterEggStore(selectComplete);
   const [draft, setDraft] = useState<DisplaySettings>({
     wallpaper: savedWallpaper,
     swatch: savedSwatch,
@@ -84,7 +89,8 @@ export default function DisplayApp() {
             <legend className="mb-1">{t("wallpaperLabel")}</legend>
             <div className="flex flex-col border border-field-border bg-surface">
               {WALLPAPER_IDS.map((id) => {
-                const disabled = id === "3d" && blocker !== null;
+                const locked = id === SECRET_WALLPAPER && !secretUnlocked;
+                const disabled = (id === "3d" && blocker !== null) || locked;
                 const checked = draft.wallpaper === id;
                 return (
                   <label
@@ -100,12 +106,20 @@ export default function DisplayApp() {
                       name="wallpaper"
                       value={id}
                       data-wallpaper-option={id}
+                      data-locked={locked ? "" : undefined}
                       checked={checked}
                       disabled={disabled}
                       onChange={() => setDraft((d) => ({ ...d, wallpaper: id }))}
                       className="sr-only"
                     />
-                    {t(`wallpapers.${id}`)}
+                    {locked ? (
+                      <span>
+                        {t("secret.locked")}{" "}
+                        <span className="text-text-muted">{t("secret.hint")}</span>
+                      </span>
+                    ) : (
+                      t(`wallpapers.${id}`)
+                    )}
                   </label>
                 );
               })}

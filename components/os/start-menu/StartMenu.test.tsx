@@ -6,6 +6,7 @@ import { StartMenu } from "@/components/os/start-menu/StartMenu";
 import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { PROJECTS } from "@/lib/content/projects";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
@@ -179,5 +180,20 @@ describe("StartMenu", () => {
     await userEvent.click(startButton());
     await userEvent.click(screen.getByRole("menuitem", { name: "Log Off" }));
     expect(useShellStore.getState().phase).toBe("logon");
+  });
+
+  it("lists Achievements below Help with a discreet counter (stage 11)", async () => {
+    useEasterEggStore.getState().reset();
+    useEasterEggStore.getState().discover("protected-file");
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    const right = document.querySelector('[data-start-column="right"]') as HTMLElement;
+    const ids = [...right.querySelectorAll("[data-start-item]")].map((el) => el.getAttribute("data-start-item"));
+    // Help, Achievements, then Run… (stage 7) closes the places column.
+    expect(ids.slice(-3)).toEqual(["help", "achievements", "run"]);
+    const item = screen.getByRole("menuitem", { name: /Achievements/ });
+    expect(item.querySelector("[data-egg-counter]")).toHaveTextContent("1/12");
+    await userEvent.click(item);
+    expect(useWindowStore.getState().windows.achievements).toBeDefined();
   });
 });

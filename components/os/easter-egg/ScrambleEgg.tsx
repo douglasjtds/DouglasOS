@@ -35,7 +35,7 @@ export function ScrambleEgg({ dismiss, act }: EggProps) {
   const mobile = useIsMobile();
   const [settled, setSettled] = useState(false);
   const [anchor, setAnchor] = useState<DOMRect | null>(null);
-  const holdsSlot = useBalloonStore((s) => selectActiveBalloon(s) === "easterEgg");
+  const holdsSlot = useBalloonStore((s) => selectActiveBalloon(s) === "dontOpenThis");
 
   useEffect(() => {
     const icons = [...document.querySelectorAll<HTMLElement>("[data-desktop-icon]")];
@@ -100,11 +100,11 @@ export function ScrambleEgg({ dismiss, act }: EggProps) {
   useEffect(() => {
     if (!settled) return;
     const { request, release } = useBalloonStore.getState();
-    request("easterEgg");
+    request("dontOpenThis");
     const timer = setTimeout(dismiss, T.balloonAutoClose * 1000);
     return () => {
       clearTimeout(timer);
-      release("easterEgg");
+      release("dontOpenThis");
     };
   }, [settled, dismiss]);
 
