@@ -152,7 +152,7 @@ The bin never keeps anything: whatever is "deleted" is rescued straight back by 
 One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as data `IconMenuItem { id, label, onSelect?, primary?, separatorBefore?, items? }`, layer 1200, XP white menu with blue highlight, keyboard-complete).
 
 - **Background** (right-click on empty desktop, long-press ~700ms on touch, `Shift+F10` / ContextMenu key when nothing has focus): **Arrange Icons** (= `resetLayout`; the bin goes back top-right), **Refresh** (the icon layer blinks off for 150ms — a single blink, no motion, same under reduced motion), separator, **New ▸** Folder / Shortcut / Text Document → an info message box joke ("DouglasOS is a portfolio, not a file system…" with **Show projects** / OK; nothing is ever created), separator, **Properties** (= Display Properties). `data-desktop-menu`.
-- **Icon** (right-click, long-press, `Shift+F10` / ContextMenu key on the focused icon): **Open** (bold), **Delete** (Recycle Bin rescue joke, stage 6; not on the bin), separator, **Properties** → a mini XP property box (`IconPropertiesDialog`): 32px icon + name, Type (Program / PDF document / Internet shortcut / E-mail shortcut / System folder), Description (the same copy as the Start menu / icon hint), Location (Desktop), Opens (in a window / downloads the file / in a new tab / in your mail app), buttons **Open** and **OK** (default, focused). Read-only: no rename (F2 stays the joke). `data-icon-menu`.
+- **Icon** (right-click, long-press, `Shift+F10` / ContextMenu key on the focused icon): **Open** (bold), **Delete** (Recycle Bin rescue joke, stage 6; not on the bin), **Rename** (the same "protected file" box as `F2` — the keyboard-free way to it, also on the bin), separator, **Properties** → a mini XP property box (`IconPropertiesDialog`): 32px icon + name, Type (Program / PDF document / Internet shortcut / E-mail shortcut / System folder), Description (the same copy as the Start menu / icon hint), Location (Desktop), Opens (in a window / downloads the file / in a new tab / in your mail app), buttons **Open** and **OK** (default, focused). Read-only: no rename (F2 stays the joke). `data-icon-menu`.
 - **No double menus:** the background trigger is a transparent layer *under* the icons (`data-desktop-background`, a sibling, never their ancestor), so a press on an icon can't also arm the background's long-press, and a right-click on an icon opens only its menu. The layer counts as empty desktop for the lasso.
 - **Keyboard:** the shell turns `Shift+F10` / the ContextMenu key into a `contextmenu` event on the focused icon, or on the background when focus is on the page itself (`lib/contextMenu.ts`); inside windows the key is left to the browser. Radix then focuses the first item; arrows, Enter, → for New ▸, Esc close.
 - **Mobile:** same menus by long-press, 44px items; **Arrange Icons is hidden** (the touch grid is derived from the screen width, so it would do nothing).
@@ -362,7 +362,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **Taskbar:** Start (88px), **Quick Launch kept** (CV + Contact as 44px targets — the golden-rule shortcut stays), window buttons icon-only at 44px in a list that scrolls sideways inside the taskbar when crowded, and the tray with the clock plus a **single language button** showing the current locale ("EN"), which switches to the other one (two buttons didn't leave room for window buttons on a 360px phone). The phone tray is packed tight (no gaps between its 44px buttons, no AM/PM on the clock — the label and tooltip keep the full time), so with the Media Player's tray button added a 390px phone still shows one full window button. Everything on the taskbar is ≥ 44 × 44px (e2e-checked).
 - **Start menu:** a full-width panel up to 85% of the viewport height; header and footer stay fixed while the body scrolls. Sections stack in spec order: pinned apps, places (My Projects, **Résumé (CV)**, Contact, Display Properties, Help), then **All Programs as an inline list** (no cascading submenu on a phone). Items are 44px tall. CV = 2 taps from the desktop (Start → Résumé (CV)).
 - **Windows:** always full-screen (the work area above the taskbar), no drag/resize, no double-tap maximize. Compact 36px title bar: icon, title, **Minimize + Close** (32px glyphs, 44px hit areas). Only the focused window is visible; the others stay mounted but `inert` + `aria-hidden` until picked on the taskbar. Closing shows the next open window, else the desktop. The stored window rects are untouched, so rotating to a wide screen brings the desktop geometry back. In-app "Back" lives in the Explorer toolbar (stage 4; see [§10](#my-projects-projects) → Mobile).
-- **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** (stage 6, the Recycle Bin rescue joke) / **Properties** (stage 7); on empty desktop it opens the desktop menu (Refresh, New ▸, Properties; no Arrange Icons on phones). Start → **Run…** works on phones too (dialog docked at the top). Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
+- **Gestures:** single tap opens an icon. **Long-press** (~700ms) opens the icon's context menu — **Open** / **Delete** (stage 6, the Recycle Bin rescue joke) / **Rename** (the `F2` "protected file" box, so phones reach that easter egg too) / **Properties** (stage 7); on empty desktop it opens the desktop menu (Refresh, New ▸, Properties; no Arrange Icons on phones). Start → **Run…** works on phones too (dialog docked at the top). Icons suppress text selection and the iOS callout so the gesture is free. **No icon drag on touch** (decision: dragging would compete with scrolling and taps, and a phone home-screen layout doesn't need it). No hover-only affordance: every icon-only control has an accessible name, and tooltips are extras.
 - **Boot/logon:** boot ~1s (`BOOT_MOBILE_MS`; reduced motion stays at 0.6s), Skip is a 44px button; the logon stacks (brand above the user tile, thinner bands) and its hint says "Tap Douglas to come in." Same once-per-session rule.
 - **Welcome balloon:** same once-per-session balloon with "tap" copy; on every width it now dismisses itself as soon as the Start menu or a window opens, so it never covers the menu or a window's buttons.
 - **3D wallpaper:** **not offered on mobile** (Display Properties shows it disabled with the reason). Stage 2 decision: no exception. The static wallpaper already scores 98–99 on Lighthouse mobile; the R3F chunk plus a WebGL context on mid-range phones isn't worth the battery and LCP risk for an ambient effect.
@@ -624,22 +624,22 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 | Id | How it's found | Stage | Hook |
 |----|----------------|-------|------|
-| `protected-file` | `F2` on a desktop icon | 1 | `Desktop.tsx` (`onIconKeyDown`, after `openDialog`) — **wired** |
+| `protected-file` | `F2` on a desktop icon, or its menu → **Rename** (right-click / long-press) | 1 | `Desktop.tsx` (`showProtected`, from `onIconKeyDown` and the Rename item) — **wired** |
 | `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 12/12) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
 | `messenger-nudge` | "Nudge" in the Messenger (only a nudge that went out, not one refused by the cooldown) | 5b | `Conversation.tsx` (`nudge`) — **wired** |
 | `trash-rescue` | Throw one icon in the Recycle Bin (drag, `Delete`, context menu, long-press) | 6 | `desktopStore.trashIcons` — **wired** |
 | `trash-cleanup` | Throw several icons at once | 6 | `desktopStore.trashIcons` — **wired** |
-| `run-cmd` | Type `cmd` in Run… | 7 | pending (see below) |
-| `desktop-new` | Desktop context menu → New ▸ joke | 7 | pending |
-| `music-dance` | mini Douglas dancing to the media player | 8 | pending |
-| `egg-404` | DON'T OPEN THIS.exe → 404 blue screen | 10 | pending |
-| `egg-runaway` | DON'T OPEN THIS.exe → the desktop runs away | 10 | pending |
-| `egg-scold` | DON'T OPEN THIS.exe → mini Douglas scolds | 10 | pending |
-| `real-404` | Visiting the real 404 page | 10 | pending |
+| `run-cmd` | Type `cmd` in Run… | 7 | `RunDialog` (the `cmd` joke box) — **wired** |
+| `desktop-new` | Desktop context menu → New ▸ joke | 7 | `Desktop` background menu → New ▸ item — **wired** |
+| `music-dance` | mini Douglas dancing to the media player | 8 | `lib/media/danceSync.ts`, next to `dance()` — **wired** |
+| `egg-404` | DON'T OPEN THIS.exe → 404 blue screen | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
+| `egg-runaway` | DON'T OPEN THIS.exe → the desktop runs away | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
+| `egg-scold` | DON'T OPEN THIS.exe → mini Douglas scolds | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
+| `real-404` | Visiting the real 404 page | 10 | `RealNotFoundDiscovery` (client effect in `NotFoundPage`) — **wired** |
 
-### Integration — calls still to add (stages 7–10)
+### Integration — stage 7–10 hooks (wired at integration)
 
-`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Add exactly one call at each hook, at the moment the joke actually plays:
+`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 12/12):
 
 | Stage | Hook (where) | Call |
 |-------|--------------|------|

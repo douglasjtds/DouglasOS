@@ -607,6 +607,7 @@
     "menu": {
       "open": "Abrir",
       "delete": "Excluir",
+      "rename": "Renomear",
       "properties": "Propriedades",
       "arrangeIcons": "Organizar ícones",
       "refresh": "Atualizar",

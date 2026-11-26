@@ -279,6 +279,20 @@ test.describe("touch shell", () => {
     await dialog.getByRole("button", { name: "OK" }).tap();
     await expect(dialog).toHaveCount(0);
 
+    // Rename (stage 11 wiring): the F2 "protected file" box, reachable by touch.
+    await hold(contact, onIcon);
+    const rename = page.locator('[data-icon-menu] [data-icon-menu-item="rename"]');
+    await expect(rename).toBeVisible({ timeout: 3000 });
+    await release(contact, onIcon);
+    await rename.tap();
+    const protectedFile = page.getByTestId("protected-file-dialog");
+    await expect(protectedFile).toBeVisible();
+    await protectedFile.getByRole("button").last().tap();
+    await expect(protectedFile).toHaveCount(0);
+    expect(
+      await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("douglasos:easter-eggs") ?? "{}").state?.found ?? {})),
+    ).toContain("protected-file");
+
     // Empty desktop, below the last row of icons.
     const surface = page.locator('[data-desktop-surface="true"]').last();
     const bin = (await desktopIcon(page, "recycle-bin").boundingBox())!;

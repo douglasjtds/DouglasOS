@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { danceCommand, installDanceSync } from "@/lib/media/danceSync";
 import { useAssistantStore, initialAssistantState } from "@/lib/store/assistantStore";
 import { usePlaybackStore } from "@/lib/store/playbackStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 const playback = () => usePlaybackStore.getState();
 const assistant = () => useAssistantStore.getState();
@@ -30,6 +31,19 @@ describe("installDanceSync (assistant integration)", () => {
 
   it("is idempotent", () => {
     expect(installDanceSync()).toBe(uninstall);
+  });
+
+  it("counts the music-dance easter egg when he dances, not when he was dismissed", () => {
+    useEasterEggStore.getState().reset();
+    useAssistantStore.setState({ dismissed: true });
+    playback().startLoading();
+    playback().applySourceEvent({ type: "state", state: "playing" });
+    expect(useEasterEggStore.getState().found).not.toHaveProperty("music-dance");
+
+    playback().applySourceEvent({ type: "state", state: "paused" });
+    useAssistantStore.setState({ dismissed: false });
+    playback().applySourceEvent({ type: "state", state: "playing" });
+    expect(useEasterEggStore.getState().found).toHaveProperty("music-dance");
   });
 
   it("dances while the music plays and says the post-dance line when it stops", () => {

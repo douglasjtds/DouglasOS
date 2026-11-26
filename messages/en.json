@@ -607,6 +607,7 @@
     "menu": {
       "open": "Open",
       "delete": "Delete",
+      "rename": "Rename",
       "properties": "Properties",
       "arrangeIcons": "Arrange Icons",
       "refresh": "Refresh",

@@ -125,4 +125,59 @@ test.describe("easter eggs", () => {
     await display.locator("[data-display-ok]").click();
     await expect(page.locator("[data-wallpaper]")).toHaveAttribute("data-wallpaper", "golden-egg");
   });
+
+  test("the stage 7–10 eggs are wired: cmd, New ▸, Rename, DON'T OPEN THIS, the real 404 → counter 5/12", async ({ page }) => {
+    await gotoDesktop(page);
+    const counter = async () => {
+      await startButton(page).click();
+      const text = await page.locator("[data-egg-counter]").textContent();
+      await page.keyboard.press("Escape");
+      return text;
+    };
+
+    // Run → cmd.
+    await startButton(page).click();
+    await startItem(page, "run").click();
+    await page.locator("[data-run-input]").fill("cmd");
+    await page.locator("[data-run-input]").press("Enter");
+    await page.getByRole("alertdialog").getByRole("button").last().click();
+    await page.keyboard.press("Escape");
+
+    // Desktop → New ▸ Folder.
+    const vp = page.viewportSize()!;
+    const point = { x: Math.round(vp.width * 0.55), y: Math.round(vp.height * 0.45) };
+    await page.mouse.click(point.x, point.y, { button: "right" });
+    await page.locator('[data-desktop-menu] [data-icon-menu-item="new"]').click();
+    await page.locator('[data-icon-submenu="new"] [data-icon-menu-item="new-folder"]').click();
+    await page.getByTestId("new-item-dialog").getByRole("button", { name: "OK" }).click();
+
+    // Icon menu → Rename (the keyboard-free way to the F2 joke).
+    await desktopIcon(page, "skills").click({ button: "right" });
+    await page.locator('[data-icon-menu] [data-icon-menu-item="rename"]').click();
+    const dialog = page.getByTestId("protected-file-dialog");
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button").last().click();
+
+    // DON'T OPEN THIS.exe → egg A (the 404 blue screen).
+    await startButton(page).click();
+    await startItem(page, "run").click();
+    await page.locator("[data-run-input]").fill("dontopen");
+    await page.locator("[data-run-input]").press("Enter");
+    await expect(page.locator("[data-easter-egg]")).toHaveAttribute("data-easter-egg", "not-found");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("[data-easter-egg]")).toHaveCount(0);
+
+    await expect.poll(counter).toBe("4/12");
+
+    // The real 404 page has no shell: the egg is saved and counted on the desktop.
+    await page.goto("/en/no-such-page");
+    await expect(page.locator('[data-blue-screen="page"]')).toBeVisible();
+    await page.locator('[data-not-found-action="desktop"]').click();
+    await expect(startButton(page)).toBeVisible();
+    await expect.poll(counter).toBe("5/12");
+    const found = await page.evaluate(
+      () => Object.keys(JSON.parse(localStorage.getItem("douglasos:easter-eggs") ?? "{}").state?.found ?? {}),
+    );
+    expect(found.sort()).toEqual(["desktop-new", "egg-404", "protected-file", "real-404", "run-cmd"]);
+  });
 });

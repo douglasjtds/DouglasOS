@@ -364,6 +364,39 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     expect(useDesktopStore.getState().iconCells.contact).toEqual(home);
   });
 
+  it("icon menu → Rename shows the F2 protected-file box and counts that easter egg", async () => {
+    useEasterEggStore.getState().reset();
+    renderWithIntl(
+      <>
+        <Desktop />
+        <ShellDialogs />
+      </>,
+    );
+    fireEvent.contextMenu(icon("Contact"));
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Rename" }));
+    expect(await screen.findByRole("alertdialog", { name: "Protected file" })).toHaveTextContent("refused to be renamed");
+    expect(useEasterEggStore.getState().found).toHaveProperty("protected-file");
+    await userEvent.click(screen.getByRole("button", { name: "Fair enough" }));
+    expect(icon("Contact")).toHaveTextContent("Contact");
+  });
+
+  it("background menu → New ▸ joke counts the desktop-new easter egg", async () => {
+    useEasterEggStore.getState().reset();
+    renderWithIntl(
+      <>
+        <Desktop />
+        <ShellDialogs />
+      </>,
+    );
+    fireEvent.contextMenu(background());
+    const newMenu = await screen.findByRole("menuitem", { name: "New" });
+    await userEvent.click(newMenu);
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Folder" }));
+    expect(useShellStore.getState().dialog).toEqual({ kind: "newItem" });
+    expect(useEasterEggStore.getState().found).toHaveProperty("desktop-new");
+  });
+
   it("right-click on an icon opens only the icon menu", async () => {
     renderWithIntl(<Desktop />);
     fireEvent.contextMenu(icon("Skills"));

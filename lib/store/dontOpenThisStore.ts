@@ -1,5 +1,14 @@
 import { create } from "zustand";
 import { takeNextEgg, type EasterEggId } from "@/lib/easterEgg";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
+import type { EasterEggId as DiscoveryId } from "@/lib/easter-eggs/registry";
+
+/** Each DON'T OPEN THIS egg's id in the discovery counter (stage 11). */
+export const EGG_DISCOVERY: Record<EasterEggId, DiscoveryId> = {
+  "not-found": "egg-404",
+  scramble: "egg-runaway",
+  "access-denied": "egg-scold",
+};
 
 /**
  * Which "DON'T OPEN THIS.exe" easter egg is playing (stage 10). In memory
@@ -32,6 +41,9 @@ export const useDontOpenThisStore = create<EasterEggState>()((set, get) => ({
     if (get().active) return;
     get().play(takeNextEgg(sessionStore()));
   },
-  play: (egg) => set((s) => ({ active: egg, seq: s.seq + 1 })),
+  play: (egg) => {
+    set((s) => ({ active: egg, seq: s.seq + 1 }));
+    useEasterEggStore.getState().discover(EGG_DISCOVERY[egg]);
+  },
   close: () => set({ active: null }),
 }));

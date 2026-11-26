@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { BlueScreen, blueScreenActionClass } from "@/components/os/easter-egg/BlueScreen";
 import { RESUME } from "@/lib/profile";
 import { openHash } from "@/lib/apps/deepLink";
+import { RealNotFoundDiscovery } from "@/components/os/easter-egg/RealNotFoundDiscovery";
 
 /**
  * The site's real 404 page (stage 10): the same DouglasOS blue screen as
@@ -20,6 +21,7 @@ export function NotFoundPage() {
   return (
     <main data-not-found-page className="min-h-dvh bg-titlebar">
       <title>{t("pageTitle")}</title>
+      <RealNotFoundDiscovery />
       <BlueScreen
         variant="page"
         actions={
