@@ -680,7 +680,7 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ---
 
-## 21. Games *(stage 12)*
+## 21. Games *(stage 12 — done)*
 
 Six classics as original DouglasOS games: generic names (EN Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball; PT Campo Minado, Paciência, FreeCell, Copas, Paciência Spider, Pinball), original icons, card faces/back and pinball table, **no sound**, no verbatim text from any original game. Fun only: they never cover, delay or gate the CV or Contact.
 
@@ -807,6 +807,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
 | 11 | Easter-egg counter: registry + store, tray toast, Achievements window, reward + secret wallpaper (§20) — **done** (stage 7–10 hooks pending, see §20 → Integration) |
-| 12 | Games: All Programs ▸ Games, desktop Games folder, six original games (§21) |
+| 12 | Games: All Programs ▸ Games, desktop Games folder, six original games (§21) — **done** |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).
