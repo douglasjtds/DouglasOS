@@ -80,6 +80,6 @@ If the edge has a green fringe, raise the `despill` effect or lower the chromake
 
 1. Copy the 7 files into `public/assistant/`.
 2. `lib/assistant/media.ts` → `ready: true`.
-3. `npm run build && npm run start`, check desktop Chrome, Safari, an iPhone and reduced motion (poster only).
+3. `pnpm run build && pnpm run start`, check desktop Chrome, Safari, an iPhone and reduced motion (poster only).
 
 **Heads-up:** the placeholder follows the cursor with its eyes and makes faces (curious / happy / sleepy / surprised — DESKTOP-INTERFACE-SPEC §13 → Cursor gaze). Recorded clips can't do that, so once `ready` is true the character just plays the idle/talk/dance loops and the gaze is ignored.
