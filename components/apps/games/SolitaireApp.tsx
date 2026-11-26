@@ -238,6 +238,8 @@ export default function SolitaireApp({
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    // Keys typed in the win box or a menu must not change the board behind it.
+    if ((e.target as HTMLElement).closest('[role="alertdialog"], [role="dialog"], [role="menu"]')) return;
     const mod = e.ctrlKey || e.metaKey;
     if (e.key === "F2") {
       e.preventDefault();
@@ -294,7 +296,8 @@ export default function SolitaireApp({
       status={[
         <span key="score" data-solitaire-score={game.score}>{tc("score", { score: game.score })}</span>,
         <span key="moves" data-solitaire-moves={game.moves}>{tc("moves", { moves: game.moves })}</span>,
-        <span key="time">{tc("time", { seconds: elapsed })}</span>,
+        // The clock ticks every second: keep it out of the status live region.
+        <span key="time" aria-live="off">{tc("time", { seconds: elapsed })}</span>,
       ]}
     >
       <div ref={areaRef} className="h-full w-full" style={tableStyle}>

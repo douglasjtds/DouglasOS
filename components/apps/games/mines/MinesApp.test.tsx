@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, fireEvent, screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MinesApp from "@/components/apps/games/MinesApp";
 import { HOLD_TO_FLAG_MS } from "@/components/apps/games/mines/MinesBoard";
@@ -113,6 +113,17 @@ describe("MinesApp", () => {
     expect(await screen.findByTestId("game-over")).toBeInTheDocument();
     await user.click(document.querySelector<HTMLElement>('[data-game-action="play-again"]')!);
     expect(grid()).toHaveAttribute("data-status", "ready");
+    await waitFor(() => expect(screen.queryByTestId("game-over")).not.toBeInTheDocument());
+
+    // Winning the next game shows the dialog again (Play again must not dismiss it).
+    const nextSeed = Number(grid().getAttribute("data-seed"));
+    await user.click(cell(40));
+    const next = reveal(newGame(DIFFICULTIES.beginner, nextSeed), 40);
+    next.cells.forEach((c, i) => {
+      if (!c.mine && cell(i).dataset.state === "hidden") fireEvent.click(cell(i));
+    });
+    expect(grid()).toHaveAttribute("data-status", "won");
+    expect(await screen.findByTestId("game-over")).toBeInTheDocument();
   });
 
   it("New game (face button and F2) resets the board and the timer", async () => {

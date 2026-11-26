@@ -226,6 +226,8 @@ export default function PinballApp() {
     (e: ReactKeyboardEvent<HTMLDivElement>) => {
       const target = e.target as HTMLElement;
       if (target.closest('[role="menu"], [role="dialog"], [role="alertdialog"]')) return;
+      // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
       const control = controlForKey(e.code);
       if (!control) return;
       const onMenuBar = target.closest('[role="menubar"]') !== null;
@@ -235,11 +237,14 @@ export default function PinballApp() {
         return;
       }
       if (onMenuBar && (e.code === "Space" || e.code === "ArrowDown" || e.code === "Escape")) return;
-      e.preventDefault();
       if (control === "pause") {
-        if (!e.repeat && hudRef.current.status === "playing") togglePause();
+        // Only swallow P/Esc when it pauses; otherwise Esc reaches the shell's close prompt.
+        if (hudRef.current.status !== "playing") return;
+        e.preventDefault();
+        if (!e.repeat) togglePause();
         return;
       }
+      e.preventDefault();
       if (e.repeat) return;
       keysRef.current.add(e.code);
       syncInput();

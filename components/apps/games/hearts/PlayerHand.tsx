@@ -48,6 +48,8 @@ export const PlayerHand = memo(function PlayerHand({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
     if (cards.length === 0) return;
     const keys: Record<string, number> = {
       ArrowLeft: active - 1,

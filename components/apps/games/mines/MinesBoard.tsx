@@ -248,6 +248,8 @@ export function MinesBoard({
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     const row = Math.floor(focus / cols);
     const col = focus % cols;
     let next: number | null = null;
@@ -303,6 +305,7 @@ export function MinesBoard({
       aria-colcount={cols}
       data-mines-grid
       data-status={game.status}
+      data-seed={game.seed}
       style={{ "--mines-cell": cellSize, fontSize: `calc(${cellSize} * 0.6)` } as CSSProperties}
       className="inline-flex touch-manipulation select-none flex-col bg-bevel-shadow p-0.5 shadow-bevel-sunken [-webkit-touch-callout:none]"
       onPointerDown={onPointerDown}

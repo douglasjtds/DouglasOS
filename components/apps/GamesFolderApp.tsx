@@ -26,6 +26,8 @@ export default function GamesFolderApp() {
     document.querySelector<HTMLButtonElement>(`[data-game-launcher="${id}"]`)?.focus();
 
   function onItemKeyDown(e: KeyboardEvent<HTMLButtonElement>, index: number) {
+    // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
     if (step === undefined) return;
     e.preventDefault();

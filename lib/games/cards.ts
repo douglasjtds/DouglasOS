@@ -13,7 +13,7 @@ export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 export const RANKS: readonly Rank[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
 export interface Card {
-  /** Unique within a game, stable across moves ("hearts-12" or "hearts-12-b" for a 2nd deck). */
+  /** Unique within a game, stable across moves ("hearts-12", or "hearts-12-1" for the 2nd copy). */
   id: string;
   suit: Suit;
   rank: Rank;

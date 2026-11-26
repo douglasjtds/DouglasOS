@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import FreeCellApp from "@/components/apps/games/FreeCellApp";
 import { renderWithIntl } from "@/test/renderWithIntl";
-import { legalMoves, newGame, type Location } from "@/lib/games/freecell/engine";
+import { legalMoves, newGame, runLength, type Location } from "@/lib/games/freecell/engine";
 
 const GAME = 1234;
 
@@ -91,6 +91,23 @@ describe("FreeCellApp", () => {
     expect(pile({ kind: "foundation", index: 0 })).toHaveFocus();
     await user.keyboard("{ArrowDown}");
     expect(pile({ kind: "column", index: 4 })).toHaveFocus();
+  });
+
+  it("keyboard: Shift+Up/Down sizes a column selection within its run", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(<FreeCellApp initialGameNumber={GAME} />);
+    const { state } = newGame(GAME);
+    const index = state.columns.findIndex((c) => c.length > 0);
+    const run = runLength(state.columns[index]);
+    const col = pile({ kind: "column", index });
+    col.focus();
+    await user.keyboard("{Enter}");
+    // Growing past the run is capped at the run length.
+    for (let i = 0; i < run + 2; i++) await user.keyboard("{Shift>}{ArrowUp}{/Shift}");
+    expect(statusBar()).toHaveTextContent(`${run} card${run === 1 ? "" : "s"} selected`);
+    await user.keyboard("{Shift>}{ArrowDown}{/Shift}");
+    expect(statusBar()).toHaveTextContent(`${Math.max(1, run - 1)} card${Math.max(1, run - 1) === 1 ? "" : "s"} selected`);
+    expect(col).toHaveFocus();
   });
 
   it("New game (F2) and Restart reset the board", async () => {

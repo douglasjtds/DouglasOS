@@ -257,6 +257,8 @@ export default function SpiderApp() {
   const onTableKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (!target.closest("[data-spider-column]")) return;
+    // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     const col = cursor.col;
     switch (e.key) {
       case "ArrowLeft":

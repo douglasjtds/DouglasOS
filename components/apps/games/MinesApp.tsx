@@ -51,7 +51,9 @@ export default function MinesApp({ initialSeed }: { initialSeed?: number } = {})
   const [pressing, setPressing] = useState(false);
   const [flagMode, setFlagMode] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [wonDismissed, setWonDismissed] = useState(false);
+  // The win box is dismissed per game: "Play again" closes it (Radix fires
+  // onOpenChange(false) after the click) without hiding the next game's win.
+  const [dismissedGame, setDismissedGame] = useState<typeof game | null>(null);
 
   // The timer starts at the first reveal and stops when the game ends.
   useEffect(() => {
@@ -66,7 +68,6 @@ export default function MinesApp({ initialSeed }: { initialSeed?: number } = {})
   function startNew(next?: Difficulty) {
     dispatch({ type: "new", seed: randomSeed(), difficulty: next });
     setElapsed(0);
-    setWonDismissed(false);
     setPressing(false);
     if (next && next !== difficulty) setFocus(0);
   }
@@ -160,9 +161,9 @@ export default function MinesApp({ initialSeed }: { initialSeed?: number } = {})
         </div>
       </div>
       <GameOverDialog
-        open={game.status === "won" && !wonDismissed}
+        open={game.status === "won" && dismissedGame !== game}
         onOpenChange={(open) => {
-          if (!open) setWonDismissed(true);
+          if (!open) setDismissedGame(game);
         }}
         title={tc("won")}
         message={t("wonMessage", { difficulty: t(`difficulty.${difficulty}`), seconds: elapsed })}

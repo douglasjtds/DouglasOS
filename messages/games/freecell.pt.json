@@ -19,5 +19,6 @@
     "ok": "OK",
     "cancel": "Cancelar"
   },
-  "wonMessage": "Você venceu o jogo nº {number} em {moves, plural, one {# jogada} other {# jogadas}}."
+  "wonMessage": "Você venceu o jogo nº {number} em {moves, plural, one {# jogada} other {# jogadas}}.",
+  "selectedCards": "{count, plural, one {# carta selecionada} other {# cartas selecionadas}} (Shift+Cima/Baixo para mudar)"
 }

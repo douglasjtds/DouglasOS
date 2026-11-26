@@ -142,9 +142,25 @@ export default function FreeCellApp({ initialGameNumber }: { initialGameNumber?:
     (event: KeyboardEvent<HTMLDivElement>) => {
       const target = event.target as HTMLElement;
       if (!target.closest("[data-pile]")) return;
+      // Leave modified keys to the shell (Alt+Shift+Arrow maximize/restore…).
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         activate(pileAt(focusIndex));
+        return;
+      }
+      // Shift+Up/Down grows/shrinks a column selection by one card, so the
+      // keyboard can move a whole run (e.g. into an empty column).
+      if (
+        event.shiftKey &&
+        (event.key === "ArrowUp" || event.key === "ArrowDown") &&
+        selection?.from.kind === "column"
+      ) {
+        event.preventDefault();
+        const run = runLength(state.columns[selection.from.index]);
+        const count = Math.min(run, Math.max(1, selection.count + (event.key === "ArrowUp" ? 1 : -1)));
+        setSelection({ ...selection, count });
+        setHint(t("selectedCards", { count }));
         return;
       }
       if (event.key === "Escape") {
@@ -161,7 +177,7 @@ export default function FreeCellApp({ initialGameNumber }: { initialGameNumber?:
         event.currentTarget.querySelector<HTMLElement>(`[data-pile-index="${next}"]`)?.focus();
       }
     },
-    [activate, focusIndex, selection],
+    [activate, focusIndex, selection, state, t],
   );
 
   const onShellKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
