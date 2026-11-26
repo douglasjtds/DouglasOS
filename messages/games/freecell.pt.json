@@ -1,1 +1,23 @@
-{}
+{
+  "board": "Mesa do FreeCell",
+  "selectGame": "Escolher jogo…",
+  "restart": "Reiniciar este jogo",
+  "gameNumber": "Jogo nº {number}",
+  "cardsLeft": "Cartas restantes: {count}",
+  "noMoves": "Não há mais jogadas possíveis. Desfaça ou comece um novo jogo.",
+  "invalidMove": "Essa jogada não é permitida.",
+  "freeCell": "Célula livre {index}",
+  "foundation": "Fundação {index}",
+  "column": "Coluna {index}",
+  "pileEmpty": "{pile}, vazia",
+  "pileTop": "{pile}, {count, plural, one {# carta} other {# cartas}}, no topo: {card}",
+  "pileSelected": "{label}, selecionada",
+  "selectDialog": {
+    "title": "Escolher jogo",
+    "label": "Escolha um número de jogo de {min} a {max}:",
+    "invalid": "Digite um número inteiro de {min} a {max}.",
+    "ok": "OK",
+    "cancel": "Cancelar"
+  },
+  "wonMessage": "Você venceu o jogo nº {number} em {moves, plural, one {# jogada} other {# jogadas}}."
+}

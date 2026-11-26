@@ -1,1 +1,23 @@
-{}
+{
+  "board": "FreeCell table",
+  "selectGame": "Select game…",
+  "restart": "Restart this game",
+  "gameNumber": "Game #{number}",
+  "cardsLeft": "Cards left: {count}",
+  "noMoves": "No more legal moves. Undo or start a new game.",
+  "invalidMove": "That move isn't allowed.",
+  "freeCell": "Free cell {index}",
+  "foundation": "Foundation {index}",
+  "column": "Column {index}",
+  "pileEmpty": "{pile}, empty",
+  "pileTop": "{pile}, {count, plural, one {# card} other {# cards}}, top: {card}",
+  "pileSelected": "{label}, selected",
+  "selectDialog": {
+    "title": "Select game",
+    "label": "Choose a game number from {min} to {max}:",
+    "invalid": "Enter a whole number from {min} to {max}.",
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
+  "wonMessage": "You won game #{number} in {moves, plural, one {# move} other {# moves}}."
+}
