@@ -198,13 +198,16 @@ export function StartMenu() {
         data-start-button
         aria-label={t("taskbar.startLabel")}
         className={cn(
-          "group flex h-full shrink-0 items-center gap-1 rounded-start pl-2 pr-5 focus-inverse",
+          // Phones: logo only (the aria-label keeps the name), so a 390px
+          // taskbar with the Media Player tray button still fits one full
+          // 44px window button in any locale and font (iOS has no Tahoma).
+          "group flex h-full shrink-0 items-center gap-1 rounded-start pl-2 pr-5 focus-inverse max-md:pl-2.5 max-md:pr-4",
           "bg-start-gradient hover:bg-start-hover-gradient data-[state=open]:bg-start-pressed-gradient",
           "shadow-[inset_-1px_0_var(--color-start-shadow)]",
         )}
       >
         <DouglasOSLogo size={20} />
-        <span className="text-start italic text-text-inverse text-shadow-start-label">
+        <span className="text-start italic text-text-inverse text-shadow-start-label max-md:hidden">
           {t("taskbar.start")}
         </span>
       </DropdownMenu.Trigger>
