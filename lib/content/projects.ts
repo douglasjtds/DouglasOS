@@ -1,0 +1,166 @@
+/**
+ * Case studies shown in DouglasOS Explorer (the `projects` window).
+ *
+ * Typed static source (no MDX, no CMS): the language-neutral facts live here,
+ * the prose lives in `messages/{en,pt}.json` under
+ * `apps.projects.caseStudies.<slug>` (category, status, summary and the four
+ * sections). A section whose text is an empty string renders as a
+ * "coming soon" note: nothing is ever invented to fill a gap.
+ *
+ * Images go in `public/projects/<slug>/` and are listed in `images` with their
+ * intrinsic size (next/image needs it) and an i18n key for the alt text.
+ *
+ * Content still to be written by Douglas is marked `TODO(douglas)` below and
+ * in the JSON (empty strings).
+ */
+
+/** The four case-study sections, in reading order. */
+export const CASE_STUDY_SECTIONS = ["problem", "approach", "role", "result"] as const;
+export type CaseStudySection = (typeof CASE_STUDY_SECTIONS)[number];
+
+export interface ProjectImage {
+  /** File name inside `public/projects/<slug>/`. */
+  file: string;
+  width: number;
+  height: number;
+  /** i18n key (under `apps.projects.caseStudies.<slug>`) of the alt text. */
+  altKey: string;
+}
+
+export interface ProjectCaseStudy {
+  /** Stable id: the address-bar path segment and the route stored per window. */
+  slug: string;
+  /** Brand name, not translated. */
+  name: string;
+  /** Year the project started; null until Douglas confirms it. */
+  year: number | null;
+  /** Extra names the address bar accepts (case/spacing/punctuation-insensitive). */
+  aliases: string[];
+  /** Stack tags (language-neutral). */
+  tags: string[];
+  links: { repo?: string; demo?: string };
+  images: ProjectImage[];
+}
+
+export const PROJECTS: ProjectCaseStudy[] = [
+  {
+    slug: "landing-pages",
+    name: "Landing pages",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["landing pages for small businesses", "landing page", "douglastertuliano.vercel.app"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+    links: { demo: "https://douglastertuliano.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "gasolinha",
+    name: "Gasolinha",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["gasolinha.com.br", "fuel tracker"],
+    tags: ["Next.js", "TypeScript", "Supabase", "Vercel"],
+    // TODO(douglas): repo URL, if it can be public.
+    links: { demo: "https://www.gasolinha.com.br" },
+    // TODO(douglas): screenshots in public/projects/gasolinha/.
+    images: [],
+  },
+  {
+    slug: "poupensa",
+    name: "Poupensa",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["grocery list"],
+    tags: ["Next.js", "TypeScript", "SaaS"],
+    links: { demo: "https://poupensa.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "link-to-whatsapp",
+    name: "Link to WhatsApp",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["link para whatsapp", "whatsapp link"],
+    tags: ["Next.js", "TypeScript"],
+    links: { demo: "https://link-to-whatsapp.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "santo-rosario",
+    name: "Santo Rosário",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["santo rosario", "rosary", "rosario", "terço", "terco"],
+    tags: ["Next.js", "TypeScript", "i18n"],
+    links: { demo: "https://santo-rosario-dojotes.vercel.app/" },
+    images: [],
+  },
+  {
+    slug: "qr-code-generator",
+    name: "QR Code Generator",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["qr code", "gerador de qr code"],
+    tags: ["JavaScript", "GitHub Pages"],
+    links: { demo: "https://douglasjtds.github.io/qr-code-generator/" },
+    images: [],
+  },
+  {
+    slug: "prospecting-tool",
+    name: "Lead prospecting tool",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["prospecting", "lead prospecting", "ferramenta de prospecção", "crm"],
+    tags: ["Next.js", "TypeScript", "Google Maps"],
+    // Personal use: no public link.
+    links: {},
+    images: [{ file: "screenshot.png", width: 1200, height: 970, altKey: "imageAlt" }],
+  },
+  {
+    slug: "douglasos",
+    name: "DouglasOS",
+    year: 2026,
+    aliases: ["douglas os", "portfolio", "this site"],
+    tags: ["Next.js", "TypeScript", "Zustand", "Framer Motion"],
+    // TODO(douglas): repo URL, if it can be public.
+    links: {},
+    images: [],
+  },
+  {
+    slug: "the-wedding-post",
+    name: "The Wedding Post",
+    // TODO(douglas): start year.
+    year: null,
+    aliases: ["wedding post", "wedding"],
+    tags: ["Next.js", "TypeScript"],
+    // Personal project: no public link.
+    links: {},
+    // TODO(douglas): screenshots in public/projects/the-wedding-post/.
+    images: [],
+  },
+];
+
+/**
+ * The project surfaced by "Show me a project" shortcuts (assistant, later the
+ * messenger): the first case study in the list above.
+ */
+export const FEATURED_PROJECT_SLUG = PROJECTS[0].slug;
+
+/** Route of the Explorer home page (the project list). Never a slug. */
+export const PROJECTS_HOME_ROUTE = "home";
+
+const PROJECT_BY_SLUG = new Map(PROJECTS.map((p) => [p.slug, p]));
+
+export function getProject(slug: string): ProjectCaseStudy | undefined {
+  return PROJECT_BY_SLUG.get(slug);
+}
+
+/** True for the routes the `projects` window can show (home or a slug). */
+export function isProjectRoute(route: string): boolean {
+  return route === PROJECTS_HOME_ROUTE || PROJECT_BY_SLUG.has(route);
+}
+
+/** Public path of a case-study image. */
+export function projectImageSrc(slug: string, image: ProjectImage): string {
+  return `/projects/${slug}/${image.file}`;
+}

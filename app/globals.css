@@ -2,30 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 /*
  * shadcn semantic token mappings (kept var-referenced so values can be
- * swapped from :root). The DouglasOS palette below feeds these.
+ * swapped from :root). The Luna palette below feeds these.
  */
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
-
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -47,128 +28,539 @@
 }
 
 /*
- * DouglasOS design tokens — source of truth: instructions/DESIGN-GUIDELINES.md.
- * Defined as real theme tokens so Tailwind both generates utilities
- * (e.g. bg-base-0, text-accent, shadow-glow-accent, rounded-window,
- * backdrop-blur-glass) AND emits matching CSS vars on :root for var() access.
- * v1 is dark-mode only.
+ * DouglasOS "XP" (Luna) design tokens — source of truth:
+ * instructions/DESIGN-GUIDELINES.md. Defined as real theme tokens so Tailwind
+ * generates utilities (bg-taskbar, h-titlebar, shadow-bevel-raised, …) AND
+ * emits matching CSS vars on :root for var() access. Light theme only.
+ * TS mirrors: lib/theme.ts (hex values for metadata/OG), lib/motion.ts
+ * (motion), lib/store/geometry.ts + desktopGrid.ts (sizes).
  */
+/* Solid-color wallpaper swatches (Display Properties). All dark enough for
+   white desktop labels with shadow-desktop-label. `static`: they are only read
+   through var() in inline styles (lib/wallpapers.ts → swatchVar), never through
+   a utility class, so Tailwind would otherwise drop them from the output. */
+@theme static {
+  --color-swatch-navy: #004e98;
+  --color-swatch-teal: #2a6b6b;
+  --color-swatch-forest: #2f5f3a;
+  --color-swatch-plum: #4f3f78;
+  --color-swatch-slate: #3c4650;
+}
+
 @theme {
-  /* Base / neutrals */
-  --color-base-0: #0a0a0f;
-  --color-base-1: #13131a;
-  --color-base-2: #1c1c26;
-  --color-base-3: #2a2a36;
-  --color-base-4: #3d3d4a;
+  /* Taskbar & tray */
+  --color-taskbar: #245ddb;
+  --color-taskbar-highlight: #3f8cf3;
+  --color-taskbar-shadow: #1941a5;
+  --color-taskbar-edge: #0c37a8;
+  --color-tray: #0b72d0;
+  --color-tray-highlight: #19a3ec;
+  --color-tray-edge: #0a4fb0;
+  --color-task-button: #2860d6;
+  --color-task-button-highlight: #4b8bf0;
+  --color-task-button-hover: #3270e2;
+  --color-task-button-active: #1c49a8;
 
-  /* Accent (primary = electric cyan) */
-  --color-accent: #00d9ff;
-  --color-accent-bright: #33e1ff;
-  --color-accent-muted: #0099b8;
-  --color-accent-glow: rgb(0 217 255 / 0.4);
+  /* Start button */
+  --color-start: #2e7d32;
+  --color-start-highlight: #5db85d;
+  --color-start-highlight-hover: #79cc79;
+  --color-start-shadow: #1e5e22;
+  --color-start-pressed: #23662a;
 
-  /* Accent (secondary — sparing use) */
-  --color-accent-purple: #7c3aed;
-  --color-accent-purple-glow: rgb(124 58 237 / 0.4);
+  /* Window chrome */
+  --color-titlebar: #0058ee;
+  --color-titlebar-highlight: #3d95ff;
+  --color-titlebar-shadow: #003dd7;
+  --color-window-frame: #0831d9;
+  --color-titlebar-inactive: #7a96df;
+  --color-titlebar-inactive-highlight: #9db9eb;
+  --color-titlebar-inactive-shadow: #7894de;
+  --color-window-frame-inactive: #7a96df;
+  --color-titlebar-text: #ffffff;
+  --color-titlebar-text-inactive: #0f2a6b;
+  --color-control: #2f6be8;
+  --color-control-highlight: #7ba9f5;
+  --color-control-hover: #4d86f2;
+  --color-control-pressed: #1d4fc2;
+  --color-control-border: #ffffff;
+  --color-close: #d8461f;
+  --color-close-highlight: #f0a08a;
+  --color-close-hover: #e86a4b;
+  --color-close-pressed: #a93212;
+
+  /* Surfaces & bevels */
+  --color-button-face: #ece9d8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f3ee;
+  --color-bevel-highlight: #ffffff;
+  --color-bevel-light: #f1efe2;
+  --color-bevel-shadow: #aca899;
+  --color-bevel-dark: #716f64;
+  --color-field-border: #7f9db9;
+  --color-button-border: #003c74;
+  --color-groupbox-border: #d0d0bf;
+
+  /* Hover, focus & selection */
+  --color-hot: #f8b330;
+  --color-hot-light: #fff0cf;
+  --color-hot-strong: #e5a01a;
+  --color-default-ring: #98b8ea;
+  --color-default-ring-light: #cee7ff;
+  --color-focus-ring: #0a246a;
+  --color-focus-ring-inverse: #ffffff;
+  --color-highlight: #316ac5;
+  --color-highlight-text: #ffffff;
+  --color-highlight-inactive: #d4d0c8;
+  --color-lasso-border: #316ac5;
+  --color-lasso-fill: rgb(49 106 197 / 0.25);
+
+  /* Start menu */
+  --color-startmenu-frame: #1c5bcc;
+  --color-startmenu-header: #1868ce;
+  --color-startmenu-header-highlight: #3c8be6;
+  --color-startmenu-header-shadow: #0f55b8;
+  --color-startmenu-accent-line: #e5813a;
+  --color-startmenu-left: #ffffff;
+  --color-startmenu-right: #d3e5fa;
+  --color-startmenu-right-border: #95bdee;
+  --color-startmenu-right-text: #0a246a;
+  --color-startmenu-hover: #316ac5;
 
   /* Text */
-  --color-text-primary: #f5f5f7;
-  --color-text-secondary: #c7c7cc;
-  --color-text-muted: #8a8a93;
-  --color-text-disabled: #5a5a63;
+  --color-text: #000000;
+  --color-text-muted: #5c5c5c;
+  --color-text-disabled: #aca899;
+  --color-text-inverse: #ffffff;
+  --color-link: #0033cc;
+  --color-link-visited: #551a8b;
+  --color-desktop-label: #ffffff;
 
-  /* Semantic */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  /* Info surfaces & semantic icon colors */
+  --color-info: #ffffe1;
+  --color-info-border: #000000;
+  --color-icon-error: #d11f1f;
+  --color-icon-warning: #f2c230;
+  --color-icon-info: #2a6fd6;
+  --color-icon-success: #2e8b2e;
+  --color-progress: #2fb52f;
 
-  /* Window control buttons (muted vs. macOS) */
-  --color-win-close: #ff5f57;
-  --color-win-close-hover: #ff7b73;
-  --color-win-minimize: #ffbd2e;
-  --color-win-minimize-hover: #ffcc4d;
-  --color-win-maximize: #28c840;
-  --color-win-maximize-hover: #3fd651;
+  /* DouglasOS Media Player (stage 8): video screen + "now playing" display */
+  --color-media-screen: #000000;
+  --color-media-display: #0a1e4a;
+  --color-media-display-text: #d6e6ff;
+  --color-media-display-muted: #8fb0e6;
 
-  /* Glassmorphism surface fills (pair with backdrop-blur-glass*) */
-  --color-glass-window: rgb(20 20 30 / 0.65);
-  --color-glass-chrome: rgb(15 15 22 / 0.75);
-  --color-glass-card: rgb(28 28 38 / 0.5);
+  /* Desktop, boot & logon */
+  --color-desktop: #004e98;
+  --color-boot-bg: #000000;
+  --color-boot-progress: #2b6cf5;
+  --color-boot-progress-highlight: #8fb8ff;
+  --color-boot-track: #b2b2b2;
+  --color-logon-bg: #5a7edc;
+  --color-logon-band: #00309c;
+  --color-logon-divider: #f5a86c;
 
-  /* Shadows & glows */
-  --shadow-window: 0 25px 50px -12px rgb(0 0 0 / 0.6);
-  --shadow-window-inactive: 0 15px 30px -8px rgb(0 0 0 / 0.4);
-  --shadow-dock: 0 10px 30px -8px rgb(0 0 0 / 0.5);
-  --shadow-card: 0 4px 12px rgb(0 0 0 / 0.3);
-  --shadow-glow-accent: 0 0 24px rgb(0 217 255 / 0.4);
-  --shadow-glow-subtle: 0 0 16px rgb(0 217 255 / 0.2);
+  /* Retro Cam (stage 9): the dark viewfinder behind the pixelated picture. */
+  --color-viewfinder: #1b1b1b;
 
-  /* Border radius */
-  --radius-sm: 0.25rem; /* 4px */
-  --radius-md: 0.5rem; /* 8px */
-  --radius-lg: 0.75rem; /* 12px */
-  --radius-xl: 1rem; /* 16px */
-  --radius-2xl: 1.25rem; /* 20px */
-  --radius-window: 0.75rem; /* 12px */
-  --radius-dock: 1rem; /* 16px */
+  /* Fonts — system stacks only, never bundled */
+  --font-sans: Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif;
+  --font-title: "Trebuchet MS", Tahoma, Verdana, "DejaVu Sans", sans-serif;
+  --font-mono: "Lucida Console", "Courier New", ui-monospace, monospace;
 
-  /* Backdrop blur (glassmorphism) */
-  --blur-glass: 20px;
-  --blur-glass-strong: 24px;
+  /* Type scale */
+  --text-system: 11px;
+  --text-system--line-height: 14px;
+  --text-title: 13px;
+  --text-title--line-height: 16px;
+  --text-title--font-weight: 700;
+  --text-start: 14px;
+  --text-start--line-height: 16px;
+  --text-start--font-weight: 700;
+  --text-startmenu-user: 14px;
+  --text-startmenu-user--line-height: 18px;
+  --text-startmenu-user--font-weight: 700;
+  --text-body: 13px;
+  --text-body--line-height: 20px;
+  --text-heading: 16px;
+  --text-heading--line-height: 22px;
+  --text-heading--font-weight: 700;
+  --text-heading-lg: 20px;
+  --text-heading-lg--line-height: 26px;
+  --text-heading-lg--font-weight: 700;
+  --text-logon: 24px;
+  --text-logon--line-height: 30px;
+  --text-boot: 40px;
+  --text-boot--line-height: 44px;
+  --text-boot--font-weight: 700;
+
+  /* Sizes → utilities like h-taskbar, size-icon-desktop. Mirrored in
+     lib/store/geometry.ts (TASKBAR_H, TITLEBAR_H) and desktopGrid.ts. */
+  --spacing-taskbar: 30px;
+  --spacing-titlebar: 30px;
+  --spacing-menubar: 20px;
+  --spacing-statusbar: 22px;
+  --spacing-menu-item: 22px;
+  --spacing-control-button: 21px;
+  --spacing-start-button: 100px;
+  --spacing-task-button: 22px;
+  --spacing-task-button-min: 40px;
+  --spacing-task-button-max: 160px;
+  --spacing-icon-desktop: 48px;
+  --spacing-icon-startmenu-pinned: 32px;
+  --spacing-icon-startmenu-places: 24px;
+  --spacing-icon-small: 16px;
+  --spacing-desktop-cell-x: 88px;
+  --spacing-desktop-cell-y: 96px;
+  --spacing-desktop-label: 76px;
+  --spacing-startmenu-w: 380px;
+  --spacing-startmenu-header: 64px;
+  --spacing-avatar-startmenu: 48px;
+  --spacing-push-button-w: 75px;
+  --spacing-push-button-h: 23px;
+  --spacing-touch-target: 44px;
+
+  /* Radii */
+  --radius-window: 8px;
+  --radius-start: 0 12px 12px 0;
+  --radius-startmenu: 8px;
+  --radius-control: 3px;
+  --radius-button: 3px;
+  --radius-groupbox: 3px;
+  --radius-balloon: 8px;
+  --radius-none: 0;
+
+  /* Bevels & shadows (bevels are stacked inset shadows, never images) */
+  --shadow-bevel-raised:
+    inset -1px -1px var(--color-bevel-dark), inset 1px 1px var(--color-bevel-highlight),
+    inset -2px -2px var(--color-bevel-shadow), inset 2px 2px var(--color-bevel-light);
+  --shadow-bevel-pressed:
+    inset 1px 1px var(--color-bevel-dark), inset -1px -1px var(--color-bevel-highlight),
+    inset 2px 2px var(--color-bevel-shadow), inset -2px -2px var(--color-bevel-light);
+  --shadow-bevel-sunken:
+    inset 1px 1px var(--color-bevel-shadow), inset -1px -1px var(--color-bevel-highlight);
+  --shadow-button-hover:
+    inset -1px 1px var(--color-hot-light), inset 1px 2px var(--color-hot),
+    inset -2px 2px var(--color-hot), inset 2px -2px var(--color-hot-strong);
+  --shadow-button-default:
+    inset -1px 1px var(--color-default-ring-light), inset 1px 2px var(--color-default-ring),
+    inset -2px 2px var(--color-default-ring-light), inset 2px -2px var(--color-default-ring);
+  --shadow-task-button-active: inset 1px 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-window: 2px 4px 12px rgb(0 0 0 / 0.35);
+  --shadow-window-inactive: 1px 2px 6px rgb(0 0 0 / 0.25);
+  --shadow-menu: 2px 2px 3px rgb(0 0 0 / 0.4);
+  --shadow-balloon: 2px 2px 4px rgb(0 0 0 / 0.35);
+
+  /* Text shadows (only these two are allowed — both functional) */
+  --text-shadow-desktop-label: 1px 1px 1px rgb(0 0 0 / 0.9), 0 0 2px rgb(0 0 0 / 0.6);
+  --text-shadow-start-label: 1px 1px 1px rgb(0 0 0 / 0.5);
 }
 
 /*
- * shadcn semantic tokens reconciled with the DouglasOS palette.
- * Dark-only, so a single :root holds the values; .dark is forced on <html>
- * for any dark: variants the shadcn components rely on.
+ * Gradient recipes (not a Tailwind theme namespace) — built only from the
+ * color tokens above and exposed through the @utility classes further down.
  */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --background: var(--color-base-0);
-  --foreground: var(--color-text-primary);
-  --card: var(--color-base-2);
-  --card-foreground: var(--color-text-primary);
-  --popover: var(--color-base-2);
-  --popover-foreground: var(--color-text-primary);
-  --primary: var(--color-accent);
-  --primary-foreground: var(--color-base-0);
-  --secondary: var(--color-base-3);
-  --secondary-foreground: var(--color-text-primary);
-  --muted: var(--color-base-2);
+  --gradient-taskbar: linear-gradient(
+    to bottom,
+    var(--color-taskbar-edge) 0,
+    var(--color-taskbar-highlight) 4%,
+    var(--color-taskbar) 18%,
+    var(--color-taskbar) 88%,
+    var(--color-taskbar-shadow) 100%
+  );
+  --gradient-tray: linear-gradient(
+    to bottom,
+    var(--color-tray-edge) 0,
+    var(--color-tray-highlight) 6%,
+    var(--color-tray) 20%,
+    var(--color-tray) 90%,
+    var(--color-tray-edge) 100%
+  );
+  --gradient-start: linear-gradient(
+    to bottom,
+    var(--color-start-highlight) 0,
+    var(--color-start) 30%,
+    var(--color-start) 80%,
+    var(--color-start-shadow) 100%
+  );
+  --gradient-start-hover: linear-gradient(
+    to bottom,
+    var(--color-start-highlight-hover) 0,
+    var(--color-start) 34%,
+    var(--color-start) 80%,
+    var(--color-start-shadow) 100%
+  );
+  --gradient-start-pressed: linear-gradient(
+    to bottom,
+    var(--color-start-shadow) 0,
+    var(--color-start-pressed) 30%,
+    var(--color-start-pressed) 100%
+  );
+  --gradient-task-button: linear-gradient(
+    to bottom,
+    var(--color-task-button-highlight) 0,
+    var(--color-task-button) 25%,
+    var(--color-task-button) 100%
+  );
+  --gradient-task-button-hover: linear-gradient(
+    to bottom,
+    var(--color-task-button-highlight) 0,
+    var(--color-task-button-hover) 25%,
+    var(--color-task-button-hover) 100%
+  );
+  --gradient-titlebar: linear-gradient(
+    to bottom,
+    var(--color-titlebar-highlight) 0,
+    var(--color-titlebar) 10%,
+    var(--color-titlebar) 85%,
+    var(--color-titlebar-shadow) 100%
+  );
+  --gradient-titlebar-inactive: linear-gradient(
+    to bottom,
+    var(--color-titlebar-inactive-highlight) 0,
+    var(--color-titlebar-inactive) 12%,
+    var(--color-titlebar-inactive) 85%,
+    var(--color-titlebar-inactive-shadow) 100%
+  );
+  --gradient-control: radial-gradient(
+    circle at 90% 90%,
+    var(--color-control) 0,
+    var(--color-control) 55%,
+    var(--color-control-highlight) 100%
+  );
+  --gradient-control-hover: radial-gradient(
+    circle at 90% 90%,
+    var(--color-control-hover) 0,
+    var(--color-control-hover) 55%,
+    var(--color-control-highlight) 100%
+  );
+  --gradient-close: radial-gradient(
+    circle at 90% 90%,
+    var(--color-close) 0,
+    var(--color-close) 55%,
+    var(--color-close-highlight) 100%
+  );
+  --gradient-close-hover: radial-gradient(
+    circle at 90% 90%,
+    var(--color-close-hover) 0,
+    var(--color-close-hover) 55%,
+    var(--color-close-highlight) 100%
+  );
+  --gradient-startmenu-header: linear-gradient(
+    to bottom,
+    var(--color-startmenu-header-highlight) 0,
+    var(--color-startmenu-header) 30%,
+    var(--color-startmenu-header) 85%,
+    var(--color-startmenu-header-shadow) 100%
+  );
+  --gradient-startmenu-accent: linear-gradient(
+    to right,
+    transparent 0,
+    var(--color-startmenu-accent-line) 50%,
+    transparent 100%
+  );
+  --gradient-button: linear-gradient(
+    to bottom,
+    var(--color-surface) 0,
+    var(--color-button-face) 86%,
+    var(--color-bevel-shadow) 100%
+  );
+  --gradient-button-pressed: linear-gradient(
+    to bottom,
+    var(--color-bevel-shadow) 0,
+    var(--color-button-face) 14%,
+    var(--color-surface) 100%
+  );
+  --gradient-boot-block: linear-gradient(
+    to bottom,
+    var(--color-boot-progress-highlight) 0,
+    var(--color-boot-progress) 50%,
+    var(--color-boot-progress) 100%
+  );
+  --gradient-logon-divider: linear-gradient(
+    to bottom,
+    transparent 0,
+    var(--color-logon-divider) 50%,
+    transparent 100%
+  );
+  --gradient-logon: radial-gradient(
+    circle at 15% 20%,
+    color-mix(in srgb, var(--color-surface) 25%, var(--color-logon-bg)) 0,
+    var(--color-logon-bg) 45%
+  );
+
+  /* Tint applied to a selected desktop icon glyph (blue wash). */
+  --filter-icon-selected: sepia(1) hue-rotate(180deg) saturate(2.5) brightness(0.8);
+
+  /* shadcn semantic tokens mapped onto Luna */
+  --background: var(--color-button-face);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text);
+  --primary: var(--color-highlight);
+  --primary-foreground: var(--color-highlight-text);
+  --secondary: var(--color-button-face);
+  --secondary-foreground: var(--color-text);
+  --muted: var(--color-surface-muted);
   --muted-foreground: var(--color-text-muted);
-  --accent: var(--color-accent);
-  --accent-foreground: var(--color-base-0);
-  --destructive: var(--color-danger);
-  --border: var(--color-base-3);
-  --input: var(--color-base-3);
-  --ring: var(--color-accent);
+  --accent: var(--color-highlight);
+  --accent-foreground: var(--color-highlight-text);
+  --destructive: var(--color-icon-error);
+  --border: var(--color-bevel-shadow);
+  --input: var(--color-field-border);
+  --ring: var(--color-focus-ring);
+}
 
-  --chart-1: var(--color-accent);
-  --chart-2: var(--color-accent-purple);
-  --chart-3: var(--color-accent-bright);
-  --chart-4: var(--color-accent-muted);
-  --chart-5: var(--color-base-4);
+/* Gradient utilities (bg-taskbar-gradient, bg-titlebar-gradient, …). */
+@utility bg-taskbar-gradient {
+  background-image: var(--gradient-taskbar);
+}
+@utility bg-tray-gradient {
+  background-image: var(--gradient-tray);
+}
+@utility bg-start-gradient {
+  background-image: var(--gradient-start);
+}
+@utility bg-start-hover-gradient {
+  background-image: var(--gradient-start-hover);
+}
+@utility bg-start-pressed-gradient {
+  background-image: var(--gradient-start-pressed);
+}
+@utility bg-task-button-gradient {
+  background-image: var(--gradient-task-button);
+}
+@utility bg-task-button-hover-gradient {
+  background-image: var(--gradient-task-button-hover);
+}
+@utility bg-titlebar-gradient {
+  background-image: var(--gradient-titlebar);
+}
+@utility bg-titlebar-inactive-gradient {
+  background-image: var(--gradient-titlebar-inactive);
+}
+@utility bg-control-gradient {
+  background-image: var(--gradient-control);
+}
+@utility bg-control-hover-gradient {
+  background-image: var(--gradient-control-hover);
+}
+@utility bg-close-gradient {
+  background-image: var(--gradient-close);
+}
+@utility bg-close-hover-gradient {
+  background-image: var(--gradient-close-hover);
+}
+@utility bg-startmenu-header-gradient {
+  background-image: var(--gradient-startmenu-header);
+}
+@utility bg-startmenu-accent-gradient {
+  background-image: var(--gradient-startmenu-accent);
+}
+@utility bg-button-gradient {
+  background-image: var(--gradient-button);
+}
+@utility bg-button-pressed-gradient {
+  background-image: var(--gradient-button-pressed);
+}
+@utility bg-boot-block-gradient {
+  background-image: var(--gradient-boot-block);
+}
+@utility bg-logon-gradient {
+  background-image: var(--gradient-logon);
+}
+@utility bg-logon-divider-gradient {
+  background-image: var(--gradient-logon-divider);
+}
+@utility icon-selected-tint {
+  filter: var(--filter-icon-selected);
+}
 
-  --sidebar: var(--color-base-1);
-  --sidebar-foreground: var(--color-text-primary);
-  --sidebar-primary: var(--color-accent);
-  --sidebar-primary-foreground: var(--color-base-0);
-  --sidebar-accent: var(--color-base-3);
-  --sidebar-accent-foreground: var(--color-text-primary);
-  --sidebar-border: var(--color-base-3);
-  --sidebar-ring: var(--color-accent);
+/*
+ * Mobile (< 768px, Tailwind `max-md`) size tokens — the "Mobile" column of
+ * DESIGN-GUIDELINES → Sizes. Overriding the theme variables here re-sizes
+ * every `h-taskbar`, `bottom-taskbar`, `h-titlebar`… utility on phones without
+ * a second set of class names. Mirrored in lib/store/desktopGrid.ts (MOBILE_*).
+ */
+@media (width < 48rem) {
+  :root {
+    --spacing-taskbar: calc(48px + env(safe-area-inset-bottom, 0px));
+    --spacing-titlebar: 36px;
+    --spacing-control-button: 32px;
+    --spacing-start-button: 88px;
+    --spacing-task-button: 40px;
+    --spacing-desktop-cell-x: 96px;
+    --spacing-desktop-cell-y: 104px;
+    --spacing-desktop-label: 88px;
+  }
+}
+
+/* Safe-area insets (iOS notch / home indicator); needs viewport-fit=cover. */
+@utility pb-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@utility pt-safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+@utility px-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/*
+ * Crawlable text version of the portfolio (components/os/StaticContent.tsx):
+ * visually hidden but in the DOM for crawlers and screen readers; the
+ * <noscript> style in that component reveals it when JavaScript is off.
+ */
+@utility static-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * Focus recipes (DESIGN-GUIDELINES → Focus States). `focus-light` is for
+ * light surfaces (button-face / surface), `focus-inverse` for blue chrome.
+ * Both apply only on :focus-visible so mouse clicks never show an outline.
+ */
+@utility focus-light {
+  &:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 1px;
+  }
+}
+@utility focus-inverse {
+  &:focus-visible {
+    outline: 2px solid var(--color-focus-ring-inverse);
+    outline-offset: -3px;
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   html {
     @apply font-sans;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Optional XP scrollbar tint — never hidden. */
+  * {
+    scrollbar-color: var(--color-bevel-shadow) var(--color-surface-muted);
   }
 }
 

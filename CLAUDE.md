@@ -6,9 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Read the docs in `/instructions` before making any change.** They are the source of truth for product decisions, scope, interface structure, and the visual design system. Key files:
   - `BRIEF.md` / `PRD.md` — the why and the product positioning.
-  - `MVP-SCOPE.md` — what's IN vs OUT of v1. Re-read before adding anything; scope creep is the #1 risk.
-  - `DESKTOP-INTERFACE-SPEC.md` — structure and behavior of every interface element (boot, menu bar, dock, windows, each app).
-  - `DESIGN-GUIDELINES.md` — the design-token source of truth (colors, type, spacing, glass, motion). Implement tokens as Tailwind config + CSS variables; never hardcode values that have a token.
+  - `MVP-SCOPE.md` — what's IN vs OUT, plus the **v1.5 roadmap** (stage order, decisions, per-stage definition of done). Re-read before adding anything; scope creep is the #1 risk.
+  - `DESKTOP-INTERFACE-SPEC.md` — structure and behavior of every interface element (boot, logon, taskbar, Start menu, windows, dialogs, mobile, keyboard map, each app).
+  - `DESIGN-GUIDELINES.md` — the "DouglasOS XP" design-token source of truth (Luna colors, gradients, type, sizes, bevels, focus, motion, icons, wallpapers, what NOT to use). Implement tokens as Tailwind v4 `@theme` tokens + CSS variables; never hardcode values that have a token.
+  - `full-refactor/V1.5-FEATURE-PROMPTS.md` — the analysis behind v1.5 and the self-contained prompt for each stage.
+- **v1.5 redesign in progress.** The "DouglasOS XP" shell (a faithful early-2000s Luna-style desktop, branded DouglasOS) is live on desktop (stage 1) and mobile (stage 2); the remaining stages add features on top of it (see `MVP-SCOPE.md`). Check the real component structure before editing.
 - **This is NOT the Next.js you may know.** Per `AGENTS.md`, this Next.js version has breaking changes vs. training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing framework code, and heed deprecation notices.
 
 ## Commands
@@ -33,35 +35,33 @@ npm run test:e2e     # Playwright e2e across Chromium/Firefox/WebKit
 
 The stack is **fixed**. Do not introduce alternatives (state, animation, i18n, CMS, ORM, etc.) without asking first. `MVP-SCOPE.md` lists explicitly-banned additions.
 
-**Currently installed (base scaffold):**
+**Installed:**
 
 - Next.js **16.2.7** (App Router) — note: *not* 14, despite what older notes may say.
 - React 19, TypeScript 5, Tailwind CSS **v4** (via `@tailwindcss/postcss`), ESLint 9 (flat config).
+- shadcn/ui + radix-ui (in-window UI and accessible primitives, restyled to the XP look) · Framer Motion (all animation) · React Three Fiber + Drei (optional animated 3D wallpaper) · Zustand (window/desktop state) · next-intl (EN/PT i18n, EN default) · lucide-react (icons inside window content only; shell icons are own XP-style SVGs).
 
-**Target stack, to be added as features land (per `/instructions`):**
-
-- shadcn/ui (in-window UI, dark-customized) · Framer Motion (all animation) · React Three Fiber + Drei (3D ambient background) · Zustand (window-manager state) · next-intl (EN/PT i18n, EN default) · lucide-react (icons).
-
-When you install one of these, follow the conventions in the design + interface specs rather than the library defaults.
+Follow the conventions in the design + interface specs rather than the library defaults.
 
 ## Architecture (big picture)
 
 DouglasOS is a personal portfolio rendered as a fictional desktop operating system. The "interface is the experience" — there is no traditional landing page. Understanding it requires reading the interface + design specs together; the high-level shape:
 
-- **Boot → Desktop shell.** A boot screen (plays once per session via `sessionStorage`) fades into the desktop. The shell is a persistent **menu bar** (top: brand, active-app name, EN/PT toggle, clock), a **dock** (bottom: all apps), and free-placed **desktop icons**.
-- **Window manager is the core.** Apps open as draggable, focusable, minimizable, maximizable windows with custom chrome. Window state (open set, focus, z-index, positions) lives in **Zustand** — this is the central piece of client state; most interactivity flows through it.
+- **Boot → Logon → Desktop shell.** A boot screen and a one-click logon screen (once per session via `sessionStorage`, skippable) lead to the desktop. The shell is a bottom **taskbar** (green Start button, Quick Launch for CV + Contact, one button per open window, tray with EN/PT toggle and clock), a two-column **Start menu**, and grid-snapped **desktop icons** on a wallpaper. (v1 had a top menu bar + bottom dock; they are replaced in stage 1.)
+- **Window manager is the core.** Apps open as draggable, focusable, minimizable, maximizable Luna-style windows. Window state (open set, focus, z-index, positions) lives in **Zustand** — this is the central piece of client state; most interactivity flows through it.
 - **7 apps** surface portfolio content: `about`, `experience`, `projects`, `skills`, `how-i-work-with-ai`, `contact`, plus `resume.pdf` which is a **download action, not a window** (file at `public/resume.pdf`). `how-i-work-with-ai` is the marquee/AI-positioning section. Content is **static** (TS/MDX in-repo) — no backend, CMS, or database, ever, for this project.
-- **3D background** (R3F + Drei) is ambient only: lazy-loaded after critical UI, capped/low-density, and **disabled on mobile and under `prefers-reduced-motion`**.
+- **Wallpapers.** The default is an original static wallpaper; the R3F + Drei scene is an **optional animated wallpaper** chosen in Display Properties — lazy-loaded, capped/low-density, and **never loaded on mobile or under `prefers-reduced-motion`**.
 - **i18n** is EN-first with a PT toggle (next-intl), locale in the URL (`/en`, `/pt`) and persisted in `localStorage`.
-- **Mobile (< 768px) drops the metaphor entirely** for a clean linear-scroll page using the same content and design tokens — it's an intentional alternate experience, not a degraded one.
+- **Mobile (< 768px) = touchable XP** (stage 2): the same desktop adapted to touch — windows always maximized, single tap opens, press-and-hold = right-click. (v1's linear-scroll fallback is replaced.) Every new feature must define its mobile behavior.
+- **Brand safety.** Mechanics are faithful to the Luna era; assets are not. Never use Microsoft names ("Windows", "Microsoft", "XP" as a product name), the flag logo, the Bliss wallpaper, original icons, sounds or verbatim text (see `DESIGN-GUIDELINES.md` → What NOT to use).
 
 Accessibility and `prefers-reduced-motion` are first-class throughout (see the accessibility + reduced-motion sections of the design/interface specs).
 
-**Golden rule for any feature decision:** "Can a recruiter download the CV and reach contact in under 60 seconds without this?" If yes, it likely belongs in v1.5/v2, not the MVP.
+**Golden rule for any feature decision:** "Can a recruiter download the CV and reach contact in under 60 seconds without this?" CV and Contact must always stay within 1–2 clicks; fun features (assistant, messenger, recycle bin, music, webcam, Paint, easter eggs) never cover, delay or gate them.
 
 ## Conventions
 
 - **Stay within the App Router structure** (`app/`, `components/`, `lib/`, `public/`, etc.). Do not create new top-level folders without asking first.
 - **Import alias:** `@/*` maps to the repo root (see `tsconfig.json`).
 - **Write all documentation in English** — comments, READMEs, and docs. (UI copy is separately localized EN/PT.)
-- **Use design tokens, not magic values.** Colors, spacing, radii, shadows, and motion come from `DESIGN-GUIDELINES.md`. Accent is electric cyan `#00D9FF`; v1 is dark-mode only.
+- **Use design tokens, not magic values.** Colors, gradients, sizes, radii, bevels/shadows and motion come from `DESIGN-GUIDELINES.md`. v1.5 is a single **light Luna theme** (blue chrome, green Start, `#ECE9D8` window bodies, `#316AC5` selection); the v1 cyan `#00D9FF` accent, glassmorphism and dark-only rule are retired (cyan survives only inside the optional 3D wallpaper scene).

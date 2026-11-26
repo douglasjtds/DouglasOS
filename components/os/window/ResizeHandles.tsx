@@ -38,6 +38,7 @@ export function ResizeHandles({
           key={edge}
           {...handlersFor(edge)}
           data-no-drag
+          data-resize-handle={edge}
           aria-hidden
           className={`absolute z-10 touch-none ${className}`}
         />

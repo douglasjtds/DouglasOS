@@ -2,9 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   CASCADE,
   CASCADE_WRAP,
-  DOCK_RESERVED,
-  MAXIMIZE_MARGIN,
-  MENU_BAR_H,
   MIN_HEIGHT,
   MIN_WIDTH,
   centerRect,
@@ -14,6 +11,9 @@ import {
   initialRect,
   maximizeRect,
   resizeRect,
+  TASKBAR_H,
+  TITLEBAR_H,
+  workAreaHeight,
   type Rect,
   type Viewport,
 } from "@/lib/store/geometry";
@@ -29,9 +29,10 @@ describe("centerRect", () => {
     expect(rect.height).toBe(size.height);
   });
 
-  it("keeps the window below the menu bar", () => {
+  it("centers vertically in the work area above the taskbar", () => {
     const rect = centerRect({ width: 400, height: 300 }, VP);
-    expect(rect.y).toBeGreaterThanOrEqual(MENU_BAR_H);
+    expect(rect.y).toBe(Math.round((VP.height - TASKBAR_H - 300) / 2));
+    expect(rect.y + rect.height).toBeLessThanOrEqual(VP.height - TASKBAR_H);
   });
 });
 
@@ -57,23 +58,34 @@ describe("initialRect", () => {
   });
 });
 
+describe("workAreaHeight", () => {
+  it("is the viewport height minus the taskbar", () => {
+    expect(workAreaHeight(VP)).toBe(VP.height - TASKBAR_H);
+  });
+});
+
 describe("maximizeRect", () => {
-  it("insets from every edge and is never full-screen", () => {
-    const rect = maximizeRect(VP);
-    expect(rect.x).toBe(MAXIMIZE_MARGIN);
-    expect(rect.width).toBe(VP.width - MAXIMIZE_MARGIN * 2);
-    expect(rect.width).toBeLessThan(VP.width);
-    expect(rect.height).toBeLessThan(VP.height);
-    expect(rect.y).toBeGreaterThanOrEqual(MENU_BAR_H);
+  it("fills the whole work area: full width, top edge down to the taskbar", () => {
+    expect(maximizeRect(VP)).toEqual({
+      x: 0,
+      y: 0,
+      width: VP.width,
+      height: VP.height - TASKBAR_H,
+    });
   });
 });
 
 describe("clampPosition", () => {
   const size = { width: 400, height: 300 };
 
-  it("never lets the title bar go above the menu bar", () => {
+  it("never lets the title bar go above the top edge", () => {
     const { y } = clampPosition(0, -500, size, VP);
-    expect(y).toBe(MENU_BAR_H);
+    expect(y).toBe(0);
+  });
+
+  it("never lets the title bar slide behind the taskbar", () => {
+    const { y } = clampPosition(0, 99999, size, VP);
+    expect(y).toBe(VP.height - TASKBAR_H - TITLEBAR_H);
   });
 
   it("keeps a grabbable margin when dragged off the right edge", () => {
@@ -90,10 +102,10 @@ describe("clampPosition", () => {
   });
 
   it("falls back to the min when the viewport is too short for the margins", () => {
-    // Height < 76 makes the computed maxY drop below minY, so clamp returns min.
+    // Height < taskbar + title bar makes maxY drop below minY, so clamp returns min.
     const tiny: Viewport = { width: 100, height: 50 };
     const { y } = clampPosition(0, 500, size, tiny);
-    expect(y).toBe(MENU_BAR_H);
+    expect(y).toBe(0);
   });
 });
 
@@ -103,7 +115,7 @@ describe("clampRect", () => {
     const clamped = clampRect(rect, VP);
     expect(clamped.width).toBe(rect.width);
     expect(clamped.height).toBe(rect.height);
-    expect(clamped.y).toBe(MENU_BAR_H);
+    expect(clamped.y).toBe(0);
   });
 });
 
@@ -155,9 +167,9 @@ describe("resizeRect", () => {
     expect(r.y + r.height).toBe(bottom);
   });
 
-  it("never lets the north edge rise above the menu bar", () => {
+  it("never lets the north edge rise above the top edge", () => {
     const r = resizeRect(origin, "n", 0, -9999, VP);
-    expect(r.y).toBe(MENU_BAR_H);
+    expect(r.y).toBe(0);
     expect(r.y + r.height).toBe(bottom);
   });
 
@@ -166,9 +178,9 @@ describe("resizeRect", () => {
     expect(r.x + r.width).toBeLessThanOrEqual(VP.width);
   });
 
-  it("keeps the south edge above the dock area", () => {
+  it("keeps the south edge above the taskbar", () => {
     const r = resizeRect(origin, "s", 0, 9999, VP);
-    expect(r.y + r.height).toBeLessThanOrEqual(VP.height - DOCK_RESERVED);
+    expect(r.y + r.height).toBe(VP.height - TASKBAR_H);
   });
 });
 
@@ -176,7 +188,7 @@ describe("clampSize", () => {
   it("clamps an oversized rect to fit the viewport", () => {
     const r = clampSize({ x: 0, y: 0, width: 5000, height: 5000 }, VP);
     expect(r.width).toBeLessThanOrEqual(VP.width);
-    expect(r.height).toBeLessThanOrEqual(VP.height - MENU_BAR_H - DOCK_RESERVED);
+    expect(r.height).toBeLessThanOrEqual(VP.height - TASKBAR_H);
   });
 
   it("leaves a comfortably-sized rect unchanged", () => {

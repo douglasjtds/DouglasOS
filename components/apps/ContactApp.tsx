@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Globe, Link2, Mail, MessageCircle, Copy, Check } from "lucide-react";
+import { Globe, Link2, Mail, MessageCircle } from "lucide-react";
 import { PROFILE } from "@/lib/profile";
+import { GroupBox } from "@/components/ui/group-box";
+import { Button } from "@/components/ui/button";
 
 const EMAIL = PROFILE.email;
 
@@ -28,37 +30,26 @@ export default function ContactApp() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-          {t("heading")}
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">{t("availability")}</p>
+        <h3 className="text-heading-lg text-text">{t("heading")}</h3>
+        <p className="mt-1 text-body text-text">{t("availability")}</p>
       </div>
 
-      {/* Email row: mailto + copy-to-clipboard */}
-      <div className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-glass-card p-3">
-        <Mail className="size-4 shrink-0 text-accent" aria-hidden />
-        <a
-          href={`mailto:${EMAIL}`}
-          className="flex-1 truncate text-sm text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {EMAIL}
-        </a>
-        <button
-          type="button"
-          onClick={copyEmail}
-          aria-label={copied ? t("copied") : t("copy")}
-          className="flex items-center gap-1 rounded-md px-2 py-1 font-mono text-xs text-text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {copied ? (
-            <Check className="size-3.5" aria-hidden />
-          ) : (
-            <Copy className="size-3.5" aria-hidden />
-          )}
-          {copied ? t("copied") : t("copy")}
-        </button>
-      </div>
+      <GroupBox title={t("emailLabel")}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Mail className="size-4 shrink-0 text-link" aria-hidden />
+          <a
+            href={`mailto:${EMAIL}`}
+            className="min-w-0 flex-1 truncate text-body text-link underline focus-light"
+          >
+            {EMAIL}
+          </a>
+          <Button onClick={copyEmail} aria-live="polite">
+            {copied ? t("copied") : t("copy")}
+          </Button>
+        </div>
+      </GroupBox>
 
       <ul className="flex flex-col gap-2">
         {LINKS.map(({ label, href, icon: Icon }) => (
@@ -67,9 +58,9 @@ export default function ContactApp() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-lg border border-white/[0.06] bg-glass-card p-3 text-sm text-text-secondary transition-colors hover:border-accent/40 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 text-body text-link underline focus-light"
             >
-              <Icon className="size-4 shrink-0 text-accent" aria-hidden />
+              <Icon className="size-4 shrink-0" aria-hidden />
               {label}
             </a>
           </li>

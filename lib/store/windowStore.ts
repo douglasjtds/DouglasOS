@@ -12,6 +12,14 @@ import {
   type Rect,
   type Viewport,
 } from "@/lib/store/geometry";
+import {
+  createHistory,
+  goBack,
+  goForward,
+  pushRoute,
+  sanitizeHistory,
+  type RouteHistory,
+} from "@/lib/store/routeHistory";
 
 /** Base z-index for windows; each focus bumps `topZ` above this. */
 export const Z_BASE = 100;
@@ -24,6 +32,20 @@ export interface WindowInstance {
   maximized: boolean;
   /** Pre-maximize rect, restored on un-maximize. Null when not maximized. */
   restoreRect: Rect | null;
+  /**
+   * Back/Forward history of in-window routes, only for apps with `routes` in
+   * the registry (the Explorer). The current page is `entries[index]`.
+   */
+  history?: RouteHistory;
+}
+
+/**
+ * Where to open a window. `route` is meaningful only for apps with `routes`
+ * (e.g. `openWindow("projects", { route: "gasolinha" })`); a route the app
+ * doesn't accept is ignored and the window opens/stays on its current page.
+ */
+export interface WindowDestination {
+  route?: string;
 }
 
 interface WindowState {
@@ -37,7 +59,17 @@ interface WindowState {
   /** Total opens this session, drives the cascade offset. */
   openCount: number;
 
-  openWindow: (id: AppId) => void;
+  /**
+   * Open (or focus + un-minimize) an app's singleton window. With a
+   * `destination.route`, routed apps also navigate there (pushed on the
+   * window's history, so Back returns to the previous page).
+   */
+  openWindow: (id: AppId, destination?: WindowDestination) => void;
+  /** Push a route on a routed window's history (invalid routes are ignored). */
+  navigateWindow: (id: AppId, route: string) => void;
+  /** Back / Forward through a routed window's history. */
+  windowBack: (id: AppId) => void;
+  windowForward: (id: AppId) => void;
   closeWindow: (id: AppId) => void;
   closeAll: () => void;
   focusWindow: (id: AppId) => void;
@@ -67,9 +99,15 @@ type PersistedWindowState = Pick<
 /** App ids that still exist — persisted windows for removed apps are dropped. */
 const KNOWN_APP_IDS = new Set<AppId>(WINDOW_APPS.map((a) => a.id));
 
+/** Apps whose window isn't restored after a reload (`persistWindow: false`). */
+const SESSION_ONLY_APP_IDS = new Set<AppId>(
+  WINDOW_APPS.filter((a) => a.persistWindow === false).map((a) => a.id),
+);
+
 /**
  * Rebuild a valid window state from whatever was persisted, against the CURRENT
- * viewport: drop windows whose app no longer exists, re-clamp every rect so a
+ * viewport: drop windows whose app no longer exists (or opts out of being
+ * restored, like the media player), re-clamp every rect so a
  * smaller screen can't strand a window off-screen or oversized, recompute
  * maximized windows, and keep `topZ` above the highest restored window. Pure
  * (viewport injected) so it's testable and SSR-safe.
@@ -90,15 +128,23 @@ export function reconcilePersisted(
   const windows: Record<string, WindowInstance> = {};
   let topZ = Z_BASE;
   for (const [id, w] of Object.entries(persisted.windows)) {
-    if (!KNOWN_APP_IDS.has(id as AppId)) continue;
+    if (!KNOWN_APP_IDS.has(id as AppId) || SESSION_ONLY_APP_IDS.has(id as AppId)) continue;
     const fitted = clampRect(clampSize(w.rect, vp), vp);
+    const { history, ...rest } = w;
+    const { routes } = getApp(id as AppId);
     windows[id] = {
-      ...w,
+      ...rest,
       rect: w.maximized ? maximizeRect(vp) : fitted,
       restoreRect: w.restoreRect
         ? clampRect(clampSize(w.restoreRect, vp), vp)
         : null,
     };
+    // Routed apps always have a valid history: windows saved before routes
+    // existed (or pointing at a removed page) fall back to the home route.
+    if (routes) {
+      windows[id].history =
+        sanitizeHistory(history, routes.isValid) ?? createHistory(routes.home);
+    }
     topZ = Math.max(topZ, w.z);
   }
 
@@ -120,6 +166,26 @@ export function reconcilePersisted(
 /** Read the live viewport (client-only; actions never run during SSR). */
 function viewport(): Viewport {
   return { width: window.innerWidth, height: window.innerHeight };
+}
+
+/** The route to navigate to, if the app is routed and accepts it. */
+function acceptedRoute(id: AppId, route: string | undefined): string | null {
+  const { routes } = getApp(id);
+  if (!routes || route === undefined || !routes.isValid(route)) return null;
+  return route;
+}
+
+/** Apply `update` to a routed window's history; no-op for anything else. */
+function withHistory(
+  state: WindowState,
+  id: AppId,
+  update: (history: RouteHistory) => RouteHistory,
+): Partial<WindowState> | WindowState {
+  const existing = state.windows[id];
+  if (!existing?.history) return state;
+  const history = update(existing.history);
+  if (history === existing.history) return state;
+  return { windows: { ...state.windows, [id]: { ...existing, history } } };
 }
 
 /** Pick the highest-z non-minimized window as the next focus, else null. */
@@ -144,34 +210,40 @@ export const useWindowStore = create<WindowState>()(
       topZ: Z_BASE,
       openCount: 0,
 
-      openWindow: (id) =>
+      openWindow: (id, destination) =>
         set((state) => {
           const existing = state.windows[id];
           const topZ = state.topZ + 1;
-          // Already open → focus it (and un-minimize if needed).
+          const { defaultSize, routes } = getApp(id);
+          const route = acceptedRoute(id, destination?.route);
+          // Already open → focus it (and un-minimize if needed), and
+          // navigate when a destination was given.
           if (existing) {
+            const next: WindowInstance = { ...existing, z: topZ, minimized: false };
+            if (routes) {
+              const history = existing.history ?? createHistory(routes.home);
+              next.history = route ? pushRoute(history, route) : history;
+            }
             return {
-              windows: {
-                ...state.windows,
-                [id]: { ...existing, z: topZ, minimized: false },
-              },
+              windows: { ...state.windows, [id]: next },
               focusedId: id,
               topZ,
             };
           }
-          const { defaultSize } = getApp(id);
           const rect = initialRect(defaultSize, state.openCount, viewport());
+          const created: WindowInstance = {
+            id,
+            z: topZ,
+            rect,
+            minimized: false,
+            maximized: false,
+            restoreRect: null,
+          };
+          if (routes) created.history = createHistory(route ?? routes.home);
           return {
             windows: {
               ...state.windows,
-              [id]: {
-                id,
-                z: topZ,
-                rect,
-                minimized: false,
-                maximized: false,
-                restoreRect: null,
-              },
+              [id]: created,
             },
             order: [...state.order, id],
             focusedId: id,
@@ -179,6 +251,17 @@ export const useWindowStore = create<WindowState>()(
             openCount: state.openCount + 1,
           };
         }),
+
+      navigateWindow: (id, route) =>
+        set((state) => {
+          const accepted = acceptedRoute(id, route);
+          if (!accepted) return state;
+          return withHistory(state, id, (h) => pushRoute(h, accepted));
+        }),
+
+      windowBack: (id) => set((state) => withHistory(state, id, goBack)),
+
+      windowForward: (id) => set((state) => withHistory(state, id, goForward)),
 
       closeWindow: (id) =>
         set((state) => {

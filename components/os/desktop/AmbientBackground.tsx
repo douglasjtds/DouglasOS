@@ -33,9 +33,11 @@ if (typeof window !== "undefined") {
 }
 
 /**
- * Defers the ambient 3D scene until the browser is idle so it never competes
- * with critical UI (boot screen, icons, dock). Skipped entirely under
- * prefers-reduced-motion; mobile never mounts the desktop shell at all.
+ * Mounts the optional animated wallpaper. Only rendered when the visitor picks
+ * "DouglasOS 3D (animated)" in Display Properties and nothing blocks it (see
+ * `Wallpaper`). Defers the scene until the browser is idle so it never
+ * competes with critical UI (icons, taskbar). Skipped under
+ * prefers-reduced-motion as a second guard.
  */
 export function AmbientBackground() {
   const reduced = useReducedMotion();

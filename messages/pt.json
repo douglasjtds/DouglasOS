@@ -3,13 +3,10 @@
     "title": "DouglasOS — Douglas Tertuliano, Desenvolvedor Fullstack AI-First",
     "description": "O portfólio interativo de Douglas Tertuliano — Desenvolvedor Fullstack AI-First com 8 anos nos ecossistemas .NET, Node.js e React, especializado em Threat Intelligence e detecção de fraude. Explore o DouglasOS, baixe o CV, entre em contato."
   },
-  "menu": {
-    "closeAll": "Fechar todas as janelas"
-  },
   "apps": {
     "about": {
-      "title": "about.app",
-      "label": "Sobre",
+      "title": "Sobre o Douglas",
+      "description": "Quem eu sou, em dois parágrafos",
       "name": "Douglas Tertuliano",
       "headline": "Desenvolvedor Fullstack AI-First",
       "location": "Lagoa Santa, MG, Brasil · Remoto",
@@ -18,14 +15,27 @@
         "Sou especializado em APIs para domínios críticos como Threat Intelligence e detecção de fraude — da arquitetura de backend à implementação de frontend — com foco em performance, segurança e práticas de CI/CD na AWS. Hoje trabalho AI-first: ferramentas como Claude Code e GitHub Copilot fazem parte de como eu projeto, construo e entrego software todos os dias."
       ],
       "stats": [
-        { "label": "Experiência", "value": "8 anos" },
-        { "label": "Cargo atual", "value": "Fullstack @ Serasa Experian" },
-        { "label": "Foco", "value": "Threat Intelligence e fraude" }
-      ]
+        {
+          "label": "Experiência",
+          "value": "8 anos"
+        },
+        {
+          "label": "Cargo atual",
+          "value": "Fullstack @ Serasa Experian"
+        },
+        {
+          "label": "Foco",
+          "value": "Threat Intelligence e fraude"
+        }
+      ],
+      "downloadCv": "Baixar CV",
+      "contactLink": "Fale comigo",
+      "statsTitle": "Em resumo",
+      "photoAlt": "Douglas sorrindo e fazendo joinha na mesa de trabalho, com o gato rajado no colo"
     },
     "experience": {
-      "title": "experience.app",
-      "label": "Experiência",
+      "title": "Experiência",
+      "description": "8 anos, cinco empresas",
       "currentBadge": "Atual",
       "roles": [
         {
@@ -33,7 +43,12 @@
           "company": "Serasa Experian",
           "role": "Desenvolvedor Fullstack Pleno",
           "description": "Desenvolvo features de frontend em React para o ThreatX, o produto de Threat Intelligence da Serasa Experian — dando continuidade à plataforma criada originalmente na ClearSale após a aquisição. Contribuo nos backends em Node.js e .NET que sustentam os fluxos de detecção de fraude e ameaças, e uso ferramentas de IA como Claude Code e GitHub Copilot com MCPs internos para acelerar entregas em tarefas complexas.",
-          "tags": ["React", "Node.js", ".NET", "Ferramentas de IA"],
+          "tags": [
+            "React",
+            "Node.js",
+            ".NET",
+            "Ferramentas de IA"
+          ],
           "current": true
         },
         {
@@ -41,120 +56,283 @@
           "company": "ClearSale S.A.",
           "role": "Desenvolvedor .NET Pleno",
           "description": "Desenvolvi e mantive o produto de Threat Intelligence em Node.js e React, coletando e analisando fraudes, phishing, anúncios falsos e outros ataques ao e-commerce. Na squad de Payments, construí APIs com tecnologias BNPL (Buy Now Pay Later) e PISP (Iniciação de Pagamento), além de manter o sistema de billing da ClearSale usado por diversas empresas de marketplace.",
-          "tags": ["Node.js", "React", "C#/.NET", "Pagamentos"]
+          "tags": [
+            "Node.js",
+            "React",
+            "C#/.NET",
+            "Pagamentos"
+          ]
         },
         {
           "period": "2020.03 — 2022.08",
           "company": "Zup IT Innovation",
           "role": "Desenvolvedor .NET Pleno",
           "description": "Desenvolvi serviços de backend em .NET para o Itaú Unibanco, o maior banco privado da América Latina. Atuei como API Owner do time, responsável por todo o processo de CI/CD do API Gateway hospedado na AWS.",
-          "tags": ["C#/.NET", "AWS", "API Gateway", "CI/CD"]
+          "tags": [
+            "C#/.NET",
+            "AWS",
+            "API Gateway",
+            "CI/CD"
+          ]
         },
         {
           "period": "2019.08 — 2020.03",
           "company": "DTI Digital",
           "role": "Desenvolvedor .NET Júnior",
           "description": "Construí APIs em .NET Core para o Banco BS2, consumidas pelo time de frontend do aplicativo mobile do banco, e mantive um sistema interno legado em .NET Framework e Razor.",
-          "tags": [".NET Core", "Razor", "SQL"]
+          "tags": [
+            ".NET Core",
+            "Razor",
+            "SQL"
+          ]
         },
         {
           "period": "2017.09 — 2019.08",
           "company": "Rumo IT Solutions",
           "role": "Desenvolvedor Júnior / Estagiário",
           "description": "Comecei como estagiário e fui contratado como desenvolvedor júnior, alocado em um banco de crédito consignado — meus primeiros anos entregando código .NET em produção.",
-          "tags": ["C#/.NET", "SQL"]
+          "tags": [
+            "C#/.NET",
+            "SQL"
+          ]
         }
       ]
     },
     "projects": {
-      "title": "projects.app",
-      "label": "Projetos",
-      "visit": "Ver site",
-      "items": [
-        {
-          "name": "Landing pages para pequenos negócios",
-          "description": "O site do meu serviço de landing pages: páginas únicas sob medida para autônomos e pequenos negócios, alinhadas à identidade visual de cada marca, feitas para converter pelo WhatsApp e entregues em até 10 dias úteis. O próprio site mostra páginas de clientes no ar e os pacotes.",
-          "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://douglastertuliano.vercel.app/"
+      "title": "Meus Projetos",
+      "description": "O que construí e coloquei no ar",
+      "explorer": {
+        "name": "DouglasOS Explorer",
+        "menuBar": "Barra de menus",
+        "menu": {
+          "file": "Arquivo",
+          "favorites": "Favoritos",
+          "more": "Mais",
+          "home": "Lista de projetos",
+          "contact": "Falar com o Douglas",
+          "downloadCv": "Baixar CV",
+          "close": "Fechar"
         },
-        {
-          "name": "Gasolinha",
-          "description": "Um SaaS de controle de abastecimento de veículos, construído de ponta a ponta com um fluxo AI-first usando Claude Code. Motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo. Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
-          "tags": ["Next.js", "TypeScript", "Supabase", "Vercel"],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://www.gasolinha.com.br"
+        "toolbar": {
+          "label": "Navegação",
+          "back": "Voltar",
+          "forward": "Avançar",
+          "home": "Início"
         },
-        {
-          "name": "Poupensa",
-          "description": "Um SaaS que monta a sua lista de compras a partir do que a casa realmente consome, para comprar só o necessário e parar de desperdiçar dinheiro.",
-          "tags": ["Next.js", "TypeScript", "SaaS"],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://poupensa.vercel.app/"
+        "address": "Endereço",
+        "go": "Ir",
+        "status": {
+          "done": "Concluído",
+          "count": "{count, plural, one {# projeto} other {# projetos}}"
         },
-        {
-          "name": "Link para WhatsApp",
-          "description": "Uma ferramenta simples que gera um link direto para uma conversa no WhatsApp: digite o telefone e uma mensagem opcional e compartilhe o link onde quiser.",
-          "tags": ["Next.js", "TypeScript"],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://link-to-whatsapp.vercel.app/"
+        "announce": "{title} — DouglasOS Explorer",
+        "home": {
+          "heading": "Meus Projetos",
+          "intro": "Escolha um projeto para ler o estudo de caso, ou digite o nome de um projeto na barra de endereço e aperte Enter.",
+          "open": "Abrir estudo de caso"
         },
-        {
-          "name": "Santo Rosário",
-          "description": "Um guia tranquilo e sem distrações para rezar o terço: o terço do dia, o rosário completo ou os 20 mistérios, em português e inglês.",
-          "tags": ["Next.js", "TypeScript", "i18n"],
-          "status": "No ar",
-          "repo": "",
-          "demo": "https://santo-rosario-dojotes.vercel.app/"
+        "page": {
+          "year": "Ano",
+          "category": "Categoria",
+          "status": "Status",
+          "stack": "Stack",
+          "links": "Links",
+          "repo": "Código-fonte",
+          "demo": "Site no ar",
+          "sections": {
+            "problem": "Problema",
+            "approach": "Abordagem",
+            "role": "Papel e stack",
+            "result": "Resultado"
+          },
+          "comingSoon": "O Douglas ainda está escrevendo esta parte. Em breve.",
+          "backHome": "Todos os projetos",
+          "contactCta": "Quer conversar sobre este projeto? Fale com o Douglas"
         },
-        {
-          "name": "Gerador de QR Code",
-          "description": "Gera um QR Code a partir de qualquer texto ou link, direto no navegador.",
-          "tags": ["JavaScript", "GitHub Pages"],
+        "notFound": {
+          "title": "DouglasOS Explorer",
+          "body": "Não encontrei “{address}”. Ou o Douglas ainda não construiu isso, ou ainda é um post-it no monitor dele. Confira o nome, volte para a lista de projetos ou conte para ele que isso deveria existir.",
+          "home": "Lista de projetos",
+          "contact": "Falar com o Douglas",
+          "ok": "OK"
+        }
+      },
+      "caseStudies": {
+        "landing-pages": {
+          "category": "Negócio",
           "status": "No ar",
-          "repo": "",
-          "demo": "https://douglasjtds.github.io/qr-code-generator/"
+          "summary": "O site do meu serviço de landing pages: páginas únicas sob medida para autônomos e pequenos negócios, alinhadas à identidade visual de cada marca, feitas para converter pelo WhatsApp e entregues em até 10 dias úteis. O próprio site mostra páginas de clientes no ar e os pacotes.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
         },
-        {
-          "name": "Ferramenta de prospecção de leads",
-          "description": "Um CRM pessoal que estou construindo para vender landing pages. Ele puxa negócios do Google Maps (cidade, nicho, nota, avaliações, se tem site), monta uma fila diária (quem respondeu, respostas automáticas para furar, follow-ups vencidos), sugere a próxima ação com a mensagem pronta, abre o WhatsApp com um clique e acompanha cada lead no funil: a contatar → contatado → respondeu → reunião → proposta → fechado. É de uso pessoal, por isso não tem link público.",
-          "tags": ["Next.js", "TypeScript", "Google Maps"],
+        "gasolinha": {
+          "category": "SaaS",
+          "status": "No ar",
+          "summary": "Um SaaS de controle de abastecimento de veículos: motoristas registram cada abastecimento (odômetro, litros, valor) e o app calcula o consumo automaticamente, mantendo o histórico completo por veículo.",
+          "sections": {
+            "problem": "",
+            "approach": "Construído de ponta a ponta com um fluxo AI-first usando Claude Code.",
+            "role": "Sou dono de toda a stack — banco de dados, autenticação e deploy em produção com domínio próprio.",
+            "result": ""
+          }
+        },
+        "poupensa": {
+          "category": "SaaS",
+          "status": "No ar",
+          "summary": "Um SaaS que monta a sua lista de compras a partir do que a casa realmente consome, para comprar só o necessário e parar de desperdiçar dinheiro.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "link-to-whatsapp": {
+          "category": "Utilitário",
+          "status": "No ar",
+          "summary": "Uma ferramenta simples que gera um link direto para uma conversa no WhatsApp: digite o telefone e uma mensagem opcional e compartilhe o link onde quiser.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "santo-rosario": {
+          "category": "App web",
+          "status": "No ar",
+          "summary": "Um guia tranquilo e sem distrações para rezar o terço: o terço do dia, o rosário completo ou os 20 mistérios, em português e inglês.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "qr-code-generator": {
+          "category": "Utilitário",
+          "status": "No ar",
+          "summary": "Gera um QR Code a partir de qualquer texto ou link, direto no navegador.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "prospecting-tool": {
+          "category": "Ferramenta interna",
           "status": "Em construção",
-          "repo": "",
-          "demo": "",
-          "image": "/projects/prospecting-tool.png",
+          "summary": "Um CRM pessoal que estou construindo para vender landing pages. Ele puxa negócios do Google Maps (cidade, nicho, nota, avaliações, se tem site), monta uma fila diária (quem respondeu, respostas automáticas para furar, follow-ups vencidos), sugere a próxima ação com a mensagem pronta, abre o WhatsApp com um clique e acompanha cada lead no funil: a contatar → contatado → respondeu → reunião → proposta → fechado. É de uso pessoal, por isso não tem link público.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          },
           "imageAlt": "Print da ferramenta de prospecção: fila diária de leads à esquerda e, à direita, o status do lead selecionado, a próxima ação e a mensagem pronta para o WhatsApp (nomes das empresas fictícios)."
         },
-        {
-          "name": "The Wedding Post",
-          "description": "O site de confirmação de presença do meu casamento, onde os convidados confirmavam presença e acompanhavam a celebração. Projeto pessoal, por isso sem link público.",
-          "tags": ["Next.js", "TypeScript"],
+        "douglasos": {
+          "category": "Portfólio",
+          "status": "No ar",
+          "summary": "O site que você está vendo: um portfólio renderizado como um sistema operacional de desktop fictício, com gerenciador de janelas, barra de tarefas, menu Iniciar e tela de boot.",
+          "sections": {
+            "problem": "",
+            "approach": "Projetado spec-first e construído com um fluxo AI-first.",
+            "role": "",
+            "result": ""
+          }
+        },
+        "the-wedding-post": {
+          "category": "Projeto pessoal",
           "status": "Pessoal",
-          "repo": "",
-          "demo": ""
+          "summary": "O site de confirmação de presença do meu casamento, onde os convidados confirmavam presença e acompanhavam a celebração. Projeto pessoal, por isso sem link público.",
+          "sections": {
+            "problem": "",
+            "approach": "Construído com o mesmo fluxo Next.js discovery-first assistido por IA.",
+            "role": "",
+            "result": ""
+          }
+        }
+      }
+    },
+    "skills": {
+      "title": "Habilidades",
+      "description": "Stack, ferramentas e domínios",
+      "categories": [
+        {
+          "name": "Backend",
+          "items": [
+            "C#",
+            ".NET Core",
+            ".NET Framework",
+            "Node.js",
+            "TypeScript"
+          ]
+        },
+        {
+          "name": "Frontend",
+          "items": [
+            "React",
+            "Next.js",
+            "Tailwind CSS",
+            "shadcn/ui",
+            "Razor"
+          ]
+        },
+        {
+          "name": "Bancos de dados",
+          "items": [
+            "Bancos SQL",
+            "MongoDB"
+          ]
+        },
+        {
+          "name": "Cloud / DevOps",
+          "items": [
+            "AWS",
+            "Pipelines de CI/CD",
+            "API Gateway",
+            "APIs REST",
+            "Microsserviços",
+            "Vercel",
+            "Git"
+          ]
+        },
+        {
+          "name": "Ferramentas de IA",
+          "items": [
+            "Claude Code",
+            "GitHub Copilot",
+            "Cursor",
+            "Servidores MCP"
+          ]
+        },
+        {
+          "name": "Domínios",
+          "items": [
+            "Threat Intelligence",
+            "Detecção de fraude",
+            "Fintech",
+            "E-commerce e pagamentos"
+          ]
+        },
+        {
+          "name": "Idiomas",
+          "items": [
+            "Português (nativo)",
+            "Inglês (profissional)"
+          ]
         }
       ]
     },
-    "skills": {
-      "title": "skills.app",
-      "label": "Habilidades",
-      "categories": [
-        { "name": "Backend", "items": ["C#", ".NET Core", ".NET Framework", "Node.js", "TypeScript"] },
-        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Razor"] },
-        { "name": "Bancos de dados", "items": ["Bancos SQL", "MongoDB"] },
-        { "name": "Cloud / DevOps", "items": ["AWS", "Pipelines de CI/CD", "API Gateway", "APIs REST", "Microsserviços", "Vercel", "Git"] },
-        { "name": "Ferramentas de IA", "items": ["Claude Code", "GitHub Copilot", "Cursor", "Servidores MCP"] },
-        { "name": "Domínios", "items": ["Threat Intelligence", "Detecção de fraude", "Fintech", "E-commerce e pagamentos"] },
-        { "name": "Idiomas", "items": ["Português (nativo)", "Inglês (profissional)"] }
-      ]
-    },
     "how-i-work-with-ai": {
-      "title": "how-i-work-with-ai.app",
-      "label": "Como trabalho com IA",
+      "title": "Como Trabalho com IA",
+      "description": "Meu fluxo AI-first, na prática",
       "intro": "Trato a IA como parte central do ferramental de engenharia, não como novidade. O objetivo é simples: entregar software melhor, mais rápido, sem abaixar a barra de qualidade. Isso significa usar IA de forma deliberada — com specs, revisão e critério — em vez de só mandar prompt e torcer.",
       "sections": [
         {
@@ -175,33 +353,827 @@
         }
       ]
     },
+    "messenger": {
+      "title": "DouglasOS Messenger",
+      "description": "Converse com o Douglas (roteirizado)"
+    },
     "contact": {
-      "title": "contact.app",
-      "label": "Contato",
+      "title": "Contato",
+      "description": "LinkedIn, GitHub, e-mail, WhatsApp",
       "heading": "Vamos conversar",
       "availability": "Aberto a oportunidades remotas — times internacionais são bem-vindos.",
       "copy": "Copiar",
-      "copied": "Copiado!"
+      "copied": "Copiado!",
+      "emailLabel": "E-mail"
+    },
+    "display": {
+      "title": "Propriedades de Vídeo",
+      "description": "Trocar o papel de parede",
+      "tabs": {
+        "desktop": "Área de Trabalho"
+      },
+      "preview": "Prévia do papel de parede selecionado",
+      "wallpaperLabel": "Papel de parede:",
+      "wallpapers": {
+        "morning-waves": "Ondas da Manhã",
+        "dusk-hills": "Colinas ao Entardecer",
+        "blueprint": "Planta Azul",
+        "solid": "Cor sólida",
+        "3d": "DouglasOS 3D (animado)",
+        "golden-egg": "Ovo de Ouro (secreto)"
+      },
+      "colorLabel": "Cor:",
+      "swatches": {
+        "navy": "Azul-marinho",
+        "teal": "Verde-azulado",
+        "forest": "Floresta",
+        "plum": "Ameixa",
+        "slate": "Ardósia"
+      },
+      "animatedNote": "Carrega depois que a área de trabalho está pronta e não trava nada.",
+      "unavailable": {
+        "reducedMotion": "Papéis de parede animados estão desligados porque seu sistema prefere movimento reduzido.",
+        "saveData": "Papéis de parede animados estão desligados porque a economia de dados está ativa.",
+        "mobile": "Papéis de parede animados não estão disponíveis neste dispositivo."
+      },
+      "ok": "OK",
+      "cancel": "Cancelar",
+      "apply": "Aplicar",
+      "secret": {
+        "locked": "???",
+        "hint": "(encontre todos os easter eggs para desbloquear)"
+      }
+    },
+    "recycle-bin": {
+      "title": "Lixeira",
+      "description": "Para onde vão os ícones excluídos (e de onde eles voltam na hora)",
+      "empty": "Esta pasta está vazia.",
+      "note": "Aqui nada fica por muito tempo: o que você arrastar pra cá, eu trago de volta. Pode testar com um ícone.",
+      "noteTouch": "Aqui nada fica por muito tempo: segure qualquer ícone, escolha Excluir e veja eu trazer de volta."
+    },
+    "media-player": {
+      "title": "DouglasOS Media Player",
+      "description": "Música enquanto você explora"
+    },
+    "camera": {
+      "title": "Retro Cam",
+      "description": "Webcam pixelada, processada no seu aparelho",
+      "toolbar": {
+        "label": "Controles da câmera",
+        "turnOn": "Ligar",
+        "turnOff": "Desligar",
+        "pixelSize": "Pixels:",
+        "palette": "Paleta:",
+        "mirror": "Espelhar",
+        "frame": "Moldura",
+        "save": "Salvar foto"
+      },
+      "pixelSizes": {
+        "fine": "Fino",
+        "medium": "Médio",
+        "large": "Grande"
+      },
+      "palettes": {
+        "douglasos": "DouglasOS",
+        "classic16": "16 cores",
+        "cga": "Estilo CGA",
+        "original": "Original"
+      },
+      "viewfinder": "Prévia pixelada da câmera",
+      "idle": {
+        "title": "A câmera está desligada",
+        "body": "A Retro Cam só liga a sua câmera quando você clica no botão. Cada quadro é pixelado aqui mesmo no seu navegador e nunca é enviado para lugar nenhum.",
+        "action": "Ligar câmera"
+      },
+      "requesting": {
+        "title": "Aguardando permissão…",
+        "body": "O navegador pergunta antes. Nada começa até você permitir."
+      },
+      "stopped": {
+        "minimized": "A câmera desligou quando a janela foi minimizada.",
+        "hidden": "A câmera desligou quando você saiu da aba.",
+        "ended": "A câmera foi desconectada."
+      },
+      "denied": {
+        "title": "Câmera bloqueada",
+        "body": "A Retro Cam não consegue ver a câmera porque a permissão foi negada. Para tentar de novo, permita a câmera para este site na barra de endereço ou nas configurações do navegador."
+      },
+      "unsupported": {
+        "title": "Nenhuma câmera disponível",
+        "no-api": "Este navegador não compartilha a câmera com páginas da web, ou a página não está numa conexão segura.",
+        "no-camera": "A Retro Cam não encontrou uma câmera neste aparelho.",
+        "busy": "A câmera está em uso por outro aplicativo. Feche esse aplicativo e tente de novo."
+      },
+      "retry": "Tentar de novo",
+      "ok": "OK",
+      "status": {
+        "active": "Câmera ligada",
+        "off": "Câmera desligada",
+        "local": "processamento local",
+        "fps": "{fps} FPS",
+        "noUpload": "sem upload"
+      },
+      "saved": "Foto salva como {name}"
+    },
+    "paint": {
+      "title": "DouglasOS Paint",
+      "description": "Desenhe alguma coisa (ou só rabisque)",
+      "menuBar": "Barra de menus do Paint",
+      "menu": {
+        "file": "Arquivo",
+        "edit": "Editar",
+        "new": "Novo",
+        "save": "Salvar como PNG",
+        "close": "Fechar",
+        "undo": "Desfazer",
+        "redo": "Refazer"
+      },
+      "tools": {
+        "label": "Ferramentas",
+        "pencil": "Lápis",
+        "brush": "Pincel",
+        "eraser": "Borracha",
+        "fill": "Preencher com cor",
+        "line": "Linha",
+        "rectangle": "Retângulo"
+      },
+      "hints": {
+        "pencil": "Desenha uma linha fina à mão livre.",
+        "brush": "Pinta um traço redondo e macio.",
+        "eraser": "Apaga deixando branco.",
+        "fill": "Preenche uma área com a cor atual.",
+        "line": "Arraste para desenhar uma linha reta.",
+        "rectangle": "Arraste para desenhar um retângulo."
+      },
+      "size": {
+        "label": "Espessura",
+        "value": "{px} px"
+      },
+      "palette": {
+        "label": "Cores",
+        "current": "Cor atual: {hex}",
+        "swatch": "Cor {n} ({hex})"
+      },
+      "canvas": "Área de desenho, {width} por {height} pixels",
+      "dimensions": "{width} × {height}px"
+    },
+    "achievements": {
+      "title": "Conquistas",
+      "description": "Easter eggs que você encontrou"
     }
   },
-  "resume": { "title": "resume.pdf", "label": "Currículo", "download": "Baixar CV" },
+  "easterEgg": {
+    "title": "NÃO ABRA ISSO.exe",
+    "description": "Sério. Não abra.",
+    "dismissHint": "Aperte Esc ou clique em qualquer lugar para voltar.",
+    "blueScreen": {
+      "label": "Tela de erro do DouglasOS",
+      "brand": "DouglasOS",
+      "headline": "O DouglasOS não encontrou a página que você estava procurando.",
+      "code": "Erro 404: PAGE_NOT_FOUND",
+      "causePage": "Causa provável: este link se perdeu em algum lugar entre a internet e este desktop. Nada quebrou e nada se perdeu.",
+      "causeEgg": "Causa provável: alguém desafiou um arquivo chamado literalmente “NÃO ABRA ISSO”.",
+      "progress": "Procurando em todas as pastas",
+      "done": "Busca concluída. A página não está aqui, mas o que interessa está:",
+      "recovery": "Opções de recuperação",
+      "cv": "Baixar CV",
+      "contact": "Falar com o Douglas",
+      "desktop": "Voltar ao desktop",
+      "pageTitle": "404 · Página não encontrada · DouglasOS"
+    },
+    "scramble": {
+      "title": "Tudo de volta no lugar",
+      "text": "Bom, quase tudo: seu CV ainda está esperando por você.",
+      "cv": "Baixar CV",
+      "contact": "Contato",
+      "close": "Fechar"
+    },
+    "accessDenied": {
+      "title": "Acesso negado",
+      "text": "Este arquivo é confidencial. Sim, até para recrutadores curiosos.",
+      "note": "NÃO!",
+      "signature": "— mini Douglas",
+      "scold": "Sério? Estava escrito NÃO ABRA. Já que você é do tipo curioso, isto aqui você pode abrir:",
+      "cv": "Meu CV",
+      "contact": "Fale comigo",
+      "ok": "OK"
+    },
+    "assistant": {
+      "not-found": {
+        "title": "Calma, fui eu",
+        "text": "Nada travou. Se você procurava algo de verdade, meu CV está aqui."
+      },
+      "scramble": {
+        "title": "Eu avisei…",
+        "text": "Tudo voltou para o lugar. Quer o CV ou prefere conversar?"
+      },
+      "access-denied": {
+        "title": "Curiosidade é uma qualidade",
+        "text": "É exatamente o que eu procuro num time. Veja como falar comigo."
+      }
+    }
+  },
+  "resume": {
+    "title": "curriculo.pdf",
+    "download": "Baixar CV"
+  },
+  "links": {
+    "linkedin": {
+      "title": "linkedin.url",
+      "description": "Perfil no LinkedIn (abre em nova aba)"
+    },
+    "github": {
+      "title": "github.url",
+      "description": "Perfil no GitHub (abre em nova aba)"
+    },
+    "whatsapp": {
+      "title": "whatsapp.exe",
+      "description": "Conversar no WhatsApp (abre em nova aba)"
+    },
+    "email": {
+      "title": "me-escreva.eml",
+      "description": "Enviar um e-mail (abre seu app de e-mail)"
+    }
+  },
   "window": {
     "close": "Fechar",
     "minimize": "Minimizar",
     "maximize": "Maximizar",
-    "restore": "Restaurar"
+    "restore": "Restaurar",
+    "menu": "Menu da janela"
   },
-  "mobile": {
-    "banner": "Melhor no desktop — abra o DouglasOS em uma tela maior.",
-    "dismiss": "Fechar aviso",
-    "heroTagline": "Desenvolvedor fullstack construindo produtos de combate à fraude na Serasa Experian — entregando AI-first em toda a stack.",
-    "nav": {
-      "about": "Sobre",
-      "experience": "Experiência",
-      "projects": "Projetos",
-      "skills": "Habilidades",
-      "ai": "Como trabalho com IA",
+  "desktop": {
+    "label": "Ícones da área de trabalho",
+    "menu": {
+      "open": "Abrir",
+      "delete": "Excluir",
+      "rename": "Renomear",
+      "properties": "Propriedades",
+      "arrangeIcons": "Organizar ícones",
+      "refresh": "Atualizar",
+      "new": "Novo",
+      "newFolder": "Pasta",
+      "newShortcut": "Atalho",
+      "newTextDocument": "Documento de texto"
+    }
+  },
+  "taskbar": {
+    "label": "Barra de tarefas",
+    "start": "iniciar",
+    "startLabel": "Iniciar",
+    "quickLaunch": "Inicialização rápida",
+    "quickCv": "Baixar CV",
+    "quickContact": "Contato",
+    "windows": "Janelas abertas",
+    "tray": "Área de notificação",
+    "language": "Idioma",
+    "languageSwitch": "Idioma: Português. Mudar para {next}",
+    "languageNames": {
+      "en": "English",
+      "pt": "Português"
+    }
+  },
+  "startMenu": {
+    "label": "Menu Iniciar",
+    "user": "Douglas",
+    "pinned": "Programas fixados",
+    "places": "Locais",
+    "allPrograms": "Todos os programas",
+    "myProjects": "Meus Projetos",
+    "allProjects": "Todos os projetos",
+    "resume": "Currículo (CV)",
+    "contact": "Contato",
+    "displayProperties": "Propriedades de Vídeo",
+    "help": "Ajuda",
+    "run": "Executar…",
+    "logOff": "Fazer logoff",
+    "turnOff": "Desligar",
+    "folders": {
+      "accessories": "Acessórios",
+      "entertainment": "Entretenimento"
+    }
+  },
+  "boot": {
+    "tagline": "Um portfólio que dá boot.",
+    "starting": "Iniciando o DouglasOS…",
+    "skip": "Pular"
+  },
+  "logon": {
+    "welcome": "boas-vindas",
+    "intro": "Esta área de trabalho é um portfólio. Fique à vontade.",
+    "subtitle": "Desenvolvedor Fullstack AI-First",
+    "tileLabel": "Entrar como Douglas, Desenvolvedor Fullstack AI-First",
+    "hint": "Clique no Douglas para entrar.",
+    "hintTouch": "Toque no Douglas para entrar."
+  },
+  "shutdown": {
+    "dialogTitle": "Desligar o DouglasOS",
+    "dialogBody": "Encerrando por hoje? As janelas abertas serão fechadas; o papel de parede e os ícones continuam onde você deixou.",
+    "cancel": "Cancelar",
+    "confirm": "Desligar",
+    "shuttingDown": "O DouglasOS está desligando…",
+    "goodbye": "Até logo.",
+    "turnOn": "Ligar"
+  },
+  "confirmClose": {
+    "title": "Fechar {app}",
+    "body": "Fechar {app}?",
+    "unsavedBody": "Seu desenho não foi salvo. Fechar {app} mesmo assim?",
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "protectedFile": {
+    "title": "Arquivo protegido",
+    "body": "“{name}” se recusou a ser renomeado. Diz que levou séculos para escolher esse nome e que os recrutadores já sabem ele de cor.",
+    "ok": "Justo"
+  },
+  "run": {
+    "title": "Executar",
+    "intro": "Digite o nome de um programa, projeto ou link e o DouglasOS vai abri-lo para você.",
+    "openLabel": "Abrir:",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "suggestions": "Sugestões",
+    "types": {
+      "app": "Programa",
+      "download": "Download",
+      "link": "Link",
+      "project": "Projeto",
+      "command": "Comando"
+    },
+    "notFound": {
+      "title": "DouglasOS",
+      "body": "O DouglasOS não encontrou “{query}”. Confira a grafia ou tente “projetos”, “cv” ou “contato”.",
+      "ok": "OK"
+    },
+    "cmd": {
+      "title": "Prompt de comando do DouglasOS",
+      "body": "Aqui não tem terminal: esta caixa Executar já faz o trabalho. Digite “projetos”, “cv” ou “contato” e aperte Enter.",
+      "ok": "Entendi"
+    }
+  },
+  "palette": {
+    "label": "Paleta de comandos",
+    "placeholder": "Buscar apps, projetos e links…",
+    "results": "Resultados",
+    "empty": "O DouglasOS não encontrou “{query}”.",
+    "emptyHint": "Tente “projetos”, “cv” ou “contato”.",
+    "hint": "↑↓ para escolher · Enter para abrir · Esc para fechar"
+  },
+  "properties": {
+    "title": "Propriedades de {name}",
+    "type": "Tipo:",
+    "description": "Descrição:",
+    "location": "Local:",
+    "desktop": "Área de trabalho",
+    "opens": "Abre:",
+    "types": {
+      "app": "Programa",
+      "download": "Documento PDF",
+      "link": "Atalho da internet",
+      "mail": "Atalho de e-mail",
+      "system": "Pasta do sistema"
+    },
+    "opensWindow": "Em uma janela",
+    "opensDownload": "Baixa o arquivo",
+    "opensTab": "Em uma nova aba do navegador",
+    "opensMail": "No seu app de e-mail",
+    "open": "Abrir",
+    "ok": "OK"
+  },
+  "newItem": {
+    "title": "Novo",
+    "body": "O DouglasOS é um portfólio, não um sistema de arquivos: aqui nada novo é criado. Mas o Douglas lança coisas novas com frequência, e elas ficam em Meus Projetos.",
+    "projects": "Ver projetos",
+    "ok": "OK"
+  },
+  "balloon": {
+    "title": "Bem-vindo ao DouglasOS",
+    "body": "Clique em qualquer ícone para abrir. O CV do Douglas está a um clique na barra de tarefas.",
+    "close": "Fechar",
+    "bodyTouch": "Toque em qualquer ícone para abrir. O CV do Douglas está a um toque na barra de tarefas."
+  },
+  "assistant": {
+    "name": "mini Douglas",
+    "characterLabel": "mini Douglas, assistente da área de trabalho",
+    "close": "Fechar",
+    "shortcuts": "Atalhos",
+    "search": {
+      "label": "Me pergunte algo:",
+      "placeholder": "ex.: remoto? stack? CV",
+      "submit": "Pesquisar"
+    },
+    "actions": {
+      "openProject": "Me mostra um projeto",
+      "openProjectNamed": "Abrir {project}",
+      "downloadCv": "Baixar o currículo",
+      "nextTip": "Mostrar outra dica",
+      "dismiss": "Agora não, valeu",
+      "apps": {
+        "contact": "Quero entrar em contato",
+        "projects": "Ver todos os projetos",
+        "skills": "Abrir Habilidades",
+        "about": "Abrir Sobre o Douglas",
+        "experience": "Abrir Experiência",
+        "aiWorkflow": "Abrir Como Trabalho com IA",
+        "display": "Abrir Propriedades de Vídeo"
+      }
+    },
+    "messages": {
+      "greeting": {
+        "title": "Oi! Eu sou o mini Douglas",
+        "text": "O Douglas em versão de bolso, aqui pra te mostrar o lugar. Com pressa? Meu currículo e meu contato estão a um clique deste balão."
+      },
+      "help": {
+        "title": "Como posso ajudar?",
+        "text": "Escolha um atalho ou me pergunte algo. Conheço cada canto desta área de trabalho."
+      },
+      "afterDance": {
+        "title": "Ufa!",
+        "text": "Não dançava assim desde o dia em que um deploy passou de primeira. De volta ao trabalho: quer ver um projeto?"
+      },
+      "projectsTip": {
+        "title": "Dica rápida",
+        "text": "Esta janela é um navegador em miniatura. Digite o nome de um projeto, tipo “{project}”, na barra de endereço e aperte Enter."
+      },
+      "idle": {
+        "title": "Ainda por aí?",
+        "text": "Sem pressa! Se você só tem um minuto, estes dois são os que mais importam:"
+      },
+      "tip": {
+        "title": "Você sabia?"
+      },
+      "answer": {
+        "title": "O mini Douglas responde"
+      },
+      "eggsComplete": {
+        "title": "Você achou todos!",
+        "text": "Todos os easter eggs, sem exceção! É essa atenção aos detalhes que o Douglas leva para o code review. Seu prêmio: um papel de parede secreto em Propriedades de Vídeo. E já que você é dos detalhistas, o currículo dele está bem aqui."
+      }
+    },
+    "tips": {
+      "singleClick": "Aqui todo ícone abre com um clique só (ou um toque). Nada de ritual de clique duplo.",
+      "quickLaunch": "Viu os dois botõezinhos ao lado do Iniciar? Um baixa meu currículo, o outro abre o Contato.",
+      "addressBar": "Meus Projetos funciona como um navegador: digite o nome de um projeto na barra de endereço e aperte Enter.",
+      "aiWorkflow": "Como Trabalho com IA é a parte de que mais me orgulho: as ferramentas e os hábitos por trás de como eu construo software hoje.",
+      "startMenu": "Se perdeu? O menu Iniciar tem tudo num lugar só, inclusive meu currículo.",
+      "language": "Prefer English? O botão EN/PT na barra de tarefas troca o idioma da área de trabalho inteira."
+    },
+    "answers": {
+      "cv": "Taí: meu currículo em PDF. Sem cadastro, sem pegadinha.",
+      "contact": "Bora conversar! LinkedIn, e-mail e WhatsApp estão todos no Contato. Escolha o seu favorito.",
+      "projects": "Meus projetos estão escritos como estudos de caso: o problema, a minha abordagem e o resultado.",
+      "project": "Boa escolha! {project} tem um estudo de caso só dele. Quer abrir?",
+      "skills": "Oito anos entre .NET, Node.js e React, com AWS na parte de infra. A lista completa está em Habilidades.",
+      "availability": "Moro em Lagoa Santa, MG, e trabalho remoto. Estou aberto a vagas remotas, inclusive em times internacionais.",
+      "aiWorkflow": "Meu assunto favorito! Trabalho com IA em primeiro lugar, com Claude Code e GitHub Copilot no dia a dia. Os detalhes estão em Como Trabalho com IA.",
+      "experience": "Oito anos até aqui, hoje como desenvolvedor fullstack na Serasa Experian. A trajetória completa está em Experiência.",
+      "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude. Mais em Sobre o Douglas.",
+      "fallback": "Essa ainda não está no meu roteiro. Tente “CV”, “projetos”, “stack” ou “remoto”, ou pergunte pro Douglas de verdade pelo Contato."
+    },
+    "trash": {
+      "title": "Resgatado da Lixeira",
+      "titleCleanup": "Tudo resgatado",
+      "binTitle": "Lixeira",
+      "binOpened": "Vazia, como sempre. Eu não deixo nada ir embora: o que cai aqui, eu trago de volta.",
+      "lines": {
+        "mediaPlayer": {
+          "v1": "Jogar a música fora? Tem a playlist do meu casamento aí dentro. Restaurado, com volume e tudo.",
+          "v2": "Sem trilha sonora não tem graça. O Media Player voltou pro desktop."
+        },
+        "camera": {
+          "v1": "A Retro Cam na lixeira? Tudo bem, ela é tímida mesmo. Coloquei de volta.",
+          "v2": "A webcam volta pro lugar. Fica tranquilo, ela só liga quando você clica."
+        },
+        "paint": {
+          "v1": "Apagar o Paint antes de desenhar alguma coisa? Toda obra-prima começa em branco. Restaurado.",
+          "v2": "O Paint fica: alguém ainda vai ter que me desenhar um bigode. De volta ao desktop."
+        },
+        "about": {
+          "v1": "Já vai me jogar fora? A gente acabou de se conhecer. Me coloquei de volta no desktop.",
+          "v2": "Apagar o \"Sobre\" é um jeito ousado de conhecer alguém. Restaurado.",
+          "v3": "Não é tão fácil se livrar de mim. O Sobre o Douglas voltou pro lugar."
+        },
+        "resume": {
+          "v1": "Meu currículo no lixo? Tem oito anos de trabalho nessa página! Já voltou. Quer baixar uma cópia?",
+          "v2": "Cuidado, esse é o arquivo mais importante deste desktop. Tirei da lixeira. Baixa pra garantir?",
+          "v3": "Reciclar meu currículo? Pelo menos guarda uma cópia antes. O original eu já devolvi."
+        },
+        "contact": {
+          "v1": "Sem o Contato você ia ter que adivinhar meu e-mail. Poupei o trabalho e devolvi.",
+          "v2": "Apagar o Contato antes mesmo de dizer oi? Vou fingir que foi clique errado. Restaurado.",
+          "v3": "O Contato não pode sair: é ali que as boas conversas começam. De volta ao desktop."
+        },
+        "projects": {
+          "v1": "Esses projetos me custaram muito café. Eles ficam. De volta ao desktop.",
+          "v2": "Jogar Meus Projetos fora? Tem um histórico de Git inteiro aí dentro. Restaurado.",
+          "v3": "Não vale jogar os projetos fora antes de abrir pelo menos um. Voltaram pro lugar."
+        },
+        "experience": {
+          "v1": "Oito anos de experiência não cabem numa lixeira. Eu conferi. Restaurado.",
+          "v2": "Apagar minha experiência não vai me deixar júnior de novo. Voltou."
+        },
+        "skills": {
+          "v1": "Minhas habilidades no lixo? Ainda preciso delas na próxima sprint. Restaurado.",
+          "v2": "Habilidade não se recicla. Dá pra aprender novas, e essas eu também vou guardar."
+        },
+        "aiWorkflow": {
+          "v1": "Jogar fora como eu trabalho com IA? Até a IA achou má ideia. Restaurado.",
+          "v2": "Essa é minha seção favorita. Pedi com jeitinho e ela voltou sozinha."
+        },
+        "messenger": {
+          "v1": "Apagar o Messenger no meio da conversa? Que feio. Voltou, e eu continuo online.",
+          "v2": "Não dá pra me dar ghosting assim tão fácil. Messenger restaurado."
+        },
+        "linkedin": {
+          "v1": "É por lá que os recrutadores me acham, prefiro manter. O linkedin.url voltou.",
+          "v2": "Apagar meu LinkedIn? Minhas recomendações nunca iam me perdoar. Restaurado."
+        },
+        "github": {
+          "v1": "Meu GitHub no lixo? Aqueles quadradinhos verdes deram trabalho. Restaurado.",
+          "v2": "O GitHub fica: é lá que mora o código que roda de verdade. De volta ao desktop."
+        },
+        "whatsapp": {
+          "v1": "Sem WhatsApp não tem aquele \"oi, tem um minuto?\". Já pesquei de volta.",
+          "v2": "Jogar o WhatsApp fora? Minha mãe ia ser a primeira a reclamar. Restaurado."
+        },
+        "email": {
+          "v1": "Minha caixa de entrada é o único lugar onde eu gosto de receber coisas. O me-escreva.eml voltou.",
+          "v2": "Apagar o atalho de e-mail não te descadastra de nada. Não tem do que se descadastrar. Restaurado."
+        },
+        "generic": "Boa tentativa. Nada sai deste desktop enquanto eu estiver de olho. Já voltou pro lugar.",
+        "cleanup": {
+          "v1": "Mutirão de limpeza com {count} ícones? Desculpa, nada neste desktop é descartável. Tá tudo de volta.",
+          "v2": "Exclusão em massa detectada. Restauração em massa executada. Os {count} ícones estão em casa."
+        },
+        "cleanupWithCv": {
+          "v1": "Você jogou fora {count} ícones, inclusive meu currículo! Tá tudo de volta. Baixa o CV agora, antes que ele dê outro passeio?",
+          "v2": "Exclusão em massa, com currículo e tudo? Restaurei os {count}. O CV tá a um clique aqui embaixo, só dizendo."
+        }
+      }
+    }
+  },
+  "messenger": {
+    "name": "DouglasOS Messenger",
+    "contacts": {
+      "listLabel": "Contatos",
+      "you": "Você",
+      "youStatus": "Visitante (online)",
+      "listeningTo": "Ouvindo: {title}",
+      "listeningToUntitled": "Ouvindo música",
+      "listeningToAction": "Mostrar o DouglasOS Media Player",
+      "group": "Online ({count})",
+      "douglas": "Douglas",
+      "status": "Online",
+      "personalMessage": "Construindo coisas com a IA de dupla (coffee)",
+      "open": "Iniciar uma conversa com o Douglas",
+      "hint": "Clique no Douglas para começar a conversar. As respostas são automáticas, escritas por ele."
+    },
+    "conversation": {
+      "back": "Contatos",
+      "title": "Conversa com o Douglas",
+      "douglasSays": "Douglas diz:",
+      "youSay": "Você diz:",
+      "typing": "Douglas está digitando…",
+      "disclaimer": "Respostas automáticas, escritas com antecedência pelo próprio Douglas. Para uma resposta de verdade, deixe um recado.",
+      "logLabel": "Histórico da conversa",
+      "composerLabel": "Sua mensagem",
+      "placeholder": "Digite uma mensagem…",
+      "send": "Enviar",
+      "emoticons": "Emoticons",
+      "nudge": "Chamar atenção",
+      "nudgeSent": "Você chamou a atenção.",
+      "nudgeTooSoon": "Calma! Espere alguns segundos antes de chamar a atenção de novo.",
+      "quickReplies": "Respostas sugeridas",
+      "toolbar": "Atalhos",
+      "downloadCv": "Baixar CV",
       "contact": "Contato"
+    },
+    "form": {
+      "title": "Deixar um recado",
+      "intro": "Escreva aqui e envie pelo seu próprio app de e-mail ou WhatsApp. Nada sai desta página até você apertar enviar lá.",
+      "name": "Seu nome (opcional)",
+      "message": "Mensagem",
+      "sendEmail": "Enviar por e-mail",
+      "sendWhatsapp": "Enviar no WhatsApp",
+      "cancel": "Cancelar",
+      "counter": "{count}/{max}",
+      "subject": "Olá pelo DouglasOS Messenger",
+      "subjectNamed": "{name}, pelo DouglasOS Messenger",
+      "body": "Oi, Douglas!\n\n{message}\n\n(Enviado pelo DouglasOS Messenger)",
+      "bodyNamed": "Oi, Douglas!\n\n{message}\n\n{name}\n(Enviado pelo DouglasOS Messenger)"
+    },
+    "quickReplies": {
+      "projects": {
+        "label": "Ver projetos",
+        "say": "Posso ver seus projetos?"
+      },
+      "cv": {
+        "label": "Baixar CV",
+        "say": "Pode me mandar seu currículo?"
+      },
+      "skills": {
+        "label": "Tecnologias",
+        "say": "Quais tecnologias você usa?"
+      },
+      "availability": {
+        "label": "Disponibilidade",
+        "say": "Você está aberto a vagas? Remoto?"
+      },
+      "aiWorkflow": {
+        "label": "Fluxo com IA",
+        "say": "Como você trabalha com IA?"
+      },
+      "experience": {
+        "label": "Experiência",
+        "say": "Me conta da sua experiência."
+      },
+      "leaveMessage": {
+        "label": "Deixar um recado",
+        "say": "Quero te deixar um recado."
+      }
+    },
+    "actions": {
+      "downloadCv": "Baixar o CV (PDF)",
+      "openProject": "Abrir {project}",
+      "leaveMessage": "Deixar um recado",
+      "apps": {
+        "contact": "Abrir Contato",
+        "projects": "Abrir Meus Projetos",
+        "skills": "Abrir Habilidades",
+        "experience": "Abrir Experiência",
+        "about": "Abrir Sobre o Douglas",
+        "aiWorkflow": "Abrir Como Trabalho com IA"
+      }
+    },
+    "emoticons": {
+      "smile": "Sorriso",
+      "grin": "Sorrisão",
+      "wink": "Piscadinha",
+      "tongue": "Língua de fora",
+      "surprised": "Surpreso",
+      "sad": "Triste",
+      "cool": "Descolado",
+      "heart": "Coração",
+      "thumbsUp": "Joinha",
+      "coffee": "Café"
+    },
+    "replies": {
+      "greeting": "Oi! Vi que você está olhando meu portfólio :)",
+      "greetingFollowUp": "Pergunte o que quiser sobre o meu trabalho ou escolha uma das sugestões abaixo. Quer uma resposta de verdade? Me deixa um recado que ele cai direto na minha caixa de entrada.",
+      "cv": "Claro! Taí meu currículo em PDF. Sem cadastro, sem pegadinha.",
+      "cvSent": "Pronto, o download já deve ter começado. Se não começou, o link está aqui de novo.",
+      "contact": "Bora conversar! O jeito mais rápido é me deixar um recado aqui mesmo. LinkedIn, e-mail e WhatsApp também estão no Contato.",
+      "projects": "Meus projetos estão escritos como estudos de caso: o problema, a minha abordagem e o resultado. Quer dar uma olhada?",
+      "project": "Boa escolha! {project} tem um estudo de caso só dele. Quer que eu abra?",
+      "skills": "Oito anos entre .NET, Node.js e React, com AWS na parte de infra. A lista completa está em Habilidades.",
+      "availability": "Moro em Lagoa Santa, MG, e trabalho remoto. Estou aberto a vagas remotas, inclusive em times internacionais (y)",
+      "aiWorkflow": "Meu assunto favorito! Trabalho com IA em primeiro lugar: Claude Code e GitHub Copilot fazem parte de como eu desenho, construo e entrego software todo dia. Os detalhes estão em Como Trabalho com IA.",
+      "experience": "Oito anos até aqui. Hoje sou desenvolvedor fullstack na Serasa Experian, construindo APIs de threat intelligence e detecção de fraude. A trajetória completa está em Experiência.",
+      "about": "Versão curta: desenvolvedor fullstack, oito anos de estrada, focado em finanças e prevenção a fraude, trabalhando com IA em primeiro lugar.",
+      "aboutPersonal": "",
+      "fallback": "Essa eu vou ter que responder pessoalmente — me deixa um recado?",
+      "leaveMessage": "Claro! Escreve aí embaixo e escolhe e-mail ou WhatsApp. Chega direto em mim.",
+      "sentEmail": "Valeu! Seu app de e-mail deve ter aberto com tudo preenchido. É só apertar enviar lá que eu te respondo.",
+      "sentWhatsapp": "Valeu! O WhatsApp deve ter aberto com a sua mensagem pronta. É só apertar enviar lá que eu te respondo.",
+      "nudge": [
+        "Opa! Tô aqui, tô aqui :D",
+        "Tá bom, tá bom, você tem toda a minha atenção :P",
+        "Quase derrubei o café (coffee) Em que posso ajudar?"
+      ]
+    },
+    "tray": {
+      "label": "Douglas está online. Abrir o DouglasOS Messenger",
+      "unread": "Douglas está online, {count, plural, one {# mensagem nova} other {# mensagens novas}}. Abrir o DouglasOS Messenger"
+    },
+    "toast": {
+      "says": "Douglas diz:",
+      "text": "Oi! Tem um minutinho? Pergunte o que quiser sobre o meu trabalho, tô por aqui :)",
+      "close": "Fechar"
+    }
+  },
+  "static": {
+    "label": "DouglasOS — versão em texto do portfólio"
+  },
+  "mediaPlayer": {
+    "nowPlaying": "Tocando agora",
+    "screenLabel": "Tela de vídeo (player do YouTube)",
+    "source": "Fonte: playlist do YouTube",
+    "untitled": "Vídeo sem título",
+    "track": "Faixa {index} de {total}",
+    "status": {
+      "idle": "Aperte Play para começar a playlist.",
+      "loading": "Conectando ao YouTube…",
+      "ready": "Pronto. Aperte Play.",
+      "buffering": "Carregando…",
+      "playing": "Tocando",
+      "paused": "Pausado",
+      "ended": "A playlist terminou",
+      "error": "Esta playlist não pode tocar aqui"
+    },
+    "notices": {
+      "skipped": "Pulei um vídeo que só pode tocar no YouTube.",
+      "hiddenPause": "Pausado: o vídeo precisa ficar visível para tocar."
+    },
+    "controls": {
+      "label": "Controles de reprodução",
+      "play": "Tocar",
+      "pause": "Pausar",
+      "stop": "Parar",
+      "previous": "Faixa anterior",
+      "next": "Próxima faixa",
+      "volume": "Volume",
+      "mute": "Silenciar",
+      "unmute": "Ativar som"
+    },
+    "visualizer": "Visualizador (decorativo)",
+    "openOnYouTube": "Abrir no YouTube",
+    "error": {
+      "title": "DouglasOS Media Player",
+      "unplayable": "Nenhum vídeo desta playlist pode tocar aqui. Você ainda pode ouvir no YouTube.",
+      "loadFailed": "Não foi possível conectar ao YouTube. Confira sua conexão ou abra a playlist no YouTube.",
+      "ok": "OK"
+    },
+    "tray": {
+      "nowPlaying": "Tocando agora: {title}. Mostrar o DouglasOS Media Player",
+      "nowPlayingUntitled": "Música tocando. Mostrar o DouglasOS Media Player",
+      "volume": "Volume: {level}%",
+      "muted": "Volume: mudo",
+      "panel": "Controle de volume",
+      "showPlayer": "Mostrar player"
+    }
+  },
+  "easterEggs": {
+    "counter": "{count}/{total}",
+    "toast": {
+      "title": "🎉 Easter egg encontrado! ({count}/{total})",
+      "close": "Fechar",
+      "viewAll": "Ver todas as conquistas"
+    },
+    "achievements": {
+      "summary": "Easter eggs encontrados: {count} de {total}",
+      "progressLabel": "Progresso dos easter eggs",
+      "listTitle": "Easter eggs",
+      "unknown": "???",
+      "foundOn": "Encontrado em {date}",
+      "complete": "Todos encontrados! O papel de parede secreto foi desbloqueado.",
+      "openDisplay": "Abrir Propriedades de Vídeo",
+      "reset": "Zerar progresso",
+      "ok": "OK",
+      "resetTitle": "Zerar progresso",
+      "resetBody": "Esquecer todos os easter eggs que você encontrou? O papel de parede secreto volta a ficar bloqueado.",
+      "resetConfirm": "Zerar",
+      "resetCancel": "Cancelar"
+    },
+    "eggs": {
+      "protected-file": {
+        "title": "Arquivo protegido",
+        "hint": "Alguns nomes não estão em discussão."
+      },
+      "assistant-dance": {
+        "title": "Pausa para dançar",
+        "hint": "Alguém pequeno no desktop tem uns passinhos."
+      },
+      "messenger-nudge": {
+        "title": "Chamar a atenção",
+        "hint": "Conversas também ficam impacientes."
+      },
+      "trash-rescue": {
+        "title": "Missão resgate",
+        "hint": "Por aqui, nada fica no lixo por muito tempo."
+      },
+      "trash-cleanup": {
+        "title": "Faxina geral",
+        "hint": "Por que jogar fora uma coisa de cada vez?"
+      },
+      "run-cmd": {
+        "title": "Velhos hábitos",
+        "hint": "Tem comando que a gente digita no automático."
+      },
+      "desktop-new": {
+        "title": "Algo novo",
+        "hint": "Clique com o botão direito no vazio e peça algo novo."
+      },
+      "music-dance": {
+        "title": "Pista de dança",
+        "hint": "Toda música merece alguém dançando."
+      },
+      "egg-404": {
+        "title": "Oops azulão",
+        "hint": "Tem arquivo que fala sério quando diz não."
+      },
+      "egg-runaway": {
+        "title": "Desktop fujão",
+        "hint": "A curiosidade tem consequências."
+      },
+      "egg-scold": {
+        "title": "Eu avisei",
+        "hint": "Alguém vai ter opinião sobre esse clique."
+      },
+      "real-404": {
+        "title": "Fora do mapa",
+        "hint": "Nem todo endereço leva a algum lugar."
+      }
     }
   }
 }

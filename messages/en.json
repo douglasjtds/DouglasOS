@@ -3,13 +3,10 @@
     "title": "DouglasOS — Douglas Tertuliano, AI-First Fullstack Developer",
     "description": "The interactive portfolio of Douglas Tertuliano — AI-First Fullstack Developer with 8 years across .NET, Node.js and React, specialized in Threat Intelligence and fraud detection. Explore DouglasOS, download the CV, get in touch."
   },
-  "menu": {
-    "closeAll": "Close all windows"
-  },
   "apps": {
     "about": {
-      "title": "about.app",
-      "label": "About",
+      "title": "About Douglas",
+      "description": "Who I am, in two paragraphs",
       "name": "Douglas Tertuliano",
       "headline": "AI-First Fullstack Developer",
       "location": "Lagoa Santa, MG, Brazil · Remote",
@@ -18,14 +15,27 @@
         "I specialize in APIs for critical domains such as Threat Intelligence and fraud detection — from backend architecture to frontend implementation — with a focus on performance, security and AWS CI/CD practices. Today I work AI-first: tools like Claude Code and GitHub Copilot are part of how I design, build and ship software every day."
       ],
       "stats": [
-        { "label": "Experience", "value": "8 years" },
-        { "label": "Current role", "value": "Fullstack @ Serasa Experian" },
-        { "label": "Focus", "value": "Threat Intelligence & fraud" }
-      ]
+        {
+          "label": "Experience",
+          "value": "8 years"
+        },
+        {
+          "label": "Current role",
+          "value": "Fullstack @ Serasa Experian"
+        },
+        {
+          "label": "Focus",
+          "value": "Threat Intelligence & fraud"
+        }
+      ],
+      "downloadCv": "Download CV",
+      "contactLink": "Get in touch",
+      "statsTitle": "At a glance",
+      "photoAlt": "Douglas smiling with a thumbs-up at his desk, his tabby cat sitting on his lap"
     },
     "experience": {
-      "title": "experience.app",
-      "label": "Experience",
+      "title": "Experience",
+      "description": "8 years, five companies",
       "currentBadge": "Current",
       "roles": [
         {
@@ -33,7 +43,12 @@
           "company": "Serasa Experian",
           "role": "Mid-level Fullstack Developer",
           "description": "Building frontend features in React for ThreatX, Serasa Experian's Threat Intelligence product — continuing the platform originally built at ClearSale after the acquisition. I contribute to the Node.js and .NET backends behind fraud and threat-detection workflows, and use AI tools like Claude Code and GitHub Copilot with internal MCPs to accelerate delivery on complex tasks.",
-          "tags": ["React", "Node.js", ".NET", "AI tooling"],
+          "tags": [
+            "React",
+            "Node.js",
+            ".NET",
+            "AI tooling"
+          ],
           "current": true
         },
         {
@@ -41,120 +56,283 @@
           "company": "ClearSale S.A.",
           "role": "Mid-level .NET Developer",
           "description": "Developed and maintained the Threat Intelligence product in Node.js and React, collecting and analyzing fraud, phishing, fake ads and other e-commerce attacks. In the Payments squad, built APIs using BNPL (Buy Now Pay Later) and PISP (Payment Initiation) technologies, and maintained ClearSale's billing system used by multiple marketplace companies.",
-          "tags": ["Node.js", "React", "C#/.NET", "Payments"]
+          "tags": [
+            "Node.js",
+            "React",
+            "C#/.NET",
+            "Payments"
+          ]
         },
         {
           "period": "2020.03 — 2022.08",
           "company": "Zup IT Innovation",
           "role": "Mid-level .NET Developer",
           "description": "Developed backend services in .NET for Itaú Unibanco, Latin America's largest private bank. Served as the team's API Owner, owning the entire CI/CD process of the API Gateway hosted on AWS.",
-          "tags": ["C#/.NET", "AWS", "API Gateway", "CI/CD"]
+          "tags": [
+            "C#/.NET",
+            "AWS",
+            "API Gateway",
+            "CI/CD"
+          ]
         },
         {
           "period": "2019.08 — 2020.03",
           "company": "DTI Digital",
           "role": "Junior .NET Developer",
           "description": "Built .NET Core APIs for BS2 Bank, consumed by the frontend team behind the bank's mobile application, and maintained a legacy internal system in .NET Framework and Razor.",
-          "tags": [".NET Core", "Razor", "SQL"]
+          "tags": [
+            ".NET Core",
+            "Razor",
+            "SQL"
+          ]
         },
         {
           "period": "2017.09 — 2019.08",
           "company": "Rumo IT Solutions",
           "role": "Junior Developer / Intern",
           "description": "Started as an intern and was hired as a junior developer, working on systems for a payroll-loan bank — my first years shipping production .NET code.",
-          "tags": ["C#/.NET", "SQL"]
+          "tags": [
+            "C#/.NET",
+            "SQL"
+          ]
         }
       ]
     },
     "projects": {
-      "title": "projects.app",
-      "label": "Projects",
-      "visit": "Visit",
-      "items": [
-        {
-          "name": "Landing pages for small businesses",
-          "description": "My landing-page studio site: custom one-page sites for freelancers and small businesses, matched to each brand's visual identity, built to convert through WhatsApp and delivered in up to 10 business days. The site itself showcases live client pages and packages.",
-          "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://douglastertuliano.vercel.app/"
+      "title": "My Projects",
+      "description": "Things I've built and shipped",
+      "explorer": {
+        "name": "DouglasOS Explorer",
+        "menuBar": "Menu bar",
+        "menu": {
+          "file": "File",
+          "favorites": "Favorites",
+          "more": "More",
+          "home": "Project list",
+          "contact": "Contact Douglas",
+          "downloadCv": "Download CV",
+          "close": "Close"
         },
-        {
-          "name": "Gasolinha",
-          "description": "A SaaS for vehicle fuel tracking, built end to end through an AI-first workflow with Claude Code. Drivers log each refueling (odometer, liters, cost) and the app calculates fuel efficiency automatically, keeping a complete history per vehicle. I own the full stack — database, auth and production deployment on a custom domain.",
-          "tags": ["Next.js", "TypeScript", "Supabase", "Vercel"],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://www.gasolinha.com.br"
+        "toolbar": {
+          "label": "Navigation",
+          "back": "Back",
+          "forward": "Forward",
+          "home": "Home"
         },
-        {
-          "name": "Poupensa",
-          "description": "A SaaS that builds your grocery list from what your household actually consumes, so you buy what you need and stop wasting money.",
-          "tags": ["Next.js", "TypeScript", "SaaS"],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://poupensa.vercel.app/"
+        "address": "Address",
+        "go": "Go",
+        "status": {
+          "done": "Done",
+          "count": "{count, plural, one {# project} other {# projects}}"
         },
-        {
-          "name": "Link to WhatsApp",
-          "description": "A small utility that generates a direct link to a WhatsApp chat — type the phone number and an optional pre-filled message, and share the link anywhere.",
-          "tags": ["Next.js", "TypeScript"],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://link-to-whatsapp.vercel.app/"
+        "announce": "{title} — DouglasOS Explorer",
+        "home": {
+          "heading": "My Projects",
+          "intro": "Pick a project to read its case study, or type a project name in the address bar and press Enter.",
+          "open": "Open case study"
         },
-        {
-          "name": "Santo Rosário",
-          "description": "A calm, distraction-free guide to praying the Rosary: the mysteries of the day, the full Rosary, or all 20 mysteries — in Portuguese and English.",
-          "tags": ["Next.js", "TypeScript", "i18n"],
-          "status": "Live",
-          "repo": "",
-          "demo": "https://santo-rosario-dojotes.vercel.app/"
+        "page": {
+          "year": "Year",
+          "category": "Category",
+          "status": "Status",
+          "stack": "Stack",
+          "links": "Links",
+          "repo": "Source code",
+          "demo": "Live site",
+          "sections": {
+            "problem": "Problem",
+            "approach": "Approach",
+            "role": "Role & stack",
+            "result": "Result"
+          },
+          "comingSoon": "Douglas is still writing this part. Coming soon.",
+          "backHome": "All projects",
+          "contactCta": "Want to talk about this project? Contact Douglas"
         },
-        {
-          "name": "QR Code Generator",
-          "description": "Generates a QR code from any text or link, right in the browser.",
-          "tags": ["JavaScript", "GitHub Pages"],
+        "notFound": {
+          "title": "DouglasOS Explorer",
+          "body": "Can't find “{address}”. Either Douglas hasn't built it yet, or it's still a sticky note on his monitor. Check the spelling, go back to the project list, or tell him it should exist.",
+          "home": "Project list",
+          "contact": "Contact Douglas",
+          "ok": "OK"
+        }
+      },
+      "caseStudies": {
+        "landing-pages": {
+          "category": "Business",
           "status": "Live",
-          "repo": "",
-          "demo": "https://douglasjtds.github.io/qr-code-generator/"
+          "summary": "My landing-page studio site: custom one-page sites for freelancers and small businesses, matched to each brand's visual identity, built to convert through WhatsApp and delivered in up to 10 business days. The site itself showcases live client pages and packages.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
         },
-        {
-          "name": "Lead prospecting tool",
-          "description": "A personal CRM I'm building to sell landing pages. It pulls businesses from Google Maps (city, niche, rating, reviews, whether they have a website), builds a daily queue — who replied, auto-replies to get past, overdue follow-ups — suggests the next action with a ready-to-send message, opens WhatsApp in one click and tracks each lead through the funnel: to contact → contacted → replied → meeting → proposal → closed. Personal use, so no public link.",
-          "tags": ["Next.js", "TypeScript", "Google Maps"],
+        "gasolinha": {
+          "category": "SaaS",
+          "status": "Live",
+          "summary": "A SaaS for vehicle fuel tracking: drivers log each refueling (odometer, liters, cost) and the app calculates fuel efficiency automatically, keeping a complete history per vehicle.",
+          "sections": {
+            "problem": "",
+            "approach": "Built end to end through an AI-first workflow with Claude Code.",
+            "role": "I own the full stack — database, auth and production deployment on a custom domain.",
+            "result": ""
+          }
+        },
+        "poupensa": {
+          "category": "SaaS",
+          "status": "Live",
+          "summary": "A SaaS that builds your grocery list from what your household actually consumes, so you buy what you need and stop wasting money.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "link-to-whatsapp": {
+          "category": "Utility",
+          "status": "Live",
+          "summary": "A small utility that generates a direct link to a WhatsApp chat — type the phone number and an optional pre-filled message, and share the link anywhere.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "santo-rosario": {
+          "category": "Web app",
+          "status": "Live",
+          "summary": "A calm, distraction-free guide to praying the Rosary: the mysteries of the day, the full Rosary, or all 20 mysteries — in Portuguese and English.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "qr-code-generator": {
+          "category": "Utility",
+          "status": "Live",
+          "summary": "Generates a QR code from any text or link, right in the browser.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          }
+        },
+        "prospecting-tool": {
+          "category": "Internal tool",
           "status": "In progress",
-          "repo": "",
-          "demo": "",
-          "image": "/projects/prospecting-tool.png",
+          "summary": "A personal CRM I'm building to sell landing pages. It pulls businesses from Google Maps (city, niche, rating, reviews, whether they have a website), builds a daily queue — who replied, auto-replies to get past, overdue follow-ups — suggests the next action with a ready-to-send message, opens WhatsApp in one click and tracks each lead through the funnel: to contact → contacted → replied → meeting → proposal → closed. Personal use, so no public link.",
+          "sections": {
+            "problem": "",
+            "approach": "",
+            "role": "",
+            "result": ""
+          },
           "imageAlt": "Screenshot of the prospecting tool: a daily lead queue on the left and the selected lead's status, next action and ready-to-send WhatsApp message on the right (business names are fictitious)."
         },
-        {
-          "name": "The Wedding Post",
-          "description": "The RSVP site for my own wedding, where guests confirmed attendance and followed the celebration. A personal project, so no public link.",
-          "tags": ["Next.js", "TypeScript"],
+        "douglasos": {
+          "category": "Portfolio",
+          "status": "Live",
+          "summary": "The site you are looking at: a portfolio rendered as a fictional desktop operating system, with a window manager, taskbar, Start menu and boot screen.",
+          "sections": {
+            "problem": "",
+            "approach": "Designed spec-first and built with an AI-first workflow.",
+            "role": "",
+            "result": ""
+          }
+        },
+        "the-wedding-post": {
+          "category": "Personal project",
           "status": "Personal",
-          "repo": "",
-          "demo": ""
+          "summary": "The RSVP site for my own wedding, where guests confirmed attendance and followed the celebration. A personal project, so no public link.",
+          "sections": {
+            "problem": "",
+            "approach": "Built with the same discovery-first, AI-assisted Next.js workflow.",
+            "role": "",
+            "result": ""
+          }
+        }
+      }
+    },
+    "skills": {
+      "title": "Skills",
+      "description": "Stack, tools and domains",
+      "categories": [
+        {
+          "name": "Backend",
+          "items": [
+            "C#",
+            ".NET Core",
+            ".NET Framework",
+            "Node.js",
+            "TypeScript"
+          ]
+        },
+        {
+          "name": "Frontend",
+          "items": [
+            "React",
+            "Next.js",
+            "Tailwind CSS",
+            "shadcn/ui",
+            "Razor"
+          ]
+        },
+        {
+          "name": "Databases",
+          "items": [
+            "SQL databases",
+            "MongoDB"
+          ]
+        },
+        {
+          "name": "Cloud / DevOps",
+          "items": [
+            "AWS",
+            "CI/CD pipelines",
+            "API Gateway",
+            "REST APIs",
+            "Microservices",
+            "Vercel",
+            "Git"
+          ]
+        },
+        {
+          "name": "AI Tooling",
+          "items": [
+            "Claude Code",
+            "GitHub Copilot",
+            "Cursor",
+            "MCP servers"
+          ]
+        },
+        {
+          "name": "Domains",
+          "items": [
+            "Threat Intelligence",
+            "Fraud detection",
+            "Fintech",
+            "E-commerce & payments"
+          ]
+        },
+        {
+          "name": "Languages",
+          "items": [
+            "Portuguese (native)",
+            "English (professional)"
+          ]
         }
       ]
     },
-    "skills": {
-      "title": "skills.app",
-      "label": "Skills",
-      "categories": [
-        { "name": "Backend", "items": ["C#", ".NET Core", ".NET Framework", "Node.js", "TypeScript"] },
-        { "name": "Frontend", "items": ["React", "Next.js", "Tailwind CSS", "shadcn/ui", "Razor"] },
-        { "name": "Databases", "items": ["SQL databases", "MongoDB"] },
-        { "name": "Cloud / DevOps", "items": ["AWS", "CI/CD pipelines", "API Gateway", "REST APIs", "Microservices", "Vercel", "Git"] },
-        { "name": "AI Tooling", "items": ["Claude Code", "GitHub Copilot", "Cursor", "MCP servers"] },
-        { "name": "Domains", "items": ["Threat Intelligence", "Fraud detection", "Fintech", "E-commerce & payments"] },
-        { "name": "Languages", "items": ["Portuguese (native)", "English (professional)"] }
-      ]
-    },
     "how-i-work-with-ai": {
-      "title": "how-i-work-with-ai.app",
-      "label": "How I Work with AI",
+      "title": "How I Work With AI",
+      "description": "My AI-first workflow, in practice",
       "intro": "I treat AI as a core part of the engineering toolchain, not a novelty. The goal is simple: ship better software, faster, without lowering the bar for quality. That means using AI deliberately — with specs, review and judgment — instead of prompting and praying.",
       "sections": [
         {
@@ -175,33 +353,827 @@
         }
       ]
     },
+    "messenger": {
+      "title": "DouglasOS Messenger",
+      "description": "Chat with (scripted) Douglas"
+    },
     "contact": {
-      "title": "contact.app",
-      "label": "Contact",
+      "title": "Contact",
+      "description": "LinkedIn, GitHub, e-mail, WhatsApp",
       "heading": "Let's talk",
       "availability": "Open to remote opportunities — international teams welcome.",
       "copy": "Copy",
-      "copied": "Copied!"
+      "copied": "Copied!",
+      "emailLabel": "E-mail"
+    },
+    "display": {
+      "title": "Display Properties",
+      "description": "Change the desktop wallpaper",
+      "tabs": {
+        "desktop": "Desktop"
+      },
+      "preview": "Preview of the selected wallpaper",
+      "wallpaperLabel": "Wallpaper:",
+      "wallpapers": {
+        "morning-waves": "Morning Waves",
+        "dusk-hills": "Dusk Hills",
+        "blueprint": "Blueprint",
+        "solid": "Solid color",
+        "3d": "DouglasOS 3D (animated)",
+        "golden-egg": "Golden Egg (secret)"
+      },
+      "colorLabel": "Color:",
+      "swatches": {
+        "navy": "Navy",
+        "teal": "Teal",
+        "forest": "Forest",
+        "plum": "Plum",
+        "slate": "Slate"
+      },
+      "animatedNote": "Loads after the desktop is ready and pauses nothing else.",
+      "unavailable": {
+        "reducedMotion": "Animated wallpapers are off because your system prefers reduced motion.",
+        "saveData": "Animated wallpapers are off because data saver is on.",
+        "mobile": "Animated wallpapers aren't available on this device."
+      },
+      "ok": "OK",
+      "cancel": "Cancel",
+      "apply": "Apply",
+      "secret": {
+        "locked": "???",
+        "hint": "(find every easter egg to unlock it)"
+      }
+    },
+    "recycle-bin": {
+      "title": "Recycle Bin",
+      "description": "Where deleted icons go (and come straight back from)",
+      "empty": "This folder is empty.",
+      "note": "Nothing stays here for long: anything you drag in, I bring right back. Go ahead, try it with an icon.",
+      "noteTouch": "Nothing stays here for long: press and hold any icon, pick Delete and watch me bring it right back."
+    },
+    "media-player": {
+      "title": "DouglasOS Media Player",
+      "description": "Music while you look around"
+    },
+    "camera": {
+      "title": "Retro Cam",
+      "description": "Pixelated webcam, processed on your device",
+      "toolbar": {
+        "label": "Camera controls",
+        "turnOn": "Turn on",
+        "turnOff": "Turn off",
+        "pixelSize": "Pixels:",
+        "palette": "Palette:",
+        "mirror": "Mirror",
+        "frame": "Frame",
+        "save": "Save photo"
+      },
+      "pixelSizes": {
+        "fine": "Fine",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "palettes": {
+        "douglasos": "DouglasOS",
+        "classic16": "16 colors",
+        "cga": "CGA style",
+        "original": "Original"
+      },
+      "viewfinder": "Pixelated camera preview",
+      "idle": {
+        "title": "The camera is off",
+        "body": "Retro Cam only turns your camera on when you click the button. Every frame is pixelated right here in your browser and never uploaded.",
+        "action": "Turn on camera"
+      },
+      "requesting": {
+        "title": "Waiting for permission…",
+        "body": "Your browser asks first. Nothing starts until you allow it."
+      },
+      "stopped": {
+        "minimized": "The camera turned off when the window was minimized.",
+        "hidden": "The camera turned off when you left the tab.",
+        "ended": "The camera was disconnected."
+      },
+      "denied": {
+        "title": "Camera blocked",
+        "body": "Retro Cam can't see the camera because permission was denied. To try again, allow the camera for this site in your browser's address bar or settings."
+      },
+      "unsupported": {
+        "title": "No camera available",
+        "no-api": "This browser can't share a camera with web pages, or the page isn't on a secure connection.",
+        "no-camera": "Retro Cam couldn't find a camera on this device.",
+        "busy": "The camera is busy in another app. Close that app and try again."
+      },
+      "retry": "Try again",
+      "ok": "OK",
+      "status": {
+        "active": "Camera on",
+        "off": "Camera off",
+        "local": "local processing",
+        "fps": "{fps} FPS",
+        "noUpload": "no upload"
+      },
+      "saved": "Photo saved as {name}"
+    },
+    "paint": {
+      "title": "DouglasOS Paint",
+      "description": "Draw something (or just doodle)",
+      "menuBar": "Paint menu bar",
+      "menu": {
+        "file": "File",
+        "edit": "Edit",
+        "new": "New",
+        "save": "Save as PNG",
+        "close": "Close",
+        "undo": "Undo",
+        "redo": "Redo"
+      },
+      "tools": {
+        "label": "Tools",
+        "pencil": "Pencil",
+        "brush": "Brush",
+        "eraser": "Eraser",
+        "fill": "Fill with color",
+        "line": "Line",
+        "rectangle": "Rectangle"
+      },
+      "hints": {
+        "pencil": "Draws a thin freehand line.",
+        "brush": "Paints a soft, round stroke.",
+        "eraser": "Erases back to white.",
+        "fill": "Fills an area with the current color.",
+        "line": "Drag to draw a straight line.",
+        "rectangle": "Drag to draw a rectangle."
+      },
+      "size": {
+        "label": "Line width",
+        "value": "{px} px"
+      },
+      "palette": {
+        "label": "Colors",
+        "current": "Current color: {hex}",
+        "swatch": "Color {n} ({hex})"
+      },
+      "canvas": "Drawing canvas, {width} by {height} pixels",
+      "dimensions": "{width} × {height}px"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Easter eggs you've found"
     }
   },
-  "resume": { "title": "resume.pdf", "label": "Resume", "download": "Download CV" },
+  "easterEgg": {
+    "title": "DON'T OPEN THIS.exe",
+    "description": "Seriously. Don't.",
+    "dismissHint": "Press Esc or click anywhere to go back.",
+    "blueScreen": {
+      "label": "DouglasOS error screen",
+      "brand": "DouglasOS",
+      "headline": "DouglasOS couldn't find the page you were looking for.",
+      "code": "Error 404: PAGE_NOT_FOUND",
+      "causePage": "Probable cause: this link wandered off somewhere between the internet and this desktop. Nothing is broken and nothing was lost.",
+      "causeEgg": "Probable cause: someone double-dared a file literally named “DON'T OPEN THIS”.",
+      "progress": "Searching every folder for it",
+      "done": "Search complete. That page isn't here, but the good stuff is:",
+      "recovery": "Recovery options",
+      "cv": "Download CV",
+      "contact": "Talk to Douglas",
+      "desktop": "Back to desktop",
+      "pageTitle": "404 · Page not found · DouglasOS"
+    },
+    "scramble": {
+      "title": "Everything's back in place",
+      "text": "Well, almost everything: your CV is still waiting for you.",
+      "cv": "Download CV",
+      "contact": "Contact",
+      "close": "Close"
+    },
+    "accessDenied": {
+      "title": "Access denied",
+      "text": "This file is confidential. Yes, even for curious recruiters.",
+      "note": "NO!",
+      "signature": "— mini Douglas",
+      "scold": "Seriously? It said DON'T OPEN. Since you're the curious type, here's what you're allowed to open:",
+      "cv": "My CV",
+      "contact": "Talk to me",
+      "ok": "OK"
+    },
+    "assistant": {
+      "not-found": {
+        "title": "Relax, that was me",
+        "text": "Nothing crashed. If you were looking for something real, my CV is right here."
+      },
+      "scramble": {
+        "title": "I did warn you…",
+        "text": "Everything's back where it was. Want the CV, or shall we talk?"
+      },
+      "access-denied": {
+        "title": "Curiosity is a good trait",
+        "text": "It's exactly what I look for in a team. Here's how to reach me."
+      }
+    }
+  },
+  "resume": {
+    "title": "resume.pdf",
+    "download": "Download CV"
+  },
+  "links": {
+    "linkedin": {
+      "title": "linkedin.url",
+      "description": "LinkedIn profile (opens in a new tab)"
+    },
+    "github": {
+      "title": "github.url",
+      "description": "GitHub profile (opens in a new tab)"
+    },
+    "whatsapp": {
+      "title": "whatsapp.exe",
+      "description": "Chat on WhatsApp (opens in a new tab)"
+    },
+    "email": {
+      "title": "write-me.eml",
+      "description": "Send an e-mail (opens your mail app)"
+    }
+  },
   "window": {
     "close": "Close",
     "minimize": "Minimize",
     "maximize": "Maximize",
-    "restore": "Restore"
+    "restore": "Restore",
+    "menu": "Window menu"
   },
-  "mobile": {
-    "banner": "Best experienced on a desktop — open DouglasOS on a larger screen.",
-    "dismiss": "Dismiss",
-    "heroTagline": "Fullstack developer building fraud-fighting products at Serasa Experian — shipping AI-first across the whole stack.",
-    "nav": {
-      "about": "About",
-      "experience": "Experience",
-      "projects": "Projects",
-      "skills": "Skills",
-      "ai": "How I work with AI",
+  "desktop": {
+    "label": "Desktop icons",
+    "menu": {
+      "open": "Open",
+      "delete": "Delete",
+      "rename": "Rename",
+      "properties": "Properties",
+      "arrangeIcons": "Arrange Icons",
+      "refresh": "Refresh",
+      "new": "New",
+      "newFolder": "Folder",
+      "newShortcut": "Shortcut",
+      "newTextDocument": "Text Document"
+    }
+  },
+  "taskbar": {
+    "label": "Taskbar",
+    "start": "start",
+    "startLabel": "Start",
+    "quickLaunch": "Quick Launch",
+    "quickCv": "Download CV",
+    "quickContact": "Contact",
+    "windows": "Open windows",
+    "tray": "Notification area",
+    "language": "Language",
+    "languageSwitch": "Language: English. Switch to {next}",
+    "languageNames": {
+      "en": "English",
+      "pt": "Português"
+    }
+  },
+  "startMenu": {
+    "label": "Start menu",
+    "user": "Douglas",
+    "pinned": "Pinned programs",
+    "places": "Places",
+    "allPrograms": "All Programs",
+    "myProjects": "My Projects",
+    "allProjects": "All projects",
+    "resume": "Résumé (CV)",
+    "contact": "Contact",
+    "displayProperties": "Display Properties",
+    "help": "Help",
+    "run": "Run…",
+    "logOff": "Log Off",
+    "turnOff": "Turn Off",
+    "folders": {
+      "accessories": "Accessories",
+      "entertainment": "Entertainment"
+    }
+  },
+  "boot": {
+    "tagline": "A portfolio that boots.",
+    "starting": "Starting DouglasOS…",
+    "skip": "Skip"
+  },
+  "logon": {
+    "welcome": "welcome",
+    "intro": "This desktop is a portfolio. Make yourself at home.",
+    "subtitle": "AI-First Fullstack Developer",
+    "tileLabel": "Log on as Douglas, AI-First Fullstack Developer",
+    "hint": "Click Douglas to come in.",
+    "hintTouch": "Tap Douglas to come in."
+  },
+  "shutdown": {
+    "dialogTitle": "Turn off DouglasOS",
+    "dialogBody": "Calling it a day? Your open windows will close; your wallpaper and icons stay right where you left them.",
+    "cancel": "Cancel",
+    "confirm": "Turn Off",
+    "shuttingDown": "DouglasOS is shutting down…",
+    "goodbye": "See you soon.",
+    "turnOn": "Turn on"
+  },
+  "confirmClose": {
+    "title": "Close {app}",
+    "body": "Close {app}?",
+    "unsavedBody": "Your drawing hasn't been saved. Close {app} anyway?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "protectedFile": {
+    "title": "Protected file",
+    "body": "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart.",
+    "ok": "Fair enough"
+  },
+  "run": {
+    "title": "Run",
+    "intro": "Type the name of a program, project or link, and DouglasOS will open it for you.",
+    "openLabel": "Open:",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "suggestions": "Suggestions",
+    "types": {
+      "app": "Program",
+      "download": "Download",
+      "link": "Link",
+      "project": "Project",
+      "command": "Command"
+    },
+    "notFound": {
+      "title": "DouglasOS",
+      "body": "DouglasOS couldn't find “{query}”. Check the spelling, or try “projects”, “cv” or “contact”.",
+      "ok": "OK"
+    },
+    "cmd": {
+      "title": "DouglasOS Command Prompt",
+      "body": "No terminal in here: this Run box already does the job. Type “projects”, “cv” or “contact” and press Enter.",
+      "ok": "Got it"
+    }
+  },
+  "palette": {
+    "label": "Command palette",
+    "placeholder": "Search apps, projects and links…",
+    "results": "Results",
+    "empty": "DouglasOS couldn't find “{query}”.",
+    "emptyHint": "Try “projects”, “cv” or “contact”.",
+    "hint": "↑↓ to choose · Enter to open · Esc to close"
+  },
+  "properties": {
+    "title": "{name} Properties",
+    "type": "Type:",
+    "description": "Description:",
+    "location": "Location:",
+    "desktop": "Desktop",
+    "opens": "Opens:",
+    "types": {
+      "app": "Program",
+      "download": "PDF document",
+      "link": "Internet shortcut",
+      "mail": "E-mail shortcut",
+      "system": "System folder"
+    },
+    "opensWindow": "In a window",
+    "opensDownload": "Downloads the file",
+    "opensTab": "In a new browser tab",
+    "opensMail": "In your mail app",
+    "open": "Open",
+    "ok": "OK"
+  },
+  "newItem": {
+    "title": "New",
+    "body": "DouglasOS is a portfolio, not a file system, so nothing new gets created here. Douglas does ship new things regularly, though: they live in My Projects.",
+    "projects": "Show projects",
+    "ok": "OK"
+  },
+  "balloon": {
+    "title": "Welcome to DouglasOS",
+    "body": "Click any icon to open it. Douglas's CV is one click away on the taskbar.",
+    "close": "Close",
+    "bodyTouch": "Tap any icon to open it. Douglas's CV is one tap away on the taskbar."
+  },
+  "assistant": {
+    "name": "mini Douglas",
+    "characterLabel": "mini Douglas, desktop assistant",
+    "close": "Close",
+    "shortcuts": "Shortcuts",
+    "search": {
+      "label": "Ask me something:",
+      "placeholder": "e.g. remote? stack? CV",
+      "submit": "Search"
+    },
+    "actions": {
+      "openProject": "Show me a project",
+      "openProjectNamed": "Open {project}",
+      "downloadCv": "Download the CV",
+      "nextTip": "Show me another tip",
+      "dismiss": "Not now, thanks",
+      "apps": {
+        "contact": "I want to get in touch",
+        "projects": "See all projects",
+        "skills": "Open Skills",
+        "about": "Open About Douglas",
+        "experience": "Open Experience",
+        "aiWorkflow": "Open How I Work With AI",
+        "display": "Open Display Properties"
+      }
+    },
+    "messages": {
+      "greeting": {
+        "title": "Hi! I'm mini Douglas",
+        "text": "The pocket-sized Douglas, here to show you around. In a hurry? My CV and contact are one click away from this balloon."
+      },
+      "help": {
+        "title": "How can I help?",
+        "text": "Pick a shortcut or ask me something. I know every corner of this desktop."
+      },
+      "afterDance": {
+        "title": "Phew!",
+        "text": "Haven't danced like that since a deploy went green on the first try. Back to work: want to see a project?"
+      },
+      "projectsTip": {
+        "title": "Quick tip",
+        "text": "This window is a tiny browser. Type a project name like “{project}” in the address bar and press Enter."
+      },
+      "idle": {
+        "title": "Still around?",
+        "text": "No rush! If you only have a minute, these two are the ones that matter most:"
+      },
+      "tip": {
+        "title": "Did you know?"
+      },
+      "answer": {
+        "title": "mini Douglas says"
+      },
+      "eggsComplete": {
+        "title": "You found them all!",
+        "text": "Every single easter egg! That's the attention to detail Douglas brings to code reviews. Your prize: a secret wallpaper in Display Properties. And since you're clearly thorough, his CV is right here."
+      }
+    },
+    "tips": {
+      "singleClick": "Every icon here opens with a single click (or tap). No double-click ritual required.",
+      "quickLaunch": "See the two small buttons next to Start? One downloads my CV, the other opens Contact.",
+      "addressBar": "My Projects works like a small browser: type a project name in the address bar and press Enter.",
+      "aiWorkflow": "How I Work With AI is the part I'm proudest of: the tools and habits behind how I build software today.",
+      "startMenu": "Lost? The Start menu has everything in one place, my CV included.",
+      "language": "Fala português? The EN/PT button on the taskbar switches the whole desktop."
+    },
+    "answers": {
+      "cv": "Here you go: my CV as a PDF. No sign-up, no tricks.",
+      "contact": "Let's talk! LinkedIn, e-mail and WhatsApp are all in Contact. Pick your favorite.",
+      "projects": "My projects are written up as case studies: the problem, my approach and the result.",
+      "project": "Good pick! {project} has its own case study. Want to open it?",
+      "skills": "Eight years across .NET, Node.js and React, with AWS on the infra side. The full list is in Skills.",
+      "availability": "I live in Lagoa Santa, Brazil, and work remotely. I'm open to remote roles, international teams included.",
+      "aiWorkflow": "My favorite topic! I work AI-first, with Claude Code and GitHub Copilot in my daily flow. The details are in How I Work With AI.",
+      "experience": "Eight years so far, today as a fullstack developer at Serasa Experian. The whole path is in Experience.",
+      "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention. More in About Douglas.",
+      "fallback": "That one isn't in my script yet. Try “CV”, “projects”, “stack” or “remote”, or ask the real me through Contact."
+    },
+    "trash": {
+      "title": "Rescued from the Recycle Bin",
+      "titleCleanup": "Everything rescued",
+      "binTitle": "Recycle Bin",
+      "binOpened": "Empty, as always. I don't let anything go: whatever lands in here, I bring back.",
+      "lines": {
+        "mediaPlayer": {
+          "v1": "Throwing out the music? The playlist from my wedding is in there. Restored, volume and all.",
+          "v2": "No soundtrack, no fun. The Media Player is back on the desktop."
+        },
+        "camera": {
+          "v1": "Retro Cam in the trash? Fine, it's camera-shy anyway. Put it back.",
+          "v2": "The webcam goes back where it was. Don't worry, it only turns on when you click."
+        },
+        "paint": {
+          "v1": "Deleting Paint before drawing anything? Every masterpiece starts blank. Restored.",
+          "v2": "Paint stays: someone still has to draw me a mustache. Back on the desktop."
+        },
+        "about": {
+          "v1": "Throwing me away already? We just met. I put myself back on the desktop.",
+          "v2": "Deleting the About page is a bold way to get to know someone. Restored.",
+          "v3": "I'm not that easy to get rid of. About Douglas is back where it was."
+        },
+        "resume": {
+          "v1": "My CV in the trash? Eight years of work went into that page! It's back. Want a copy while you're here?",
+          "v2": "Careful, that's the most important file on this desktop. I pulled it out. Download it so it's safe?",
+          "v3": "Recycling my résumé? At least keep a copy first. I already put the original back."
+        },
+        "contact": {
+          "v1": "Without Contact you'd have to guess my e-mail. I saved you the trouble and put it back.",
+          "v2": "Deleting Contact before even saying hi? I'll pretend that was a misclick. Restored.",
+          "v3": "Contact can't go: that's where the good conversations start. Back on the desktop."
+        },
+        "projects": {
+          "v1": "Those projects cost me a lot of coffee. They're staying. Back on the desktop.",
+          "v2": "Trashing My Projects? There's a whole Git history in there. Restored.",
+          "v3": "No throwing the projects away before you've opened at least one. Back where they were."
+        },
+        "experience": {
+          "v1": "Eight years of experience don't fit in a recycle bin. I checked. Restored.",
+          "v2": "Deleting my experience won't make me a junior again. It's back."
+        },
+        "skills": {
+          "v1": "My skills, in the trash? I still need those for the next sprint. Restored.",
+          "v2": "You can't recycle skills. You can learn new ones, and I'm keeping these too."
+        },
+        "aiWorkflow": {
+          "v1": "Throwing away how I work with AI? Even the AI said that was a bad idea. Restored.",
+          "v2": "That's my favorite section. I asked it nicely and it came back on its own."
+        },
+        "messenger": {
+          "v1": "Deleting the Messenger mid-conversation? Rude. It's back, and I'm still online.",
+          "v2": "You can't ghost me that easily. Messenger restored."
+        },
+        "linkedin": {
+          "v1": "That's where recruiters find me, so I'd rather keep it. linkedin.url is back.",
+          "v2": "Deleting my LinkedIn? My endorsements would never forgive me. Restored."
+        },
+        "github": {
+          "v1": "My GitHub in the trash? Those little green squares took effort. Restored.",
+          "v2": "GitHub stays: that's where the code that actually runs lives. Back on the desktop."
+        },
+        "whatsapp": {
+          "v1": "No WhatsApp means no quick \"hey, got a minute?\". I fished it back out.",
+          "v2": "Trashing WhatsApp? My mom would be the first to complain. Restored."
+        },
+        "email": {
+          "v1": "My inbox is the one place I actually enjoy getting mail. write-me.eml is back.",
+          "v2": "Deleting the e-mail shortcut won't unsubscribe you. There's nothing to unsubscribe from. Restored."
+        },
+        "generic": "Nice try. Nothing leaves this desktop on my watch. It's back where it was.",
+        "cleanup": {
+          "v1": "A {count}-icon cleanup drive? Sorry, nothing on this desktop is disposable. Everything's back.",
+          "v2": "Bulk delete detected. Bulk restore performed. All {count} icons are home."
+        },
+        "cleanupWithCv": {
+          "v1": "You threw out {count} icons, my CV included! Everything's back. Grab the CV now, before it takes another trip?",
+          "v2": "Mass deletion, CV and all? I restored all {count}. The CV is one click away right below, just saying."
+        }
+      }
+    }
+  },
+  "messenger": {
+    "name": "DouglasOS Messenger",
+    "contacts": {
+      "listLabel": "Contacts",
+      "you": "You",
+      "youStatus": "Visitor (online)",
+      "listeningTo": "Listening to: {title}",
+      "listeningToUntitled": "Listening to music",
+      "listeningToAction": "Show DouglasOS Media Player",
+      "group": "Online ({count})",
+      "douglas": "Douglas",
+      "status": "Online",
+      "personalMessage": "Building things with AI as my pair (coffee)",
+      "open": "Start a conversation with Douglas",
+      "hint": "Click Douglas to start chatting. Replies are automatic, written by him."
+    },
+    "conversation": {
+      "back": "Contacts",
+      "title": "Conversation with Douglas",
+      "douglasSays": "Douglas says:",
+      "youSay": "You say:",
+      "typing": "Douglas is typing…",
+      "disclaimer": "Automatic replies, written in advance by Douglas himself. For a real answer, leave a message.",
+      "logLabel": "Conversation history",
+      "composerLabel": "Your message",
+      "placeholder": "Type a message…",
+      "send": "Send",
+      "emoticons": "Emoticons",
+      "nudge": "Nudge",
+      "nudgeSent": "You sent a nudge.",
+      "nudgeTooSoon": "Easy there! Wait a few seconds before nudging again.",
+      "quickReplies": "Suggested replies",
+      "toolbar": "Shortcuts",
+      "downloadCv": "Download CV",
       "contact": "Contact"
+    },
+    "form": {
+      "title": "Leave a message",
+      "intro": "Write it here, then send it from your own mail app or WhatsApp. Nothing leaves this page until you hit send there.",
+      "name": "Your name (optional)",
+      "message": "Message",
+      "sendEmail": "Send by e-mail",
+      "sendWhatsapp": "Send on WhatsApp",
+      "cancel": "Cancel",
+      "counter": "{count}/{max}",
+      "subject": "Hello from the DouglasOS Messenger",
+      "subjectNamed": "{name}, via the DouglasOS Messenger",
+      "body": "Hi Douglas,\n\n{message}\n\n(Sent from the DouglasOS Messenger)",
+      "bodyNamed": "Hi Douglas,\n\n{message}\n\n{name}\n(Sent from the DouglasOS Messenger)"
+    },
+    "quickReplies": {
+      "projects": {
+        "label": "See projects",
+        "say": "Can I see your projects?"
+      },
+      "cv": {
+        "label": "Download CV",
+        "say": "Can I have your CV?"
+      },
+      "skills": {
+        "label": "Tech stack",
+        "say": "What's your tech stack?"
+      },
+      "availability": {
+        "label": "Availability",
+        "say": "Are you open to new roles? Remote?"
+      },
+      "aiWorkflow": {
+        "label": "AI workflow",
+        "say": "How do you work with AI?"
+      },
+      "experience": {
+        "label": "Experience",
+        "say": "Tell me about your experience."
+      },
+      "leaveMessage": {
+        "label": "Leave a message",
+        "say": "I'd like to leave you a message."
+      }
+    },
+    "actions": {
+      "downloadCv": "Download the CV (PDF)",
+      "openProject": "Open {project}",
+      "leaveMessage": "Leave a message",
+      "apps": {
+        "contact": "Open Contact",
+        "projects": "Open My Projects",
+        "skills": "Open Skills",
+        "experience": "Open Experience",
+        "about": "Open About Douglas",
+        "aiWorkflow": "Open How I Work With AI"
+      }
+    },
+    "emoticons": {
+      "smile": "Smile",
+      "grin": "Big grin",
+      "wink": "Wink",
+      "tongue": "Tongue out",
+      "surprised": "Surprised",
+      "sad": "Sad",
+      "cool": "Cool",
+      "heart": "Heart",
+      "thumbsUp": "Thumbs up",
+      "coffee": "Coffee"
+    },
+    "replies": {
+      "greeting": "Hi! I saw you're looking around my portfolio :)",
+      "greetingFollowUp": "Ask me anything about my work, or pick one of the suggestions below. Want a real answer from me? Leave a message and it lands straight in my inbox.",
+      "cv": "Sure! Here's my CV as a PDF. No sign-up, no tricks.",
+      "cvSent": "Done, the download should have started. If it didn't, here's the link again.",
+      "contact": "Let's talk! The quickest way is to leave me a message right here. LinkedIn, e-mail and WhatsApp are in Contact too.",
+      "projects": "I write my projects up as case studies: the problem, my approach and the result. Want to take a look?",
+      "project": "Good pick! {project} has its own case study. Want me to open it?",
+      "skills": "Eight years across .NET, Node.js and React, with AWS on the infra side. The full list is in Skills.",
+      "availability": "I live in Lagoa Santa, Brazil, and work remotely. I'm open to remote roles, international teams included (y)",
+      "aiWorkflow": "My favorite topic! I work AI-first: Claude Code and GitHub Copilot are part of how I design, build and ship software every day. I wrote the details down in How I Work With AI.",
+      "experience": "Eight years so far. Today I'm a fullstack developer at Serasa Experian, building APIs for threat intelligence and fraud detection. The whole path is in Experience.",
+      "about": "Short version: fullstack developer, eight years in, focused on finance and fraud prevention, working AI-first.",
+      "aboutPersonal": "",
+      "fallback": "That one I'll have to answer in person. Leave me a message?",
+      "leaveMessage": "Sure! Write it below and pick e-mail or WhatsApp. It comes straight to me.",
+      "sentEmail": "Thanks! Your mail app should have opened with everything filled in. Just hit send there and I'll get back to you.",
+      "sentWhatsapp": "Thanks! WhatsApp should have opened with your message ready. Just hit send there and I'll get back to you.",
+      "nudge": [
+        "Whoa! I'm here, I'm here :D",
+        "Okay, okay, you have my full attention :P",
+        "My coffee almost went flying (coffee) What can I do for you?"
+      ]
+    },
+    "tray": {
+      "label": "Douglas is online. Open DouglasOS Messenger",
+      "unread": "Douglas is online, {count, plural, one {# new message} other {# new messages}}. Open DouglasOS Messenger"
+    },
+    "toast": {
+      "says": "Douglas says:",
+      "text": "Hi! Got a minute? Ask me anything about my work, I'm right here :)",
+      "close": "Close"
+    }
+  },
+  "static": {
+    "label": "DouglasOS — text version of the portfolio"
+  },
+  "mediaPlayer": {
+    "nowPlaying": "Now playing",
+    "screenLabel": "Video screen (YouTube player)",
+    "source": "Source: YouTube playlist",
+    "untitled": "Untitled video",
+    "track": "Track {index} of {total}",
+    "status": {
+      "idle": "Press Play to start the playlist.",
+      "loading": "Connecting to YouTube…",
+      "ready": "Ready. Press Play.",
+      "buffering": "Buffering…",
+      "playing": "Playing",
+      "paused": "Paused",
+      "ended": "Playlist finished",
+      "error": "This playlist can't be played here"
+    },
+    "notices": {
+      "skipped": "Skipped a video that can't be played outside YouTube.",
+      "hiddenPause": "Paused: the video has to stay on screen to play."
+    },
+    "controls": {
+      "label": "Playback controls",
+      "play": "Play",
+      "pause": "Pause",
+      "stop": "Stop",
+      "previous": "Previous track",
+      "next": "Next track",
+      "volume": "Volume",
+      "mute": "Mute",
+      "unmute": "Unmute"
+    },
+    "visualizer": "Visualizer (decorative)",
+    "openOnYouTube": "Open on YouTube",
+    "error": {
+      "title": "DouglasOS Media Player",
+      "unplayable": "None of the videos in this playlist can be played here. You can still listen to it on YouTube.",
+      "loadFailed": "YouTube couldn't be reached. Check your connection, or open the playlist on YouTube.",
+      "ok": "OK"
+    },
+    "tray": {
+      "nowPlaying": "Now playing: {title}. Show DouglasOS Media Player",
+      "nowPlayingUntitled": "Music is playing. Show DouglasOS Media Player",
+      "volume": "Volume: {level}%",
+      "muted": "Volume: muted",
+      "panel": "Volume control",
+      "showPlayer": "Show player"
+    }
+  },
+  "easterEggs": {
+    "counter": "{count}/{total}",
+    "toast": {
+      "title": "🎉 Easter egg found! ({count}/{total})",
+      "close": "Close",
+      "viewAll": "See all achievements"
+    },
+    "achievements": {
+      "summary": "Easter eggs found: {count} of {total}",
+      "progressLabel": "Easter egg progress",
+      "listTitle": "Easter eggs",
+      "unknown": "???",
+      "foundOn": "Found on {date}",
+      "complete": "All found! The secret wallpaper is unlocked.",
+      "openDisplay": "Open Display Properties",
+      "reset": "Reset progress",
+      "ok": "OK",
+      "resetTitle": "Reset progress",
+      "resetBody": "Forget every easter egg you've found? The secret wallpaper will be locked again.",
+      "resetConfirm": "Reset",
+      "resetCancel": "Cancel"
+    },
+    "eggs": {
+      "protected-file": {
+        "title": "Protected file",
+        "hint": "Some names are not up for discussion."
+      },
+      "assistant-dance": {
+        "title": "Dance break",
+        "hint": "Someone small on the desktop has moves."
+      },
+      "messenger-nudge": {
+        "title": "Nudge, nudge",
+        "hint": "Chats can get impatient too."
+      },
+      "trash-rescue": {
+        "title": "Rescue mission",
+        "hint": "Things don't stay thrown away around here."
+      },
+      "trash-cleanup": {
+        "title": "Spring cleaning",
+        "hint": "Why throw things away one at a time?"
+      },
+      "run-cmd": {
+        "title": "Old habits",
+        "hint": "Some commands get typed on muscle memory."
+      },
+      "desktop-new": {
+        "title": "Something new",
+        "hint": "Right-click the void and ask for something new."
+      },
+      "music-dance": {
+        "title": "Dance floor",
+        "hint": "Every song deserves a dancer."
+      },
+      "egg-404": {
+        "title": "Big blue oops",
+        "hint": "Some files really mean it when they say don't."
+      },
+      "egg-runaway": {
+        "title": "Runaway desktop",
+        "hint": "Curiosity has consequences."
+      },
+      "egg-scold": {
+        "title": "Told you so",
+        "hint": "Someone will have opinions about that click."
+      },
+      "real-404": {
+        "title": "Off the map",
+        "hint": "Not every address leads somewhere."
+      }
     }
   }
 }

@@ -41,6 +41,66 @@ Object.defineProperty(window, "localStorage", {
   configurable: true,
   value: createMemoryStorage(),
 });
+// Same story for sessionStorage (boot/logon + welcome-balloon flags).
+Object.defineProperty(window, "sessionStorage", {
+  configurable: true,
+  value: createMemoryStorage(),
+});
+
+/*
+ * Browser APIs jsdom lacks but Radix (menus, dialogs, tooltips) and Framer
+ * Motion touch: matchMedia, ResizeObserver, pointer capture, scrollIntoView.
+ */
+/**
+ * Width queries are evaluated against the (pinned) `innerWidth`, so the shell
+ * picks the pointer desktop by default and a test can switch to the touch
+ * shell by setting `window.innerWidth` below 768 before rendering. Every other
+ * query (e.g. reduced motion) reports false.
+ */
+function matchesWidthQuery(query: string): boolean {
+  const min = /min-width:\s*(\d+(?:\.\d+)?)px/.exec(query);
+  const max = /max-width:\s*(\d+(?:\.\d+)?)px/.exec(query);
+  if (!min && !max) return false;
+  const width = window.innerWidth;
+  return (!min || width >= Number(min[1])) && (!max || width <= Number(max[1]));
+}
+if (!window.matchMedia) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: matchesWidthQuery(query),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+if (!("ResizeObserver" in window)) {
+  class ResizeObserverStub {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  Object.defineProperty(window, "ResizeObserver", {
+    configurable: true,
+    value: ResizeObserverStub,
+  });
+}
+for (const method of ["hasPointerCapture", "setPointerCapture", "releasePointerCapture"] as const) {
+  if (!(method in Element.prototype)) {
+    Object.defineProperty(Element.prototype, method, {
+      configurable: true,
+      value: method === "hasPointerCapture" ? () => false : () => {},
+    });
+  }
+}
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
 
 beforeEach(() => {
   Object.defineProperty(window, "innerWidth", {
@@ -53,8 +113,9 @@ beforeEach(() => {
     writable: true,
     value: DEFAULT_VIEWPORT.height,
   });
-  // Persisted stores write to localStorage; start each test from a clean slate.
+  // Persisted stores write to storage; start each test from a clean slate.
   window.localStorage.clear();
+  window.sessionStorage.clear();
 });
 
 afterEach(() => {
