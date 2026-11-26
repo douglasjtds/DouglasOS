@@ -30,7 +30,7 @@
 │ Contact               │ status bar                                   │  │
 │                       └─────────────────────────────────────────────┘  │
 │ [icon]                                                                 │
-│ My Projects                         wallpaper ("Morning Waves")        │
+│ My Projects                         wallpaper ("Green Meadow")         │
 │ [icon] Experience                                                      │
 │ [icon] Skills                                                          │
 │ [icon] How I Work With AI                                              │
@@ -88,7 +88,7 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 **Purpose:** surface the launchers on a wallpaper, like a real desktop.
 
 ### Wallpaper
-- Default: static original "Morning Waves" (abstract blue ribbons + DouglasOS mark; replaced the stage-1 "Morning Hills", which read too close to the famous hill photograph). Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
+- Default: static "Green Meadow", a CC0 photo of rolling green hills under a blue sky (source in `public/wallpapers/CREDITS.md`). It replaced the abstract "Morning Waves", which stays as an option. Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
 - The solid `desktop` color paints first; the wallpaper never blocks interaction.
 
 ### Desktop icons
@@ -283,7 +283,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 New `display` window app (kind `"window"`), opened from the Start menu and the desktop context menu → Properties (stage 7 — done).
 
-- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", the secret "Golden Egg" *(stage 11: "???" until every easter egg is found, [§20](#20-easter-eggs--achievements-stage-11--done))*, "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
+- **Desktop tab:** a small monitor preview + a list of wallpapers: "Green Meadow" (default), "Morning Waves", "Dusk Hills", "Blueprint", the secret "Golden Egg" *(stage 11: "???" until every easter egg is found, [§20](#20-easter-eggs--achievements-stage-11--done))*, "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
 - **Screen Saver tab:** omitted in stage 1 (not cheap enough to do well; no dead tab). Listed as a future idea in `MVP-SCOPE.md`.
 - The choice persists locally in a new `displayStore` (`lib/store/displayStore.ts`, key `douglasos:display`; catalog + pure helpers in `lib/wallpapers.ts`). Solid colors are five fixed swatches (`--color-swatch-*` tokens).
