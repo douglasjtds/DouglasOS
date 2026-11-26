@@ -145,7 +145,16 @@ All values below become `--color-*` tokens in the Tailwind v4 `@theme` block. To
 | `icon-warning` | `#F2C230` | Warning icon (own SVG, yellow triangle + !) |
 | `icon-info` | `#2A6FD6` | Information icon (own SVG, blue circle + i) |
 | `icon-success` | `#2E8B2E` | Success / "online" indicators |
-| `progress` | `#2FB52F` | In-window progress bar blocks |
+| `progress` | `#2FB52F` | In-window progress bar blocks; bottom of the Media Player visualizer bars (top: `hot`) |
+
+### DouglasOS Media Player *(stage 8)*
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `media-screen` | `#000000` | Video screen letterbox + visualizer well |
+| `media-display` | `#0A1E4A` | "Now playing" display panel |
+| `media-display-text` | `#D6E6FF` | Track title on the display |
+| `media-display-muted` | `#8FB0E6` | Labels/status on the display (AA on `media-display`) |
 
 ### Desktop, boot & logon
 
@@ -504,7 +513,10 @@ Every animation has a static alternative:
 | `whatsapp` *(link)* | Green chat bubble with typing dots — no handset/logo |
 | `email` *(link)* | Blue-lined envelope with an orange "@" seal (distinct from `contact`'s beige envelope + card) |
 | `display` (stage 1) | Monitor showing a tiny "Morning Waves" wallpaper |
-| Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera, paint, "don't open this" |
+| `paint` (stage 10) | Wooden artist's palette with paint blobs and a brush across it (`PaintIcons.tsx`) — never the classic program's icon |
+| `dont-open-this` (stage 10) | Program file sealed with diagonal caution tape + a red "!" badge (`PaintIcons.tsx`) |
+| All Programs folders (stages 8–10) | Plain yellow folder without documents for Entertainment (`MediaIcons.tsx` → `ProgramFolderIcon`), the same folder with a small gear for Accessories (`CameraIcons.tsx` → `AccessoriesFolderIcon`); both distinct from `projects` |
+| Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera (stage 9 — done: glossy round desk webcam with a blue lens and a green "on" light, `components/icons/CameraIcons.tsx`, plus a small yellow program-folder glyph for All Programs ▸ Accessories) |
 
 ### Brand mark (DouglasOS logo)
 
@@ -702,6 +714,14 @@ Beyond the tables above, implementation needed a few extra tokens (all in `app/g
 | `--text-shadow-desktop-label`, `--text-shadow-start-label` | as in Shadows table | Exposed as Tailwind `text-shadow-*` utilities |
 
 `lib/utils.ts` registers these custom utilities with tailwind-merge (otherwise `cn("text-system text-text")` silently drops the font size).
+
+### Tokens added in stage 9 (Retro Cam)
+
+| Token | Value | Why |
+|-------|-------|-----|
+| `--color-viewfinder` | `#1B1B1B` | Dark viewfinder behind the pixelated camera picture |
+
+The Retro Cam "DouglasOS" palette is not a new token set: it reuses 16 existing Luna color tokens, mirrored as hex in `lib/camera/palettes.ts` (canvas code can't read CSS variables) and kept in sync by a unit test that parses `app/globals.css`.
 
 ### Tokens added in stage 2 (mobile)
 

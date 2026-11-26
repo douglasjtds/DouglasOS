@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useAssistantStore } from "@/lib/store/assistantStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import { selectActiveBalloon, useBalloonStore } from "@/lib/store/balloonStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useWindowStore } from "@/lib/store/windowStore";
@@ -24,6 +25,7 @@ import {
 } from "@/lib/assistant/layout";
 import type { Rect, Viewport } from "@/lib/store/geometry";
 import { useAssistantTriggers } from "@/hooks/useAssistantTriggers";
+import { useCursorGaze } from "@/hooks/useCursorGaze";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { AssistantBubble } from "@/components/os/assistant/AssistantBubble";
@@ -99,6 +101,11 @@ export default function Assistant() {
   const showCharacter = onScreen && !otherBalloon && clearance.character;
   const wantsBubble = onScreen && current !== null && state !== "dancing" && clearance.bubble;
   const showBubble = wantsBubble && activeBalloon === "assistant";
+  // He watches the mouse — desktop pointer only, and not mid-dance.
+  const { expression, ...gaze } = useCursorGaze(characterButton, {
+    enabled: showCharacter && !mobile && !reduced && state !== "dancing",
+    state,
+  });
 
   // One balloon at a time: hold the shared slot only while there's a line to show.
   useEffect(() => {
@@ -133,6 +140,9 @@ export default function Assistant() {
   function onCharacterClick() {
     const store = useAssistantStore.getState();
     if (store.state === "dancing") return;
+    // Easter egg (stage 11). Under reduced motion there's no dance, but the
+    // click still counts, so every visitor can find all of them.
+    useEasterEggStore.getState().discover("assistant-dance");
     if (reduced) {
       store.replace(helpMessage());
       return;
@@ -194,7 +204,7 @@ export default function Assistant() {
           }
           className="pointer-events-auto absolute cursor-pointer rounded-balloon focus-light max-md:right-2 max-md:bottom-[calc(var(--spacing-taskbar)+8px)]"
         >
-          <AssistantCharacter state={state} reducedMotion={reduced} />
+          <AssistantCharacter state={state} reducedMotion={reduced} gaze={gaze} expression={expression} />
         </button>
       )}
       {showBubble && current && (

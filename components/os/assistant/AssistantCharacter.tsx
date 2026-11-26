@@ -2,7 +2,9 @@
 
 import { useState, type ComponentType } from "react";
 import Image from "next/image";
+import type { MotionValue } from "framer-motion";
 import type { AssistantState } from "@/lib/store/assistantStore";
+import type { CharacterExpression } from "@/lib/assistant/gaze";
 import {
   ASSISTANT_MEDIA,
   clipForState,
@@ -17,6 +19,13 @@ export interface CharacterRendererProps {
   state: AssistantState;
   /** Static frame only: no loops, no dance moves. */
   reducedMotion: boolean;
+  /**
+   * Where he looks (eyes −1..1 per axis, head tilt in degrees) — cursor gaze,
+   * see `useCursorGaze`. Placeholder-only: the recorded clips ignore it.
+   */
+  gaze?: { x: MotionValue<number>; y: MotionValue<number>; tilt: MotionValue<number> };
+  /** The face he makes because of the cursor (placeholder-only). */
+  expression?: CharacterExpression;
 }
 
 function detectFormat(): MediaFormat {
@@ -80,7 +89,12 @@ const Renderer: ComponentType<CharacterRendererProps> = ASSISTANT_MEDIA.ready
  */
 export function AssistantCharacter(props: CharacterRendererProps) {
   return (
-    <span aria-hidden className="block size-full" data-character-state={props.state}>
+    <span
+      aria-hidden
+      className="block size-full"
+      data-character-state={props.state}
+      data-expression={props.expression ?? "neutral"}
+    >
       <Renderer {...props} />
     </span>
   );

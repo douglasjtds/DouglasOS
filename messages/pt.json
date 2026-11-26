@@ -31,7 +31,7 @@
       "downloadCv": "Baixar CV",
       "contactLink": "Fale comigo",
       "statsTitle": "Em resumo",
-      "photoAlt": "Imagem de usuário do Douglas"
+      "photoAlt": "Douglas sorrindo e fazendo joinha na mesa de trabalho, com o gato rajado no colo"
     },
     "experience": {
       "title": "Experiência",
@@ -379,7 +379,8 @@
         "dusk-hills": "Colinas ao Entardecer",
         "blueprint": "Planta Azul",
         "solid": "Cor sólida",
-        "3d": "DouglasOS 3D (animado)"
+        "3d": "DouglasOS 3D (animado)",
+        "golden-egg": "Ovo de Ouro (secreto)"
       },
       "colorLabel": "Cor:",
       "swatches": {
@@ -397,7 +398,11 @@
       },
       "ok": "OK",
       "cancel": "Cancelar",
-      "apply": "Aplicar"
+      "apply": "Aplicar",
+      "secret": {
+        "locked": "???",
+        "hint": "(encontre todos os easter eggs para desbloquear)"
+      }
     },
     "recycle-bin": {
       "title": "Lixeira",
@@ -405,6 +410,167 @@
       "empty": "Esta pasta está vazia.",
       "note": "Aqui nada fica por muito tempo: o que você arrastar pra cá, eu trago de volta. Pode testar com um ícone.",
       "noteTouch": "Aqui nada fica por muito tempo: segure qualquer ícone, escolha Excluir e veja eu trazer de volta."
+    },
+    "media-player": {
+      "title": "DouglasOS Media Player",
+      "description": "Música enquanto você explora"
+    },
+    "camera": {
+      "title": "Retro Cam",
+      "description": "Webcam pixelada, processada no seu aparelho",
+      "toolbar": {
+        "label": "Controles da câmera",
+        "turnOn": "Ligar",
+        "turnOff": "Desligar",
+        "pixelSize": "Pixels:",
+        "palette": "Paleta:",
+        "mirror": "Espelhar",
+        "frame": "Moldura",
+        "save": "Salvar foto"
+      },
+      "pixelSizes": {
+        "fine": "Fino",
+        "medium": "Médio",
+        "large": "Grande"
+      },
+      "palettes": {
+        "douglasos": "DouglasOS",
+        "classic16": "16 cores",
+        "cga": "Estilo CGA",
+        "original": "Original"
+      },
+      "viewfinder": "Prévia pixelada da câmera",
+      "idle": {
+        "title": "A câmera está desligada",
+        "body": "A Retro Cam só liga a sua câmera quando você clica no botão. Cada quadro é pixelado aqui mesmo no seu navegador e nunca é enviado para lugar nenhum.",
+        "action": "Ligar câmera"
+      },
+      "requesting": {
+        "title": "Aguardando permissão…",
+        "body": "O navegador pergunta antes. Nada começa até você permitir."
+      },
+      "stopped": {
+        "minimized": "A câmera desligou quando a janela foi minimizada.",
+        "hidden": "A câmera desligou quando você saiu da aba.",
+        "ended": "A câmera foi desconectada."
+      },
+      "denied": {
+        "title": "Câmera bloqueada",
+        "body": "A Retro Cam não consegue ver a câmera porque a permissão foi negada. Para tentar de novo, permita a câmera para este site na barra de endereço ou nas configurações do navegador."
+      },
+      "unsupported": {
+        "title": "Nenhuma câmera disponível",
+        "no-api": "Este navegador não compartilha a câmera com páginas da web, ou a página não está numa conexão segura.",
+        "no-camera": "A Retro Cam não encontrou uma câmera neste aparelho.",
+        "busy": "A câmera está em uso por outro aplicativo. Feche esse aplicativo e tente de novo."
+      },
+      "retry": "Tentar de novo",
+      "ok": "OK",
+      "status": {
+        "active": "Câmera ligada",
+        "off": "Câmera desligada",
+        "local": "processamento local",
+        "fps": "{fps} FPS",
+        "noUpload": "sem upload"
+      },
+      "saved": "Foto salva como {name}"
+    },
+    "paint": {
+      "title": "DouglasOS Paint",
+      "description": "Desenhe alguma coisa (ou só rabisque)",
+      "menuBar": "Barra de menus do Paint",
+      "menu": {
+        "file": "Arquivo",
+        "edit": "Editar",
+        "new": "Novo",
+        "save": "Salvar como PNG",
+        "close": "Fechar",
+        "undo": "Desfazer",
+        "redo": "Refazer"
+      },
+      "tools": {
+        "label": "Ferramentas",
+        "pencil": "Lápis",
+        "brush": "Pincel",
+        "eraser": "Borracha",
+        "fill": "Preencher com cor",
+        "line": "Linha",
+        "rectangle": "Retângulo"
+      },
+      "hints": {
+        "pencil": "Desenha uma linha fina à mão livre.",
+        "brush": "Pinta um traço redondo e macio.",
+        "eraser": "Apaga deixando branco.",
+        "fill": "Preenche uma área com a cor atual.",
+        "line": "Arraste para desenhar uma linha reta.",
+        "rectangle": "Arraste para desenhar um retângulo."
+      },
+      "size": {
+        "label": "Espessura",
+        "value": "{px} px"
+      },
+      "palette": {
+        "label": "Cores",
+        "current": "Cor atual: {hex}",
+        "swatch": "Cor {n} ({hex})"
+      },
+      "canvas": "Área de desenho, {width} por {height} pixels",
+      "dimensions": "{width} × {height}px"
+    },
+    "achievements": {
+      "title": "Conquistas",
+      "description": "Easter eggs que você encontrou"
+    }
+  },
+  "easterEgg": {
+    "title": "NÃO ABRA ISSO.exe",
+    "description": "Sério. Não abra.",
+    "dismissHint": "Aperte Esc ou clique em qualquer lugar para voltar.",
+    "blueScreen": {
+      "label": "Tela de erro do DouglasOS",
+      "brand": "DouglasOS",
+      "headline": "O DouglasOS não encontrou a página que você estava procurando.",
+      "code": "Erro 404: PAGE_NOT_FOUND",
+      "causePage": "Causa provável: este link se perdeu em algum lugar entre a internet e este desktop. Nada quebrou e nada se perdeu.",
+      "causeEgg": "Causa provável: alguém desafiou um arquivo chamado literalmente “NÃO ABRA ISSO”.",
+      "progress": "Procurando em todas as pastas",
+      "done": "Busca concluída. A página não está aqui, mas o que interessa está:",
+      "recovery": "Opções de recuperação",
+      "cv": "Baixar CV",
+      "contact": "Falar com o Douglas",
+      "desktop": "Voltar ao desktop",
+      "pageTitle": "404 · Página não encontrada · DouglasOS"
+    },
+    "scramble": {
+      "title": "Tudo de volta no lugar",
+      "text": "Bom, quase tudo: seu CV ainda está esperando por você.",
+      "cv": "Baixar CV",
+      "contact": "Contato",
+      "close": "Fechar"
+    },
+    "accessDenied": {
+      "title": "Acesso negado",
+      "text": "Este arquivo é confidencial. Sim, até para recrutadores curiosos.",
+      "note": "NÃO!",
+      "signature": "— mini Douglas",
+      "scold": "Sério? Estava escrito NÃO ABRA. Já que você é do tipo curioso, isto aqui você pode abrir:",
+      "cv": "Meu CV",
+      "contact": "Fale comigo",
+      "ok": "OK"
+    },
+    "assistant": {
+      "not-found": {
+        "title": "Calma, fui eu",
+        "text": "Nada travou. Se você procurava algo de verdade, meu CV está aqui."
+      },
+      "scramble": {
+        "title": "Eu avisei…",
+        "text": "Tudo voltou para o lugar. Quer o CV ou prefere conversar?"
+      },
+      "access-denied": {
+        "title": "Curiosidade é uma qualidade",
+        "text": "É exatamente o que eu procuro num time. Veja como falar comigo."
+      }
     }
   },
   "resume": {
@@ -441,6 +607,7 @@
     "menu": {
       "open": "Abrir",
       "delete": "Excluir",
+      "rename": "Renomear",
       "properties": "Propriedades",
       "arrangeIcons": "Organizar ícones",
       "refresh": "Atualizar",
@@ -480,7 +647,11 @@
     "help": "Ajuda",
     "run": "Executar…",
     "logOff": "Fazer logoff",
-    "turnOff": "Desligar"
+    "turnOff": "Desligar",
+    "folders": {
+      "accessories": "Acessórios",
+      "entertainment": "Entretenimento"
+    }
   },
   "boot": {
     "tagline": "Um portfólio que dá boot.",
@@ -503,6 +674,13 @@
     "shuttingDown": "O DouglasOS está desligando…",
     "goodbye": "Até logo.",
     "turnOn": "Ligar"
+  },
+  "confirmClose": {
+    "title": "Fechar {app}",
+    "body": "Fechar {app}?",
+    "unsavedBody": "Seu desenho não foi salvo. Fechar {app} mesmo assim?",
+    "yes": "Sim",
+    "no": "Não"
   },
   "protectedFile": {
     "title": "Arquivo protegido",
@@ -597,7 +775,8 @@
         "skills": "Abrir Habilidades",
         "about": "Abrir Sobre o Douglas",
         "experience": "Abrir Experiência",
-        "aiWorkflow": "Abrir Como Trabalho com IA"
+        "aiWorkflow": "Abrir Como Trabalho com IA",
+        "display": "Abrir Propriedades de Vídeo"
       }
     },
     "messages": {
@@ -626,6 +805,10 @@
       },
       "answer": {
         "title": "O mini Douglas responde"
+      },
+      "eggsComplete": {
+        "title": "Você achou todos!",
+        "text": "Todos os easter eggs, sem exceção! É essa atenção aos detalhes que o Douglas leva para o code review. Seu prêmio: um papel de parede secreto em Propriedades de Vídeo. E já que você é dos detalhistas, o currículo dele está bem aqui."
       }
     },
     "tips": {
@@ -654,6 +837,18 @@
       "binTitle": "Lixeira",
       "binOpened": "Vazia, como sempre. Eu não deixo nada ir embora: o que cai aqui, eu trago de volta.",
       "lines": {
+        "mediaPlayer": {
+          "v1": "Jogar a música fora? Tem a playlist do meu casamento aí dentro. Restaurado, com volume e tudo.",
+          "v2": "Sem trilha sonora não tem graça. O Media Player voltou pro desktop."
+        },
+        "camera": {
+          "v1": "A Retro Cam na lixeira? Tudo bem, ela é tímida mesmo. Coloquei de volta.",
+          "v2": "A webcam volta pro lugar. Fica tranquilo, ela só liga quando você clica."
+        },
+        "paint": {
+          "v1": "Apagar o Paint antes de desenhar alguma coisa? Toda obra-prima começa em branco. Restaurado.",
+          "v2": "O Paint fica: alguém ainda vai ter que me desenhar um bigode. De volta ao desktop."
+        },
         "about": {
           "v1": "Já vai me jogar fora? A gente acabou de se conhecer. Me coloquei de volta no desktop.",
           "v2": "Apagar o \"Sobre\" é um jeito ousado de conhecer alguém. Restaurado.",
@@ -724,6 +919,9 @@
       "listLabel": "Contatos",
       "you": "Você",
       "youStatus": "Visitante (online)",
+      "listeningTo": "Ouvindo: {title}",
+      "listeningToUntitled": "Ouvindo música",
+      "listeningToAction": "Mostrar o DouglasOS Media Player",
       "group": "Online ({count})",
       "douglas": "Douglas",
       "status": "Online",
@@ -856,5 +1054,126 @@
   },
   "static": {
     "label": "DouglasOS — versão em texto do portfólio"
+  },
+  "mediaPlayer": {
+    "nowPlaying": "Tocando agora",
+    "screenLabel": "Tela de vídeo (player do YouTube)",
+    "source": "Fonte: playlist do YouTube",
+    "untitled": "Vídeo sem título",
+    "track": "Faixa {index} de {total}",
+    "status": {
+      "idle": "Aperte Play para começar a playlist.",
+      "loading": "Conectando ao YouTube…",
+      "ready": "Pronto. Aperte Play.",
+      "buffering": "Carregando…",
+      "playing": "Tocando",
+      "paused": "Pausado",
+      "ended": "A playlist terminou",
+      "error": "Esta playlist não pode tocar aqui"
+    },
+    "notices": {
+      "skipped": "Pulei um vídeo que só pode tocar no YouTube.",
+      "hiddenPause": "Pausado: o vídeo precisa ficar visível para tocar."
+    },
+    "controls": {
+      "label": "Controles de reprodução",
+      "play": "Tocar",
+      "pause": "Pausar",
+      "stop": "Parar",
+      "previous": "Faixa anterior",
+      "next": "Próxima faixa",
+      "volume": "Volume",
+      "mute": "Silenciar",
+      "unmute": "Ativar som"
+    },
+    "visualizer": "Visualizador (decorativo)",
+    "openOnYouTube": "Abrir no YouTube",
+    "error": {
+      "title": "DouglasOS Media Player",
+      "unplayable": "Nenhum vídeo desta playlist pode tocar aqui. Você ainda pode ouvir no YouTube.",
+      "loadFailed": "Não foi possível conectar ao YouTube. Confira sua conexão ou abra a playlist no YouTube.",
+      "ok": "OK"
+    },
+    "tray": {
+      "nowPlaying": "Tocando agora: {title}. Mostrar o DouglasOS Media Player",
+      "nowPlayingUntitled": "Música tocando. Mostrar o DouglasOS Media Player",
+      "volume": "Volume: {level}%",
+      "muted": "Volume: mudo",
+      "panel": "Controle de volume",
+      "showPlayer": "Mostrar player"
+    }
+  },
+  "easterEggs": {
+    "counter": "{count}/{total}",
+    "toast": {
+      "title": "🎉 Easter egg encontrado! ({count}/{total})",
+      "close": "Fechar",
+      "viewAll": "Ver todas as conquistas"
+    },
+    "achievements": {
+      "summary": "Easter eggs encontrados: {count} de {total}",
+      "progressLabel": "Progresso dos easter eggs",
+      "listTitle": "Easter eggs",
+      "unknown": "???",
+      "foundOn": "Encontrado em {date}",
+      "complete": "Todos encontrados! O papel de parede secreto foi desbloqueado.",
+      "openDisplay": "Abrir Propriedades de Vídeo",
+      "reset": "Zerar progresso",
+      "ok": "OK",
+      "resetTitle": "Zerar progresso",
+      "resetBody": "Esquecer todos os easter eggs que você encontrou? O papel de parede secreto volta a ficar bloqueado.",
+      "resetConfirm": "Zerar",
+      "resetCancel": "Cancelar"
+    },
+    "eggs": {
+      "protected-file": {
+        "title": "Arquivo protegido",
+        "hint": "Alguns nomes não estão em discussão."
+      },
+      "assistant-dance": {
+        "title": "Pausa para dançar",
+        "hint": "Alguém pequeno no desktop tem uns passinhos."
+      },
+      "messenger-nudge": {
+        "title": "Chamar a atenção",
+        "hint": "Conversas também ficam impacientes."
+      },
+      "trash-rescue": {
+        "title": "Missão resgate",
+        "hint": "Por aqui, nada fica no lixo por muito tempo."
+      },
+      "trash-cleanup": {
+        "title": "Faxina geral",
+        "hint": "Por que jogar fora uma coisa de cada vez?"
+      },
+      "run-cmd": {
+        "title": "Velhos hábitos",
+        "hint": "Tem comando que a gente digita no automático."
+      },
+      "desktop-new": {
+        "title": "Algo novo",
+        "hint": "Clique com o botão direito no vazio e peça algo novo."
+      },
+      "music-dance": {
+        "title": "Pista de dança",
+        "hint": "Toda música merece alguém dançando."
+      },
+      "egg-404": {
+        "title": "Oops azulão",
+        "hint": "Tem arquivo que fala sério quando diz não."
+      },
+      "egg-runaway": {
+        "title": "Desktop fujão",
+        "hint": "A curiosidade tem consequências."
+      },
+      "egg-scold": {
+        "title": "Eu avisei",
+        "hint": "Alguém vai ter opinião sobre esse clique."
+      },
+      "real-404": {
+        "title": "Fora do mapa",
+        "hint": "Nem todo endereço leva a algum lugar."
+      }
+    }
   }
 }

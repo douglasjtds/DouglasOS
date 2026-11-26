@@ -14,6 +14,15 @@ describe("balloon queue helpers", () => {
     expect(dequeueBalloon(q, "assistant")).toEqual(["welcome"]);
     expect(dequeueBalloon(q, "messenger")).toBe(q);
   });
+
+  it("lets every other owner go ahead of the easter-egg toast (stage 11)", () => {
+    // Waiting: a regular owner jumps the yielding one.
+    expect(enqueueBalloon(["welcome", "easterEgg"], "recycleBin")).toEqual(["welcome", "recycleBin", "easterEgg"]);
+    // On screen: it is pushed back (and comes back once the slot frees up).
+    expect(enqueueBalloon(["easterEgg"], "assistant")).toEqual(["assistant", "easterEgg"]);
+    // The yielding owner itself always joins at the end.
+    expect(enqueueBalloon(["assistant"], "easterEgg")).toEqual(["assistant", "easterEgg"]);
+  });
 });
 
 describe("useBalloonStore", () => {

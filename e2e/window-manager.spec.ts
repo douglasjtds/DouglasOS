@@ -102,10 +102,19 @@ test.describe("window manager", () => {
     await expect(taskButton(page, "about")).toHaveCount(0);
   });
 
-  test("Esc closes the focused window", async ({ page }) => {
+  test("Esc asks before closing the focused window", async ({ page }) => {
     await desktopIcon(page, "about").click();
     await expect(windowById(page, "about")).toBeFocused();
     await page.keyboard.press("Escape");
+    const confirm = page.getByTestId("confirm-close-dialog");
+    await expect(confirm).toBeVisible();
+    // A second Esc cancels the question, not the window.
+    await page.keyboard.press("Escape");
+    await expect(confirm).toHaveCount(0);
+    await expect(windowById(page, "about")).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await confirm.getByRole("button", { name: "Yes" }).click();
     await expect(windows(page)).toHaveCount(0);
   });
 

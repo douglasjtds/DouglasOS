@@ -64,5 +64,9 @@ describe("wallpaper helpers", () => {
     expect(effectiveWallpaper("3d", null)).toBe("3d");
     expect(effectiveWallpaper("3d", "reducedMotion")).toBe("morning-waves");
     expect(effectiveWallpaper("blueprint", "reducedMotion")).toBe("blueprint");
+    // Stage 11: the secret wallpaper paints only once every egg was found.
+    expect(effectiveWallpaper("golden-egg", null)).toBe("morning-waves");
+    expect(effectiveWallpaper("golden-egg", null, false)).toBe("morning-waves");
+    expect(effectiveWallpaper("golden-egg", null, true)).toBe("golden-egg");
   });
 });

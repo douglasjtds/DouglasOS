@@ -113,8 +113,10 @@ test.describe("touch shell", () => {
     const box = (await menu.boundingBox())!;
     expect(Math.round(box.width)).toBe(viewport.width);
     expect(box.height).toBeLessThanOrEqual(viewport.height * 0.85 + 1);
-    // All Programs is inline (no cascading submenu) and lists every launcher.
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(13);
+    // All Programs is inline (no cascading submenu) and lists every launcher,
+    // folder contents included (Accessories → Retro Cam, Paint and DON'T OPEN
+    // THIS.exe, stages 9–10; Entertainment → Media Player, stage 8).
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(17);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 
@@ -276,6 +278,20 @@ test.describe("touch shell", () => {
     await expect(dialog).toContainText("Contact");
     await dialog.getByRole("button", { name: "OK" }).tap();
     await expect(dialog).toHaveCount(0);
+
+    // Rename (stage 11 wiring): the F2 "protected file" box, reachable by touch.
+    await hold(contact, onIcon);
+    const rename = page.locator('[data-icon-menu] [data-icon-menu-item="rename"]');
+    await expect(rename).toBeVisible({ timeout: 3000 });
+    await release(contact, onIcon);
+    await rename.tap();
+    const protectedFile = page.getByTestId("protected-file-dialog");
+    await expect(protectedFile).toBeVisible();
+    await protectedFile.getByRole("button").last().tap();
+    await expect(protectedFile).toHaveCount(0);
+    expect(
+      await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("douglasos:easter-eggs") ?? "{}").state?.found ?? {})),
+    ).toContain("protected-file");
 
     // Empty desktop, below the last row of icons.
     const surface = page.locator('[data-desktop-surface="true"]').last();

@@ -1,16 +1,23 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useRef } from "react";
 import { AlertDialog } from "radix-ui";
 import { useTranslations } from "next-intl";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useWindowStore } from "@/lib/store/windowStore";
-import { launcherTitleKey } from "@/lib/apps/registry";
+import { launcherTitleKey, type AppId } from "@/lib/apps/registry";
 import { InfoIcon, TurnOffIcon, WarningIcon } from "@/components/icons/SystemIcons";
 import { IconPropertiesDialog } from "@/components/os/desktop/IconPropertiesDialog";
 import { launch } from "@/lib/apps/launch";
 import { MessageBox } from "@/components/os/MessageBox";
 import { Button } from "@/components/ui/button";
+import {
+  confirmCloseWindow,
+  focusAfterClose,
+  focusWindowElement,
+  hasUnsavedChanges,
+} from "@/lib/windowClose";
 
 // Run… and the command palette (stage 7) load on first use: they pull in the
 // resolver and the intent matcher, which the shell bundle doesn't need.
@@ -102,11 +109,68 @@ export function ShellDialogs() {
         {t("newItem.body")}
       </MessageBox>
 
+      <ConfirmCloseDialog />
+
       {dialog?.kind === "iconProperties" && (
         <IconPropertiesDialog key={dialog.iconId} iconId={dialog.iconId} />
       )}
       {dialog?.kind === "run" && <RunDialog />}
       {dialog?.kind === "palette" && <CommandPalette />}
     </>
+  );
+}
+
+/**
+ * "Close <app>?" (Yes / No). Yes closes the window and moves focus on; No,
+ * Esc, the title-bar X or a click outside cancel and hand focus back to the
+ * window. While it is open `overlayOpen()` is true, so a second Esc only
+ * cancels it.
+ */
+function ConfirmCloseDialog() {
+  const t = useTranslations();
+  const dialog = useShellStore((s) => s.dialog);
+  const closeDialog = useShellStore((s) => s.closeDialog);
+  const windowId = dialog?.kind === "confirmClose" ? dialog.windowId : null;
+  // The dialog state is already cleared when Radix restores focus on close.
+  const lastWindowId = useRef<AppId | null>(null);
+  useEffect(() => {
+    if (windowId) lastWindowId.current = windowId;
+  }, [windowId]);
+  const app = windowId ? t(`apps.${windowId}.title`) : "";
+
+  return (
+    <MessageBox
+      testId="confirm-close-dialog"
+      open={windowId !== null}
+      onOpenChange={(open) => {
+        if (!open) closeDialog();
+      }}
+      dismissOnOverlayClick
+      title={t("confirmClose.title", { app })}
+      icon={<WarningIcon size={32} />}
+      onCloseAutoFocus={(e) => {
+        const id = lastWindowId.current;
+        if (!id) return;
+        e.preventDefault();
+        if (useWindowStore.getState().windows[id]) focusWindowElement(id);
+        else focusAfterClose(id);
+      }}
+      actions={
+        <>
+          <AlertDialog.Action asChild>
+            <Button onClick={() => windowId && confirmCloseWindow(windowId)}>
+              {t("confirmClose.yes")}
+            </Button>
+          </AlertDialog.Action>
+          <AlertDialog.Cancel asChild>
+            <Button variant="primary">{t("confirmClose.no")}</Button>
+          </AlertDialog.Cancel>
+        </>
+      }
+    >
+      {windowId
+        ? t(hasUnsavedChanges(windowId) ? "confirmClose.unsavedBody" : "confirmClose.body", { app })
+        : null}
+    </MessageBox>
   );
 }

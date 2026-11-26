@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { desktopIcon, gotoDesktop, startButton, startItem, windowById } from "./helpers";
+import { mockYouTube } from "./fakeYouTube";
 
 function runDialog(page: Page) {
   return page.getByTestId("run-dialog");
@@ -130,5 +131,44 @@ test.describe("Run…, command palette and desktop context menus (stage 7)", () 
     await expect(menu.locator('[data-icon-menu-item="open"]')).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(menu).toHaveCount(0);
+  });
+
+  test("Run → 'music' opens the Media Player; Run → 'webcam' opens Retro Cam", async ({ page }) => {
+    await mockYouTube(page);
+    await gotoDesktop(page);
+
+    await openRunFromStart(page);
+    await runField(page).fill("music");
+    await runField(page).press("Enter");
+    await expect(runDialog(page)).toHaveCount(0);
+    await expect(windowById(page, "media-player")).toBeVisible();
+
+    await openRunFromStart(page);
+    await runField(page).fill("webcam");
+    await runField(page).press("Enter");
+    await expect(runDialog(page)).toHaveCount(0);
+    await expect(windowById(page, "camera")).toBeVisible();
+  });
+
+  test("Run → 'paint' opens Paint; Run → 'dontopen' plays the first egg and Esc closes it", async ({ page }) => {
+    await gotoDesktop(page);
+
+    await openRunFromStart(page);
+    await runField(page).fill("paint");
+    await runField(page).press("Enter");
+    await expect(runDialog(page)).toHaveCount(0);
+    await expect(windowById(page, "paint")).toBeVisible();
+
+    await openRunFromStart(page);
+    await runField(page).fill("dontopen");
+    await runField(page).press("Enter");
+    await expect(runDialog(page)).toHaveCount(0);
+    const egg = page.locator("[data-easter-egg]");
+    await expect(egg).toHaveAttribute("data-easter-egg", "not-found");
+    await expect(page.locator('[data-egg-action="cv"]')).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(egg).toHaveCount(0);
+    // Esc left the egg only: Paint is still open.
+    await expect(windowById(page, "paint")).toBeVisible();
   });
 });

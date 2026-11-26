@@ -49,8 +49,8 @@ describe("matchShortcut", () => {
     expect(matchShortcut(key({ key: "F4", altKey: true }), idle)).toBe("closeWindow");
   });
 
-  it("closes the focused window on Esc only when no overlay is open", () => {
-    expect(matchShortcut(key({ key: "Escape" }), idle)).toBe("closeWindow");
+  it("asks to close the focused window on Esc only when no overlay is open", () => {
+    expect(matchShortcut(key({ key: "Escape" }), idle)).toBe("confirmCloseWindow");
     expect(
       matchShortcut(key({ key: "Escape" }), { ...idle, overlayOpen: true }),
     ).toBeNull();

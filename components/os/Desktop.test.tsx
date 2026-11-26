@@ -9,6 +9,7 @@ import { useShellStore } from "@/lib/store/shellStore";
 import { useDesktopStore } from "@/lib/store/desktopStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { useTrashNoticeStore } from "@/lib/store/trashNoticeStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import { defaultBinCell, iconRect } from "@/lib/store/recycleBin";
 import { cellToPixel } from "@/lib/store/desktopGrid";
 
@@ -34,7 +35,7 @@ describe("Desktop icons", () => {
     useDesktopStore.setState({ selectedIds: [], drag: null, rescue: null, binFull: false, trashCounts: {} });
   });
 
-  it("renders the launchers as one listbox, in CTA order, links last, the Recycle Bin after them, without Display Properties", () => {
+  it("renders the launchers as one listbox, in CTA order, then links, then fun apps, the Recycle Bin last, without Display Properties", () => {
     renderWithIntl(<Desktop />);
     // The label is the last child (the glyph is aria-hidden SVG).
     const options = screen
@@ -53,6 +54,9 @@ describe("Desktop icons", () => {
       "github.url",
       "whatsapp.exe",
       "write-me.eml",
+      "DouglasOS Media Player",
+      "Retro Cam",
+      "DouglasOS Paint",
       "Recycle Bin",
     ]);
     expect(screen.getByRole("listbox", { name: "Desktop icons" })).toHaveAttribute("aria-multiselectable", "true");
@@ -129,9 +133,12 @@ describe("Desktop icons", () => {
         <ShellDialogs />
       </>,
     );
+    useEasterEggStore.getState().reset();
     await userEvent.tab();
     await userEvent.keyboard("{F2}");
     const dialog = screen.getByRole("alertdialog", { name: "Protected file" });
+    // Stage 11: it's also an easter egg.
+    expect(useEasterEggStore.getState().found).toHaveProperty("protected-file");
     expect(dialog).toHaveTextContent("“About Douglas” refused to be renamed");
     await userEvent.click(screen.getByRole("button", { name: "Fair enough" }));
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
@@ -179,7 +186,7 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     renderWithIntl(<Desktop />);
     await userEvent.tab();
     await userEvent.keyboard("{Control>}a{/Control}");
-    expect(selected()).toHaveLength(12);
+    expect(selected()).toHaveLength(15);
     expect(selected()).not.toContain("recycle-bin");
     expect(icon("Recycle Bin")).toHaveAttribute("aria-selected", "false");
     await userEvent.keyboard("{Escape}");
@@ -290,8 +297,8 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     const surface = screen.getByRole("listbox");
     const linkedin = cellToPixel(useDesktopStore.getState().iconCells.linkedin, VP);
     const whatsapp = cellToPixel(useDesktopStore.getState().iconCells.whatsapp, VP);
-    // From the empty area right of the links column, up-left over three links.
-    fireEvent.pointerDown(surface, { button: 0, pointerId: 2, clientX: linkedin.x + 120, clientY: 2 });
+    // From the gap between the links and the fun-apps columns, up-left over three links.
+    fireEvent.pointerDown(surface, { button: 0, pointerId: 2, clientX: linkedin.x + 80, clientY: 2 });
     fireEvent.pointerMove(desktop, { pointerId: 2, clientX: linkedin.x + 10, clientY: whatsapp.y + 40 });
     expect(document.querySelector("[data-lasso]")).not.toBeNull();
     fireEvent.pointerUp(desktop, { pointerId: 2, clientX: linkedin.x + 10, clientY: whatsapp.y + 40 });
@@ -358,6 +365,39 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     expect(screen.queryByRole("menuitem", { name: "Delete" })).not.toBeInTheDocument();
     await userEvent.click(arrange);
     expect(useDesktopStore.getState().iconCells.contact).toEqual(home);
+  });
+
+  it("icon menu → Rename shows the F2 protected-file box and counts that easter egg", async () => {
+    useEasterEggStore.getState().reset();
+    renderWithIntl(
+      <>
+        <Desktop />
+        <ShellDialogs />
+      </>,
+    );
+    fireEvent.contextMenu(icon("Contact"));
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Rename" }));
+    expect(await screen.findByRole("alertdialog", { name: "Protected file" })).toHaveTextContent("refused to be renamed");
+    expect(useEasterEggStore.getState().found).toHaveProperty("protected-file");
+    await userEvent.click(screen.getByRole("button", { name: "Fair enough" }));
+    expect(icon("Contact")).toHaveTextContent("Contact");
+  });
+
+  it("background menu → New ▸ joke counts the desktop-new easter egg", async () => {
+    useEasterEggStore.getState().reset();
+    renderWithIntl(
+      <>
+        <Desktop />
+        <ShellDialogs />
+      </>,
+    );
+    fireEvent.contextMenu(background());
+    const newMenu = await screen.findByRole("menuitem", { name: "New" });
+    await userEvent.click(newMenu);
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Folder" }));
+    expect(useShellStore.getState().dialog).toEqual({ kind: "newItem" });
+    expect(useEasterEggStore.getState().found).toHaveProperty("desktop-new");
   });
 
   it("right-click on an icon opens only the icon menu", async () => {

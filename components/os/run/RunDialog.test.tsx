@@ -6,6 +6,7 @@ import RunDialog from "@/components/os/run/RunDialog";
 import CommandPalette from "@/components/os/run/CommandPalette";
 import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { useShellStore } from "@/lib/store/shellStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
@@ -85,6 +86,21 @@ describe("Run dialog", () => {
     renderWithIntl(<RunDialog />);
     await userEvent.type(field(), "cmd{Enter}");
     expect(await screen.findByRole("alertdialog")).toHaveTextContent("No terminal in here");
+  });
+
+  it("'cmd' counts the run-cmd easter egg (stage 11); a normal run doesn't", async () => {
+    useEasterEggStore.getState().reset();
+    const first = renderWithIntl(<RunDialog />);
+    await userEvent.type(field(), "linkedin{Enter}");
+    expect(useEasterEggStore.getState().found).not.toHaveProperty("run-cmd");
+    // Two mounted RunDialogs would both reopen, and one's modal layer would
+    // block pointer events on the other's field: start from a single one.
+    first.unmount();
+    useShellStore.getState().openDialog({ kind: "run" });
+    renderWithIntl(<RunDialog />);
+    await userEvent.type(field(), "cmd{Enter}");
+    await screen.findByRole("alertdialog");
+    expect(useEasterEggStore.getState().found).toHaveProperty("run-cmd");
   });
 
   it("follows external shortcuts (linkedin)", async () => {

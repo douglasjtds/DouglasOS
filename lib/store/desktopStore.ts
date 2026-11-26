@@ -20,6 +20,7 @@ import { moveGroup, toggleInSelection } from "@/lib/store/desktopSelection";
 import { bumpTrashCount, trashMessage, type TrashLineCounts } from "@/lib/assistant/trash";
 import type { AssistantMessage } from "@/lib/assistant/script";
 import { announceRescue } from "@/lib/store/trashNoticeStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 /** Read the live viewport; falls back to a desktop default during SSR. */
 function viewport(): Viewport {
@@ -242,6 +243,8 @@ export const useDesktopStore = create<DesktopState>()(
         if (binFullTimer) clearTimeout(binFullTimer);
         binFullTimer = setTimeout(() => set({ binFull: false }), BIN_FULL_MS);
         announceRescue(message);
+        // Easter eggs (stage 11): one icon, or several at once.
+        useEasterEggStore.getState().discover(icons.length > 1 ? "trash-cleanup" : "trash-rescue");
         return message;
       },
     }),

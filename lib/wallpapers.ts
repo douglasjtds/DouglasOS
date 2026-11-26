@@ -7,6 +7,7 @@ export const WALLPAPER_IDS = [
   "morning-waves",
   "dusk-hills",
   "blueprint",
+  "golden-egg",
   "solid",
   "3d",
 ] as const;
@@ -17,7 +18,14 @@ export const WALLPAPER_IMAGES: Partial<Record<WallpaperId, string>> = {
   "morning-waves": "/wallpapers/morning-waves.svg",
   "dusk-hills": "/wallpapers/dusk-hills.svg",
   blueprint: "/wallpapers/blueprint.svg",
+  "golden-egg": "/wallpapers/golden-egg.svg",
 };
+
+/**
+ * The secret wallpaper (stage 11): listed as "???" in Display Properties and
+ * never painted until every easter egg was found (`easterEggStore`).
+ */
+export const SECRET_WALLPAPER: WallpaperId = "golden-egg";
 
 /** Solid-color swatches — each maps to a `--color-swatch-*` token. */
 export const SWATCH_IDS = ["navy", "teal", "forest", "plum", "slate"] as const;
@@ -53,13 +61,16 @@ export function animatedWallpaperBlocker(env: {
 
 /**
  * The wallpaper actually painted: the 3D choice falls back to the default
- * static wallpaper whenever the animated one is unavailable.
+ * static wallpaper whenever the animated one is unavailable, and so does the
+ * secret wallpaper while it's locked (e.g. after "Reset progress").
  */
 export function effectiveWallpaper(
   choice: WallpaperId,
   blocker: AnimatedBlocker | null,
+  secretUnlocked = false,
 ): WallpaperId {
   if (choice === "3d" && blocker) return DEFAULT_DISPLAY.wallpaper;
+  if (choice === SECRET_WALLPAPER && !secretUnlocked) return DEFAULT_DISPLAY.wallpaper;
   return choice;
 }
 

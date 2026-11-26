@@ -20,6 +20,7 @@ import {
 import { launch } from "@/lib/apps/launch";
 import { useDesktopStore, type DesktopItemId } from "@/lib/store/desktopStore";
 import { useShellStore } from "@/lib/store/shellStore";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 import {
   iconsInGridOrder,
   iconsInRowOrder,
@@ -126,7 +127,7 @@ function MobileIconSlot({
  * dragging a selected icon moves the whole group, and dropping on the bin
  * (wherever it sits — top-right by default, draggable on its own) triggers
  * the rescue. Right-click / long-press (or Shift+F10 / the ContextMenu key)
- * opens the icon's menu (Open, Delete, Properties); on empty desktop it opens
+ * opens the icon's menu (Open, Delete, Rename → the F2 joke, Properties); on empty desktop it opens
  * the background menu (Arrange Icons, Refresh, New ▸, Properties — stage 7).
  *
  * Below 768px (DESKTOP-INTERFACE-SPEC §11) the grid switches to the touch
@@ -174,9 +175,17 @@ export function Desktop() {
     launch(id);
   }
 
+  /** F2 / "Rename": the "protected file" joke instead of renaming (an easter egg). */
+  function showProtected(id: DesktopItemId) {
+    openDialog({ kind: "protectedFile", iconId: id });
+    useEasterEggStore.getState().discover("protected-file");
+  }
+
   function menuFor(id: DesktopItemId): IconMenuItem[] {
     const items: IconMenuItem[] = [{ id: "open", label: t("menu.open"), primary: true, onSelect: () => open(id) }];
     if (id !== RECYCLE_BIN_ID) items.push({ id: "delete", label: t("menu.delete"), onSelect: () => deleteFrom(id) });
+    // "Rename" reaches the F2 joke without a keyboard (phones: press and hold).
+    items.push({ id: "rename", label: t("menu.rename"), onSelect: () => showProtected(id) });
     items.push({
       id: "properties",
       label: t("menu.properties"),
@@ -192,7 +201,10 @@ export function Desktop() {
   }
 
   /** The desktop background's menu (stage 7). */
-  const newItem = () => openDialog({ kind: "newItem" });
+  const newItem = () => {
+    openDialog({ kind: "newItem" });
+    useEasterEggStore.getState().discover("desktop-new");
+  };
   const backgroundMenu: IconMenuItem[] = [
     // The touch grid is derived from the screen width: nothing to arrange there.
     ...(mobile ? [] : [{ id: "arrange", label: t("menu.arrangeIcons"), onSelect: () => store().resetLayout() }]),
@@ -258,7 +270,7 @@ export function Desktop() {
       return;
     } else if (e.key === "F2") {
       e.preventDefault();
-      openDialog({ kind: "protectedFile", iconId: current });
+      showProtected(current);
       return;
     } else if (e.key === " ") {
       e.preventDefault();

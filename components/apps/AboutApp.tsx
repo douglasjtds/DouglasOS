@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { launch } from "@/lib/apps/launch";
-import { UserAvatar } from "@/components/icons/SystemIcons";
+import Image from "next/image";
 import { GroupBox } from "@/components/ui/group-box";
 import { Button } from "@/components/ui/button";
 
@@ -46,13 +46,18 @@ export default function AboutApp() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
-        <span
-          role="img"
-          aria-label={t("photoAlt")}
-          className="shrink-0 border border-field-border bg-surface p-0.5"
-        >
-          <UserAvatar size={112} />
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        {/* Framed like a photo print on the Luna window body. */}
+        <span className="shrink-0 border border-field-border bg-surface p-1 shadow-menu">
+          <Image
+            src="/about/douglas.jpg"
+            alt={t("photoAlt")}
+            width={160}
+            height={200}
+            sizes="160px"
+            priority
+            className="block h-[200px] w-[160px] object-cover"
+          />
         </span>
         <div className="flex flex-col gap-0.5">
           {/* h3: the window title is the h2 (headings stay in order per window). */}

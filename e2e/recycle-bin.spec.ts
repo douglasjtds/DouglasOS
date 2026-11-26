@@ -71,8 +71,12 @@ test.describe("Recycle Bin + lasso", () => {
     const linkedin = boxes[0];
     const whatsapp = boxes[2];
 
-    // From empty desktop right of the links column, up-left over the three links.
-    await page.mouse.move(linkedin.x + linkedin.width + 40, 3);
+    // From the empty gutter between the links column and the fun-apps column
+    // to its right, up-left over the three links (never touching the fun apps).
+    const funApp = (await desktopIcon(page, "media-player").boundingBox())!;
+    const gutterX = (linkedin.x + linkedin.width + funApp.x) / 2;
+    expect(funApp.x - (linkedin.x + linkedin.width)).toBeGreaterThan(4);
+    await page.mouse.move(gutterX, 3);
     await page.mouse.down();
     await page.mouse.move(linkedin.x + linkedin.width / 2, whatsapp.y + whatsapp.height / 2, { steps: 10 });
     await expect(page.locator("[data-lasso]")).toBeVisible();

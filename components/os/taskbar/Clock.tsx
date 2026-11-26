@@ -33,11 +33,33 @@ export function Clock() {
   }
 
   // PT uses the 24h clock convention; EN keeps 12h with AM/PM.
-  const time = now.toLocaleTimeString(locale === "pt" ? "pt-BR" : "en-US", {
+  const parts = new Intl.DateTimeFormat(locale === "pt" ? "pt-BR" : "en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: locale !== "pt",
-  });
+  }).formatToParts(now);
+  const time = parts.map((p) => p.value).join("");
+  // Phones hide the AM/PM marker (and the space before it) so the tray fits
+  // its media + Messenger + language buttons on a 390px screen; the
+  // accessible label and tooltip keep the full time and date.
+  const periodAt = parts.findIndex((p) => p.type === "dayPeriod");
+  const clock =
+    periodAt === -1 ? (
+      time
+    ) : (
+      <>
+        {parts
+          .slice(0, periodAt - 1)
+          .map((p) => p.value)
+          .join("")}
+        <span className="max-md:hidden">
+          {parts
+            .slice(periodAt - 1)
+            .map((p) => p.value)
+            .join("")}
+        </span>
+      </>
+    );
   const date = now.toLocaleDateString(locale === "pt" ? "pt-BR" : "en-US", {
     dateStyle: "full",
   });
@@ -48,9 +70,9 @@ export function Clock() {
         dateTime={now.toISOString()}
         tabIndex={0}
         aria-label={`${time}, ${date}`}
-        className="whitespace-nowrap px-1 text-system text-text-inverse tabular-nums focus-inverse"
+        className="whitespace-nowrap px-1 text-system text-text-inverse tabular-nums focus-inverse max-md:px-0"
       >
-        {time}
+        {clock}
       </time>
     </Tooltip>
   );

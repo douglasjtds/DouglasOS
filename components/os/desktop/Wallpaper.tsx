@@ -2,6 +2,7 @@
 
 import { useDisplayStore } from "@/lib/store/displayStore";
 import { useAnimatedWallpaperBlocker } from "@/hooks/useAnimatedWallpaperBlocker";
+import { selectComplete, useEasterEggStore } from "@/lib/store/easterEggStore";
 import { AmbientBackground } from "@/components/os/desktop/AmbientBackground";
 import { SCENE_COLORS } from "@/components/os/desktop/sceneColors";
 import { WALLPAPER_IMAGES, effectiveWallpaper, swatchVar } from "@/lib/wallpapers";
@@ -15,7 +16,8 @@ export function Wallpaper() {
   const wallpaper = useDisplayStore((s) => s.wallpaper);
   const swatch = useDisplayStore((s) => s.swatch);
   const blocker = useAnimatedWallpaperBlocker();
-  const effective = effectiveWallpaper(wallpaper, blocker);
+  const secretUnlocked = useEasterEggStore(selectComplete);
+  const effective = effectiveWallpaper(wallpaper, blocker, secretUnlocked);
   const image = WALLPAPER_IMAGES[effective];
 
   const backgroundColor =

@@ -24,6 +24,9 @@ export const TRASH_LINES: Record<DesktopIconId, { key: string; variants: number 
   github: { key: "github", variants: 2 },
   whatsapp: { key: "whatsapp", variants: 2 },
   email: { key: "email", variants: 2 },
+  "media-player": { key: "mediaPlayer", variants: 2 },
+  camera: { key: "camera", variants: 2 },
+  paint: { key: "paint", variants: 2 },
 };
 
 /** Batch lines ("cleanup"); the CV variant wins whenever the CV was in the batch. */

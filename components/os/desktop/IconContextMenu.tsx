@@ -74,7 +74,7 @@ function MenuEntry({ item }: { item: IconMenuItem }) {
  *
  * Two menus share this one mechanism (items are data):
  * - an icon's (stage 6): **Open**, **Delete** (the Recycle Bin rescue joke),
- *   **Properties** (stage 7);
+ *   **Rename** (the F2 "protected file" box), **Properties** (stage 7);
  * - the desktop background's (`menu="desktop"`, stage 7): Arrange Icons,
  *   Refresh, New ▸, Properties.
  * The background trigger is a layer *under* the icons, never their ancestor,

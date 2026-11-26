@@ -9,12 +9,13 @@ import { getApp, type AppId } from "@/lib/apps/registry";
 import { WindowControls } from "@/components/os/window/WindowControls";
 import { menuItemClass, menuSurfaceClass } from "@/components/os/menuStyles";
 import { cn } from "@/lib/utils";
+import { requestCloseWindow } from "@/lib/windowClose";
 
 /** Click on the 16px title icon: Restore / Minimize / Maximize / Close. */
 function WindowIconMenu({ id, titleId }: { id: AppId; titleId: string }) {
   const t = useTranslations("window");
   const maximized = useWindowStore((s) => Boolean(s.windows[id]?.maximized));
-  const { minimizeWindow, toggleMaximize, closeWindow } = useWindowStore.getState();
+  const { minimizeWindow, toggleMaximize } = useWindowStore.getState();
   const Icon = getApp(id).icon;
 
   return (
@@ -53,7 +54,7 @@ function WindowIconMenu({ id, titleId }: { id: AppId; titleId: string }) {
           <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
           <DropdownMenu.Item
             className={cn(menuItemClass, "font-bold")}
-            onSelect={() => closeWindow(id)}
+            onSelect={() => requestCloseWindow(id)}
           >
             {t("close")}
           </DropdownMenu.Item>

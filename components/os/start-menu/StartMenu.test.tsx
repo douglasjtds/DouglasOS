@@ -6,6 +6,7 @@ import { StartMenu } from "@/components/os/start-menu/StartMenu";
 import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { useShellStore } from "@/lib/store/shellStore";
 import { PROJECTS } from "@/lib/content/projects";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 const downloadSpy = vi.fn();
 vi.mock("@/lib/download", () => ({
@@ -88,6 +89,39 @@ describe("StartMenu", () => {
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
+  it("All Programs → Accessories ▸ Retro Cam opens the camera window", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    screen.getByRole("menuitem", { name: /All Programs/ }).focus();
+    await userEvent.keyboard("{ArrowRight}");
+    // Retro Cam isn't in the flat list, only inside its folder.
+    expect(document.querySelector('[data-all-programs] [data-program="camera"]')).toBeNull();
+    const folder = document.querySelector<HTMLElement>('[data-program-folder="accessories"]')!;
+    expect(folder).toHaveAttribute("aria-haspopup", "menu");
+    folder.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.click(screen.getByRole("menuitem", { name: "Retro Cam" }));
+    expect(useWindowStore.getState().focusedId).toBe("camera");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
+  it("All Programs ▸ Accessories ▸ DouglasOS Paint opens Paint (not listed at the top level)", async () => {
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    screen.getByRole("menuitem", { name: /All Programs/ }).focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(document.querySelector('[data-all-programs] [data-program="paint"]')).toBeNull();
+    const folder = document.querySelector<HTMLElement>('[data-program-folder="accessories"]')!;
+    expect(folder).toHaveAttribute("aria-haspopup", "menu");
+    // Folders come first, like the classic layout.
+    expect(document.querySelector("[data-all-programs] [role='menuitem']")).toBe(folder);
+    folder.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.click(screen.getByRole("menuitem", { name: "DouglasOS Paint" }));
+    expect(useWindowStore.getState().focusedId).toBe("paint");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
   it("My Projects ▸ lists the case studies and opens the Explorer at one", async () => {
     renderWithIntl(<StartMenu />);
     await userEvent.click(startButton());
@@ -146,5 +180,20 @@ describe("StartMenu", () => {
     await userEvent.click(startButton());
     await userEvent.click(screen.getByRole("menuitem", { name: "Log Off" }));
     expect(useShellStore.getState().phase).toBe("logon");
+  });
+
+  it("lists Achievements below Help with a discreet counter (stage 11)", async () => {
+    useEasterEggStore.getState().reset();
+    useEasterEggStore.getState().discover("protected-file");
+    renderWithIntl(<StartMenu />);
+    await userEvent.click(startButton());
+    const right = document.querySelector('[data-start-column="right"]') as HTMLElement;
+    const ids = [...right.querySelectorAll("[data-start-item]")].map((el) => el.getAttribute("data-start-item"));
+    // Help, Achievements, then Run… (stage 7) closes the places column.
+    expect(ids.slice(-3)).toEqual(["help", "achievements", "run"]);
+    const item = screen.getByRole("menuitem", { name: /Achievements/ });
+    expect(item.querySelector("[data-egg-counter]")).toHaveTextContent("1/12");
+    await userEvent.click(item);
+    expect(useWindowStore.getState().windows.achievements).toBeDefined();
   });
 });

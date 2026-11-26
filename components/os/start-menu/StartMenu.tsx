@@ -1,16 +1,22 @@
 "use client";
 
-import { Fragment, useRef, type KeyboardEvent, type ReactNode } from "react";
+import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { DropdownMenu } from "radix-ui";
 import { useShellStore } from "@/lib/store/shellStore";
 import { launch } from "@/lib/apps/launch";
 import {
   LAUNCHERS,
+  PROGRAM_FOLDERS,
+  folderOf,
   getLauncher,
   launcherTitleKey,
+  programsInFolder,
+  type LauncherConfig,
   type LauncherId,
+  type ProgramFolder,
 } from "@/lib/apps/registry";
+import { ProgramFolderIcon } from "@/components/icons/MediaIcons";
 import {
   AllProgramsIcon,
   DouglasOSLogo,
@@ -23,21 +29,45 @@ import {
 import type { IconComponent } from "@/components/icons/types";
 import { menuSurfaceClass } from "@/components/os/menuStyles";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useEasterEggProgress } from "@/lib/store/easterEggStore";
 import { PROJECTS, PROJECTS_HOME_ROUTE } from "@/lib/content/projects";
 import { CaseStudyIcon } from "@/components/icons/BrowserIcons";
+import { AccessoriesFolderIcon } from "@/components/icons/CameraIcons";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * All Programs: every launcher in registry order, apps first, then the
- * external shortcuts (stage 3) after a separator. System items that opt out
- * (the Recycle Bin) aren't listed.
+ * All Programs: the program folders first, like the original (Accessories ▸
+ * Retro Cam, Paint, DON'T OPEN THIS.exe — stages 9–10; Entertainment ▸ Media
+ * Player, stage 8 — empty folders
+ * are skipped), then every other launcher in registry order, then the external
+ * shortcuts (stage 3) after a separator. System items that opt out (the
+ * Recycle Bin) aren't listed; apps with a `folder` are listed only inside it.
+ * Desktop: folders cascade as submenus; touch: inline labelled sections.
  */
-const ALL_PROGRAMS = [
-  ...LAUNCHERS.filter((l) => l.kind !== "link" && !(l.kind === "window" && l.inAllPrograms === false)),
-  ...LAUNCHERS.filter((l) => l.kind === "link"),
-];
-const FIRST_LINK_ID = LAUNCHERS.find((l) => l.kind === "link")?.id;
+const PROGRAM_APPS = LAUNCHERS.filter(
+  (l) => l.kind !== "link" && !(l.kind === "window" && l.inAllPrograms === false) && !folderOf(l),
+);
+const PROGRAM_LINKS = LAUNCHERS.filter((l) => l.kind === "link");
+const FOLDERS = PROGRAM_FOLDERS.map((id) => ({ id, programs: programsInFolder(id) })).filter(
+  (f) => f.programs.length > 0,
+);
+
+/** Folder icons: Accessories shows a tool folder, others the plain one. */
+const FOLDER_ICONS: Record<ProgramFolder, IconComponent> = {
+  accessories: AccessoriesFolderIcon,
+  entertainment: ProgramFolderIcon,
+};
+
+function FolderIcon({ folder }: { folder: ProgramFolder }) {
+  const Icon = FOLDER_ICONS[folder];
+  return <Icon size={16} />;
+}
+
+/** Window apps and actions (an easter egg takes focus) move focus away from the menu. */
+function movesFocus(l: LauncherConfig) {
+  return l.kind === "window" || l.kind === "action";
+}
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
 const PINNED: LauncherId[] = ["about", "projects", "how-i-work-with-ai", "contact"];
@@ -89,7 +119,7 @@ function PlaceItem({
     <DropdownMenu.Item
       data-start-item={testId}
       onSelect={onSelect}
-      className={cn(itemBase, "px-1.5 py-1 text-startmenu-right-text", bold && "font-bold")}
+      className={cn(itemBase, "group/place px-1.5 py-1 text-startmenu-right-text", bold && "font-bold")}
     >
       <Icon size={24} />
       <span className="truncate">{label}</span>
@@ -134,6 +164,33 @@ export function StartMenu() {
 
   const label = (id: LauncherId) => t(launcherTitleKey(id));
   const mobile = useIsMobile();
+  const eggs = useEasterEggProgress();
+
+  /** One All Programs entry (cascading submenu on the pointer desktop). */
+  const desktopProgram = (l: LauncherConfig) => (
+    <DropdownMenu.Item
+      key={l.id}
+      data-program={l.id}
+      onSelect={() => select(() => launch(l.id), movesFocus(l))}
+      className={cn(itemBase, "h-menu-item px-2")}
+    >
+      <l.icon size={16} />
+      {label(l.id)}
+    </DropdownMenu.Item>
+  );
+
+  /** One All Programs entry in the touch shell's inline list (`nested` = inside a folder). */
+  const mobileProgram = (l: LauncherConfig, nested = false) => (
+    <DropdownMenu.Item
+      key={l.id}
+      data-program={l.id}
+      onSelect={() => select(() => launch(l.id), movesFocus(l))}
+      className={cn(itemBase, "px-2 text-text", nested && "pl-8")}
+    >
+      <l.icon size={16} />
+      {label(l.id)}
+    </DropdownMenu.Item>
+  );
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -141,13 +198,16 @@ export function StartMenu() {
         data-start-button
         aria-label={t("taskbar.startLabel")}
         className={cn(
-          "group flex h-full shrink-0 items-center gap-1 rounded-start pl-2 pr-5 focus-inverse",
+          // Phones: logo only (the aria-label keeps the name), so a 390px
+          // taskbar with the Media Player tray button still fits one full
+          // 44px window button in any locale and font (iOS has no Tahoma).
+          "group flex h-full shrink-0 items-center gap-1 rounded-start pl-2 pr-5 focus-inverse max-md:pl-2.5 max-md:pr-4",
           "bg-start-gradient hover:bg-start-hover-gradient data-[state=open]:bg-start-pressed-gradient",
           "shadow-[inset_-1px_0_var(--color-start-shadow)]",
         )}
       >
         <DouglasOSLogo size={20} />
-        <span className="text-start italic text-text-inverse text-shadow-start-label">
+        <span className="text-start italic text-text-inverse text-shadow-start-label max-md:hidden">
           {t("taskbar.start")}
         </span>
       </DropdownMenu.Trigger>
@@ -232,21 +292,24 @@ export function StartMenu() {
                     {t("startMenu.allPrograms")}
                     <AllProgramsIcon size={18} />
                   </DropdownMenu.Label>
-                  {ALL_PROGRAMS.map((l) => (
-                    <Fragment key={l.id}>
-                      {l.id === FIRST_LINK_ID && (
-                        <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-right-border" />
-                      )}
-                      <DropdownMenu.Item
-                        data-program={l.id}
-                        onSelect={() => select(() => launch(l.id), l.kind === "window")}
-                        className={cn(itemBase, "px-2 text-text")}
-                      >
-                        <l.icon size={16} />
-                        {label(l.id)}
-                      </DropdownMenu.Item>
-                    </Fragment>
+                  {/* Touch: folders are inline, labelled sub-lists (no cascading), first like the original. */}
+                  {FOLDERS.map((folder) => (
+                    <DropdownMenu.Group
+                      key={folder.id}
+                      data-program-folder={folder.id}
+                      aria-label={t(`startMenu.folders.${folder.id}`)}
+                      className="flex flex-col"
+                    >
+                      <DropdownMenu.Label className="flex min-h-touch-target items-center gap-2 px-2 font-bold text-text">
+                        <FolderIcon folder={folder.id} />
+                        {t(`startMenu.folders.${folder.id}`)}
+                      </DropdownMenu.Label>
+                      {folder.programs.map((l) => mobileProgram(l, true))}
+                    </DropdownMenu.Group>
                   ))}
+                  {PROGRAM_APPS.map((l) => mobileProgram(l))}
+                  <DropdownMenu.Separator className="mx-1 my-1 h-px bg-startmenu-right-border" />
+                  {PROGRAM_LINKS.map((l) => mobileProgram(l))}
                 </DropdownMenu.Group>
               ) : (
               <DropdownMenu.Sub>
@@ -264,21 +327,30 @@ export function StartMenu() {
                     sideOffset={2}
                     className={cn(menuSurfaceClass, "z-1200 min-w-52")}
                   >
-                    {ALL_PROGRAMS.map((l) => (
-                      <Fragment key={l.id}>
-                        {l.id === FIRST_LINK_ID && (
-                          <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
-                        )}
-                        <DropdownMenu.Item
-                          data-program={l.id}
-                          onSelect={() => select(() => launch(l.id), l.kind === "window")}
+                    {FOLDERS.map((folder) => (
+                      <DropdownMenu.Sub key={folder.id}>
+                        <DropdownMenu.SubTrigger
+                          data-program-folder={folder.id}
                           className={cn(itemBase, "h-menu-item px-2")}
                         >
-                          <l.icon size={16} />
-                          {label(l.id)}
-                        </DropdownMenu.Item>
-                      </Fragment>
+                          <FolderIcon folder={folder.id} />
+                          <span className="flex-1">{t(`startMenu.folders.${folder.id}`)}</span>
+                          <ChevronRight className="size-3 shrink-0" aria-hidden />
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.SubContent
+                            data-program-folder-menu={folder.id}
+                            sideOffset={2}
+                            className={cn(menuSurfaceClass, "z-1200 min-w-44")}
+                          >
+                            {folder.programs.map((l) => desktopProgram(l))}
+                          </DropdownMenu.SubContent>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Sub>
                     ))}
+                    {PROGRAM_APPS.map((l) => desktopProgram(l))}
+                    <DropdownMenu.Separator className="my-0.5 h-px bg-bevel-shadow" />
+                    {PROGRAM_LINKS.map((l) => desktopProgram(l))}
                   </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
               </DropdownMenu.Sub>
@@ -365,6 +437,20 @@ export function StartMenu() {
                 icon={HelpIcon}
                 label={t("startMenu.help")}
                 onSelect={() => select(() => launch("about"))}
+              />
+              <PlaceItem
+                testId="achievements"
+                bold={false}
+                icon={getLauncher("achievements").icon}
+                label={
+                  <>
+                    {label("achievements")}{" "}
+                    <span data-egg-counter className="text-text-muted group-data-[highlighted]/place:text-text-inverse">
+                      {t("easterEggs.counter", { count: eggs.count, total: eggs.total })}
+                    </span>
+                  </>
+                }
+                onSelect={() => select(() => launch("achievements"))}
               />
               <PlaceItem
                 testId="run"

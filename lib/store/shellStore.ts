@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { DesktopIconId } from "@/lib/apps/registry";
+import type { AppId, DesktopIconId } from "@/lib/apps/registry";
 
 /**
  * Where the visitor is in the session lifecycle (DESKTOP-INTERFACE-SPEC §1–2,
@@ -20,7 +20,9 @@ export type ShellDialog =
   | { kind: "run" }
   | { kind: "palette" }
   | { kind: "iconProperties"; iconId: DesktopIconId | "recycle-bin" }
-  | { kind: "newItem" };
+  | { kind: "newItem" }
+  // "Close <app>?": a bare Esc, or closing Paint with an unsaved drawing.
+  | { kind: "confirmClose"; windowId: AppId };
 
 function sessionStore(): Pick<Storage, "getItem" | "setItem"> | null {
   try {

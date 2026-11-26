@@ -13,6 +13,7 @@ import { MessageBox } from "@/components/os/MessageBox";
 import { SuggestionOption } from "@/components/os/run/SuggestionOption";
 import { ErrorIcon, InfoIcon, RunIcon } from "@/components/icons/SystemIcons";
 import { Button } from "@/components/ui/button";
+import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 /** Max autocomplete rows under the field. */
 const MAX_SUGGESTIONS = 6;
@@ -58,6 +59,8 @@ export default function RunDialog() {
     if (target.kind === "command") {
       setListOpen(false);
       setError({ kind: "cmd" });
+      // Easter egg (stage 11): typing `cmd` in Run….
+      useEasterEggStore.getState().discover("run-cmd");
       return;
     }
     ranWindow.current = executeRunTarget(target);
