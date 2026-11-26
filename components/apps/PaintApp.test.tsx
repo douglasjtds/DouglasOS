@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import PaintApp from "@/components/apps/PaintApp";
 import { renderWithIntl } from "@/test/renderWithIntl";
 import { useWindowStore } from "@/lib/store/windowStore";
+import { hasUnsavedChanges } from "@/lib/windowClose";
 
 /**
  * jsdom has no canvas, so each canvas gets a tiny fake 2D context backed by a
@@ -197,5 +198,24 @@ describe("PaintApp", () => {
     await user.click(file);
     await user.click(await screen.findByRole("menuitem", { name: "Close" }));
     expect(closeWindow).toHaveBeenCalledWith("paint");
+  });
+
+  it("tracks an unsaved drawing: set by a stroke, cleared by Save and on unmount", async () => {
+    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (cb: BlobCallback) {
+      cb(new Blob(["png"], { type: "image/png" }));
+    });
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:paint");
+    const { unmount } = renderWithIntl(<PaintApp />);
+    expect(hasUnsavedChanges("paint")).toBe(false);
+    stroke([10, 10], [20, 10]);
+    expect(hasUnsavedChanges("paint")).toBe(true);
+
+    fireEvent.keyDown(surface(), { key: "s", ctrlKey: true });
+    expect(hasUnsavedChanges("paint")).toBe(false);
+
+    stroke([10, 12], [20, 12]);
+    expect(hasUnsavedChanges("paint")).toBe(true);
+    unmount();
+    expect(hasUnsavedChanges("paint")).toBe(false);
   });
 });

@@ -20,6 +20,7 @@ export function MessageBox({
   actions,
   testId,
   onCloseAutoFocus,
+  dismissOnOverlayClick = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -31,12 +32,18 @@ export function MessageBox({
   testId?: string;
   /** Radix close auto-focus hook: `preventDefault()` when an action moved focus elsewhere. */
   onCloseAutoFocus?: (event: Event) => void;
+  /** Clicking outside the box cancels it (like Esc) instead of being blocked. */
+  dismissOnOverlayClick?: boolean;
 }) {
   const t = useTranslations("window");
   return (
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="fixed inset-0 z-1400" />
+        <AlertDialog.Overlay
+          className="fixed inset-0 z-1400"
+          data-message-box-overlay
+          onClick={dismissOnOverlayClick ? () => onOpenChange(false) : undefined}
+        />
         <AlertDialog.Content
           data-testid={testId}
           onCloseAutoFocus={onCloseAutoFocus}

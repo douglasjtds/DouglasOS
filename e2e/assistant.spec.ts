@@ -58,6 +58,7 @@ test.describe("mini Douglas assistant", () => {
     await expect(assistantBubble(page)).toHaveCount(0);
     await expect(windowById(page, "contact")).toBeVisible();
     await page.keyboard.press("Escape");
+    await page.getByTestId("confirm-close-dialog").getByRole("button", { name: "Yes" }).click();
     await expect(windowById(page, "contact")).toHaveCount(0);
   });
 

@@ -387,7 +387,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 |--------|-------------------|------------------------------|-------|
 | Open/close Start menu | `Ctrl+Esc`; tap of the `Meta`/Windows key (on keyup, only if no other key was pressed) | `Alt+Shift+S` | 1 |
 | Cycle windows | `Alt+Tab` (OS-owned; not intercepted) | `Alt+Shift+W` (next), `Alt+Shift+Q` (previous); or Tab to the taskbar buttons | 1 |
-| Close focused window | `Alt+F4` (best effort) | `Esc` when no menu/dialog/balloon is open and focus is not in a text field (v1 behavior kept) | 1 |
+| Close focused window | `Alt+F4` (best effort); closes at once, except Paint with an unsaved drawing asks first (also on the title-bar X) | `Esc` when no menu/dialog/balloon is open and focus is not in a text field — always asks "Close <app>?" (Yes / No; No, Esc or a click outside cancel) so a stray key never loses work | 1 |
 | Maximize/restore focused window | double-click title | `Alt+Shift+↑` / `Alt+Shift+↓` | 1 |
 | Desktop: move selection | `←↑→↓`, Home/End | — | 1 |
 | Desktop: open selected | `Enter` | — | 1 |

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import {
   canRedo,
   canUndo,
@@ -23,6 +23,7 @@ import {
   type Point,
 } from "@/lib/paint/tools";
 import { downloadFile } from "@/lib/download";
+import { setUnsavedChanges } from "@/lib/windowClose";
 
 interface Size {
   width: number;
@@ -68,6 +69,13 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
     setAvailable({ undo: canUndo(history), redo: canRedo(history) });
   };
 
+  /**
+   * Anything drawn since open / the last Save makes closing ask first
+   * (X, Alt+F4); nothing persists the drawing. Cleared when Paint unmounts.
+   */
+  const markDirty = () => setUnsavedChanges("paint", true);
+  useEffect(() => () => setUnsavedChanges("paint", false), []);
+
   const resize = (next: Size) => {
     for (const c of [canvasRef.current, overlayRef.current]) {
       if (!c) continue;
@@ -106,6 +114,7 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
     const history = historyRef.current;
     if (!g || !canvas || !history) return;
     setHistory(pushHistory(history, g.getImageData(0, 0, canvas.width, canvas.height)));
+    markDirty();
   };
 
   const clearOverlay = () => {
@@ -272,6 +281,7 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
     const next = undoHistory(history);
     restore(next.present);
     setHistory(next);
+    markDirty();
     // Refs and stable setters only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -283,6 +293,7 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
     const next = redoHistory(history);
     restore(next.present);
     setHistory(next);
+    markDirty();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -291,7 +302,10 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
     cancelStroke();
     const snapshot = blank();
     const history = historyRef.current;
-    if (snapshot && history) setHistory(pushHistory(history, snapshot));
+    if (snapshot && history) {
+      setHistory(pushHistory(history, snapshot));
+      markDirty();
+    }
   };
 
   /** File → Save as PNG: downloads `douglasos-paint-<timestamp>.png`. Never uploaded. */
@@ -300,6 +314,7 @@ export function usePaintCanvas({ tool, color, size }: { tool: PaintTool; color: 
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       downloadFile(url, paintFileName());
+      setUnsavedChanges("paint", false);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, "image/png");
   };

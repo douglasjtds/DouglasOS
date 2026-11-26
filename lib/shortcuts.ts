@@ -14,6 +14,7 @@ export type ShortcutAction =
   | "nextWindow"
   | "previousWindow"
   | "closeWindow"
+  | "confirmCloseWindow"
   | "maximizeWindow"
   | "restoreWindow"
   | "openRun"
@@ -46,7 +47,9 @@ export const SHORTCUTS: { action: ShortcutAction; keys: string[] }[] = [
   { action: "toggleStartMenu", keys: ["Ctrl+Escape", "Meta (tap)", "Alt+Shift+S"] },
   { action: "nextWindow", keys: ["Alt+Shift+W"] },
   { action: "previousWindow", keys: ["Alt+Shift+Q"] },
-  { action: "closeWindow", keys: ["Alt+F4", "Escape"] },
+  { action: "closeWindow", keys: ["Alt+F4"] },
+  // A bare Esc asks first ("Close <app>?"), so one stray key never loses work.
+  { action: "confirmCloseWindow", keys: ["Escape"] },
   { action: "maximizeWindow", keys: ["Alt+Shift+ArrowUp"] },
   { action: "restoreWindow", keys: ["Alt+Shift+ArrowDown"] },
   { action: "openRun", keys: ["Meta+R (best effort, not on Apple)", "Alt+Shift+R"] },
@@ -102,7 +105,7 @@ export function matchShortcut(
     !e.metaKey &&
     !ctx.overlayOpen
   ) {
-    return "closeWindow";
+    return "confirmCloseWindow";
   }
   return null;
 }

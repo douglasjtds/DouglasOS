@@ -9,27 +9,13 @@ import {
   type ShortcutAction,
 } from "@/lib/shortcuts";
 import { cycleWindow } from "@/lib/taskbar";
-import type { AppId } from "@/lib/apps/registry";
 import { contextMenuTarget, openContextMenuOn } from "@/lib/contextMenu";
-
-function focusWindowElement(id: AppId) {
-  requestAnimationFrame(() =>
-    document.querySelector<HTMLElement>(`[data-window="${id}"]`)?.focus({ preventScroll: true }),
-  );
-}
-
-/** After closing a window: next window, else its desktop icon, else Start. */
-function focusAfterClose(closedId: AppId) {
-  const next = useWindowStore.getState().focusedId;
-  if (next) {
-    focusWindowElement(next);
-    return;
-  }
-  const fallback =
-    document.querySelector<HTMLElement>(`[data-desktop-icon="${closedId}"]`) ??
-    document.querySelector<HTMLElement>("[data-start-button]");
-  fallback?.focus();
-}
+import {
+  askToCloseWindow,
+  focusAfterClose,
+  focusWindowElement,
+  requestCloseWindow,
+} from "@/lib/windowClose";
 
 /** Any transient UI that owns Esc before the window manager does. */
 function overlayOpen(): boolean {
@@ -62,8 +48,10 @@ function perform(action: ShortcutAction) {
       return;
     case "closeWindow":
       if (!focused) return;
-      windows.closeWindow(focused);
-      focusAfterClose(focused);
+      if (requestCloseWindow(focused) === "closed") focusAfterClose(focused);
+      return;
+    case "confirmCloseWindow":
+      if (focused) askToCloseWindow(focused);
       return;
     case "maximizeWindow":
       if (focused && !windows.windows[focused]?.maximized) windows.toggleMaximize(focused);

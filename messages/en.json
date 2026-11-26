@@ -675,6 +675,13 @@
     "goodbye": "See you soon.",
     "turnOn": "Turn on"
   },
+  "confirmClose": {
+    "title": "Close {app}",
+    "body": "Close {app}?",
+    "unsavedBody": "Your drawing hasn't been saved. Close {app} anyway?",
+    "yes": "Yes",
+    "no": "No"
+  },
   "protectedFile": {
     "title": "Protected file",
     "body": "“{name}” refused to be renamed. It says it took ages to pick that name and recruiters already know it by heart.",

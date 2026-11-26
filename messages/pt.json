@@ -675,6 +675,13 @@
     "goodbye": "Até logo.",
     "turnOn": "Ligar"
   },
+  "confirmClose": {
+    "title": "Fechar {app}",
+    "body": "Fechar {app}?",
+    "unsavedBody": "Seu desenho não foi salvo. Fechar {app} mesmo assim?",
+    "yes": "Sim",
+    "no": "Não"
+  },
   "protectedFile": {
     "title": "Arquivo protegido",
     "body": "“{name}” se recusou a ser renomeado. Diz que levou séculos para escolher esse nome e que os recrutadores já sabem ele de cor.",

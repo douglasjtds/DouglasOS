@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useWindowStore } from "@/lib/store/windowStore";
 import type { AppId } from "@/lib/apps/registry";
 import { cn } from "@/lib/utils";
+import { requestCloseWindow } from "@/lib/windowClose";
 
 export type ControlGlyph = "minimize" | "maximize" | "restore" | "close";
 
@@ -81,7 +82,6 @@ export function WindowControls({
 }) {
   const t = useTranslations("window");
   const maximized = useWindowStore((s) => Boolean(s.windows[id]?.maximized));
-  const closeWindow = useWindowStore((s) => s.closeWindow);
   const minimizeWindow = useWindowStore((s) => s.minimizeWindow);
   const toggleMaximize = useWindowStore((s) => s.toggleMaximize);
 
@@ -108,7 +108,7 @@ export function WindowControls({
         glyph="close"
         aria-label={t("close")}
         title={t("close")}
-        onClick={() => closeWindow(id)}
+        onClick={() => requestCloseWindow(id)}
       />
     </div>
   );
