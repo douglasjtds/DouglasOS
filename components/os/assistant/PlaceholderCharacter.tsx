@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, type Transition } from "framer-motion";
+import { motion, useMotionValue, useTransform, type Transition } from "framer-motion";
 import { ICON_COLORS as C } from "@/components/icons/types";
 import type { CharacterRendererProps } from "@/components/os/assistant/AssistantCharacter";
+import { GAZE_TUNING, type CharacterExpression } from "@/lib/assistant/gaze";
 
 /**
  * Character-local palette (like `ICON_COLORS`, these are illustration colors,
@@ -24,6 +25,33 @@ const TATTOO = "#33506e";
 const TATTOO_SHADE = "#2a3a4a";
 
 const LOOP: Transition = { repeat: Infinity, ease: "easeInOut" };
+/** Quick, slightly bouncy change of face. */
+const FACE: Transition = { type: "spring", stiffness: 320, damping: 22 };
+
+/** Per-expression tweaks of the face (brow lift, eye size). */
+const FACES: Record<CharacterExpression, { browY: number; eyeRx: number; eyeRy: number }> = {
+  neutral: { browY: 0, eyeRx: 2.1, eyeRy: 2.6 },
+  curious: { browY: -2, eyeRx: 2.4, eyeRy: 3 },
+  happy: { browY: -1, eyeRx: 2.1, eyeRy: 2.6 },
+  sleepy: { browY: 0.8, eyeRx: 2.1, eyeRy: 2.6 },
+  surprised: { browY: -3, eyeRx: 2.6, eyeRy: 3.5 },
+};
+
+/** Resting mouth per expression (talking and dancing use the moving mouth). */
+function RestingMouth({ expression }: { expression: CharacterExpression }) {
+  switch (expression) {
+    case "happy":
+      return <path d="M43.5 47.4 Q48 54 52.5 47.4 Z" fill={MOUTH} stroke={LIP} strokeWidth="1" strokeLinejoin="round" />;
+    case "surprised":
+      return <ellipse cx="48" cy="49" rx="1.9" ry="2.4" fill={MOUTH} stroke={LIP} strokeWidth="1" />;
+    case "curious":
+      return <path d="M45 48.2 Q48 50 51 48.2" stroke={LIP} strokeWidth="1.6" fill="none" strokeLinecap="round" />;
+    case "sleepy":
+      return <path d="M45.5 48.8 Q48 49.8 50.5 48.8" stroke={LIP} strokeWidth="1.5" fill="none" strokeLinecap="round" />;
+    default:
+      return <path d="M44 47.8 Q48 50.8 52 47.8" stroke={LIP} strokeWidth="1.6" fill="none" strokeLinecap="round" />;
+  }
+}
 
 /**
  * The character is drawn on its own 96×112 grid and placed slightly smaller
@@ -108,11 +136,22 @@ function Skateboard() {
  * the same 96×112 box as the video. Idle = gentle bob + blink,
  * talking = mouth moves, dancing = sway, hop and waving arms. Under reduced
  * motion it renders one static frame (a music note marks a dance).
+ * On a desktop he also follows the cursor (`gaze`: eyes + head tilt) and makes
+ * a face about it (`expression`: curious / happy / sleepy / surprised).
  */
-export function PlaceholderCharacter({ state, reducedMotion }: CharacterRendererProps) {
+export function PlaceholderCharacter({ state, reducedMotion, gaze, expression = "neutral" }: CharacterRendererProps) {
   const animate = !reducedMotion;
   const dancing = state === "dancing";
   const talking = state === "talking";
+  const face: CharacterExpression = animate ? expression : "neutral";
+  const look = FACES[face];
+
+  // Without a gaze source he looks straight ahead.
+  const still = useMotionValue(0);
+  const eyeX = useTransform(gaze?.x ?? still, (v) => v * GAZE_TUNING.eyeMaxX);
+  const eyeY = useTransform(gaze?.y ?? still, (v) => v * GAZE_TUNING.eyeMaxY);
+  const tilt = gaze?.tilt ?? still;
+  const blinking = animate && face !== "sleepy" && face !== "happy";
 
   const body = !animate
     ? undefined
@@ -181,66 +220,120 @@ export function PlaceholderCharacter({ state, reducedMotion }: CharacterRenderer
           <path d="M42 57.5 Q44 63.5 47.5 66 M54 57.5 Q52 63.5 48.5 66" stroke={C.metal} strokeWidth="0.9" fill="none" />
           <rect x="46.4" y="65.5" width="3.2" height="4.2" rx="1" fill={C.metal} stroke={C.metalDark} strokeWidth="0.6" />
 
-          {/* Neck + ears. */}
+          {/* Neck (stays put; the head above tilts toward the cursor). */}
           <rect x="44" y="50" width="8" height="8" rx="2" fill={SKIN_SHADE} />
-          <circle cx="27.5" cy="37" r="4" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1" />
-          <circle cx="68.5" cy="37" r="4" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1" />
-          {/* Head. */}
-          <circle cx="48" cy="34" r="21" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1.2" />
-          {/* Hair: short buzz with a faded side. */}
-          <path
-            d="M27.5 33 C27 19 37 12.5 48 12.5 C59 12.5 69 19 68.5 33 C66.5 27 62.5 23 56 22.2 C51 21.5 45 21.5 40 22.2 C33.5 23 29.5 27 27.5 33 Z"
-            fill={HAIR}
-          />
-          <path d="M28 33 C28.5 29 30 26.5 32 25" stroke={HAIR_FADE} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M68 33 C67.5 29 66 26.5 64 25" stroke={HAIR_FADE} strokeWidth="2" fill="none" strokeLinecap="round" />
-
-          {/* Trimmed beard: fuller on the cheeks and jaw sides, light moustache. */}
-          <path
-            d="M29 38 C29.5 50 37.5 55.8 48 55.8 C58.5 55.8 66.5 50 67 38 C65.5 44 62 48.5 57 50.5 C53 51.8 43 51.8 39 50.5 C34 48.5 30.5 44 29 38 Z"
-            fill={BEARD}
-            opacity="0.9"
-          />
-          <path d="M43.2 45.4 Q48 43.4 52.8 45.4" stroke={BEARD} strokeWidth="1.6" fill="none" strokeLinecap="round" opacity="0.9" />
-
-          {/* Brows, eyes (blink), round black glasses. */}
-          <path d="M35 27 q5 -2.5 9.5 0 M51.5 27 q5 -2.5 9.5 0" stroke={HAIR} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <motion.g
-            animate={animate ? { scaleY: [1, 1, 0.1, 1] } : undefined}
-            transition={{ repeat: Infinity, duration: 4.2, times: [0, 0.93, 0.96, 1] }}
-            style={{ originY: "50%" }}
-          >
-            <ellipse cx="40" cy="35" rx="2.1" ry="2.6" fill={INK} />
-            <ellipse cx="56" cy="35" rx="2.1" ry="2.6" fill={INK} />
-            <circle cx="40.8" cy="34" r="0.75" fill={C.paper} />
-            <circle cx="56.8" cy="34" r="0.75" fill={C.paper} />
-          </motion.g>
-          <circle cx="40" cy="35" r="6.2" fill={C.paper} fillOpacity="0.12" stroke={INK} strokeWidth="2.2" />
-          <circle cx="56" cy="35" r="6.2" fill={C.paper} fillOpacity="0.12" stroke={INK} strokeWidth="2.2" />
-          <path d="M46.2 34.5 Q48 33 49.8 34.5 M33.8 34 L28.5 33 M62.2 34 L67.5 33" stroke={INK} strokeWidth="1.6" fill="none" />
-
-          {/* Mouth. */}
-          {talking || dancing ? (
-            <motion.ellipse
-              cx="48"
-              cy="48.6"
-              rx="3"
-              fill={MOUTH}
-              stroke={LIP}
-              strokeWidth="1"
-              initial={{ ry: 2.6 }}
-              animate={animate ? { ry: [1.2, 3.2, 1.2] } : { ry: 2.6 }}
-              transition={{ repeat: Infinity, duration: 0.36 }}
+          <motion.g data-character-head style={{ rotate: tilt, originX: "50%", originY: "100%" }}>
+            {/* Ears. */}
+            <circle cx="27.5" cy="37" r="4" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1" />
+            <circle cx="68.5" cy="37" r="4" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1" />
+            {/* Head. */}
+            <circle cx="48" cy="34" r="21" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1.2" />
+            {/* Hair: short buzz with a faded side. */}
+            <path
+              d="M27.5 33 C27 19 37 12.5 48 12.5 C59 12.5 69 19 68.5 33 C66.5 27 62.5 23 56 22.2 C51 21.5 45 21.5 40 22.2 C33.5 23 29.5 27 27.5 33 Z"
+              fill={HAIR}
             />
-          ) : (
-            <path d="M44 47.8 Q48 50.8 52 47.8" stroke={LIP} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-          )}
+            <path d="M28 33 C28.5 29 30 26.5 32 25" stroke={HAIR_FADE} strokeWidth="2" fill="none" strokeLinecap="round" />
+            <path d="M68 33 C67.5 29 66 26.5 64 25" stroke={HAIR_FADE} strokeWidth="2" fill="none" strokeLinecap="round" />
 
-          {/* Wired in-ear on his right ear, cable running into the tee. */}
-          <circle cx="27.5" cy="38" r="2" fill={INK} />
-          <path d="M27.5 40 C26.5 49 33 54 37 60" stroke={INK} strokeWidth="0.9" fill="none" />
+            {/* Trimmed beard: fuller on the cheeks and jaw sides, light moustache. */}
+            <path
+              d="M29 38 C29.5 50 37.5 55.8 48 55.8 C58.5 55.8 66.5 50 67 38 C65.5 44 62 48.5 57 50.5 C53 51.8 43 51.8 39 50.5 C34 48.5 30.5 44 29 38 Z"
+              fill={BEARD}
+              opacity="0.9"
+            />
+            <path d="M43.2 45.4 Q48 43.4 52.8 45.4" stroke={BEARD} strokeWidth="1.6" fill="none" strokeLinecap="round" opacity="0.9" />
+
+            {/* Brows, eyes (blink), round black glasses. */}
+            {/* Brows lift with curiosity/surprise. */}
+            <motion.path
+              d="M35 27 q5 -2.5 9.5 0 M51.5 27 q5 -2.5 9.5 0"
+              stroke={HAIR}
+              strokeWidth="2"
+              fill="none"
+              strokeLinecap="round"
+              initial={false}
+              animate={{ y: look.browY }}
+              transition={FACE}
+            />
+            {/* Eyes: blink, follow the cursor, change with the expression. */}
+            <motion.g
+              animate={blinking ? { scaleY: [1, 1, 0.1, 1] } : { scaleY: 1 }}
+              transition={blinking ? { repeat: Infinity, duration: 4.2, times: [0, 0.93, 0.96, 1] } : { duration: 0.15 }}
+              style={{ originY: "50%" }}
+            >
+              <motion.g data-character-eyes style={{ x: eyeX, y: eyeY }}>
+                {face === "happy" ? (
+                  <path
+                    d="M37.6 36 q2.4 -3 4.8 0 M53.6 36 q2.4 -3 4.8 0"
+                    stroke={INK}
+                    strokeWidth="1.7"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+                ) : (
+                  <>
+                    <motion.ellipse cx="40" cy="35" fill={INK} initial={false} animate={{ rx: look.eyeRx, ry: look.eyeRy }} transition={FACE} />
+                    <motion.ellipse cx="56" cy="35" fill={INK} initial={false} animate={{ rx: look.eyeRx, ry: look.eyeRy }} transition={FACE} />
+                    <circle cx="40.8" cy="34" r="0.75" fill={C.paper} />
+                    <circle cx="56.8" cy="34" r="0.75" fill={C.paper} />
+                    {/* Sleepy lids slide down over the top half of the eyes. */}
+                    <motion.g
+                      initial={false}
+                      animate={{ scaleY: face === "sleepy" ? 1 : 0 }}
+                      transition={{ duration: 0.4 }}
+                      style={{ originY: "0%" }}
+                    >
+                      <rect x="37.4" y="31.9" width="5.2" height="3.8" fill={SKIN} />
+                      <rect x="53.4" y="31.9" width="5.2" height="3.8" fill={SKIN} />
+                      <path d="M37.6 35.7 h4.8 M53.6 35.7 h4.8" stroke={SKIN_SHADE} strokeWidth="1" strokeLinecap="round" />
+                    </motion.g>
+                  </>
+                )}
+              </motion.g>
+            </motion.g>
+            <circle cx="40" cy="35" r="6.2" fill={C.paper} fillOpacity="0.12" stroke={INK} strokeWidth="2.2" />
+            <circle cx="56" cy="35" r="6.2" fill={C.paper} fillOpacity="0.12" stroke={INK} strokeWidth="2.2" />
+            <path d="M46.2 34.5 Q48 33 49.8 34.5 M33.8 34 L28.5 33 M62.2 34 L67.5 33" stroke={INK} strokeWidth="1.6" fill="none" />
+
+            {/* Mouth. */}
+            {talking || dancing ? (
+              <motion.ellipse
+                cx="48"
+                cy="48.6"
+                rx="3"
+                fill={MOUTH}
+                stroke={LIP}
+                strokeWidth="1"
+                initial={{ ry: 2.6 }}
+                animate={animate ? { ry: [1.2, 3.2, 1.2] } : { ry: 2.6 }}
+                transition={{ repeat: Infinity, duration: 0.36 }}
+              />
+            ) : (
+              <RestingMouth expression={face} />
+            )}
+
+            {/* Wired in-ear on his right ear, cable running into the tee (tilts with the head). */}
+            <circle cx="27.5" cy="38" r="2" fill={INK} />
+            <path d="M27.5 40 C26.5 49 33 54 37 60" stroke={INK} strokeWidth="0.9" fill="none" />
+          </motion.g>
         </motion.g>
       </g>
+
+      {/* Dozing off: a little "z" floats up. */}
+      {face === "sleepy" && (
+        <motion.path
+          data-sleep-indicator
+          d="M74 16 h6 l-6 7 h6"
+          stroke={C.paper}
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          animate={{ y: [2, -8], opacity: [0, 1, 0] }}
+          transition={{ repeat: Infinity, duration: 2.4, ease: "easeOut" }}
+        />
+      )}
 
       {/* Reduced motion: a static note says "dancing" instead of movement. */}
       {dancing && !animate && (
