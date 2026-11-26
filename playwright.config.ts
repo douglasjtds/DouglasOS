@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright e2e config. Specs live in `e2e/` and drive the production build
- * (`npm run build && npm run start`) against a real browser, covering the boot
+ * (`pnpm run build && pnpm run start`) against a real browser, covering the boot
  * → desktop shell flows that change least as app content evolves.
  *
  * Multi-browser (Chromium/Firefox/WebKit) directly serves the MVP's
@@ -54,8 +54,8 @@ export default defineConfig({
   webServer: {
     // Reuse a running dev server locally; build+start fresh in CI.
     command: process.env.CI
-      ? "npm run build && npm run start"
-      : "npm run dev",
+      ? "pnpm run build && pnpm run start"
+      : "pnpm run dev",
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

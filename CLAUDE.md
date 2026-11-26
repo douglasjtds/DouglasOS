@@ -15,21 +15,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+The package manager is **pnpm** (version pinned in `package.json` → `packageManager`). Don't use npm or yarn — they ignore `pnpm-lock.yaml`. Build-script approvals live in `pnpm-workspace.yaml` (`allowBuilds`).
+
 ```bash
-npm run dev          # Next dev server (Turbopack) at http://localhost:3000
-npm run build        # Production build
-npm run start        # Serve the production build
-npm run lint         # ESLint (flat config: eslint.config.mjs)
-npm run test         # Vitest unit/integration tests (jsdom) — run once
-npm run test:watch   # Vitest in watch mode
-npm run test:coverage # Vitest with a v8 coverage report (text + html in coverage/)
-npm run test:e2e     # Playwright e2e across Chromium/Firefox/WebKit
+pnpm dev         # Next dev server (Turbopack) at http://localhost:3000
+pnpm build       # Production build
+pnpm start       # Serve the production build
+pnpm lint        # ESLint (flat config: eslint.config.mjs)
+pnpm test        # Vitest unit/integration tests (jsdom) — run once
+pnpm test:watch  # Vitest in watch mode
+pnpm test:coverage # Vitest with a v8 coverage report (text + html in coverage/)
+pnpm test:e2e    # Playwright e2e across Chromium/Firefox/WebKit
 ```
 
 **Testing.** Two layers, both wired into CI (`.github/workflows/ci.yml`):
 
 - **Unit/integration — Vitest + Testing Library** (`jsdom`). Config in `vitest.config.ts`, shared setup in `test/setup.ts` (installs an in-memory `localStorage` for the persisted Zustand store and pins a deterministic viewport). Tests are co-located as `*.test.ts(x)`. The high-value targets are the pure logic in `lib/store/` (`geometry.ts`, `desktopGrid.ts`) and the Zustand stores (`windowStore.ts`, `desktopStore.ts`) — keep those well covered. Coverage is reported, not gated.
-- **E2E — Playwright** (`e2e/`, config `playwright.config.ts`). Drives the boot → desktop-shell flows that change least. Prefer resilient selectors (roles, `data-*`) over app copy, which is still evolving. Run `npx playwright install` once before the first local run.
+- **E2E — Playwright** (`e2e/`, config `playwright.config.ts`). Drives the boot → desktop-shell flows that change least. Prefer resilient selectors (roles, `data-*`) over app copy, which is still evolving. Run `pnpm exec playwright install` once before the first local run.
 
 ## Tech Stack
 
