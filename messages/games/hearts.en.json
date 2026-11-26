@@ -1,1 +1,61 @@
-{}
+{
+  "players": {
+    "0": "You",
+    "1": "Ada",
+    "2": "Milo",
+    "3": "Iris"
+  },
+  "status": {
+    "passLeft": "Pass 3 cards to the left ({name})",
+    "passRight": "Pass 3 cards to the right ({name})",
+    "passAcross": "Pass 3 cards across ({name})",
+    "yourLeadTwoOfClubs": "Your lead — start with the 2 of clubs",
+    "yourLead": "Your lead",
+    "yourTurn": "Your turn",
+    "waiting": "{name} is playing…",
+    "youTakeTrick": "You take the trick",
+    "takesTrick": "{name} takes the trick",
+    "handOver": "Hand over",
+    "youShotMoon": "You shot the moon! Everyone else gets 26.",
+    "shotMoon": "{name} shot the moon! Everyone else gets 26.",
+    "youWin": "You win with {score} points!",
+    "youTie": "You tie for the win with {score} points!",
+    "otherWins": "{name} wins with {score} points.",
+    "selectThree": "Select 3 cards to pass",
+    "tooMany": "You can only pass 3 cards",
+    "illegal": {
+      "notYourTurn": "Wait for your turn",
+      "mustLeadTwoOfClubs": "The first trick starts with the 2 of clubs",
+      "mustFollowSuit": "You must follow the suit that was led",
+      "noPointsFirstTrick": "No hearts or queen of spades on the first trick",
+      "heartsNotBroken": "Hearts can't be led until they're broken"
+    }
+  },
+  "scoreCell": "Your score: {score}",
+  "handCell": "Hand {number}",
+  "passButton": "Pass cards",
+  "nextHand": "Next hand",
+  "hand": "Your hand",
+  "trick": "Cards on the table",
+  "opponent": "{name}: {score} points, {count, plural, one {# card} other {# cards}} left",
+  "played": "{name} played {card}",
+  "menu": {
+    "scores": "Score sheet",
+    "rules": "Rules"
+  },
+  "scoreSheet": {
+    "title": "Score sheet",
+    "hand": "Hand",
+    "total": "Total",
+    "empty": "No hands played yet."
+  },
+  "rules": {
+    "title": "How to play Hearts",
+    "goal": "Score as few points as possible. Each heart you take is 1 point and the queen of spades is 13.",
+    "pass": "Before each hand, pass 3 cards: left, then right, then across, then keep them; the cycle repeats.",
+    "play": "Whoever holds the 2 of clubs leads it. Follow the suit that was led if you can; the highest card of that suit takes the trick and leads next.",
+    "limits": "No hearts or queen of spades on the first trick, and hearts can't be led until one has been played.",
+    "moon": "Take all 13 hearts and the queen of spades to shoot the moon: you score 0 and everyone else gets 26.",
+    "end": "The game ends when someone reaches 100 points. The lowest score wins."
+  }
+}

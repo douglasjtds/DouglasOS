@@ -1,1 +1,61 @@
-{}
+{
+  "players": {
+    "0": "Você",
+    "1": "Ada",
+    "2": "Milo",
+    "3": "Iris"
+  },
+  "status": {
+    "passLeft": "Passe 3 cartas para a esquerda ({name})",
+    "passRight": "Passe 3 cartas para a direita ({name})",
+    "passAcross": "Passe 3 cartas para a frente ({name})",
+    "yourLeadTwoOfClubs": "Você começa — jogue o 2 de paus",
+    "yourLead": "Você começa a vaza",
+    "yourTurn": "Sua vez",
+    "waiting": "{name} está jogando…",
+    "youTakeTrick": "Você leva a vaza",
+    "takesTrick": "{name} leva a vaza",
+    "handOver": "Fim da rodada",
+    "youShotMoon": "Você acertou a lua! Os outros levam 26.",
+    "shotMoon": "{name} acertou a lua! Os outros levam 26.",
+    "youWin": "Você venceu com {score} pontos!",
+    "youTie": "Você empatou na liderança com {score} pontos!",
+    "otherWins": "{name} venceu com {score} pontos.",
+    "selectThree": "Selecione 3 cartas para passar",
+    "tooMany": "Você só pode passar 3 cartas",
+    "illegal": {
+      "notYourTurn": "Espere a sua vez",
+      "mustLeadTwoOfClubs": "A primeira vaza começa com o 2 de paus",
+      "mustFollowSuit": "Você precisa seguir o naipe puxado",
+      "noPointsFirstTrick": "Sem copas nem dama de espadas na primeira vaza",
+      "heartsNotBroken": "Copas só podem ser puxadas depois de quebradas"
+    }
+  },
+  "scoreCell": "Seus pontos: {score}",
+  "handCell": "Rodada {number}",
+  "passButton": "Passar cartas",
+  "nextHand": "Próxima rodada",
+  "hand": "Sua mão",
+  "trick": "Cartas na mesa",
+  "opponent": "{name}: {score} pontos, {count, plural, one {# carta} other {# cartas}} na mão",
+  "played": "{name} jogou {card}",
+  "menu": {
+    "scores": "Placar",
+    "rules": "Regras"
+  },
+  "scoreSheet": {
+    "title": "Placar",
+    "hand": "Rodada",
+    "total": "Total",
+    "empty": "Nenhuma rodada jogada ainda."
+  },
+  "rules": {
+    "title": "Como jogar Copas",
+    "goal": "Faça o mínimo de pontos possível. Cada carta de copas vale 1 ponto e a dama de espadas vale 13.",
+    "pass": "Antes de cada rodada, passe 3 cartas: para a esquerda, depois para a direita, depois para a frente, depois ninguém passa; e o ciclo recomeça.",
+    "play": "Quem tem o 2 de paus começa com ele. Siga o naipe puxado se puder; a carta mais alta desse naipe leva a vaza e começa a próxima.",
+    "limits": "Sem copas nem dama de espadas na primeira vaza, e copas só podem ser puxadas depois que alguém jogar uma.",
+    "moon": "Leve as 13 copas e a dama de espadas para acertar a lua: você fica com 0 e os outros levam 26.",
+    "end": "O jogo termina quando alguém chega a 100 pontos. Vence quem tiver menos pontos."
+  }
+}
