@@ -35,7 +35,7 @@ describe("Desktop icons", () => {
     useDesktopStore.setState({ selectedIds: [], drag: null, rescue: null, binFull: false, trashCounts: {} });
   });
 
-  it("renders the launchers as one listbox, in CTA order, links last, the Recycle Bin after them, without Display Properties", () => {
+  it("renders the launchers as one listbox, in CTA order, then links, then fun apps, the Recycle Bin last, without Display Properties", () => {
     renderWithIntl(<Desktop />);
     // The label is the last child (the glyph is aria-hidden SVG).
     const options = screen
@@ -54,6 +54,9 @@ describe("Desktop icons", () => {
       "github.url",
       "whatsapp.exe",
       "write-me.eml",
+      "DouglasOS Media Player",
+      "Retro Cam",
+      "DouglasOS Paint",
       "Recycle Bin",
     ]);
     expect(screen.getByRole("listbox", { name: "Desktop icons" })).toHaveAttribute("aria-multiselectable", "true");
@@ -183,7 +186,7 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     renderWithIntl(<Desktop />);
     await userEvent.tab();
     await userEvent.keyboard("{Control>}a{/Control}");
-    expect(selected()).toHaveLength(12);
+    expect(selected()).toHaveLength(15);
     expect(selected()).not.toContain("recycle-bin");
     expect(icon("Recycle Bin")).toHaveAttribute("aria-selected", "false");
     await userEvent.keyboard("{Escape}");
@@ -294,8 +297,8 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     const surface = screen.getByRole("listbox");
     const linkedin = cellToPixel(useDesktopStore.getState().iconCells.linkedin, VP);
     const whatsapp = cellToPixel(useDesktopStore.getState().iconCells.whatsapp, VP);
-    // From the empty area right of the links column, up-left over three links.
-    fireEvent.pointerDown(surface, { button: 0, pointerId: 2, clientX: linkedin.x + 120, clientY: 2 });
+    // From the gap between the links and the fun-apps columns, up-left over three links.
+    fireEvent.pointerDown(surface, { button: 0, pointerId: 2, clientX: linkedin.x + 80, clientY: 2 });
     fireEvent.pointerMove(desktop, { pointerId: 2, clientX: linkedin.x + 10, clientY: whatsapp.y + 40 });
     expect(document.querySelector("[data-lasso]")).not.toBeNull();
     fireEvent.pointerUp(desktop, { pointerId: 2, clientX: linkedin.x + 10, clientY: whatsapp.y + 40 });

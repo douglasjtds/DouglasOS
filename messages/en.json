@@ -830,6 +830,18 @@
       "binTitle": "Recycle Bin",
       "binOpened": "Empty, as always. I don't let anything go: whatever lands in here, I bring back.",
       "lines": {
+        "mediaPlayer": {
+          "v1": "Throwing out the music? The playlist from my wedding is in there. Restored, volume and all.",
+          "v2": "No soundtrack, no fun. The Media Player is back on the desktop."
+        },
+        "camera": {
+          "v1": "Retro Cam in the trash? Fine, it's camera-shy anyway. Put it back.",
+          "v2": "The webcam goes back where it was. Don't worry, it only turns on when you click."
+        },
+        "paint": {
+          "v1": "Deleting Paint before drawing anything? Every masterpiece starts blank. Restored.",
+          "v2": "Paint stays: someone still has to draw me a mustache. Back on the desktop."
+        },
         "about": {
           "v1": "Throwing me away already? We just met. I put myself back on the desktop.",
           "v2": "Deleting the About page is a bold way to get to know someone. Restored.",

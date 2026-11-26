@@ -73,7 +73,7 @@ export interface AppRoutes {
  */
 export type DesktopIconId = Exclude<
   LauncherId,
-  "display" | "recycle-bin" | "media-player" | "camera" | "paint" | "achievements" | ActionId
+  "display" | "recycle-bin" | "achievements" | ActionId
 >;
 
 /**
@@ -296,13 +296,14 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 520, height: 380 },
     Content: lazy(() => import("@/components/apps/RecycleBinApp")),
   },
-  // DouglasOS Media Player (stage 8): Start → All Programs → Entertainment
-  // only (no desktop icon, so a phone's first row stays About / CV / Contact).
+  // DouglasOS Media Player (stage 8): Start → All Programs → Entertainment,
+  // plus a desktop shortcut in the fun-apps group (after the links, so a
+  // phone's first row stays About / CV / Contact).
   {
     id: "media-player",
     kind: "window",
     icon: MediaPlayerIcon,
-    onDesktop: false,
+    onDesktop: true,
     folder: "entertainment",
     persistWindow: false,
     surface: "bare",
@@ -310,24 +311,24 @@ export const LAUNCHERS: LauncherConfig[] = [
     Content: lazy(() => import("@/components/apps/MediaPlayerApp")),
   },
   // Retro Cam (stage 9): pixelated webcam, Start → All Programs → Accessories
-  // only (no desktop icon: fun apps never crowd the CTA icons).
+  // and a desktop shortcut in the fun-apps group.
   {
     id: "camera",
     kind: "window",
     icon: CameraIcon,
-    onDesktop: false,
+    onDesktop: true,
     folder: "accessories",
     surface: "bare",
     defaultSize: { width: 560, height: 520 },
     Content: lazy(() => import("@/components/apps/CameraApp")),
   },
-  // DouglasOS Paint (stage 10): a fun app, so only in All Programs ▸ Accessories
-  // (and Run, stage 7), never on the desktop or pinned.
+  // DouglasOS Paint (stage 10): All Programs ▸ Accessories, Run, and a desktop
+  // shortcut in the fun-apps group; never pinned.
   {
     id: "paint",
     kind: "window",
     icon: PaintIcon,
-    onDesktop: false,
+    onDesktop: true,
     folder: "accessories",
     surface: "bare",
     defaultSize: { width: 760, height: 560 },
@@ -373,14 +374,19 @@ export const LINK_LAUNCHERS: LinkConfig[] = LAUNCHERS.filter(
   (l): l is LinkConfig => l.kind === "link",
 );
 
+/** A desktop launcher that is a fun app (it lives in an All Programs folder). */
+const isFunApp = (l: LauncherConfig) => l.kind === "window" && Boolean(l.folder);
+
 /**
- * Desktop icons split into default-layout groups: the apps (+ CV) first, then
- * the external shortcuts. Each group starts a new column on the desktop and a
- * new row on mobile, so the links never push About / CV / Contact around.
+ * Desktop icons split into default-layout groups: the portfolio apps (+ CV)
+ * first, then the external shortcuts, then the fun apps (Media Player, Retro
+ * Cam, Paint). Each group starts a new column on the desktop and a new row on
+ * mobile, so nothing pushes About / CV / Contact around.
  */
 export const DESKTOP_ICON_GROUPS: DesktopIconId[][] = [
-  DESKTOP_LAUNCHERS.filter((l) => l.kind !== "link").map((l) => l.id),
+  DESKTOP_LAUNCHERS.filter((l) => l.kind !== "link" && !isFunApp(l)).map((l) => l.id),
   DESKTOP_LAUNCHERS.filter((l) => l.kind === "link").map((l) => l.id),
+  DESKTOP_LAUNCHERS.filter(isFunApp).map((l) => l.id),
 ];
 
 const WINDOW_APP_BY_ID = new Map<AppId, WindowAppConfig>(

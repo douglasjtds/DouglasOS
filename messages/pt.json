@@ -830,6 +830,18 @@
       "binTitle": "Lixeira",
       "binOpened": "Vazia, como sempre. Eu não deixo nada ir embora: o que cai aqui, eu trago de volta.",
       "lines": {
+        "mediaPlayer": {
+          "v1": "Jogar a música fora? Tem a playlist do meu casamento aí dentro. Restaurado, com volume e tudo.",
+          "v2": "Sem trilha sonora não tem graça. O Media Player voltou pro desktop."
+        },
+        "camera": {
+          "v1": "A Retro Cam na lixeira? Tudo bem, ela é tímida mesmo. Coloquei de volta.",
+          "v2": "A webcam volta pro lugar. Fica tranquilo, ela só liga quando você clica."
+        },
+        "paint": {
+          "v1": "Apagar o Paint antes de desenhar alguma coisa? Toda obra-prima começa em branco. Restaurado.",
+          "v2": "O Paint fica: alguém ainda vai ter que me desenhar um bigode. De volta ao desktop."
+        },
         "about": {
           "v1": "Já vai me jogar fora? A gente acabou de se conhecer. Me coloquei de volta no desktop.",
           "v2": "Apagar o \"Sobre\" é um jeito ousado de conhecer alguém. Restaurado.",

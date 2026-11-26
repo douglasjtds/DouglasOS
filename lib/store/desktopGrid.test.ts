@@ -315,7 +315,9 @@ describe("mobile icon grid", () => {
     const layout = mobileIconLayout(DESKTOP_ICON_GROUPS, 390);
     expect(layout.cells.linkedin).toEqual({ col: 0, row: 2 });
     expect(layout.cells.email).toEqual({ col: 3, row: 2 });
-    expect(layout.rows).toBe(3);
+    // The fun apps start a row of their own after the links.
+    expect(layout.cells["media-player"]).toEqual({ col: 0, row: 3 });
+    expect(layout.rows).toBe(4);
   });
 
   it("degrades to a single scrolling column on a very narrow container", () => {

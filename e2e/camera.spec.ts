@@ -68,8 +68,8 @@ test.describe("Retro Cam", () => {
     await expect(win.locator("[data-camera-app]")).toHaveAttribute("data-camera-status", "idle");
     await expect(win.locator("[data-camera-privacy]")).toHaveText("local processing · no upload");
     await expect(win.getByRole("button", { name: "Save photo" })).toBeDisabled();
-    // No desktop icon: Retro Cam lives only in the Start menu.
-    await expect(page.locator('[data-desktop-icon="camera"]')).toHaveCount(0);
+    // Retro Cam also has a desktop shortcut (fun-apps group).
+    await expect(page.locator('[data-desktop-icon="camera"]')).toHaveCount(1);
     expect(await page.evaluate(() => (window as unknown as { __camCalls: number }).__camCalls)).toBe(0);
   });
 

@@ -501,7 +501,7 @@ Full-screen window like every app; header compacts (icon-only Back and Contact, 
 
 ## 15. DouglasOS Media Player *(stage 8)*
 
-**Purpose:** music while the visitor looks around, and mini Douglas dances to it. Original name, icon and skin ("DouglasOS Media Player": glossy blue screen + green play triangle icon, navy "now playing" display) — never another media player's name, logo, icons or sounds. Fun only: it lives in Start → All Programs → **Entertainment** (no desktop icon, no pin, never above the CTAs) and plays only when the visitor presses Play.
+**Purpose:** music while the visitor looks around, and mini Douglas dances to it. Original name, icon and skin ("DouglasOS Media Player": glossy blue screen + green play triangle icon, navy "now playing" display) — never another media player's name, logo, icons or sounds. Fun only: it lives in Start → All Programs → **Entertainment** plus a desktop shortcut in the fun-apps group (its own column after the links on desktop, its own row on phones; no pin, never above the CTAs) and plays only when the visitor presses Play.
 
 ### Source (decision)
 A public, embeddable **YouTube playlist** through the official IFrame Player API. The id is one constant, `YOUTUBE_PLAYLIST_ID` in `lib/media/source.ts` (currently `PLdw3FCGShY-U`, a **third-party playlist** that its owner may change, reorder or delete at any time — swap the constant to change the music). Implemented behind a source adapter (`MediaSourceAdapter` in `lib/media/types.ts`: play / pause / stop / next / prev / setVolume / mute / getTrackTitle / onEvent / destroy), so a radio stream or local files can be added later as another adapter; only `lib/media/youtube.ts` ships.
@@ -561,7 +561,7 @@ Unit: adapter state mapping, skip-on-error / give-up, loader (script once, retry
 - **Frames never leave the page.** They live in memory only (the last frame, for Save photo, is dropped when the camera stops); nothing is uploaded, stored, logged or sent to analytics. The saved PNG is built on the device and downloaded through a `blob:` URL that is revoked right after.
 
 ### Placement & mobile
-- **Start → All Programs → Accessories ▸ Retro Cam** only — no desktop icon, no Start pin (fun apps never crowd the CTAs). On phones All Programs is inline, so Accessories is a labelled sub-list with Retro Cam indented under it.
+- **Start → All Programs → Accessories ▸ Retro Cam**, plus a desktop shortcut in the fun-apps group (after the links; never pinned, never above the CTAs). On phones All Programs is inline, so Accessories is a labelled sub-list with Retro Cam indented under it.
 - **Mobile:** full-screen window like every app; the toolbar wraps to two rows of 44px targets (16px text in the selects, so iOS doesn't zoom); the capture is smaller (240px wide, 320×240 requested) for battery/performance. Since only the focused window is visible on a phone, bringing any other window up (Quick Launch → Contact, the taskbar…) turns the camera off — CV and Contact stay one tap away on the taskbar.
 - **Reduced motion:** nothing animates besides the live picture the visitor chose to start; no transitions.
 
@@ -574,7 +574,7 @@ None. Settings (pixel size, palette, mirror, frame) reset with the window; no fr
 
 Launcher `paint`.
 
-**Window:** 760×560, `surface: "bare"` (draws its own bars) · Start → All Programs ▸ Accessories only (and Run / the palette, §5); no desktop icon, never pinned. Own launcher icon (wooden palette + brush), never the classic program's.
+**Window:** 760×560, `surface: "bare"` (draws its own bars) · Start → All Programs ▸ Accessories, Run / the palette (§5) and a desktop shortcut in the fun-apps group (after the links); never pinned. Own launcher icon (wooden palette + brush), never the classic program's.
 - **Layout (classic):** menu bar **File** (New, Save as PNG, Close) and **Edit** (Undo, Redo) — real items only; a tool column (pencil, brush, eraser, fill, line, rectangle as `aria-pressed` toggle buttons, lucide glyphs inside the window), a sunken line-width box (1/3/5/9px; disabled for pencil and fill) and Undo/Redo buttons; a gray workspace with the white canvas; the **28-color palette** (2 × 14) with the current color on the left; a status bar with the tool's hint and the canvas size.
 - **Drawing:** a bitmap canvas plus a transparent overlay for line/rectangle previews and input. **Pointer Events** for mouse, pen and touch (`touch-action: none` on the canvas only; one pointer at a time, a second finger is ignored; right-click ignored). Pencil = crisp 1px Bresenham pixels; brush = round stroke; eraser = wider square stroke in white; fill = scanline flood fill with a small tolerance (swallows anti-aliased edges). A single tap/click stamps a dot (WebKit draws nothing for zero-length strokes).
 - **Canvas size:** fitted once to the window (160×120 – 1024×768) like the classic program; resizing the window doesn't stretch it (the workspace scrolls). **New** re-fits it.

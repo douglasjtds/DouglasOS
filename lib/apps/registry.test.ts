@@ -59,8 +59,9 @@ describe("registry: external shortcuts", () => {
     expect(isAppId("about")).toBe(true);
   });
 
-  it("groups the desktop icons as apps first, then links", () => {
-    expect(DESKTOP_ICON_GROUPS.flat()).toEqual(DESKTOP_ICON_IDS);
+  it("groups the desktop icons as apps first, then links, then fun apps", () => {
+    expect([...DESKTOP_ICON_GROUPS.flat()].sort()).toEqual([...DESKTOP_ICON_IDS].sort());
+    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["media-player", "camera", "paint"]);
     expect(DESKTOP_ICON_GROUPS[1]).toEqual(LINK_LAUNCHERS.map((l) => l.id));
     expect(DESKTOP_ICON_GROUPS[0].slice(0, 3)).toEqual(["about", "resume", "contact"]);
   });
@@ -89,24 +90,24 @@ describe("registry: DouglasOS Messenger (stage 5b)", () => {
 });
 
 describe("registry: DouglasOS Media Player (stage 8)", () => {
-  it("has the stable id, lives in All Programs → Entertainment and has no desktop icon", () => {
+  it("has the stable id, lives in All Programs → Entertainment and has a desktop shortcut", () => {
     expect(isAppId("media-player")).toBe(true);
     expect(getLauncher("media-player")).toMatchObject({
       kind: "window",
-      onDesktop: false,
+      onDesktop: true,
       folder: "entertainment",
       persistWindow: false,
     });
-    expect(DESKTOP_ICON_IDS).not.toContain("media-player");
+    expect(DESKTOP_ICON_IDS).toContain("media-player");
     expect(programsInFolder("entertainment").map((a) => a.id)).toContain("media-player");
   });
 });
 
 describe("registry: Retro Cam (stage 9)", () => {
-  it("is a window app in All Programs → Accessories, never a desktop icon", () => {
+  it("is a window app in All Programs → Accessories, with a desktop shortcut", () => {
     expect(isAppId("camera")).toBe(true);
-    expect(getLauncher("camera")).toMatchObject({ kind: "window", onDesktop: false, folder: "accessories" });
-    expect(DESKTOP_ICON_IDS).not.toContain("camera");
+    expect(getLauncher("camera")).toMatchObject({ kind: "window", onDesktop: true, folder: "accessories" });
+    expect(DESKTOP_ICON_IDS).toContain("camera");
     expect(PROGRAM_FOLDERS).toContain("accessories");
     expect(programsInFolder("accessories").map((a) => a.id)).toContain("camera");
   });
@@ -127,12 +128,12 @@ describe("registry: All Programs folders (unified API)", () => {
 });
 
 describe("registry: DouglasOS Paint (stage 10)", () => {
-  it("is a window app in All Programs ▸ Accessories, never on the desktop", () => {
+  it("is a window app in All Programs ▸ Accessories, with a desktop shortcut", () => {
     expect(isAppId("paint")).toBe(true);
     const paint = getLauncher("paint");
-    expect(paint).toMatchObject({ kind: "window", onDesktop: false, surface: "bare" });
+    expect(paint).toMatchObject({ kind: "window", onDesktop: true, surface: "bare" });
     expect(folderOf(paint)).toBe("accessories");
-    expect(DESKTOP_ICON_IDS).not.toContain("paint");
+    expect(DESKTOP_ICON_IDS).toContain("paint");
   });
 
   it("every folder has an EN + PT label", () => {
