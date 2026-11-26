@@ -8,6 +8,7 @@ import { Z_BASE, useWindowStore } from "@/lib/store/windowStore";
 import { downloadFile } from "@/lib/download";
 import { PROFILE } from "@/lib/profile";
 import { MESSENGER_TIMING } from "@/lib/messenger/engine";
+import { usePlaybackStore } from "@/lib/store/playbackStore";
 
 vi.mock("@/lib/download", () => ({ downloadFile: vi.fn() }));
 
@@ -40,6 +41,16 @@ describe("MessengerApp", () => {
     useMessengerStore.setState(initialMessengerData());
     useWindowStore.setState({ windows: {}, order: [], focusedId: null, topZ: Z_BASE, openCount: 0 });
     useWindowStore.getState().openWindow("messenger");
+    usePlaybackStore.setState({ status: "idle", title: null });
+  });
+
+  it("shows what the visitor is listening to while the Media Player plays", () => {
+    renderWithIntl(<MessengerApp />);
+    expect(screen.queryByText(/Listening to/)).not.toBeInTheDocument();
+    act(() => usePlaybackStore.setState({ status: "playing", title: "Song A" }));
+    const line = screen.getByRole("button", { name: "Listening to: Song A. Show DouglasOS Media Player" });
+    act(() => usePlaybackStore.setState({ status: "paused" }));
+    expect(line).not.toBeInTheDocument();
   });
 
   it("opens on the contact list with Douglas online", () => {

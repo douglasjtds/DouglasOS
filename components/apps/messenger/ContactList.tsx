@@ -7,6 +7,7 @@ import { useMessengerStore } from "@/lib/store/messengerStore";
 import { UserAvatar } from "@/components/icons/SystemIcons";
 import { MessengerIcon } from "@/components/icons/MessengerIcons";
 import { MessageText } from "@/components/apps/messenger/MessageText";
+import { ListeningTo } from "@/components/apps/messenger/ListeningTo";
 
 /** Small green "online" dot (status shown in text too, never by color alone). */
 export function OnlineDot({ className }: { className?: string }) {
@@ -36,7 +37,7 @@ export function ContactList() {
     <div data-messenger-view="contacts" className="flex min-h-0 flex-1 flex-col">
       <header className="flex items-center gap-2 border-b border-startmenu-right-border bg-startmenu-right px-3 py-2">
         <MessengerIcon size={32} />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h3 className="truncate font-title text-title text-startmenu-right-text">{t("name")}</h3>
           <p className="flex items-center gap-1.5 text-system text-text">
             <OnlineDot />
@@ -44,6 +45,7 @@ export function ContactList() {
               <span className="font-bold">{t("contacts.you")}</span> · {t("contacts.youStatus")}
             </span>
           </p>
+          <ListeningTo />
         </div>
       </header>
 

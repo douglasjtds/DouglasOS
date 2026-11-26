@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils";
 const trayButton =
   "relative flex size-task-button items-center justify-center rounded-button hover:bg-task-button-hover focus-inverse max-md:size-touch-target";
 
-function showPlayer() {
+/** Bring DouglasOS Media Player forward (also used by the Messenger "listening to" line). */
+export function showMediaPlayer() {
   launch("media-player");
   requestAnimationFrame(() =>
     document.querySelector<HTMLElement>('[data-window="media-player"]')?.focus({ preventScroll: true }),
@@ -78,7 +79,7 @@ export function MediaTray() {
         </label>
         {mobile && (
           <Popover.Close asChild>
-            <Button onClick={showPlayer}>{t("showPlayer")}</Button>
+            <Button onClick={showMediaPlayer}>{t("showPlayer")}</Button>
           </Popover.Close>
         )}
       </Popover.Content>
@@ -112,7 +113,7 @@ export function MediaTray() {
             type="button"
             aria-label={nowPlayingLabel}
             data-tray-now-playing
-            onClick={showPlayer}
+            onClick={showMediaPlayer}
             className={trayButton}
           >
             <NowPlayingIcon size={16} />
