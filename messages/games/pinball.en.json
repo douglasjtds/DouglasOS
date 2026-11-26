@@ -1,1 +1,36 @@
-{}
+{
+  "tableLabel": "Pinball table",
+  "tableDescription": "Night Shift table. Left flipper: Z or Left Shift. Right flipper: slash, M or Right Shift. Plunger: hold Space or the Down arrow, release to launch. Pause: P or Esc. On touch, press the left or right half of the table.",
+  "score": "Score",
+  "ball": "Ball",
+  "highScore": "High score",
+  "ballOf": "{ball}/{total}",
+  "statusBall": "Ball {ball}/{total}",
+  "statusHigh": "High score: {score}",
+  "launch": "Launch",
+  "launchHint": "Hold to charge the plunger, release to launch",
+  "pause": "Pause",
+  "resume": "Resume",
+  "paused": "Paused — click or press P to continue",
+  "controls": "Controls",
+  "controlsTitle": "Pinball controls",
+  "controlsIntro": "Night Shift: keep the ball awake past midnight.",
+  "controlsList": {
+    "left": "Left flipper: Z or Left Shift",
+    "right": "Right flipper: / , M or Right Shift",
+    "plunger": "Plunger: hold Space or Down arrow, release to launch",
+    "pause": "Pause or resume: P or Esc",
+    "newGame": "New game: F2",
+    "touch": "Touch or mouse: press the left or right half of the table to flip; hold Launch to charge the plunger"
+  },
+  "scoring": "Coffee mugs 100 · keys 250 · spell C-O-D-E for a 2,000 bonus · desk lamp 500. Three balls per game.",
+  "announce": {
+    "ballLost": "Ball lost. Ball {ball} of {total}.",
+    "ballSaved": "Ball saved. Launch again.",
+    "bank": "C-O-D-E complete: bonus!",
+    "gameOver": "Game over. Final score: {score}.",
+    "score": "Score: {score}"
+  },
+  "gameOverMessage": "Final score: {score}.",
+  "newHighScore": "New high score for this session!"
+}
