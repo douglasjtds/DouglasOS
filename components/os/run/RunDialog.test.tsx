@@ -90,9 +90,12 @@ describe("Run dialog", () => {
 
   it("'cmd' counts the run-cmd easter egg (stage 11); a normal run doesn't", async () => {
     useEasterEggStore.getState().reset();
-    renderWithIntl(<RunDialog />);
+    const first = renderWithIntl(<RunDialog />);
     await userEvent.type(field(), "linkedin{Enter}");
     expect(useEasterEggStore.getState().found).not.toHaveProperty("run-cmd");
+    // Two mounted RunDialogs would both reopen, and one's modal layer would
+    // block pointer events on the other's field: start from a single one.
+    first.unmount();
     useShellStore.getState().openDialog({ kind: "run" });
     renderWithIntl(<RunDialog />);
     await userEvent.type(field(), "cmd{Enter}");

@@ -108,10 +108,11 @@ test.describe("Retro Cam with Chromium's fake camera", () => {
     await win.getByLabel("Palette:").selectOption("cga");
     await win.getByLabel("Pixels:").selectOption("large");
 
-    // The canvas holds one pixel per block, and only CGA colors.
+    // The canvas holds one pixel per block, and only CGA colors. "Large" is
+    // 6 capture px per block: ~53 blocks across the 320px desktop capture.
     await expect
       .poll(() => win.locator("[data-camera-canvas]").evaluate((c: HTMLCanvasElement) => c.width))
-      .toBe(20);
+      .toBe(53);
     const colors = await win.locator("[data-camera-canvas]").evaluate((c: HTMLCanvasElement) => {
       const data = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
       const seen = new Set<string>();
