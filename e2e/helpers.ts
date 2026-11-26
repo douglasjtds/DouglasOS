@@ -82,3 +82,13 @@ export function messengerTray(page: Page) {
 export function messengerToast(page: Page) {
   return page.locator("[data-messenger-toast]");
 }
+
+/** DouglasOS Paint (stage 10): RGBA of one pixel of the drawing (canvas coordinates). */
+export function paintPixel(page: Page, x: number, y: number) {
+  return page
+    .locator("[data-paint-canvas]")
+    .evaluate(
+      (canvas: HTMLCanvasElement, [px, py]) => [...canvas.getContext("2d")!.getImageData(px, py, 1, 1).data],
+      [x, y],
+    );
+}

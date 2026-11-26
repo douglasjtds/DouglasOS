@@ -469,6 +469,99 @@
         "noUpload": "sem upload"
       },
       "saved": "Foto salva como {name}"
+    },
+    "paint": {
+      "title": "DouglasOS Paint",
+      "description": "Desenhe alguma coisa (ou só rabisque)",
+      "menuBar": "Barra de menus do Paint",
+      "menu": {
+        "file": "Arquivo",
+        "edit": "Editar",
+        "new": "Novo",
+        "save": "Salvar como PNG",
+        "close": "Fechar",
+        "undo": "Desfazer",
+        "redo": "Refazer"
+      },
+      "tools": {
+        "label": "Ferramentas",
+        "pencil": "Lápis",
+        "brush": "Pincel",
+        "eraser": "Borracha",
+        "fill": "Preencher com cor",
+        "line": "Linha",
+        "rectangle": "Retângulo"
+      },
+      "hints": {
+        "pencil": "Desenha uma linha fina à mão livre.",
+        "brush": "Pinta um traço redondo e macio.",
+        "eraser": "Apaga deixando branco.",
+        "fill": "Preenche uma área com a cor atual.",
+        "line": "Arraste para desenhar uma linha reta.",
+        "rectangle": "Arraste para desenhar um retângulo."
+      },
+      "size": {
+        "label": "Espessura",
+        "value": "{px} px"
+      },
+      "palette": {
+        "label": "Cores",
+        "current": "Cor atual: {hex}",
+        "swatch": "Cor {n} ({hex})"
+      },
+      "canvas": "Área de desenho, {width} por {height} pixels",
+      "dimensions": "{width} × {height}px"
+    }
+  },
+  "easterEgg": {
+    "title": "NÃO ABRA ISSO.exe",
+    "description": "Sério. Não abra.",
+    "dismissHint": "Aperte Esc ou clique em qualquer lugar para voltar.",
+    "blueScreen": {
+      "label": "Tela de erro do DouglasOS",
+      "brand": "DouglasOS",
+      "headline": "O DouglasOS não encontrou a página que você estava procurando.",
+      "code": "Erro 404: PAGE_NOT_FOUND",
+      "causePage": "Causa provável: este link se perdeu em algum lugar entre a internet e este desktop. Nada quebrou e nada se perdeu.",
+      "causeEgg": "Causa provável: alguém desafiou um arquivo chamado literalmente “NÃO ABRA ISSO”.",
+      "progress": "Procurando em todas as pastas",
+      "done": "Busca concluída. A página não está aqui, mas o que interessa está:",
+      "recovery": "Opções de recuperação",
+      "cv": "Baixar CV",
+      "contact": "Falar com o Douglas",
+      "desktop": "Voltar ao desktop",
+      "pageTitle": "404 · Página não encontrada · DouglasOS"
+    },
+    "scramble": {
+      "title": "Tudo de volta no lugar",
+      "text": "Bom, quase tudo: seu CV ainda está esperando por você.",
+      "cv": "Baixar CV",
+      "contact": "Contato",
+      "close": "Fechar"
+    },
+    "accessDenied": {
+      "title": "Acesso negado",
+      "text": "Este arquivo é confidencial. Sim, até para recrutadores curiosos.",
+      "note": "NÃO!",
+      "signature": "— mini Douglas",
+      "scold": "Sério? Estava escrito NÃO ABRA. Já que você é do tipo curioso, isto aqui você pode abrir:",
+      "cv": "Meu CV",
+      "contact": "Fale comigo",
+      "ok": "OK"
+    },
+    "assistant": {
+      "not-found": {
+        "title": "Calma, fui eu",
+        "text": "Nada travou. Se você procurava algo de verdade, meu CV está aqui."
+      },
+      "scramble": {
+        "title": "Eu avisei…",
+        "text": "Tudo voltou para o lugar. Quer o CV ou prefere conversar?"
+      },
+      "access-denied": {
+        "title": "Curiosidade é uma qualidade",
+        "text": "É exatamente o que eu procuro num time. Veja como falar comigo."
+      }
     }
   },
   "resume": {

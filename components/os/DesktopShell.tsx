@@ -13,6 +13,8 @@ import { SessionScreens } from "@/components/os/session/SessionScreens";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useShellStore } from "@/lib/store/shellStore";
 import { useShellShortcuts } from "@/hooks/useShellShortcuts";
+import { useOpenFromHash } from "@/hooks/useOpenFromHash";
+import { LazyEasterEgg } from "@/components/os/easter-egg/LazyEasterEgg";
 
 /**
  * Top-level interactive island: desktop (wallpaper + icons), windows, the
@@ -25,6 +27,8 @@ import { useShellShortcuts } from "@/hooks/useShellShortcuts";
 export function DesktopShell() {
   const phase = useShellStore((s) => s.phase);
   useShellShortcuts();
+  // Stage 10: `/{locale}#open=<app>` (the 404 page's "Talk to Douglas").
+  useOpenFromHash();
 
   return (
     // reducedMotion="user" turns transform animations off for visitors who
@@ -45,6 +49,8 @@ export function DesktopShell() {
           <LazyTrashNotice />
         </div>
         <ShellDialogs />
+        {/* "DON'T OPEN THIS.exe" (stage 10), lazy until opened. */}
+        <LazyEasterEgg />
         <SessionScreens />
       </TooltipProvider>
     </MotionConfig>

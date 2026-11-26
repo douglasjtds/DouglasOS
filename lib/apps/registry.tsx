@@ -22,6 +22,7 @@ import {
 import { MessengerIcon } from "@/components/icons/MessengerIcons";
 import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
 import { CameraIcon } from "@/components/icons/CameraIcons";
+import { DontOpenThisIcon, PaintIcon } from "@/components/icons/PaintIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -35,7 +36,8 @@ export type AppId =
   | "display"
   | "recycle-bin"
   | "media-player"
-  | "camera";
+  | "camera"
+  | "paint";
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -43,8 +45,11 @@ export type AppId =
  */
 export type LinkId = "linkedin" | "github" | "whatsapp" | "email";
 
+/** Windowless actions (stage 10): the "DON'T OPEN THIS.exe" easter egg. */
+export type ActionId = "dont-open-this";
+
 /** Everything that can be launched (Start menu, desktop, Quick Launch). */
-export type LauncherId = AppId | "resume" | LinkId;
+export type LauncherId = AppId | "resume" | LinkId | ActionId;
 
 /**
  * In-window navigation for apps that have pages (stage 4: the DouglasOS
@@ -64,19 +69,22 @@ export interface AppRoutes {
  * own, its cell persisted separately (`desktopStore.binCell`), and never
  * lassoed, grouped or trashed with the others.
  */
-export type DesktopIconId = Exclude<LauncherId, "display" | "recycle-bin" | "media-player" | "camera">;
+export type DesktopIconId = Exclude<
+  LauncherId,
+  "display" | "recycle-bin" | "media-player" | "camera" | "paint" | ActionId
+>;
 
 /**
  * Folders inside Start → All Programs (DESKTOP-INTERFACE-SPEC §5), in display
  * order. Fun apps live there so they never sit above the CTAs. A window app
- * declares `folder` to be listed inside that folder instead of the flat list;
- * a folder shows only once an app declares it (see `programsInFolder`).
- * This is the single folder API (stages 8 and 9 each prototyped one): later
- * apps (e.g. stage 10's Paint) use `folder`, not a separate field.
+ * or a windowless action declares `folder` to be listed inside that folder
+ * instead of the flat list; a folder shows only once something declares it
+ * (see `programsInFolder`). This is the single folder API: stages 8, 9 and 10
+ * each prototyped one, and they were unified on `folder` at integration.
  */
 export const PROGRAM_FOLDERS = ["accessories", "entertainment"] as const;
 export type ProgramFolder = (typeof PROGRAM_FOLDERS)[number];
-/** Alias kept for stage 9 call sites. */
+/** Alias kept for stage 9/10 call sites. */
 export type ProgramFolderId = ProgramFolder;
 
 export interface WindowAppConfig {
@@ -133,7 +141,23 @@ export interface LinkConfig {
   external: boolean;
 }
 
-export type LauncherConfig = WindowAppConfig | DownloadConfig | LinkConfig;
+/**
+ * A windowless action launched from a folder in All Programs (stage 10): the
+ * "DON'T OPEN THIS.exe" easter egg (`lib/store/easterEggStore.ts`). Never a
+ * desktop icon, never pinned.
+ */
+export interface ActionConfig {
+  id: ActionId;
+  kind: "action";
+  /** i18n key of the file-name label. */
+  titleKey: string;
+  icon: IconComponent;
+  onDesktop: false;
+  /** All Programs folder it's listed in (actions always live in one). */
+  folder: ProgramFolder;
+}
+
+export type LauncherConfig = WindowAppConfig | DownloadConfig | LinkConfig | ActionConfig;
 
 /**
  * Single source of truth for launchers. The order is the desktop's default
@@ -295,6 +319,27 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 560, height: 520 },
     Content: lazy(() => import("@/components/apps/CameraApp")),
   },
+  // DouglasOS Paint (stage 10): a fun app, so only in All Programs ▸ Accessories
+  // (and Run, stage 7), never on the desktop or pinned.
+  {
+    id: "paint",
+    kind: "window",
+    icon: PaintIcon,
+    onDesktop: false,
+    folder: "accessories",
+    surface: "bare",
+    defaultSize: { width: 760, height: 560 },
+    Content: lazy(() => import("@/components/apps/PaintApp")),
+  },
+  // "DON'T OPEN THIS.exe" (stage 10): three short easter eggs in turn, no window.
+  {
+    id: "dont-open-this",
+    kind: "action",
+    titleKey: "easterEgg.title",
+    icon: DontOpenThisIcon,
+    onDesktop: false,
+    folder: "accessories",
+  },
 ];
 
 export const WINDOW_APPS: WindowAppConfig[] = LAUNCHERS.filter(
@@ -331,9 +376,19 @@ const LAUNCHER_BY_ID = new Map<LauncherId, LauncherConfig>(
   LAUNCHERS.map((l) => [l.id, l]),
 );
 
-/** Window apps listed inside an All Programs folder, in registry order. */
-export function programsInFolder(folder: ProgramFolder): WindowAppConfig[] {
-  return WINDOW_APPS.filter((app) => app.folder === folder);
+/** A launcher that can sit inside an All Programs folder. */
+export type FolderProgramConfig = WindowAppConfig | ActionConfig;
+
+/** The All Programs folder a launcher lives in, if any (window apps and actions). */
+export function folderOf(launcher: LauncherConfig): ProgramFolder | undefined {
+  return launcher.kind === "window" || launcher.kind === "action" ? launcher.folder : undefined;
+}
+
+/** Launchers listed inside an All Programs folder, in registry order. */
+export function programsInFolder(folder: ProgramFolder): FolderProgramConfig[] {
+  return LAUNCHERS.filter(
+    (l): l is FolderProgramConfig => folderOf(l) === folder,
+  );
 }
 
 export function getApp(id: AppId): WindowAppConfig {
@@ -355,11 +410,11 @@ export function isAppId(id: LauncherId): id is AppId {
 /**
  * i18n key of a launcher's friendly label (window title, icon label, menu
  * entry): `apps.<id>.title` for window apps, `resume.title` for the CV and the
- * link's own `titleKey` for external shortcuts.
+ * own `titleKey` for external shortcuts and actions.
  */
 export function launcherTitleKey(id: LauncherId): string {
   if (id === "resume") return "resume.title";
   const launcher = LAUNCHER_BY_ID.get(id);
-  if (launcher?.kind === "link") return launcher.titleKey;
+  if (launcher?.kind === "link" || launcher?.kind === "action") return launcher.titleKey;
   return `apps.${id}.title`;
 }

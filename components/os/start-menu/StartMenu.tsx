@@ -8,6 +8,7 @@ import { launch } from "@/lib/apps/launch";
 import {
   LAUNCHERS,
   PROGRAM_FOLDERS,
+  folderOf,
   getLauncher,
   launcherTitleKey,
   programsInFolder,
@@ -36,14 +37,15 @@ import { cn } from "@/lib/utils";
 
 /**
  * All Programs: the program folders first, like the original (Accessories ▸
- * Retro Cam, stage 9; Entertainment ▸ Media Player, stage 8 — empty folders
+ * Retro Cam, Paint, DON'T OPEN THIS.exe — stages 9–10; Entertainment ▸ Media
+ * Player, stage 8 — empty folders
  * are skipped), then every other launcher in registry order, then the external
  * shortcuts (stage 3) after a separator. System items that opt out (the
  * Recycle Bin) aren't listed; apps with a `folder` are listed only inside it.
  * Desktop: folders cascade as submenus; touch: inline labelled sections.
  */
 const PROGRAM_APPS = LAUNCHERS.filter(
-  (l) => l.kind !== "link" && !(l.kind === "window" && (l.inAllPrograms === false || l.folder)),
+  (l) => l.kind !== "link" && !(l.kind === "window" && l.inAllPrograms === false) && !folderOf(l),
 );
 const PROGRAM_LINKS = LAUNCHERS.filter((l) => l.kind === "link");
 const FOLDERS = PROGRAM_FOLDERS.map((id) => ({ id, programs: programsInFolder(id) })).filter(
@@ -59,6 +61,11 @@ const FOLDER_ICONS: Record<ProgramFolder, IconComponent> = {
 function FolderIcon({ folder }: { folder: ProgramFolder }) {
   const Icon = FOLDER_ICONS[folder];
   return <Icon size={16} />;
+}
+
+/** Window apps and actions (an easter egg takes focus) move focus away from the menu. */
+function movesFocus(l: LauncherConfig) {
+  return l.kind === "window" || l.kind === "action";
 }
 
 /** Pinned programs in the left column (CTA order from the interface spec). */
@@ -162,7 +169,7 @@ export function StartMenu() {
     <DropdownMenu.Item
       key={l.id}
       data-program={l.id}
-      onSelect={() => select(() => launch(l.id), l.kind === "window")}
+      onSelect={() => select(() => launch(l.id), movesFocus(l))}
       className={cn(itemBase, "h-menu-item px-2")}
     >
       <l.icon size={16} />
@@ -175,7 +182,7 @@ export function StartMenu() {
     <DropdownMenu.Item
       key={l.id}
       data-program={l.id}
-      onSelect={() => select(() => launch(l.id), l.kind === "window")}
+      onSelect={() => select(() => launch(l.id), movesFocus(l))}
       className={cn(itemBase, "px-2 text-text", nested && "pl-8")}
     >
       <l.icon size={16} />

@@ -8,7 +8,7 @@ import { create } from "zustand";
  * while it holds it, so two of them are never on screen at once. First come,
  * first served; releasing hands the slot to the next owner in line.
  */
-export type BalloonOwner = "welcome" | "assistant" | "messenger" | "recycleBin";
+export type BalloonOwner = "welcome" | "assistant" | "messenger" | "recycleBin" | "easterEgg";
 
 /** Add `owner` to the end of the line (no-op if already waiting or showing). */
 export function enqueueBalloon(queue: readonly BalloonOwner[], owner: BalloonOwner): readonly BalloonOwner[] {

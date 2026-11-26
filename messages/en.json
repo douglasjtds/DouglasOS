@@ -469,6 +469,99 @@
         "noUpload": "no upload"
       },
       "saved": "Photo saved as {name}"
+    },
+    "paint": {
+      "title": "DouglasOS Paint",
+      "description": "Draw something (or just doodle)",
+      "menuBar": "Paint menu bar",
+      "menu": {
+        "file": "File",
+        "edit": "Edit",
+        "new": "New",
+        "save": "Save as PNG",
+        "close": "Close",
+        "undo": "Undo",
+        "redo": "Redo"
+      },
+      "tools": {
+        "label": "Tools",
+        "pencil": "Pencil",
+        "brush": "Brush",
+        "eraser": "Eraser",
+        "fill": "Fill with color",
+        "line": "Line",
+        "rectangle": "Rectangle"
+      },
+      "hints": {
+        "pencil": "Draws a thin freehand line.",
+        "brush": "Paints a soft, round stroke.",
+        "eraser": "Erases back to white.",
+        "fill": "Fills an area with the current color.",
+        "line": "Drag to draw a straight line.",
+        "rectangle": "Drag to draw a rectangle."
+      },
+      "size": {
+        "label": "Line width",
+        "value": "{px} px"
+      },
+      "palette": {
+        "label": "Colors",
+        "current": "Current color: {hex}",
+        "swatch": "Color {n} ({hex})"
+      },
+      "canvas": "Drawing canvas, {width} by {height} pixels",
+      "dimensions": "{width} × {height}px"
+    }
+  },
+  "easterEgg": {
+    "title": "DON'T OPEN THIS.exe",
+    "description": "Seriously. Don't.",
+    "dismissHint": "Press Esc or click anywhere to go back.",
+    "blueScreen": {
+      "label": "DouglasOS error screen",
+      "brand": "DouglasOS",
+      "headline": "DouglasOS couldn't find the page you were looking for.",
+      "code": "Error 404: PAGE_NOT_FOUND",
+      "causePage": "Probable cause: this link wandered off somewhere between the internet and this desktop. Nothing is broken and nothing was lost.",
+      "causeEgg": "Probable cause: someone double-dared a file literally named “DON'T OPEN THIS”.",
+      "progress": "Searching every folder for it",
+      "done": "Search complete. That page isn't here, but the good stuff is:",
+      "recovery": "Recovery options",
+      "cv": "Download CV",
+      "contact": "Talk to Douglas",
+      "desktop": "Back to desktop",
+      "pageTitle": "404 · Page not found · DouglasOS"
+    },
+    "scramble": {
+      "title": "Everything's back in place",
+      "text": "Well, almost everything: your CV is still waiting for you.",
+      "cv": "Download CV",
+      "contact": "Contact",
+      "close": "Close"
+    },
+    "accessDenied": {
+      "title": "Access denied",
+      "text": "This file is confidential. Yes, even for curious recruiters.",
+      "note": "NO!",
+      "signature": "— mini Douglas",
+      "scold": "Seriously? It said DON'T OPEN. Since you're the curious type, here's what you're allowed to open:",
+      "cv": "My CV",
+      "contact": "Talk to me",
+      "ok": "OK"
+    },
+    "assistant": {
+      "not-found": {
+        "title": "Relax, that was me",
+        "text": "Nothing crashed. If you were looking for something real, my CV is right here."
+      },
+      "scramble": {
+        "title": "I did warn you…",
+        "text": "Everything's back where it was. Want the CV, or shall we talk?"
+      },
+      "access-denied": {
+        "title": "Curiosity is a good trait",
+        "text": "It's exactly what I look for in a team. Here's how to reach me."
+      }
     }
   },
   "resume": {

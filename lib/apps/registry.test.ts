@@ -9,6 +9,7 @@ import {
   LAUNCHERS,
   LINK_LAUNCHERS,
   PROGRAM_FOLDERS,
+  folderOf,
   getLauncher,
   isAppId,
   launcherTitleKey,
@@ -112,10 +113,61 @@ describe("registry: Retro Cam (stage 9)", () => {
 });
 
 describe("registry: All Programs folders (unified API)", () => {
-  it("lists Accessories then Entertainment, and every folder app is a window app with a known folder", () => {
+  it("lists Accessories then Entertainment, and every program in a folder declares it", () => {
     expect([...PROGRAM_FOLDERS]).toEqual(["accessories", "entertainment"]);
     for (const folder of PROGRAM_FOLDERS) {
-      for (const app of programsInFolder(folder)) expect(app.folder).toBe(folder);
+      for (const app of programsInFolder(folder)) expect(folderOf(app)).toBe(folder);
     }
+  });
+
+  it("Accessories holds Retro Cam, Paint and DON'T OPEN THIS.exe; Entertainment holds the Media Player", () => {
+    expect(programsInFolder("accessories").map((a) => a.id)).toEqual(["camera", "paint", "dont-open-this"]);
+    expect(programsInFolder("entertainment").map((a) => a.id)).toEqual(["media-player"]);
+  });
+});
+
+describe("registry: DouglasOS Paint (stage 10)", () => {
+  it("is a window app in All Programs ▸ Accessories, never on the desktop", () => {
+    expect(isAppId("paint")).toBe(true);
+    const paint = getLauncher("paint");
+    expect(paint).toMatchObject({ kind: "window", onDesktop: false, surface: "bare" });
+    expect(folderOf(paint)).toBe("accessories");
+    expect(DESKTOP_ICON_IDS).not.toContain("paint");
+  });
+
+  it("every folder has an EN + PT label", () => {
+    for (const folder of PROGRAM_FOLDERS) {
+      expect(lookup(en, `startMenu.folders.${folder}`)).toEqual(expect.any(String));
+      expect(lookup(pt, `startMenu.folders.${folder}`)).toEqual(expect.any(String));
+    }
+  });
+
+  it("DON'T OPEN THIS.exe is a windowless action in Accessories, labelled in EN + PT", () => {
+    const egg = getLauncher("dont-open-this");
+    expect(egg).toMatchObject({ kind: "action", onDesktop: false });
+    expect(folderOf(egg)).toBe("accessories");
+    expect(isAppId("dont-open-this")).toBe(false);
+    expect(DESKTOP_ICON_IDS).not.toContain("dont-open-this");
+    expect(lookup(en, launcherTitleKey("dont-open-this"))).toBe("DON'T OPEN THIS.exe");
+    expect(lookup(pt, launcherTitleKey("dont-open-this"))).toBe("NÃO ABRA ISSO.exe");
+  });
+
+  it("has the same easter egg copy keys in EN and PT, none empty", () => {
+    const leaves = (node: unknown, prefix = ""): [string, unknown][] =>
+      node && typeof node === "object"
+        ? Object.entries(node).flatMap(([k, v]) => leaves(v, `${prefix}${k}.`))
+        : [[prefix, node]];
+    const enLeaves = leaves(lookup(en, "easterEgg"));
+    const ptLeaves = leaves(lookup(pt, "easterEgg"));
+    expect(ptLeaves.map(([k]) => k)).toEqual(enLeaves.map(([k]) => k));
+    for (const [, v] of [...enLeaves, ...ptLeaves]) expect(v).toEqual(expect.stringMatching(/\S/));
+  });
+
+  it("has the same Paint copy keys in EN and PT", () => {
+    const keys = (node: unknown, prefix = ""): string[] =>
+      node && typeof node === "object"
+        ? Object.entries(node).flatMap(([k, v]) => keys(v, `${prefix}${k}.`))
+        : [prefix];
+    expect(keys(lookup(pt, "apps.paint"))).toEqual(keys(lookup(en, "apps.paint")));
   });
 });

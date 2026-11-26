@@ -114,9 +114,9 @@ test.describe("touch shell", () => {
     expect(Math.round(box.width)).toBe(viewport.width);
     expect(box.height).toBeLessThanOrEqual(viewport.height * 0.85 + 1);
     // All Programs is inline (no cascading submenu) and lists every launcher,
-    // folder contents included (Accessories → Retro Cam, stage 9;
-    // Entertainment → Media Player, stage 8).
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(15);
+    // folder contents included (Accessories → Retro Cam, Paint and DON'T OPEN
+    // THIS.exe, stages 9–10; Entertainment → Media Player, stage 8).
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(17);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 

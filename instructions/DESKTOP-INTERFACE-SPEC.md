@@ -2,7 +2,7 @@
 
 > Structural specification for the DouglasOS interface from v1.5 onward. This is **not** a landing page — the interface itself is the experience. This document defines the structure, layout and behavior of every interface element. Visual values (colors, sizes, motion) come from `DESIGN-GUIDELINES.md`; this doc never redefines them.
 >
-> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented. Stage 7 (Run… + command palette + desktop context menus, [§5](#run-and-the-command-palette-stage-7--done)), stage 8 (DouglasOS Media Player, [§15](#15-douglasos-media-player-stage-8)) and stage 9 (Retro Cam, [§16](#16-retro-cam-stage-9)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
+> **Status:** v1.5 spec. **Stage 1 (desktop shell, ≥ 768px) is implemented** — boot, logon, taskbar, Start menu, Luna windows, XP icons, wallpapers + Display Properties, stage-1 keyboard map, welcome balloon. **Stage 2 (touchable XP, < 768px) is implemented** — the linear `MobileFallback` is gone; phones get the same shell adapted to touch ([§11](#11-mobile-touchable-xp)). **Stage 3 (external shortcuts), stage 4 (DouglasOS Explorer: projects as case studies), stage 5 (the scripted "mini Douglas" assistant, [§13](#13-mini-douglas-assistant-stage-5)) and stage 5b (DouglasOS Messenger, [§14](#14-douglasos-messenger-stage-5b)) and stage 6 (Recycle Bin rescue + lasso/multi-select, [§3 → Recycle Bin](#recycle-bin-stage-6--done)) are implemented. Stage 7 (Run… + command palette + desktop context menus, [§5](#run-and-the-command-palette-stage-7--done)), stage 8 (DouglasOS Media Player, [§15](#15-douglasos-media-player-stage-8)) stage 9 (Retro Cam, [§16](#16-retro-cam-stage-9)) and stage 10 (DouglasOS Paint, "DON'T OPEN THIS.exe" and the 404 page, [§17](#17-douglasos-paint-stage-10--done)–[§19](#19-404-page-stage-10--done)) are implemented.** Later stages add the features marked with their stage number (e.g. *(stage 6)*). The stage plan lives in `MVP-SCOPE.md` → Post-MVP Roadmap. Decisions taken by Douglas after stage 0 (single-click icons, `F2` joke, Quick Launch kept) are recorded inline below.
 
 ---
 
@@ -205,7 +205,8 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, later Paint *(10)* — and **Entertainment ▸** — Media Player *(8 — done)*; "DON'T OPEN THIS.exe" lives in Accessories *(10)*). Folders come first in the list (Accessories, then Entertainment), each a cascading submenu (touch: a labelled inline section); an app joins one with `folder: "accessories" | "entertainment"` in the registry (`PROGRAM_FOLDERS` sets the order, `programsInFolder()` lists the contents), and a folder only shows once something is in it. This is the single folder API — later apps use `folder`, not a separate field.
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* — and **Entertainment ▸** — Media Player *(8 — done)*).
+- **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -345,7 +346,7 @@ Content is unchanged from v1 (static, in-repo, EN/PT); only the presentation mov
 See [§8](#8-display-properties-app).
 
 ### Later apps (specified in their stages)
-External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9, done — see [§16](#16-retro-cam-stage-9)), DouglasOS Paint + "DON'T OPEN THIS.exe" (10). Each stage must update this section.
+External shortcuts (3, done — not windows, see [Desktop → External shortcuts](#external-shortcuts-stage-3--done)), DouglasOS Explorer (4, done), mini Douglas assistant (5, done — a desktop companion, not a window, see [§13](#13-mini-douglas-assistant-stage-5)), DouglasOS Messenger (5b, done — see [§14](#14-douglasos-messenger-stage-5b)), Recycle Bin (6, done — an always-empty window, see [Recycle Bin](#recycle-bin-stage-6--done)), Run + command palette (7, done — a dialog and a palette, not windows, see [§5](#run-and-the-command-palette-stage-7--done)), DouglasOS Media Player (8, done — see [§15](#15-douglasos-media-player-stage-8)), Retro Cam (9, done — see [§16](#16-retro-cam-stage-9)), DouglasOS Paint + "DON'T OPEN THIS.exe" (10, done — see [§17](#17-douglasos-paint-stage-10--done) and [§18](#18-dont-open-thisexe-stage-10--done); the real 404 page is [§19](#19-404-page-stage-10--done)). Each stage must update this section.
 
 ---
 
@@ -366,6 +367,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 - **3D wallpaper:** **not offered on mobile** (Display Properties shows it disabled with the reason). Stage 2 decision: no exception. The static wallpaper already scores 98–99 on Lighthouse mobile; the R3F chunk plus a WebGL context on mid-range phones isn't worth the battery and LCP risk for an ambient effect.
 - **Content, SEO and screen readers:** the page also server-renders `StaticContent` (`components/os/StaticContent.tsx`), a server component with no client JS: every app's EN/PT content as real text with an `h1` (name + headline) → `h2` per app → `h3` outline, CV link and contact links. It's visually hidden but stays in the DOM for crawlers and for screen-reader users who want a linear read, and a `<noscript>` style makes it the visible page when JavaScript is off. Inside windows the title bar is the `h2` and in-app headings are `h3`.
 - **Performance:** the server-rendered placeholder paints the default wallpaper over the same box as the shell's wallpaper, and the page preloads that SVG, so the LCP is the first paint instead of a post-hydration background. Lighthouse mobile (production build, simulated throttling): performance 98–99, LCP 1.8–2.3s, CLS 0.
+- **Stage 10:** Paint opens full-screen with touch-sized tool rows and a sideways-scrolling palette, and draws with touch (one finger). The "DON'T OPEN THIS.exe" eggs and the 404 page work as on the desktop (full-screen blue screen with 44px recovery buttons; the runaway balloon is a bottom sheet). See [§10](#douglasos-paint-paint-stage-10--done).
 - Every later feature must state its mobile behavior in its stage.
 
 ---
@@ -399,6 +401,9 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Run / palette: move, run, close | `↑`/`↓`, `Enter`, `Esc` (Run: Esc closes the suggestions first) | — | 7 — done |
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
 | Messenger: close form / window | `Esc` (form first; from the composer it closes the window) | — | 5b |
+| Paint: undo / redo / save as PNG | `Ctrl+Z` / `Ctrl+Y` or `Ctrl+Shift+Z` / `Ctrl+S` (`Cmd` on macOS; focus inside Paint) | Edit and File menus, Undo/Redo buttons | 10 — done |
+| Paint: cancel the stroke in progress | `Esc` (only mid-stroke; otherwise it closes the window as usual) | — | 10 — done |
+| "DON'T OPEN THIS.exe": leave the egg | `Esc` (never reaches the window manager) | click anywhere | 10 — done |
 
 - A single shortcut registry (pure, in `lib/`, unit-tested) owns this map so later stages can't introduce conflicts.
 - **`F2` decided by Douglas: option (c)** — no rename; `F2` opens the humorous "protected file" message box ([§7](#7-dialogs-balloons-tooltips--menus)).
@@ -564,6 +569,39 @@ None. Settings (pixel size, palette, mirror, frame) reset with the window; no fr
 
 ---
 
+## 17. DouglasOS Paint *(stage 10 — done)*
+
+Launcher `paint`.
+
+**Window:** 760×560, `surface: "bare"` (draws its own bars) · Start → All Programs ▸ Accessories only (and Run / the palette, §5); no desktop icon, never pinned. Own launcher icon (wooden palette + brush), never the classic program's.
+- **Layout (classic):** menu bar **File** (New, Save as PNG, Close) and **Edit** (Undo, Redo) — real items only; a tool column (pencil, brush, eraser, fill, line, rectangle as `aria-pressed` toggle buttons, lucide glyphs inside the window), a sunken line-width box (1/3/5/9px; disabled for pencil and fill) and Undo/Redo buttons; a gray workspace with the white canvas; the **28-color palette** (2 × 14) with the current color on the left; a status bar with the tool's hint and the canvas size.
+- **Drawing:** a bitmap canvas plus a transparent overlay for line/rectangle previews and input. **Pointer Events** for mouse, pen and touch (`touch-action: none` on the canvas only; one pointer at a time, a second finger is ignored; right-click ignored). Pencil = crisp 1px Bresenham pixels; brush = round stroke; eraser = wider square stroke in white; fill = scanline flood fill with a small tolerance (swallows anti-aliased edges). A single tap/click stamps a dot (WebKit draws nothing for zero-length strokes).
+- **Canvas size:** fitted once to the window (160×120 – 1024×768) like the classic program; resizing the window doesn't stretch it (the workspace scrolls). **New** re-fits it.
+- **History:** every finished edit (stroke, shape, fill, New) pushes an `ImageData` snapshot to a bounded history (20 steps, `lib/paint/history.ts`); New is undoable, so it never asks for confirmation. Undo/Redo by button hand focus to the partner button when they disable themselves.
+- **Keys:** `Ctrl/Cmd+Z` undo, `Ctrl+Y` / `Ctrl+Shift+Z` redo, `Ctrl+S` save (focus inside Paint); `Esc` mid-stroke cancels the stroke without closing the window (it reaches the window manager only when no stroke is in progress).
+- **Save as PNG:** `canvas.toBlob` → local download `douglasos-paint-<yyyymmdd-hhmmss>.png`. Nothing is uploaded or persisted; closing the window discards the drawing.
+- **Pure logic (tested):** `lib/paint/history.ts`, `lib/paint/floodFill.ts`, `lib/paint/tools.ts` (tools, sizes, palette, coordinate mapping, line rasterizer, file name).
+- **Mobile:** full-screen window; the tools + Undo/Redo become a row above the canvas and the widths a second row (every target 44px); the palette keeps 2 rows of 44px swatches and scrolls sideways; the canvas fits the screen.
+
+---
+
+## 18. "DON'T OPEN THIS.exe" *(stage 10 — done)*
+
+Launcher `dont-open-this`.
+
+A windowless launcher (`kind: "action"` in the registry) in All Programs ▸ Accessories; PT label "NÃO ABRA ISSO.exe"; own icon (program file sealed with caution tape). Each open plays the **next of three eggs** (A → B → C → A…, count in sessionStorage `douglasos-dont-open-this`, `lib/easterEgg.ts`). Shared rules (`EasterEggPlayer`): the animated part of each lasts < 5s, no flashes (fades only), **Esc or a click anywhere outside the egg's own buttons leaves at once** (Esc is caught before the window manager, so it never closes a window), focus returns where it was, every egg offers **CV and Contact**, and after a plain dismissal mini Douglas comments through `say()` (a no-op after "Not now" — the egg never brings him back; no comment when the visitor picked CV/Contact). The eggs' code is lazy-loaded on first open. Purely visual: nothing is persisted.
+- **A — "404" blue screen** (`not-found`): full-screen DouglasOS blue screen in the modal layer (z-1400), Luna title-bar blue `--color-titlebar` (never the original crash screen's blue, text, frowning face or QR code). DouglasOS logo, "DouglasOS couldn't find the page you were looking for.", "Error 404: PAGE_NOT_FOUND", an egg-specific "probable cause", a "searching every folder" bar that fills to 100% (0.6–3s), then recovery options **Download CV / Talk to Douglas / Back to desktop** (focus moves to Download CV). Reduced motion: the finished screen at once. Built as the reusable `BlueScreen` component, also the site's real 404 (below).
+- **B — runaway desktop** (`scramble`): every desktop icon scatters to a random on-screen spot with a small tilt (1.2s), holds, flies back (1.5s), then the CV icon pulses once and a balloon beside it says "Everything's back in place — well, almost: your CV is still waiting" with **Download CV / Contact / Close** (shared balloon slot, owner `easterEgg`; closes itself after 8s). It animates the icons' own elements with transforms and resets them; `desktopStore` is never touched. Reduced motion: the icons dim for 0.6s, the balloon shows at once. Phones: the balloon is a bottom sheet.
+- **C — access denied** (`access-denied`): an XP warning box "Access denied — This file is confidential. Yes, even for curious recruiters."; at 0.5s mini Douglas's sticky note ("NO! — mini Douglas") slaps onto its corner; at 1.5s his scolding line appears with **Talk to me / My CV / OK**. The line lives in the box itself, so it works whether or not he's on the desktop (the fallback the trash notice needed is built in). Reduced motion: the finished box, note already stuck.
+
+---
+
+## 19. 404 page *(stage 10 — done)*
+
+Unknown URLs render the same `BlueScreen` (variant `page`) through `app/[locale]/not-found.tsx`; `app/[locale]/[...rest]/page.tsx` throws `notFound()` for any unknown path under a locale (unprefixed paths are sent to `/en/...` by the proxy), so `/en/whatever` and `/pt/qualquer` get the localized screen, `<html lang>` and HTTP **404** (Next adds `noindex`). There's no shell on this page, so the recovery options are plain links: **Download CV** = `public/resume.pdf` download, **Talk to Douglas** = `/{locale}#open=contact` (the shell's `useOpenFromHash` opens the Contact window once it mounts — after boot/logon in a fresh session — then drops the hash; `lib/apps/deepLink.ts` only accepts window app ids), **Back to desktop** = `/{locale}`. Everything is server-rendered and visible at once (works without JS); only the progress bar animates.
+
+---
+
 ## Layering (z-index policy)
 
 | Layer | z-index | Notes |
@@ -575,7 +613,7 @@ None. Settings (pixel size, palette, mirror, frame) reset with the window; no fr
 | Taskbar | 1100 | |
 | Start menu, context menus, dropdowns | 1200 | |
 | Tray balloons, messenger toast *(5b — done)*, Recycle Bin rescue balloon *(6 — done)* | 1300 | one at a time, shared slot with the assistant bubble |
-| Modal dialogs (shutdown, Run, errors) | 1400 | |
+| Modal dialogs (shutdown, Run, errors), "DON'T OPEN THIS.exe" blue screen and access-denied box *(10)* | 1400 | the runaway-desktop balloon *(10)* sits at 1300 in the balloon slot |
 | Boot / logon / shutdown screens | 2000 | |
 
 **Stage 5 rules (balloon slot + assistant):**
@@ -611,9 +649,10 @@ Fun apps live in **All Programs** submenus and never above the CTAs.
 | `douglasos:messenger` | sessionStorage | `messengerStore` *(stage 5b)* | Conversation history, pending lines, view, suggestions, unread, draft, form open, greeted |
 | `douglasos-messenger-toast` | sessionStorage | `MessengerToast` *(stage 5b)* | The tray toast already showed this session |
 | `douglasos:media` | localStorage | `playbackStore` *(stage 8)* | Media Player volume (0–100) + mute; playback itself is never persisted and the player window isn't restored after a reload |
+| `douglasos-dont-open-this` | sessionStorage | `easterEggStore` *(stage 10)* | How many times "DON'T OPEN THIS.exe" was opened (picks egg A/B/C) |
 | locale | URL (`/en`, `/pt`) + localStorage | `LocaleToggle` | Language |
 
-Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Stage 9 (Retro Cam) adds no storage key: settings, frames and camera state live only in memory. Later stages add their own keys here.
+Stage 6 adds no storage key: selection, drag, rescue state and line rotation live only in memory (the icon cells — and, since 6b, the bin's cell — keep using `douglasos:desktop-icons`). Stage 8 adds `douglasos:media` (volume + mute). Stage 9 (Retro Cam) adds no storage key: settings, frames and camera state live only in memory. Stage 10's Paint stores nothing (drawings live only in the open window); its egg counter is the sessionStorage key above. Later stages add their own keys here.
 
 ---
 
@@ -646,6 +685,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 7 | Run…, command palette, desktop context menu — **done** |
 | 8 | DouglasOS Media Player (YouTube playlist) + synced dance, tray volume/now-playing, All Programs → Entertainment (§15) — **done** |
 | 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
-| 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" |
+| 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).
