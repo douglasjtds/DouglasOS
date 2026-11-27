@@ -27,6 +27,16 @@ test.describe("cmd.exe", () => {
     await expect(log).toContainText("AI-First Fullstack Developer");
   });
 
+  test("an empty prompt still has a visible, clickable field", async ({ page }) => {
+    const { win, input } = await openCmd(page);
+    const mirror = win.locator("[data-cmd-mirror]");
+    expect((await mirror.boundingBox())!.height).toBeGreaterThan(0);
+    expect((await input.boundingBox())!.height).toBeGreaterThan(0);
+    await win.getByRole("log").click();
+    await input.click();
+    await expect(input).toBeFocused();
+  });
+
   test("start resume.pdf downloads the CV", async ({ page }) => {
     const { input } = await openCmd(page);
     const download = page.waitForEvent("download");

@@ -173,4 +173,9 @@ describe("CmdApp", () => {
     renderWithIntl(<CmdApp />);
     expect(screen.queryByRole("toolbar")).not.toBeInTheDocument();
   });
+
+  it("keeps the mirror one line tall when the field is empty (so the input stays clickable)", () => {
+    renderWithIntl(<CmdApp />);
+    expect(document.querySelector("[data-cmd-mirror]")).toHaveClass("min-h-lh");
+  });
 });
