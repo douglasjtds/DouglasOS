@@ -644,10 +644,10 @@
         "notFile": "“{path}” is a folder, not a file.",
         "binary": "{name} is a binary file. Try: start {name}",
         "usage": {
-          "cd": "Usage: cd <folder>",
-          "type": "Usage: type <file>",
-          "start": "Usage: start <file>",
-          "msg": "Usage: msg <your message>"
+          "cd": "Usage: cd [folder]",
+          "type": "Usage: type [file]",
+          "start": "Usage: start [file]",
+          "msg": "Usage: msg [your message]"
         },
         "readOnly": "This drive is read-only. DouglasOS keeps its files tidy."
       },

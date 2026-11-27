@@ -644,10 +644,10 @@
         "notFile": "“{path}” é uma pasta, não um arquivo.",
         "binary": "{name} é um arquivo binário. Tente: start {name}",
         "usage": {
-          "cd": "Uso: cd <pasta>",
-          "type": "Uso: type <arquivo>",
-          "start": "Uso: start <arquivo>",
-          "msg": "Uso: msg <sua mensagem>"
+          "cd": "Uso: cd [pasta]",
+          "type": "Uso: type [arquivo]",
+          "start": "Uso: start [arquivo]",
+          "msg": "Uso: msg [sua mensagem]"
         },
         "readOnly": "Este drive é somente leitura. O DouglasOS mantém seus arquivos em ordem."
       },

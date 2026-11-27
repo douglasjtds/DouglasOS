@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { IntlMessageFormat } from "intl-messageformat";
 import { renderFile } from "@/lib/cmd/content";
 import { en, pt } from "@/lib/cmd/testTranslator";
 import { PROJECTS } from "@/lib/content/projects";
@@ -81,4 +82,17 @@ describe("apps.cmd copy", () => {
       expect(JSON.stringify(help).toLowerCase()).not.toMatch(/sudo|format/);
     }
   });
+});
+
+describe("apps.cmd ICU syntax", () => {
+  for (const [locale, messages] of [["en", enMessages], ["pt", ptMessages]] as const) {
+    it(`every ${locale} apps.cmd string parses as ICU`, () => {
+      const flat = flatten((messages as { apps: { cmd: unknown } }).apps.cmd);
+      expect(Object.keys(flat).length).toBeGreaterThan(0);
+      for (const [key, value] of Object.entries(flat)) {
+        if (typeof value !== "string") continue;
+        expect(() => new IntlMessageFormat(value, locale), `${locale} apps.cmd.${key}`).not.toThrow();
+      }
+    });
+  }
 });
