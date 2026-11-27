@@ -43,6 +43,13 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Some ubuntu-26.04 runner images ship a packages.microsoft.com apt source
+      # that answers 403 / "no longer signed", which aborts the `apt-get update`
+      # behind `--with-deps`. Playwright doesn't need it, so drop it first.
+      - name: Remove broken Microsoft apt source
+        run: |
+          files=$(grep -rlE 'packages\.microsoft\.com' /etc/apt/sources.list.d/ || true)
+          if [ -n "$files" ]; then echo "Removing: $files"; sudo rm -f $files; fi
       - run: pnpm exec playwright install --with-deps
       - run: pnpm run test:e2e
         env:
