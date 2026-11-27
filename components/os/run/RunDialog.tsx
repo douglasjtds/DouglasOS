@@ -11,14 +11,14 @@ import { useLauncherLabels } from "@/hooks/useLauncherLabels";
 import { XpDialog } from "@/components/os/XpDialog";
 import { MessageBox } from "@/components/os/MessageBox";
 import { SuggestionOption } from "@/components/os/run/SuggestionOption";
-import { ErrorIcon, InfoIcon, RunIcon } from "@/components/icons/SystemIcons";
+import { ErrorIcon, RunIcon } from "@/components/icons/SystemIcons";
 import { Button } from "@/components/ui/button";
 import { useEasterEggStore } from "@/lib/store/easterEggStore";
 
 /** Max autocomplete rows under the field. */
 const MAX_SUGGESTIONS = 6;
 
-type RunError = { kind: "notFound"; query: string } | { kind: "cmd" };
+type RunError = { kind: "notFound"; query: string };
 
 export function focusWindowSoon(id: AppId) {
   requestAnimationFrame(() =>
@@ -34,7 +34,8 @@ export function focusWindowSoon(id: AppId) {
  * list first and then the dialog. Everything resolves through
  * `lib/run/resolver.ts` (registry + Explorer address resolver + the shared
  * intent matcher). Unknown names show the "DouglasOS couldn't find" error
- * and return to the field with the text selected; `cmd` shows a light joke.
+ * and return to the field with the text selected; `cmd` opens the Command
+ * Prompt (and counts the `run-cmd` easter egg).
  * Lazy-loaded by `ShellDialogs` when the dialog opens.
  */
 export default function RunDialog() {
@@ -56,13 +57,8 @@ export default function RunDialog() {
   const optionId = (i: number) => `${listId}-option-${i}`;
 
   function runTarget(target: RunTarget) {
-    if (target.kind === "command") {
-      setListOpen(false);
-      setError({ kind: "cmd" });
-      // Easter egg (stage 11): typing `cmd` in Run….
-      useEasterEggStore.getState().discover("run-cmd");
-      return;
-    }
+    // Easter egg (stage 11): opening the Command Prompt from Run….
+    if (target.id === "cmd") useEasterEggStore.getState().discover("run-cmd");
     ranWindow.current = executeRunTarget(target);
     closeDialog();
   }
@@ -214,8 +210,8 @@ export default function RunDialog() {
         onOpenChange={(open) => {
           if (!open) setError(null);
         }}
-        title={error?.kind === "cmd" ? t("cmd.title") : t("notFound.title")}
-        icon={error?.kind === "cmd" ? <InfoIcon size={32} /> : <ErrorIcon size={32} />}
+        title={t("notFound.title")}
+        icon={<ErrorIcon size={32} />}
         onCloseAutoFocus={(e) => {
           // Back to the field with the text selected, ready to retype.
           e.preventDefault();
@@ -224,11 +220,11 @@ export default function RunDialog() {
         }}
         actions={
           <AlertDialog.Cancel asChild>
-            <Button variant="primary">{error?.kind === "cmd" ? t("cmd.ok") : t("notFound.ok")}</Button>
+            <Button variant="primary">{t("notFound.ok")}</Button>
           </AlertDialog.Cancel>
         }
       >
-        {error?.kind === "cmd" ? t("cmd.body") : t("notFound.body", { query: error?.query ?? "" })}
+        {t("notFound.body", { query: error?.query ?? "" })}
       </MessageBox>
     </>
   );

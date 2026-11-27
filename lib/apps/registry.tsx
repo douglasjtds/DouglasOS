@@ -24,6 +24,7 @@ import { MessengerIcon } from "@/components/icons/MessengerIcons";
 import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
 import { CameraIcon } from "@/components/icons/CameraIcons";
 import { DontOpenThisIcon, PaintIcon } from "@/components/icons/PaintIcons";
+import { CmdIcon } from "@/components/icons/CmdIcons";
 import { BrowserAppIcon } from "@/components/icons/BrowserIcons";
 import {
   FreeCellIcon,
@@ -50,6 +51,7 @@ export type AppId =
   | "media-player"
   | "camera"
   | "paint"
+  | "cmd"
   | "achievements"
   | "games"
   | GameId;
@@ -373,6 +375,19 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 760, height: 560 },
     Content: lazy(() => import("@/components/apps/PaintApp")),
   },
+  // cmd.exe: a small read-only command line over the portfolio. All Programs ▸
+  // Accessories, Run (`cmd`, `terminal`…) and a desktop shortcut right after
+  // Paint in the fun-apps group; never pinned.
+  {
+    id: "cmd",
+    kind: "window",
+    icon: CmdIcon,
+    onDesktop: true,
+    folder: "accessories",
+    surface: "bare",
+    defaultSize: { width: 680, height: 440 },
+    Content: lazy(() => import("@/components/apps/CmdApp")),
+  },
   // "DON'T OPEN THIS.exe" (stage 10): three short easter eggs in turn, no window.
   {
     id: "dont-open-this",
@@ -497,7 +512,7 @@ const isFunApp = (l: LauncherConfig) =>
 /**
  * Desktop icons split into default-layout groups: the portfolio apps (+ CV)
  * first, then the external shortcuts, then the fun apps (Media Player, Retro
- * Cam, Paint). Each group starts a new column on the desktop and a new row on
+ * Cam, Paint, cmd.exe). Each group starts a new column on the desktop and a new row on
  * mobile, so nothing pushes About / CV / Contact around.
  */
 export const DESKTOP_ICON_GROUPS: DesktopIconId[][] = [

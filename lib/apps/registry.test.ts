@@ -63,7 +63,7 @@ describe("registry: external shortcuts", () => {
 
   it("groups the desktop icons as apps first, then links, then fun apps", () => {
     expect([...DESKTOP_ICON_GROUPS.flat()].sort()).toEqual([...DESKTOP_ICON_IDS].sort());
-    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["browser", "media-player", "camera", "paint", "games"]);
+    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["browser", "media-player", "camera", "paint", "cmd", "games"]);
     expect(DESKTOP_ICON_GROUPS[1]).toEqual(LINK_LAUNCHERS.map((l) => l.id));
     expect(DESKTOP_ICON_GROUPS[0].slice(0, 3)).toEqual(["about", "resume", "contact"]);
   });
@@ -123,8 +123,8 @@ describe("registry: All Programs folders (unified API)", () => {
     }
   });
 
-  it("Accessories holds Retro Cam, Paint and DON'T OPEN THIS.exe; Entertainment holds the Media Player", () => {
-    expect(programsInFolder("accessories").map((a) => a.id)).toEqual(["camera", "paint", "dont-open-this"]);
+  it("Accessories holds Retro Cam, Paint, cmd.exe and DON'T OPEN THIS.exe; Entertainment holds the Media Player", () => {
+    expect(programsInFolder("accessories").map((a) => a.id)).toEqual(["camera", "paint", "cmd", "dont-open-this"]);
     expect(programsInFolder("entertainment").map((a) => a.id)).toEqual(["media-player"]);
   });
 });
@@ -172,6 +172,28 @@ describe("registry: DouglasOS Paint (stage 10)", () => {
         ? Object.entries(node).flatMap(([k, v]) => keys(v, `${prefix}${k}.`))
         : [prefix];
     expect(keys(lookup(pt, "apps.paint"))).toEqual(keys(lookup(en, "apps.paint")));
+  });
+});
+
+describe("registry: cmd.exe", () => {
+  it("cmd is a window app in All Programs ▸ Accessories with a desktop shortcut and EN + PT labels", () => {
+    expect(isAppId("cmd")).toBe(true);
+    const cmd = getLauncher("cmd");
+    expect(cmd).toMatchObject({
+      kind: "window",
+      onDesktop: true,
+      surface: "bare",
+      defaultSize: { width: 680, height: 440 },
+    });
+    expect(folderOf(cmd)).toBe("accessories");
+    expect(DESKTOP_ICON_IDS).toContain("cmd");
+    // Fun group, right after Paint.
+    const fun = DESKTOP_ICON_GROUPS[2];
+    expect(fun.indexOf("cmd")).toBe(fun.indexOf("paint") + 1);
+    for (const messages of [en, pt]) {
+      expect(lookup(messages, launcherTitleKey("cmd"))).toEqual(expect.stringMatching(/\S/));
+      expect(lookup(messages, "apps.cmd.description")).toEqual(expect.stringMatching(/\S/));
+    }
   });
 });
 

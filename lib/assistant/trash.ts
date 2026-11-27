@@ -28,6 +28,7 @@ export const TRASH_LINES: Record<DesktopIconId, { key: string; variants: number 
   "media-player": { key: "mediaPlayer", variants: 2 },
   camera: { key: "camera", variants: 2 },
   paint: { key: "paint", variants: 2 },
+  cmd: { key: "cmd", variants: 2 },
   games: { key: "games", variants: 2 },
 };
 

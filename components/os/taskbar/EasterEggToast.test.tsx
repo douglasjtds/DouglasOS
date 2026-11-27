@@ -27,7 +27,7 @@ describe("EasterEggToast", () => {
     expect(toast()).toBeNull();
     act(() => void eggs().discover("protected-file"));
     const status = screen.getByRole("status");
-    expect(status).toHaveTextContent("🎉 Easter egg found! (1/13)");
+    expect(status).toHaveTextContent("🎉 Easter egg found! (1/15)");
     expect(status).toHaveTextContent("Protected file");
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(selectActiveBalloon(useBalloonStore.getState())).toBe("easterEgg");
@@ -73,9 +73,9 @@ describe("EasterEggToast", () => {
       eggs().discover("protected-file", 1);
       eggs().discover("messenger-nudge", 2);
     });
-    expect(screen.getByRole("status")).toHaveTextContent("(1/13)");
+    expect(screen.getByRole("status")).toHaveTextContent("(1/15)");
     act(() => vi.advanceTimersByTime(EASTER_EGG_TOAST_MS));
-    expect(screen.getByRole("status")).toHaveTextContent("(2/13)");
+    expect(screen.getByRole("status")).toHaveTextContent("(2/15)");
     expect(screen.getByRole("status")).toHaveTextContent("Nudge, nudge");
     act(() => vi.advanceTimersByTime(EASTER_EGG_TOAST_MS));
     expect(toast()).toBeNull();
@@ -107,14 +107,14 @@ describe("EasterEggToast", () => {
   describe("completion reward", () => {
     function findAll() {
       EASTER_EGG_IDS.forEach((id, i) => eggs().discover(id, i + 1));
-      useEasterEggStore.setState({ pending: ["real-404", "complete"] });
+      useEasterEggStore.setState({ pending: ["cmd-format", "complete"] });
     }
 
     it("hands the reward to mini Douglas after the last toast", () => {
       useAssistantStore.setState({ dismissed: false });
       renderWithIntl(<EasterEggToast />);
       act(findAll);
-      expect(screen.getByRole("status")).toHaveTextContent("(13/13)");
+      expect(screen.getByRole("status")).toHaveTextContent("(15/15)");
       fireEvent.click(screen.getByRole("button", { name: "Close" }));
       expect(useAssistantStore.getState().queue.map((m) => m.id)).toEqual(["eggsComplete"]);
       expect(eggs().pending).toEqual([]);

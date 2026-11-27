@@ -205,7 +205,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* —, **Entertainment ▸** — Media Player *(8 — done)* — and **Games ▸** — Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball *(12)*).
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* —, **Entertainment ▸** — Media Player *(8 — done)* — and **Games ▸** — Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball *(12)*). **Accessories ▸** also holds cmd.exe *(13)*.
 - **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment" | "games"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
 
 **Right column (light blue):**
@@ -215,13 +215,13 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 - separator
 - **Display Properties** — opens the `display` app.
 - **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
-- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/13` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
+- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/15` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
 - **Run…** — *(stage 7 — done)* opens the Run dialog (last item of the places column, so CV/Contact keep their spots; also on phones). **Items appear only when their stage ships — no dead entries.**
 
 ### Run… and the command palette *(stage 7 — done)*
-- **One brain:** `lib/run/resolver.ts` (pure, unit-tested) resolves what was typed in this order: fun command (`cmd`, `terminal`… → a light "no terminal in here" info box) → a **launcher** by id, localized title or alias (`contact`/`contato`, `cv`/`resume`/`currículo`/`resume.pdf`, `linkedin`, `zap`, `lixeira`, `wallpaper`…) → a **project** through the Explorer address resolver (`gasolinha`, `gasolinha.exe`, `C:\DouglasOS\Projects\poupensa`) → a confident **intent** from the assistant's matcher (`hire me`, `quero o currículo`; score ≥ 3) → **not found**. Launchers come from the registry, so a later app is runnable by its id and title as soon as it is registered; extra aliases go in `LAUNCHER_ALIASES` (TODO list for stages 8–10 in the file). Actions run through `launch()` (`lib/run/execute.ts`), like every other surface.
+- **One brain:** `lib/run/resolver.ts` (pure, unit-tested) resolves what was typed in this order: a **launcher** by id, localized title or alias (`contact`/`contato`, `cv`/`resume`/`currículo`/`resume.pdf`, `linkedin`, `zap`, `lixeira`, `wallpaper`, and `cmd` / `terminal` / `command prompt` / `powershell` / `bash` / `sh` / `zsh` / `prompt`, which are aliases of the cmd.exe launcher) → a **project** through the Explorer address resolver (`gasolinha`, `gasolinha.exe`, `C:\DouglasOS\Projects\poupensa`) → a confident **intent** from the assistant's matcher (`hire me`, `quero o currículo`; score ≥ 3) → **not found**. Launchers come from the registry, so a later app is runnable by its id and title as soon as it is registered; extra aliases go in `LAUNCHER_ALIASES` (TODO list for stages 8–10 in the file). Actions run through `launch()` (`lib/run/execute.ts`), like every other surface.
 - **Run dialog** (`RunDialog`, Radix Dialog in the XP message-box chrome, layer 1400, lazy-loaded on first open): Run icon + intro line, **Open:** field (monospace) as an ARIA **combobox** with a **listbox** of up to 6 suggestions (icon, name, kind). ↑/↓ highlight and put that suggestion's command in the field ("what you see is what runs"); Enter / **OK** runs the field; a click runs a row; Esc closes the list first, then the dialog; **Cancel** closes. Unknown → error box "DouglasOS couldn't find “x”. Check the spelling, or try “projects”, “cv” or “contact”." (EN/PT, original wording), OK returns to the field with the text selected. After opening a window, focus goes to it. Opened from Start → Run…, `Alt+Shift+R`, or `Meta+R` where the browser lets it through (never on Apple platforms: Cmd+R reloads there).
-- **Command palette** (`CommandPalette`, `Ctrl+K` / `Cmd+K`, lazy-loaded): same resolver, list always visible (empty query = every launcher then every project, CTA order: About, CV, Contact…), ↑/↓ (wrapping), PageUp/PageDown, Ctrl+Home/End, Enter or click opens, Esc or `Ctrl/Cmd+K` again closes; no match → "DouglasOS couldn't find “x”." + hints in a status line. Fun commands stay in Run. No new dependency (own listbox on Radix Dialog, no cmdk).
+- **Command palette** (`CommandPalette`, `Ctrl+K` / `Cmd+K`, lazy-loaded): same resolver, list always visible (empty query = every launcher then every project, CTA order: About, CV, Contact…), ↑/↓ (wrapping), PageUp/PageDown, Ctrl+Home/End, Enter or click opens, Esc or `Ctrl/Cmd+K` again closes; no match → "DouglasOS couldn't find “x”." + hints in a status line. No fun commands live here any more: `cmd` is a plain launcher alias (Run and the palette both open the cmd.exe window, [§23](#23-cmdexe-stage-14--done)). No new dependency (own listbox on Radix Dialog, no cmdk).
 - **Mobile:** Run is in the Start panel; the dialog docks 16px below the top so the keyboard never covers the field (16px input text: no iOS zoom), suggestions are 44px rows. The palette has no touch entry point (it's the keyboard path); Run covers phones.
 
 **Footer:**
@@ -402,6 +402,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 | Run / palette: move, run, close | `↑`/`↓`, `Enter`, `Esc` (Run: Esc closes the suggestions first) | — | 7 — done |
 | Messenger: send / new line | `Enter` / `Shift+Enter` | — | 5b |
 | Messenger: close form / window | `Esc` (form first; from the composer it closes the window) | — | 5b |
+| cmd.exe: run / history / complete / clear line / clear screen | `Enter` / `↑` `↓` / `Tab` (`Shift+Tab` leaves the field) / `Esc` / `Ctrl+L` (`Cmd+L` on macOS) — focus in the prompt | phones: chips | 13 — done |
 | Paint: undo / redo / save as PNG | `Ctrl+Z` / `Ctrl+Y` or `Ctrl+Shift+Z` / `Ctrl+S` (`Cmd` on macOS; focus inside Paint) | Edit and File menus, Undo/Redo buttons | 10 — done |
 | Paint: cancel the stroke in progress | `Esc` (only mid-stroke; otherwise it closes the window as usual) | — | 10 — done |
 | "DON'T OPEN THIS.exe": leave the egg | `Esc` (never reaches the window manager) | click anywhere | 10 — done |
@@ -615,8 +616,8 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 | Piece | Where | Notes |
 |-------|-------|-------|
-| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (13), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
-| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/13" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
+| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (15), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
+| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/15" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
 | Store | `lib/store/easterEggStore.ts` | `found: Record<id, timestamp>`, `pending` (announcements still to show), `discover(id)` → `true` only the first time, `acknowledge(expected?)`, `reset()`; selectors `selectFoundCount` / `selectComplete`, hook `useEasterEggProgress()` → `{ count, total, complete }`. Persisted in **localStorage** `douglasos:easter-eggs` (version 1; `migrate` + `merge` both go through `sanitizeProgress`) |
 | Reward | `lib/easter-eggs/reward.ts` | `completionMessage()` (mini Douglas line `eggsComplete`: Download CV, Display Properties, Contact) and `deliverCompletionReward()` |
 | Toast | `components/os/taskbar/EasterEggToast.tsx` | Mounted last in `DesktopShell` |
@@ -629,46 +630,50 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 | Id | How it's found | Stage | Hook |
 |----|----------------|-------|------|
 | `protected-file` | `F2` on a desktop icon, or its menu → **Rename** (right-click / long-press) | 1 | `Desktop.tsx` (`showProtected`, from `onIconKeyDown` and the Rename item) — **wired** |
-| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 13/13) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 15/15) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
 | `assistant-kickflip` | "Do a Kickflip!": click mini Douglas 3× within 1.5s — he kickflips instead of dancing (under reduced motion the combo still counts) | 5 | `Assistant.tsx` (`onCharacterClick`, combo branch) — **wired** |
 | `messenger-nudge` | "Nudge" in the Messenger (only a nudge that went out, not one refused by the cooldown) | 5b | `Conversation.tsx` (`nudge`) — **wired** |
 | `trash-rescue` | Throw one icon in the Recycle Bin (drag, `Delete`, context menu, long-press) | 6 | `desktopStore.trashIcons` — **wired** |
 | `trash-cleanup` | Throw several icons at once | 6 | `desktopStore.trashIcons` — **wired** |
-| `run-cmd` | Type `cmd` in Run… | 7 | `RunDialog` (the `cmd` joke box) — **wired** |
+| `run-cmd` | Open the Command Prompt from Run… (`cmd`, `terminal`, `powershell`, `bash`…) | 7 (re-pointed in 14) | `RunDialog` (`runTarget`, when the target is `cmd`) — **wired** |
 | `desktop-new` | Desktop context menu → New ▸ joke | 7 | `Desktop` background menu → New ▸ item — **wired** |
 | `music-dance` | mini Douglas dancing to the media player | 8 | `lib/media/danceSync.ts`, next to `dance()` — **wired** |
 | `egg-404` | DON'T OPEN THIS.exe → 404 blue screen | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
 | `egg-runaway` | DON'T OPEN THIS.exe → the desktop runs away | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
 | `egg-scold` | DON'T OPEN THIS.exe → mini Douglas scolds | 10 | `dontOpenThisStore.play` (`EGG_DISCOVERY`) — **wired** |
 | `real-404` | Visiting the real 404 page | 10 | `RealNotFoundDiscovery` (client effect in `NotFoundPage`) — **wired** |
+| `cmd-sudo` | Any `sudo …` line in cmd.exe | 14 | `lib/cmd/commands.ts` (`discover` effect, applied by `CmdApp`) — **wired** |
+| `cmd-format` | Any `format …` line in cmd.exe | 14 | `lib/cmd/commands.ts` (`discover` effect, applied by `CmdApp`) — **wired** |
 
 ### Integration — stage 7–10 hooks (wired at integration)
 
-`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 13/13):
+`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 14/15):
 
 | Stage | Hook (where) | Call |
 |-------|--------------|------|
-| 7 | Run dialog resolves the input `cmd` (the joke response) | `useEasterEggStore.getState().discover("run-cmd")` |
+| 7 | Run dialog runs the `cmd` launcher target (opens cmd.exe) | `useEasterEggStore.getState().discover("run-cmd")` |
 | 7 | Desktop context menu → New ▸ item selected (the joke shows) | `useEasterEggStore.getState().discover("desktop-new")` |
 | 8 | Media player starts playback **and** mini Douglas dances to it (where `useAssistantStore.getState().dance()` is called for the music) | `useEasterEggStore.getState().discover("music-dance")` |
 | 10 | "DON'T OPEN THIS.exe" outcome = 404 blue screen shown | `useEasterEggStore.getState().discover("egg-404")` |
 | 10 | "DON'T OPEN THIS.exe" outcome = desktop runs away | `useEasterEggStore.getState().discover("egg-runaway")` |
 | 10 | "DON'T OPEN THIS.exe" outcome = mini Douglas scolds | `useEasterEggStore.getState().discover("egg-scold")` |
 | 10 | The real 404 page (`app/[locale]/not-found.tsx` or equivalent), in a client effect on mount | `useEasterEggStore.getState().discover("real-404")` |
+| 14 | cmd.exe runs a `sudo …` line | `useEasterEggStore.getState().discover("cmd-sudo")` |
+| 14 | cmd.exe runs a `format …` line | `useEasterEggStore.getState().discover("cmd-format")` |
 
 Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothing else is needed: the toast, the counter, the reward and the wallpaper unlock follow from the store. The real 404 page has no shell, so there the discovery is only persisted; its toast is queued in `pending` and shows **the next time the desktop loads** (decision: a persisted "pending toast" queue, shown once, in discovery order).
 
 ### Toast
 
-- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/13)" / "🎉 Easter egg encontrado! (4/13)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
-- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances or kickflips (otherwise the slot rule would hide him mid-dance).
-- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/13".
+- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/15)" / "🎉 Easter egg encontrado! (4/15)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
+- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances (otherwise the slot rule would hide him mid-dance).
+- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/15".
 - **Phones:** bottom sheet above the taskbar (full width, safe-area padding), like the other balloons; 44px targets.
 
 ### Achievements window
 
-- Start menu → right column, **below Help**, normal weight, with a muted `4/13` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
-- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 13" + a segmented progress bar (13 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
+- Start menu → right column, **below Help**, normal weight, with a muted `4/15` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
+- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 15" + a segmented progress bar (15 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
 - **Reset progress** (disabled at 0) opens an XP confirm message box ("Reset" / "Cancel", Cancel is the default and Esc). Reset forgets every egg and pending toast and re-locks the secret wallpaper (the desktop falls back to the default if it was in use; the choice itself is kept).
 
 ### Reward (all found)
@@ -734,6 +739,62 @@ A working browser in the Luna-era style that only goes to Douglas's work. Deskto
 - **History limits.** Cross-origin iframes don't report clicks inside them, so the address bar shows what the browser opened and Back/Forward move through those pages only. Tabs that were shown stay mounted while hidden (switching back doesn't reload).
 - **Mobile**: full-screen window, one compact toolbar row (Back, Forward, address, "More" with Favorites + File items), 36px tab controls, horizontally scrolling tab strip.
 - **Reduced motion**: nothing animates (no throbber).
+
+---
+
+## 23. cmd.exe *(stage 14 — done)*
+
+A Command Prompt window: a read-only, fictional console. It is a way to browse the portfolio like files — never a real shell, never a gate in front of the CV or Contact (`cv` and `contact` are one-word commands). Static content only, no backend, nothing is written anywhere.
+
+### Where it lives
+
+- Registry id `cmd`, title from `apps.cmd.title` ("Command Prompt" on the desktop, Start menu and title bar), a window app with the `bare` surface (the app paints its own black console body instead of the beige Luna one). `apps.cmd.fileLabel` ("cmd.exe") exists in the messages but no code reads it yet; the file name only appears in copy and in the Run… aliases.
+- **All Programs ▸ Accessories** and a **desktop icon** in the fun group right after Paint (one more icon: 17 selectable on desktop; phones gain an icon row).
+- **Run… / palette:** `cmd`, `terminal`, `command prompt`, `powershell`, `bash`, `sh`, `zsh`, `prompt` open it (aliases of the launcher). Only the Run… dialog discovers the `run-cmd` egg; the command palette does not.
+
+### Pieces
+
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Filesystem | `lib/cmd/filesystem.ts` | Pure tree of the fake drive; paths are case-insensitive, `\` or `/`, `.`/`..`, `C:\DouglasOS` as root |
+| Parser | `lib/cmd/parser.ts` | Tokenizer with quotes; aliases (`ls`, `cat`, `open`, `clear`) |
+| Engine | `lib/cmd/commands.ts` | `runCommand(line, ctx) → { output, cwd?, effects? }`; effects are `run` (open a launcher / download), `openUrl` (open a URL in a new tab; used by `msg`), `discover` (egg), `clear`, `close` — the UI applies them, the engine stays pure |
+| Content | `lib/cmd/content.ts` | Renders the portfolio apps as text from the same i18n messages (EN/PT) |
+| UI | `components/apps/CmdApp.tsx` | Scrollback (`role="log"`, polite), prompt line, chips |
+| Copy | `messages/*` → `apps.cmd` | Command output is localized; command names are not |
+
+### The drive
+
+`C:\DouglasOS` holds `about.txt`, `experience.txt`, `skills.txt`, `how-i-work-with-ai.txt`, `contact.txt` (the same text as the windows), `resume.pdf`, `Projects\` (one `<slug>.txt` per case study) and `Games\` (`<game>.exe`). Binary files (`.pdf`, `.exe`) are not printable (`type` explains), but `start` opens them.
+
+### Commands
+
+| Command | What it does |
+|---------|--------------|
+| `help` | Lists the commands |
+| `dir` (`ls`) / `cd` / `tree` | List, change directory (the prompt shows the cwd), draw the tree |
+| `type` (`cat`) `<file>` | Print a text file (the app's content as text) |
+| `start` (`open`) `<name>` | Open a file as its app: `.txt` → the window, `resume.pdf` → downloads the CV, `<game>.exe` → the game, project → its case study in Explorer |
+| `cv` / `contact` / `msg` | Download the CV / open Contact / open WhatsApp in a new tab with your text pre-filled (`wa.me`; the page sends nothing and needs text: `msg <text>`) |
+| `whoami`, `ver`, `date`, `time`, `echo <text>` | Small info commands |
+| `cls` (`clear`) / `exit` | Clear the screen / close the window |
+| Hidden jokes | `sudo …` (egg `cmd-sudo`), `format …` (egg `cmd-format`), `hack`, `coffee`, `matrix`, `rm -rf` and the write commands (`mkdir`, `md`, `del`, `rm`, `copy`, `move`, `ren`) are refused with a wink. Not listed in `help` |
+
+Unknown input prints a localized "not recognized" line. Output is capped (scrollback keeps the newest lines).
+
+### Keys & behavior
+
+- Opening focuses the prompt (desktop); when the shell focuses the window frame (Run, palette, taskbar restore) the frame hands focus to the prompt. Phones wait for a tap so the keyboard never pops up unasked.
+- `Enter` runs; `↑`/`↓` walk the history; `Tab` completes a command name or a path (`Shift+Tab` keeps its normal meaning and leaves the field); `Esc` clears the line; `Ctrl+L` clears the screen. `Esc` in the prompt never closes the window: the app always prevents its default, and global shortcuts are suspended while a text field has focus. Use `exit` or the title-bar button to close.
+- The real `<input>` is transparent; a visible mirror (monospace, console tokens) shows the text and the caret. Both scroll together, so a line wider than the field keeps its end visible (the mirror's `scrollLeft` follows the field's).
+
+### Mobile
+
+Windows are full screen as always. Under the output a chip row offers **help, dir, cv, contact, cls** (44px targets) because touch keyboards have no Tab or arrows. Tapping a chip runs it.
+
+### Accessibility
+
+Output is a `role="log"` region (`aria-live="polite"`); the field is labelled "Command" (`apps.cmd.inputLabel`); the mirror is `aria-hidden`; chips are a labelled group of real buttons. The caret blink is decorative and static under `prefers-reduced-motion`. Contrast of `--color-console-text` / `--color-console-prompt` on `--color-console-bg` is above 4.5:1.
 
 ---
 
@@ -824,5 +885,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
 | 11 | Easter-egg counter: registry + store, tray toast, Achievements window, reward + secret wallpaper (§20) — **done** (stage 7–10 hooks pending, see §20 → Integration) |
 | 12 | Games: All Programs ▸ Games, desktop Games folder, six original games (§21) — **done** |
+| 14 | cmd.exe: console window over a fake `C:\DouglasOS` drive, two new eggs, Run… alias (§23) — **done** |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).

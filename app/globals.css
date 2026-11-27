@@ -164,6 +164,17 @@
   /* Retro Cam (stage 9): the dark viewfinder behind the pixelated picture. */
   --color-viewfinder: #1b1b1b;
 
+  /* cmd.exe: the console screen, its text and the brighter prompt line. */
+  --color-console-bg: #0c0c0c;
+  --color-console-text: #c0c0c0;
+  --color-console-prompt: #f0f0f0;
+  --animate-caret-blink: caret-blink 1.06s steps(1, end) infinite;
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   /* Games (stage 12): card table felt, original card faces and back, Mines
      number colors and the Pinball table (canvas reads these via CSS vars). */
   --color-felt: #1f7a3a;

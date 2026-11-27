@@ -82,25 +82,21 @@ describe("Run dialog", () => {
     expect(useShellStore.getState().dialog).toEqual({ kind: "run" });
   });
 
-  it("'cmd' shows the light easter egg instead of a terminal", async () => {
+  it("'cmd' opens the Command Prompt and finds the run-cmd egg", async () => {
+    useEasterEggStore.getState().reset();
     renderWithIntl(<RunDialog />);
     await userEvent.type(field(), "cmd{Enter}");
-    expect(await screen.findByRole("alertdialog")).toHaveTextContent("No terminal in here");
+    expect(useWindowStore.getState().windows.cmd).toBeDefined();
+    expect(useEasterEggStore.getState().found).toHaveProperty("run-cmd");
+    expect(useShellStore.getState().dialog).toBeNull();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
   });
 
-  it("'cmd' counts the run-cmd easter egg (stage 11); a normal run doesn't", async () => {
+  it("a normal run doesn't count the run-cmd egg", async () => {
     useEasterEggStore.getState().reset();
-    const first = renderWithIntl(<RunDialog />);
+    renderWithIntl(<RunDialog />);
     await userEvent.type(field(), "linkedin{Enter}");
     expect(useEasterEggStore.getState().found).not.toHaveProperty("run-cmd");
-    // Two mounted RunDialogs would both reopen, and one's modal layer would
-    // block pointer events on the other's field: start from a single one.
-    first.unmount();
-    useShellStore.getState().openDialog({ kind: "run" });
-    renderWithIntl(<RunDialog />);
-    await userEvent.type(field(), "cmd{Enter}");
-    await screen.findByRole("alertdialog");
-    expect(useEasterEggStore.getState().found).toHaveProperty("run-cmd");
   });
 
   it("follows external shortcuts (linkedin)", async () => {

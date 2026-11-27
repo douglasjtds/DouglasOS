@@ -7,7 +7,7 @@
  */
 
 /** v1.5 stage that ships the hook calling `discover()` for an egg. */
-export type EasterEggStage = "1" | "5" | "5b" | "6" | "7" | "8" | "10";
+export type EasterEggStage = "1" | "5" | "5b" | "6" | "7" | "8" | "10" | "13" | "14";
 
 export interface EasterEgg {
   id: string;
@@ -41,13 +41,17 @@ export const EASTER_EGGS = [
   { id: "egg-scold", stage: "10" },
   /** Visiting the real 404 page. */
   { id: "real-404", stage: "10" },
+  /** Any line starting with `sudo` in cmd.exe. */
+  { id: "cmd-sudo", stage: "14" },
+  /** `format` (with any args) in cmd.exe. */
+  { id: "cmd-format", stage: "14" },
 ] as const satisfies readonly EasterEgg[];
 
 export type EasterEggId = (typeof EASTER_EGGS)[number]["id"];
 
 export const EASTER_EGG_IDS: readonly EasterEggId[] = EASTER_EGGS.map((egg) => egg.id);
 
-/** How many eggs exist (the "/13" of the counter). */
+/** How many eggs exist (the "/15" of the counter). */
 export const EASTER_EGG_TOTAL = EASTER_EGG_IDS.length;
 
 const ID_SET = new Set<string>(EASTER_EGG_IDS);

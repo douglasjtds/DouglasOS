@@ -5,12 +5,10 @@ import { getLauncher } from "@/lib/apps/registry";
 import { PROJECTS } from "@/lib/content/projects";
 import type { LauncherLabels, RunSuggestion } from "@/lib/run/resolver";
 import { CaseStudyIcon } from "@/components/icons/BrowserIcons";
-import { RunIcon } from "@/components/icons/SystemIcons";
 import { cn } from "@/lib/utils";
 
-/** Visible name of a suggestion: the launcher's title, the brand, or the command. */
+/** Visible name of a suggestion: the launcher's title or the project's brand. */
 export function suggestionLabel(s: RunSuggestion, labels: LauncherLabels): string {
-  if (s.target.kind === "command") return s.command;
   if (s.type === "project") {
     return PROJECTS.find((p) => p.slug === s.command)?.name ?? s.command;
   }
@@ -18,7 +16,6 @@ export function suggestionLabel(s: RunSuggestion, labels: LauncherLabels): strin
 }
 
 function SuggestionIcon({ suggestion, size }: { suggestion: RunSuggestion; size: number }) {
-  if (suggestion.target.kind === "command") return <RunIcon size={size} />;
   if (suggestion.type === "project") return <CaseStudyIcon size={size} />;
   const Icon = getLauncher(suggestion.target.id).icon;
   return <Icon size={size} />;

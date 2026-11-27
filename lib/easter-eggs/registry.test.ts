@@ -35,8 +35,10 @@ describe("easter egg registry", () => {
       "egg-runaway",
       "egg-scold",
       "real-404",
+      "cmd-sudo",
+      "cmd-format",
     ]);
-    expect(EASTER_EGG_TOTAL).toBe(13);
+    expect(EASTER_EGG_TOTAL).toBe(15);
   });
 
   it("has unique ids", () => {
@@ -56,6 +58,8 @@ describe("easter egg registry", () => {
       "desktop-new": "7",
       "music-dance": "8",
       "real-404": "10",
+      "cmd-sudo": "14",
+      "cmd-format": "14",
     });
   });
 

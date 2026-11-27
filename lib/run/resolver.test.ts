@@ -95,9 +95,13 @@ describe("resolveRun", () => {
     });
   });
 
-  it("runs the cmd easter egg", () => {
-    expect(target("cmd")).toEqual({ kind: "command", id: "cmd" });
-    expect(target("terminal")).toEqual({ kind: "command", id: "cmd" });
+  it("opens the Command Prompt by its classic shell names", () => {
+    expect(target("cmd")).toEqual({ kind: "launcher", id: "cmd" });
+    expect(target("terminal")).toEqual({ kind: "launcher", id: "cmd" });
+    expect(target("powershell")).toEqual({ kind: "launcher", id: "cmd" });
+    for (const q of ["command prompt", "bash", "zsh", "cmd.exe"]) {
+      expect(target(q)).toEqual({ kind: "launcher", id: "cmd" });
+    }
   });
 
   it("reports unknown names (and weak matches) as not found, keeping the query", () => {
@@ -110,11 +114,16 @@ describe("resolveRun", () => {
 describe("searchRun", () => {
   const keys = (q: string, labels = {}) => searchRun(q, labels).map((s) => s.key);
 
-  it("lists launchers then projects for an empty query, never the fun commands", () => {
+  it("lists launchers then projects for an empty query", () => {
     const all = searchRun("", {}, 100);
     expect(all[0].key).toBe(`launcher:${LAUNCHERS[0].id}`);
-    expect(all.some((s) => s.type === "command")).toBe(false);
     expect(all.filter((s) => s.type === "project")).toHaveLength(PROJECTS.length);
+    expect(all.map((s) => s.type)).toEqual(expect.not.arrayContaining(["command"]));
+  });
+
+  it("suggests the Command Prompt as a program", () => {
+    const [first] = searchRun("terminal");
+    expect(first).toMatchObject({ key: "launcher:cmd", type: "app", command: "cmd" });
   });
 
   it("suggests the Media Player and Retro Cam in the palette by alias", () => {

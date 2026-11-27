@@ -318,8 +318,9 @@ describe("mobile icon grid", () => {
     // The fun apps start a row of their own after the links.
     expect(layout.cells.browser).toEqual({ col: 0, row: 3 });
     expect(layout.cells["media-player"]).toEqual({ col: 1, row: 3 });
-    // Five fun apps on a 4-column phone: Games wraps to the next row.
-    expect(layout.cells.games).toEqual({ col: 0, row: 4 });
+    // Six fun apps on a 4-column phone: cmd.exe sits after Paint, Games wraps to the next row.
+    expect(layout.cells.cmd).toEqual({ col: 0, row: 4 });
+    expect(layout.cells.games).toEqual({ col: 1, row: 4 });
     expect(layout.rows).toBe(5);
   });
 
