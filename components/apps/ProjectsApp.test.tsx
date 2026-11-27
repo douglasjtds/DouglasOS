@@ -1,5 +1,8 @@
+import { StrictMode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import en from "@/messages/en.json";
 import userEvent from "@testing-library/user-event";
 import { renderWithIntl } from "@/test/renderWithIntl";
 import ProjectsApp from "@/components/apps/ProjectsApp";
@@ -37,6 +40,21 @@ describe("ProjectsApp (DouglasOS Explorer)", () => {
     }
     expect(address()).toHaveValue("C:\\DouglasOS\\Projects\\");
     expect(screen.getByText("Done")).toBeInTheDocument();
+  });
+
+  it("doesn't pull focus to the heading on first open, even under StrictMode (dev)", () => {
+    act(() => store().navigateWindow("projects", "gasolinha"));
+    // StrictMode at the root, like Next.js applies it in dev (nested inside the
+    // providers React wouldn't simulate the unmount/remount of effects).
+    // (Not via RTL's `wrapper`: that puts a component above StrictMode too.)
+    render(
+      <StrictMode>
+        <NextIntlClientProvider locale="en" messages={en}>
+          <ProjectsApp />
+        </NextIntlClientProvider>
+      </StrictMode>,
+    );
+    expect(screen.getByRole("heading", { level: 3, name: "Gasolinha" })).not.toHaveFocus();
   });
 
   it("opening a project shows its case study, moves focus to its heading and announces it", async () => {

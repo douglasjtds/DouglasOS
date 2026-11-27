@@ -6,7 +6,7 @@ import { desktopIcon, gotoDesktop, startButton, startItem, windowById } from "./
  * sheet, and Achievements from the Start panel. Phone projects only (the
  * file name matches MOBILE_SPECS in playwright.config.ts).
  */
-test("press and hold → Delete finds an egg: toast sheet 1/14, then Achievements from Start", async ({ page }) => {
+test("press and hold → Delete finds an egg: toast sheet 1/15, then Achievements from Start", async ({ page }) => {
   await gotoDesktop(page);
   const whatsapp = desktopIcon(page, "whatsapp");
   const box = (await whatsapp.boundingBox())!;
@@ -34,7 +34,7 @@ test("press and hold → Delete finds an egg: toast sheet 1/14, then Achievement
   await notice.getByRole("button", { name: "Close" }).tap();
 
   await expect(toast).toBeVisible();
-  await expect(toast).toContainText("Easter egg found! (1/14)");
+  await expect(toast).toContainText("Easter egg found! (1/15)");
   await expect(toast).toContainText("Rescue mission");
   await expect(toast).toBeInViewport({ ratio: 1 });
   // Bottom sheet: full width, right above the taskbar.
@@ -47,10 +47,10 @@ test("press and hold → Delete finds an egg: toast sheet 1/14, then Achievement
 
   await startButton(page).tap();
   const item = startItem(page, "achievements");
-  await expect(item).toContainText("1/14");
+  await expect(item).toContainText("1/15");
   await item.tap();
   const win = windowById(page, "achievements");
   await expect(win).toHaveAttribute("data-presentation", "fullscreen");
-  await expect(win).toContainText("Easter eggs found: 1 of 14");
+  await expect(win).toContainText("Easter eggs found: 1 of 15");
   await expect(win.locator("[data-egg][data-found]")).toHaveCount(1);
 });

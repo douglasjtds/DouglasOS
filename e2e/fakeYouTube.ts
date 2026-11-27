@@ -6,7 +6,8 @@ import type { Page } from "@playwright/test";
  * the network. It draws a ≥200×200 "screen" where the real iframe would go
  * and simulates states (buffering → playing, paused, cued) asynchronously.
  * `window.__fakeYtFailAll = true` (set before load) makes every video fail
- * with error 150 (embedding disabled).
+ * with error 150 (embedding disabled). \`window.__fakeYtCueIndex\` pins the
+ * track the player's random start re-cue lands on (predictable titles).
  */
 const FAKE_IFRAME_API = `
 (function () {
@@ -27,6 +28,14 @@ const FAKE_IFRAME_API = `
     window.__fakeYt = self;
     setTimeout(function () { opts.events && opts.events.onReady && opts.events.onReady({ target: self }); }, 50);
   }
+  // Like the real player, a new command supersedes what an earlier one had
+  // scheduled (Stop right after Next must not be followed by Next's PLAYING).
+  Player.prototype._later = function (fn, ms) {
+    var self = this;
+    var gen = self._gen;
+    setTimeout(function () { if (self._gen === gen) fn(); }, ms);
+  };
+  Player.prototype._command = function () { this._gen = (this._gen || 0) + 1; };
   Player.prototype._state = function (data) {
     var self = this;
     var cb = this.opts.events && this.opts.events.onStateChange;
@@ -34,19 +43,27 @@ const FAKE_IFRAME_API = `
   };
   Player.prototype._start = function () {
     var self = this;
+    self._command();
     if (window.__fakeYtFailAll) {
-      setTimeout(function () { self.opts.events.onError({ target: self, data: 150 }); }, 30);
+      self._later(function () { self.opts.events.onError({ target: self, data: 150 }); }, 30);
       return;
     }
-    setTimeout(function () { self._state(STATES.BUFFERING); }, 20);
-    setTimeout(function () { self._state(STATES.PLAYING); }, 60);
+    self._later(function () { self._state(STATES.BUFFERING); }, 20);
+    self._later(function () { self._state(STATES.PLAYING); }, 60);
   };
   Player.prototype.playVideo = function () { this._start(); };
-  Player.prototype.pauseVideo = function () { var s = this; setTimeout(function () { s._state(STATES.PAUSED); }, 20); };
-  Player.prototype.stopVideo = function () { var s = this; setTimeout(function () { s._state(STATES.CUED); }, 20); };
+  Player.prototype.pauseVideo = function () { var s = this; s._command(); s._later(function () { s._state(STATES.PAUSED); }, 20); };
+  Player.prototype.stopVideo = function () { var s = this; s._command(); s._later(function () { s._state(STATES.CUED); }, 20); };
   Player.prototype.nextVideo = function () { this.index = Math.min(this.index + 1, 2); this._start(); };
   Player.prototype.previousVideo = function () { this.index = Math.max(this.index - 1, 0); this._start(); };
   Player.prototype.playVideoAt = function (i) { this.index = i; this._start(); };
+  Player.prototype.cuePlaylist = function (args) {
+    var s = this;
+    var pinned = window.__fakeYtCueIndex;
+    this.index = typeof pinned === "number" ? pinned : (args && args.index) || 0;
+    s._command();
+    s._later(function () { s._state(STATES.CUED); }, 20);
+  };
   Player.prototype.setVolume = function (v) { this.volume = v; };
   Player.prototype.mute = function () { this.muted = true; };
   Player.prototype.unMute = function () { this.muted = false; };
@@ -64,8 +81,16 @@ const FAKE_IFRAME_API = `
  * of YouTube URLs the page asked for (to check nothing loads before the
  * player window opens).
  */
-export async function mockYouTube(page: Page, { failAll = false }: { failAll?: boolean } = {}) {
+export async function mockYouTube(
+  page: Page,
+  { failAll = false, cueIndex }: { failAll?: boolean; cueIndex?: number } = {},
+) {
   const requested: string[] = [];
+  if (cueIndex !== undefined) {
+    await page.addInitScript((index) => {
+      (window as unknown as { __fakeYtCueIndex: number }).__fakeYtCueIndex = index;
+    }, cueIndex);
+  }
   if (failAll) {
     await page.addInitScript(() => {
       (window as unknown as { __fakeYtFailAll: boolean }).__fakeYtFailAll = true;

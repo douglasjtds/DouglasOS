@@ -24,7 +24,8 @@ export const ASSISTANT_MEDIA = {
 export type CharacterClip = "idle" | "talk" | "dance";
 
 export function clipForState(state: AssistantState): CharacterClip {
-  if (state === "dancing") return "dance";
+  // No recorded kickflip clip yet: the dance clip stands in for it.
+  if (state === "dancing" || state === "kickflipping") return "dance";
   return state === "talking" ? "talk" : "idle";
 }
 

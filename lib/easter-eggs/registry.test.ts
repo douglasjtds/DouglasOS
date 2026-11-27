@@ -24,6 +24,7 @@ describe("easter egg registry", () => {
     expect(EASTER_EGG_IDS).toEqual([
       "protected-file",
       "assistant-dance",
+      "assistant-kickflip",
       "messenger-nudge",
       "trash-rescue",
       "trash-cleanup",
@@ -37,7 +38,7 @@ describe("easter egg registry", () => {
       "cmd-sudo",
       "cmd-format",
     ]);
-    expect(EASTER_EGG_TOTAL).toBe(14);
+    expect(EASTER_EGG_TOTAL).toBe(15);
   });
 
   it("has unique ids", () => {
@@ -49,6 +50,7 @@ describe("easter egg registry", () => {
     expect(byStage).toMatchObject({
       "protected-file": "1",
       "assistant-dance": "5",
+      "assistant-kickflip": "5",
       "messenger-nudge": "5b",
       "trash-rescue": "6",
       "trash-cleanup": "6",
@@ -56,8 +58,8 @@ describe("easter egg registry", () => {
       "desktop-new": "7",
       "music-dance": "8",
       "real-404": "10",
-      "cmd-sudo": "13",
-      "cmd-format": "13",
+      "cmd-sudo": "14",
+      "cmd-format": "14",
     });
   });
 

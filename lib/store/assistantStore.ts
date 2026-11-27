@@ -1,14 +1,15 @@
 import { create } from "zustand";
-import { afterDanceMessage, tipMessage, type AssistantMessage } from "@/lib/assistant/script";
+import { afterDanceMessage, afterKickflipMessage, tipMessage, type AssistantMessage } from "@/lib/assistant/script";
 
 /**
  * mini Douglas, the scripted desktop assistant (DESKTOP-INTERFACE-SPEC §13).
  * Pure state + actions; the UI lives in `components/os/assistant/` and only
  * reads this store. Public API for later stages:
  * - `say(message)` — queue a line (stage 6: Recycle Bin rescue jokes);
- * - `dance()` / `stopDance()` — stage 8 syncs the dance with the music.
+ * - `dance()` / `stopDance()` — stage 8 syncs the dance with the music;
+ * - `kickflip()` — the "Do a Kickflip!" easter egg (rapid clicks on him).
  */
-export type AssistantState = "idle" | "talking" | "dancing";
+export type AssistantState = "idle" | "talking" | "dancing" | "kickflipping";
 
 /** Automatic appearances, each at most once per session. */
 export type AssistantTrigger = "greeting" | "projects" | "idle";
@@ -54,9 +55,16 @@ function writeSession(snapshot: SessionSnapshot) {
   }
 }
 
-/** `talking` while a line is queued, unless the dance takes precedence. */
-function settle(dancing: boolean, queue: readonly AssistantMessage[]): AssistantState {
-  if (dancing) return "dancing";
+/** A move (dance, kickflip) the character is busy with; it outranks talking. */
+type Move = "dancing" | "kickflipping";
+
+function moveOf(state: AssistantState): Move | null {
+  return state === "dancing" || state === "kickflipping" ? state : null;
+}
+
+/** `talking` while a line is queued, unless a move takes precedence. */
+function settle(move: Move | null, queue: readonly AssistantMessage[]): AssistantState {
+  if (move) return move;
   return queue.length > 0 ? "talking" : "idle";
 }
 
@@ -90,8 +98,18 @@ interface AssistantStoreState {
    * the character); without it, it lasts until `stopDance()` (stage 8 music).
    */
   dance: (options?: { durationMs?: number }) => void;
-  /** Stop dancing; says the after-dance line unless `quiet`. */
+  /**
+   * Stop dancing; says the after-dance line unless `quiet`. Mid-kickflip it
+   * only cancels the dance he'd go back to once he lands (the music stopped).
+   */
   stopDance: (options?: { quiet?: boolean }) => void;
+  /**
+   * One kickflip on the skateboard ("Do a Kickflip!" easter egg), lasting
+   * `durationMs`. It cuts a click dance short; once he lands he says the
+   * after-kickflip line — or, if he was dancing to the music, goes back to
+   * dancing without a word.
+   */
+  kickflip: (options: { durationMs: number }) => void;
   /**
    * Fire an automatic appearance once per session: shows the character and
    * queues `message`. Returns false when it already fired or was dismissed.
@@ -106,6 +124,16 @@ let danceTimer: ReturnType<typeof setTimeout> | null = null;
 function clearDanceTimer() {
   if (danceTimer) clearTimeout(danceTimer);
   danceTimer = null;
+}
+
+let kickflipTimer: ReturnType<typeof setTimeout> | null = null;
+/** Mid-kickflip: he was dancing to the music and goes back to it on landing. */
+let resumeDance = false;
+
+function clearKickflipTimer() {
+  if (kickflipTimer) clearTimeout(kickflipTimer);
+  kickflipTimer = null;
+  resumeDance = false;
 }
 
 /** Initial state for a page load, from the session snapshot. */
@@ -130,21 +158,21 @@ export const useAssistantStore = create<AssistantStoreState>()((set, get) => ({
     set((s) => {
       if (s.dismissed || s.queue.some((m) => m.id === message.id)) return s;
       const queue = [...s.queue, message];
-      return { visible: true, queue, state: settle(s.state === "dancing", queue) };
+      return { visible: true, queue, state: settle(moveOf(s.state), queue) };
     }),
 
   closeMessage: () =>
     set((s) => {
       if (s.queue.length === 0) return s;
       const queue = s.queue.slice(1);
-      return { queue, state: settle(s.state === "dancing", queue) };
+      return { queue, state: settle(moveOf(s.state), queue) };
     }),
 
   replace: (message) =>
     set((s) => {
       if (s.dismissed) return s;
       const queue = [message, ...s.queue.slice(1).filter((m) => m.id !== message.id)];
-      return { visible: true, queue, state: settle(s.state === "dancing", queue) };
+      return { visible: true, queue, state: settle(moveOf(s.state), queue) };
     }),
 
   nextTip: () => {
@@ -156,6 +184,7 @@ export const useAssistantStore = create<AssistantStoreState>()((set, get) => ({
 
   dismiss: () => {
     clearDanceTimer();
+    clearKickflipTimer();
     set({ dismissed: true, visible: false, queue: [], state: "idle" });
     writeSession({ dismissed: true, fired: [...get().fired] });
   },
@@ -171,9 +200,37 @@ export const useAssistantStore = create<AssistantStoreState>()((set, get) => ({
 
   stopDance: (options) => {
     clearDanceTimer();
+    if (get().state === "kickflipping") {
+      resumeDance = false;
+      return;
+    }
     if (get().state !== "dancing") return;
-    set((s) => ({ state: settle(false, s.queue) }));
+    set((s) => ({ state: settle(null, s.queue) }));
     if (!options?.quiet) get().say(afterDanceMessage());
+  },
+
+  kickflip: ({ durationMs }) => {
+    const s = get();
+    if (s.dismissed || s.state === "kickflipping") return;
+    // A dance without its own timer is the music's (stage 8): resume it after.
+    const musicDance = s.state === "dancing" && danceTimer === null;
+    clearDanceTimer();
+    clearKickflipTimer();
+    resumeDance = musicDance;
+    set({ visible: true, state: "kickflipping" });
+    kickflipTimer = setTimeout(() => {
+      const resume = resumeDance;
+      kickflipTimer = null;
+      resumeDance = false;
+      // A reset or dismiss in the meantime already moved him on.
+      if (get().state !== "kickflipping") return;
+      if (resume) {
+        set({ state: "dancing" });
+        return;
+      }
+      set((cur) => ({ state: settle(null, cur.queue) }));
+      get().say(afterKickflipMessage());
+    }, durationMs);
   },
 
   trigger: (id, message) => {

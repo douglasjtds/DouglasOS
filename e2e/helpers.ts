@@ -14,11 +14,27 @@ import { expect, type Page } from "@playwright/test";
  * DouglasOS Messenger toast is marked as already shown; pass
  * `{ messengerToast: true }` to let it pop up.
  */
+/**
+ * Hide the Next.js dev indicator. Locally Playwright drives `pnpm run dev`
+ * (CI uses the production build, which has none), and the indicator sits in
+ * the bottom-left corner: at phone sizes it covers the Start button and
+ * swallows its taps. Hidden here rather than with `devIndicators: false` in
+ * next.config.ts, which made WebKit's dev client fall into a reload loop.
+ */
+export async function hideNextDevIndicator(page: Page) {
+  await page.addInitScript(() => {
+    const style = document.createElement("style");
+    style.textContent = "nextjs-portal { display: none !important; }";
+    document.addEventListener("DOMContentLoaded", () => document.head.append(style));
+  });
+}
+
 export async function gotoDesktop(
   page: Page,
   locale: "en" | "pt" = "en",
   { assistant = false, messengerToast = false }: { assistant?: boolean; messengerToast?: boolean } = {},
 ) {
+  await hideNextDevIndicator(page);
   await page.addInitScript(
     ({ keepAssistant, keepToast }) => {
       sessionStorage.setItem("douglasos-booted", "1");

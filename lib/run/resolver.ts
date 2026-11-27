@@ -71,6 +71,7 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   experience: ["experiencia", "career", "carreira", "jobs"],
   skills: ["habilidades", "stack", "tech"],
   "how-i-work-with-ai": ["ai", "ia", "how i work with ai", "como trabalho com ia", "ai workflow"],
+  browser: ["navegador", "browser", "internet", "web", "iexplore", "navegar"],
   messenger: ["msn", "chat", "messenger", "mensageiro"],
   linkedin: ["linked in"],
   github: ["git hub", "repos"],

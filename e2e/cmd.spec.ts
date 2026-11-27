@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { gotoDesktop, startButton, startItem, windowById } from "./helpers";
 
-/** cmd.exe (stage 13): opened through Run, driven by the keyboard. */
+/** cmd.exe (stage 14): opened through Run, driven by the keyboard. */
 
 async function openCmd(page: Page) {
   await gotoDesktop(page);
@@ -51,7 +51,7 @@ test.describe("cmd.exe", () => {
     await input.press("Enter");
     await page.keyboard.press("Escape");
     await startButton(page).click();
-    await expect(page.locator("[data-egg-counter]")).toHaveText("2/14");
+    await expect(page.locator("[data-egg-counter]")).toHaveText("2/15");
   });
 
   test("a line wider than the field keeps its end visible in the mirror", async ({ page }) => {

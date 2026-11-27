@@ -15,11 +15,11 @@ describe("AchievementsApp", () => {
     eggs().discover("trash-rescue", Date.UTC(2026, 10, 21, 12));
     renderWithIntl(<AchievementsApp />);
 
-    expect(screen.getByText("Easter eggs found: 2 of 14")).toBeInTheDocument();
+    expect(screen.getByText("Easter eggs found: 2 of 15")).toBeInTheDocument();
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "2");
 
     const items = document.querySelectorAll("[data-egg]");
-    expect(items).toHaveLength(14);
+    expect(items).toHaveLength(15);
     const found = document.querySelector('[data-egg="protected-file"]') as HTMLElement;
     expect(found).toHaveAttribute("data-found");
     expect(within(found).getByText("Protected file")).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("AchievementsApp", () => {
     fireEvent.click(screen.getByRole("button", { name: "Reset progress" }));
     fireEvent.click(within(screen.getByTestId("reset-achievements-dialog")).getByRole("button", { name: "Reset" }));
     expect(eggs().found).toEqual({});
-    expect(screen.getByText("Easter eggs found: 0 of 14")).toBeInTheDocument();
+    expect(screen.getByText("Easter eggs found: 0 of 15")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Reset progress" })).toBeDisabled();
   });
 

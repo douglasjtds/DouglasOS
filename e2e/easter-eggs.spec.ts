@@ -9,6 +9,7 @@ import { desktopIcon, gotoDesktop, startButton, startItem, windowById } from "./
 
 const ALL_BUT_PROTECTED_FILE = [
   "assistant-dance",
+  "assistant-kickflip",
   "messenger-nudge",
   "trash-rescue",
   "trash-cleanup",
@@ -47,14 +48,14 @@ async function pressF2OnAbout(page: Page) {
 }
 
 test.describe("easter eggs", () => {
-  test("F2 → toast 1/14 → Achievements via Start shows it → progress survives a reload", async ({ page }) => {
+  test("F2 → toast 1/15 → Achievements via Start shows it → progress survives a reload", async ({ page }) => {
     await gotoDesktop(page);
     await pressF2OnAbout(page);
 
     const balloon = toast(page);
     await expect(balloon).toBeVisible();
     await expect(balloon).toHaveAttribute("data-easter-egg-toast", "protected-file");
-    await expect(balloon).toContainText("Easter egg found! (1/14)");
+    await expect(balloon).toContainText("Easter egg found! (1/15)");
     await expect(balloon).toContainText("Protected file");
     await expect(balloon).toHaveAttribute("aria-live", "polite");
     // It never steals focus.
@@ -64,18 +65,18 @@ test.describe("easter eggs", () => {
 
     await startButton(page).click();
     const item = startItem(page, "achievements");
-    await expect(item).toContainText("1/14");
+    await expect(item).toContainText("1/15");
     await item.click();
     const win = windowById(page, "achievements");
     await expect(win).toBeVisible();
-    await expect(win).toContainText("Easter eggs found: 1 of 14");
+    await expect(win).toContainText("Easter eggs found: 1 of 15");
     await expect(win.locator("[data-egg][data-found]")).toHaveCount(1);
     await expect(win.locator('[data-egg="protected-file"]')).toContainText("Protected file");
     await expect(win.locator('[data-egg="run-cmd"]')).toContainText("???");
 
     await page.reload();
     await expect(startButton(page)).toBeVisible();
-    await expect(windowById(page, "achievements")).toContainText("Easter eggs found: 1 of 14");
+    await expect(windowById(page, "achievements")).toContainText("Easter eggs found: 1 of 15");
     // Already announced: no second toast after the reload.
     await expect(toast(page)).toHaveCount(0);
     // Finding it again changes nothing.
@@ -87,15 +88,15 @@ test.describe("easter eggs", () => {
     await seedProgress(page, ["trash-rescue", "messenger-nudge"]);
     await gotoDesktop(page, "pt");
     await startButton(page).click();
-    await expect(startItem(page, "achievements")).toContainText("2/14");
+    await expect(startItem(page, "achievements")).toContainText("2/15");
     await startItem(page, "achievements").click();
     const win = windowById(page, "achievements");
-    await expect(win).toContainText("Easter eggs encontrados: 2 de 14");
+    await expect(win).toContainText("Easter eggs encontrados: 2 de 15");
     await win.locator("[data-achievements-reset]").click();
     const dialog = page.getByTestId("reset-achievements-dialog");
     await expect(dialog).toBeVisible();
     await dialog.locator("[data-confirm-reset]").click();
-    await expect(win).toContainText("Easter eggs encontrados: 0 de 14");
+    await expect(win).toContainText("Easter eggs encontrados: 0 de 15");
   });
 
   test("the last egg brings the reward and unlocks the secret wallpaper", async ({ page }) => {
@@ -112,7 +113,7 @@ test.describe("easter eggs", () => {
     await display.getByRole("button", { name: "Cancel" }).click();
 
     await pressF2OnAbout(page);
-    await expect(toast(page)).toContainText("(14/14)");
+    await expect(toast(page)).toContainText("(15/15)");
     await toast(page).getByRole("button", { name: "Close" }).click();
     // mini Douglas was dismissed ("Not now"), so the toast carries his reward line.
     const reward = page.locator("[data-easter-egg-reward]");
@@ -128,7 +129,7 @@ test.describe("easter eggs", () => {
     await expect(page.locator("[data-wallpaper]")).toHaveAttribute("data-wallpaper", "golden-egg");
   });
 
-  test("the stage 7–10 eggs are wired: cmd, New ▸, Rename, DON'T OPEN THIS, the real 404 → counter 5/14", async ({ page }) => {
+  test("the stage 7–10 eggs are wired: cmd, New ▸, Rename, DON'T OPEN THIS, the real 404 → counter 5/15", async ({ page }) => {
     await gotoDesktop(page);
     const counter = async () => {
       await startButton(page).click();
@@ -170,14 +171,14 @@ test.describe("easter eggs", () => {
     await page.keyboard.press("Escape");
     await expect(page.locator("[data-easter-egg]")).toHaveCount(0);
 
-    await expect.poll(counter).toBe("4/14");
+    await expect.poll(counter).toBe("4/15");
 
     // The real 404 page has no shell: the egg is saved and counted on the desktop.
     await page.goto("/en/no-such-page");
     await expect(page.locator('[data-blue-screen="page"]')).toBeVisible();
     await page.locator('[data-not-found-action="desktop"]').click();
     await expect(startButton(page)).toBeVisible();
-    await expect.poll(counter).toBe("5/14");
+    await expect.poll(counter).toBe("5/15");
     const found = await page.evaluate(
       () => Object.keys(JSON.parse(localStorage.getItem("douglasos:easter-eggs") ?? "{}").state?.found ?? {}),
     );

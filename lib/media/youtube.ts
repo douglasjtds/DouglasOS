@@ -19,6 +19,8 @@ export interface YTPlayer {
   nextVideo(): void;
   previousVideo(): void;
   playVideoAt(index: number): void;
+  /** Re-cue a playlist (object syntax) — used to start at a random track. */
+  cuePlaylist(args: { list: string; listType: "playlist"; index?: number }): void;
   setVolume(volume: number): void;
   mute(): void;
   unMute(): void;
@@ -131,6 +133,27 @@ export function nextIndex(index: number, total: number): number {
   return (Math.max(index, -1) + 1) % total;
 }
 
+/**
+ * A random track to start the playlist on. Never `avoid` (the previous
+ * opening's track) when there's another choice, so reopening the player
+ * always changes the song.
+ */
+export function randomStartIndex(total: number, random: () => number = Math.random, avoid?: number): number {
+  if (total <= 1) return 0;
+  const canAvoid = avoid !== undefined && avoid >= 0 && avoid < total;
+  const slots = canAvoid ? total - 1 : total;
+  const pick = Math.min(slots - 1, Math.max(0, Math.floor(random() * slots)));
+  return canAvoid && pick >= avoid ? pick + 1 : pick;
+}
+
+/** The track the last opening started on (module-wide, across openings). */
+let lastStartIndex: number | undefined;
+
+/** Test seam: forget the previous opening's start track. */
+export function resetRandomStart(): void {
+  lastStartIndex = undefined;
+}
+
 let apiPromise: Promise<YTNamespace> | null = null;
 
 /**
@@ -186,11 +209,14 @@ export interface YouTubeAdapterOptions {
   /** Page origin, passed to the player for its postMessage security check. */
   origin?: string;
   host?: string;
+  /** Random source for the start track (test seam; defaults to `Math.random`). */
+  random?: () => number;
 }
 
 /**
  * The YouTube source. Mounts an IFrame player (privacy-enhanced host) inside
- * `container`, cues the playlist without playing, and translates the
+ * `container`, cues the playlist at a random track without playing (a new
+ * one on every opening), and translates the
  * player's states and errors into `SourceEvent`s. The player must stay
  * visible (YouTube's terms), so the UI renders `container` as the screen.
  */
@@ -210,6 +236,8 @@ export function createYouTubeAdapter(
   let muted = options.muted;
   let lastTitle: string | null = null;
   let lastIndex = -2;
+  /** The random start track was picked (or the visitor already took over). */
+  let randomized = false;
 
   const emit = (event: SourceEvent) => {
     if (destroyed) return;
@@ -240,6 +268,29 @@ export function createYouTubeAdapter(
     emit({ type: "track", title: nextTitle, position: pos });
   };
 
+  /**
+   * Once the playlist is known, re-cue it at a random track. Returns true
+   * when a re-cue is in flight (the next `cued` event reports the track).
+   */
+  /** Pick (once) the random start track; null while the playlist is unknown. */
+  const pickStart = (): { index: number; current: number } | null => {
+    if (randomized) return null;
+    const pos = position();
+    if (!pos) return null;
+    randomized = true;
+    const index = randomStartIndex(pos.total, options.random, lastStartIndex);
+    lastStartIndex = index;
+    return { index, current: pos.index };
+  };
+
+  const randomizeStart = (): boolean => {
+    const pick = pickStart();
+    if (!pick || pick.index === pick.current) return false;
+    const { index } = pick;
+    player.cuePlaylist({ list: options.playlistId, listType: "playlist", index });
+    return true;
+  };
+
   const applyVolume = () => {
     player.setVolume(volume);
     if (muted) player.mute();
@@ -263,14 +314,24 @@ export function createYouTubeAdapter(
         if (destroyed) return;
         ready = true;
         applyVolume();
-        emit({ type: "state", state: "ready" });
-        reportTrack();
         if (pendingPlay) {
+          // Play was pressed while loading: start straight on a random track.
           pendingPlay = false;
-          player.playVideo();
+          emit({ type: "state", state: "ready" });
+          reportTrack();
+          const pick = pickStart();
+          randomized = true;
+          if (pick && pick.index !== pick.current) player.playVideoAt(pick.index);
+          else player.playVideo();
+          return;
         }
+        const recueing = randomizeStart();
+        emit({ type: "state", state: "ready" });
+        if (!recueing) reportTrack();
       },
       onStateChange: (event) => {
+        // The real API may only know the playlist once it's cued.
+        if (event.data === YT_STATE.cued && !active && randomizeStart()) return;
         const pos = position();
         const state = mapPlayerState(event.data, {
           active,
@@ -310,6 +371,7 @@ export function createYouTubeAdapter(
         pendingPlay = true;
         return;
       }
+      randomized = true;
       player.playVideo();
     },
     pause() {
@@ -326,11 +388,13 @@ export function createYouTubeAdapter(
     },
     next() {
       if (!ready) return;
+      randomized = true;
       active = true;
       player.nextVideo();
     },
     prev() {
       if (!ready) return;
+      randomized = true;
       active = true;
       player.previousVideo();
     },

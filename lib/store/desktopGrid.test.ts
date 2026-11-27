@@ -316,9 +316,11 @@ describe("mobile icon grid", () => {
     expect(layout.cells.linkedin).toEqual({ col: 0, row: 2 });
     expect(layout.cells.email).toEqual({ col: 3, row: 2 });
     // The fun apps start a row of their own after the links.
-    expect(layout.cells["media-player"]).toEqual({ col: 0, row: 3 });
-    // Five fun apps wrap: cmd.exe sits after Paint, Games starts the next row.
-    expect(layout.cells.cmd).toEqual({ col: 3, row: 3 });
+    expect(layout.cells.browser).toEqual({ col: 0, row: 3 });
+    expect(layout.cells["media-player"]).toEqual({ col: 1, row: 3 });
+    // Six fun apps on a 4-column phone: cmd.exe sits after Paint, Games wraps to the next row.
+    expect(layout.cells.cmd).toEqual({ col: 0, row: 4 });
+    expect(layout.cells.games).toEqual({ col: 1, row: 4 });
     expect(layout.rows).toBe(5);
   });
 
