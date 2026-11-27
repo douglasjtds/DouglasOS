@@ -601,6 +601,82 @@
     "pinball": {
       "title": "Pinball",
       "description": "Flippers, bumpers e um recorde para bater"
+    },
+    "cmd": {
+      "title": "Prompt de Comando",
+      "description": "Uma linha de comando, estilo DouglasOS",
+      "fileLabel": "cmd.exe",
+      "banner": "DouglasOS [Versão 1.5]",
+      "bannerHint": "Digite help para ver o que realmente funciona.",
+      "inputLabel": "Comando",
+      "chipsLabel": "Comandos rápidos",
+      "readme": [
+        "Bem-vindo ao prompt de comando do DouglasOS.",
+        "Tudo aqui é uma cópia minúscula, somente leitura, do portfólio do Douglas.",
+        "Digite help para ver os comandos que realmente funcionam.",
+        "Leia a história dele com: type about.txt",
+        "Baixe o currículo com: start resume.pdf",
+        "Ou digite contact e diga olá."
+      ],
+      "help": {
+        "title": "Comandos disponíveis:",
+        "help": "Lista os comandos (esta tela)",
+        "dir": "Lista os arquivos e pastas daqui",
+        "cd": "Entra em outra pasta",
+        "type": "Mostra um arquivo de texto",
+        "tree": "Desenha a estrutura de pastas",
+        "start": "Abre um arquivo, app ou jogo",
+        "cv": "Baixa o currículo do Douglas",
+        "contact": "Mostra como falar com o Douglas",
+        "msg": "Abre o mensageiro para escrever ao Douglas",
+        "whoami": "Diz quem é você por aqui",
+        "ver": "Mostra a versão do DouglasOS",
+        "date": "Mostra a data de hoje",
+        "time": "Mostra a hora atual",
+        "echo": "Repete o que você digitar",
+        "cls": "Limpa a tela",
+        "exit": "Fecha esta janela",
+        "footer": "Dica: tente type about.txt, ou aperte Tab para completar um nome."
+      },
+      "errors": {
+        "notFound": "Não existe nada chamado “{path}” neste drive.",
+        "notDir": "“{path}” é um arquivo, não uma pasta.",
+        "notFile": "“{path}” é uma pasta, não um arquivo.",
+        "binary": "{name} é um arquivo binário. Tente: start {name}",
+        "usage": {
+          "cd": "Uso: cd <pasta>",
+          "type": "Uso: type <arquivo>",
+          "start": "Uso: start <arquivo>",
+          "msg": "Uso: msg <sua mensagem>"
+        },
+        "readOnly": "Este drive é somente leitura. O DouglasOS mantém seus arquivos em ordem."
+      },
+      "unknown": {
+        "v1": "“{name}” não é um comando que eu conheça. Tente help.",
+        "v2": "Nada feito com “{name}”. Digite help para ver a lista.",
+        "v3": "“{name}”? Nunca ouvi falar. O comando help tem a lista completa.",
+        "v4": "Hmm, “{name}” não faz nada aqui. Digite help para ver o que faz."
+      },
+      "jokes": {
+        "sudo": "Boa tentativa. Aqui não existe superusuário, só visitante.",
+        "format": "Formatar o drive seria deselegante. Vamos deixar quieto.",
+        "rm": "Apagar coisas não está no cardápio. Tudo aqui é somente leitura.",
+        "hack": "Invasão em andamento... brincadeira. Tente contact.",
+        "coffee": "Preparando... Erro: a cafeteira é um gato, e ele está dormindo.",
+        "matrix": "Acorde. O portfólio te pegou.",
+        "exit": "Fechando a janela. Até a próxima!",
+        "rmFail": "Acesso negado. Os arquivos ficam exatamente onde estão."
+      },
+      "dir": {
+        "summaryFiles": "{count} arquivo(s)",
+        "summaryDirs": "{count} pasta(s)"
+      },
+      "msg": {
+        "opening": "Abrindo o mensageiro..."
+      },
+      "start": {
+        "opening": "Abrindo {name}..."
+      }
     }
   },
   "easterEgg": {
