@@ -90,6 +90,11 @@ export function afterDanceMessage(): AssistantMessage {
   return message("afterDance", "afterDance", STANDARD_ACTIONS, { search: true });
 }
 
+/** The line after a kickflip lands ("Do a Kickflip!" easter egg). */
+export function afterKickflipMessage(): AssistantMessage {
+  return message("afterKickflip", "afterKickflip", STANDARD_ACTIONS, { search: true });
+}
+
 /** First time DouglasOS Explorer opens in a session. */
 export function projectsTipMessage(): AssistantMessage {
   return message(
@@ -186,4 +191,9 @@ export const ASSISTANT_TIMING = {
   autoHide: 15_000,
   /** A click on the character dances for this long. */
   clickDance: 3500,
+  /** One kickflip, from take-off to landing. */
+  kickflip: 1200,
+  /** This many clicks on him within `kickflipWindow` → a kickflip. */
+  kickflipClicks: 3,
+  kickflipWindow: 1500,
 } as const;

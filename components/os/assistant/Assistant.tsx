@@ -12,6 +12,7 @@ import { matchIntent } from "@/lib/assistant/intents";
 import { runShellAction } from "@/lib/assistant/actions";
 import {
   ASSISTANT_TIMING,
+  afterKickflipMessage,
   answerMessage,
   helpMessage,
   type AssistantAction,
@@ -92,6 +93,8 @@ export default function Assistant() {
   const focusedRect = useFocusedWindowRect();
   const characterButton = useRef<HTMLButtonElement>(null);
   const layer = useRef<HTMLDivElement>(null);
+  /** Rapid clicks on him, toward the kickflip: count + time of the first one. */
+  const clicks = useRef({ count: 0, firstAt: 0 });
 
   const onScreen = visible && !dismissed && phase === "desktop";
   const otherBalloon = activeBalloon !== null && activeBalloon !== "assistant";
@@ -99,11 +102,12 @@ export default function Assistant() {
     ? { character: focusedRect === null, bubble: true }
     : assistantClearance(vp, focusedRect);
   const showCharacter = onScreen && !otherBalloon && clearance.character;
-  const wantsBubble = onScreen && current !== null && state !== "dancing" && clearance.bubble;
+  const busy = state === "dancing" || state === "kickflipping";
+  const wantsBubble = onScreen && current !== null && !busy && clearance.bubble;
   const showBubble = wantsBubble && activeBalloon === "assistant";
-  // He watches the mouse — desktop pointer only, and not mid-dance.
+  // He watches the mouse — desktop pointer only, and not mid-move.
   const { expression, ...gaze } = useCursorGaze(characterButton, {
-    enabled: showCharacter && !mobile && !reduced && state !== "dancing",
+    enabled: showCharacter && !mobile && !reduced && !busy,
     state,
   });
 
@@ -137,8 +141,37 @@ export default function Assistant() {
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, [showBubble, closeMessage]);
 
+  /** Count a click; true when it completes the rapid-click combo. */
+  function registerClick(): boolean {
+    const now = Date.now();
+    const combo = clicks.current;
+    if (combo.count === 0 || now - combo.firstAt > ASSISTANT_TIMING.kickflipWindow) {
+      combo.count = 0;
+      combo.firstAt = now;
+    }
+    combo.count += 1;
+    if (combo.count < ASSISTANT_TIMING.kickflipClicks) return false;
+    combo.count = 0;
+    return true;
+  }
+
   function onCharacterClick() {
     const store = useAssistantStore.getState();
+    if (store.state === "kickflipping") return;
+    // Easter egg "Do a Kickflip!": several quick clicks and he stops dancing
+    // to land a kickflip. Under reduced motion there's no trick, but the
+    // combo still counts (and he says the line), like the dance below.
+    if (registerClick()) {
+      useEasterEggStore.getState().discover("assistant-kickflip");
+      if (reduced) {
+        store.replace(afterKickflipMessage());
+        return;
+      }
+      if (store.queue.length > 0) store.closeMessage();
+      store.kickflip({ durationMs: ASSISTANT_TIMING.kickflip });
+      return;
+    }
+    // Extra clicks mid-dance only build up the combo.
     if (store.state === "dancing") return;
     // Easter egg (stage 11). Under reduced motion there's no dance, but the
     // click still counts, so every visitor can find all of them.

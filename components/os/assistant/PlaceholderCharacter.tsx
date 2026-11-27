@@ -55,53 +55,136 @@ function RestingMouth({ expression }: { expression: CharacterExpression }) {
 
 /**
  * The character is drawn on its own 96×112 grid and placed slightly smaller
- * and to the right inside the box, so the motorcycle fits on the left and the
- * skateboard under his feet.
+ * and to the right inside the box, so the motorcycle fits behind him on the
+ * left and the skateboard under his feet.
  */
 const CHARACTER_PLACEMENT = "translate(57 103.5) scale(0.86) translate(-48 -105.5)";
 
-/**
- * A small custom bobber parked next to him: generic V-twin, ape-hanger bars,
- * teardrop tank with a flame stripe. Original drawing, no badges or logos.
- */
-function Motorcycle() {
+/** Five-spoke blacked-out cast wheel (Iron-style), tire included. */
+function Wheel({ cx }: { cx: number }) {
+  const cy = 99.5;
   return (
-    <g data-accessory="motorcycle">
-      <ellipse cx="17" cy="108.6" rx="16" ry="2" fill={C.shadow} opacity="0.22" />
-      {/* Exhaust (behind the wheels). */}
-      <path d="M15 99.5 L1.5 102" stroke={C.metalDark} strokeWidth="2.8" strokeLinecap="round" />
-      <path d="M15 99.5 L1.5 102" stroke={C.metalLight} strokeWidth="1.5" strokeLinecap="round" />
-      {/* Wheels. */}
-      {[8, 29].map((cx) => (
-        <g key={cx}>
-          <circle cx={cx} cy="101" r="6.5" fill={INK} />
-          <circle cx={cx} cy="101" r="4" fill={C.metalDark} />
-          <circle cx={cx} cy="101" r="1.5" fill={C.metalLight} />
-        </g>
+    <g>
+      <circle cx={cx} cy={cy} r="9" fill={INK} />
+      <circle cx={cx} cy={cy} r="6.4" fill={TEE} stroke={C.metalDark} strokeWidth="0.6" />
+      {[0, 72, 144, 216, 288].map((a) => (
+        <path
+          key={a}
+          d={`M${cx} ${cy} L${cx} ${cy - 6}`}
+          transform={`rotate(${a} ${cx} ${cy})`}
+          stroke={C.metalDark}
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
       ))}
-      {/* Rear fender + frame. */}
-      <path d="M2.5 99.5 A6.8 6.8 0 0 1 13 94.5" stroke={INK} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M8 101 L14 93.5 L23 93.5 L26.5 88" stroke={INK} strokeWidth="2" fill="none" strokeLinejoin="round" />
-      {/* V-twin engine. */}
-      <circle cx="16" cy="97" r="3.2" fill={C.metal} stroke={C.metalDark} strokeWidth="0.8" />
-      <circle cx="21" cy="96.3" r="2.8" fill={C.metal} stroke={C.metalDark} strokeWidth="0.8" />
-      {/* Raked fork + ape-hanger bars + headlight. */}
-      <path d="M26.5 88 L29 101" stroke={C.metal} strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M26.5 88 L25.2 82.5 L29.5 83" stroke={C.metalDark} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="28.6" cy="90.2" r="1.9" fill={C.yellowLight} stroke={C.metalDark} strokeWidth="0.7" />
-      {/* Teardrop tank with flame stripe + leather seat. */}
-      <path d="M15 90.5 C16.5 86.6 25 86.4 26.8 89.6 C25 92 18 92.4 15 90.5 Z" fill={INK} />
-      <path d="M17 89.6 C20 88.3 23 88.6 25.2 89.5" stroke={C.orange} strokeWidth="1.1" fill="none" strokeLinecap="round" />
-      <path d="M7.5 91 C9.5 88.6 13.5 88.6 15.4 90.4 L15 91.9 L8.4 91.9 Z" fill={C.leatherDark} />
+      <circle cx={cx} cy={cy} r="1.6" fill={C.metalLight} />
     </g>
   );
 }
 
-/** A skateboard under his feet. */
-function Skateboard() {
+/**
+ * His bike, parked behind him and facing left: a blacked-out, café-ish
+ * V-twin in the spirit of a small-displacement cruiser — peanut tank, round
+ * headlight, low drag bars, fork gaiters, solo seat, chopped rear fender,
+ * twin shocks and staggered shotgun pipes. Original drawing: no badges,
+ * logos or wordmarks.
+ */
+/**
+ * The bike is drawn on the 0–55 range and pulled forward (left) so most of it
+ * shows beside him instead of behind him; the front spills a little past the
+ * box's left edge (the SVG is `overflow-visible`; clicks still only hit the box).
+ */
+const MOTORCYCLE_PLACEMENT = "translate(-18 0)";
+
+function Motorcycle() {
+  return (
+    <g data-accessory="motorcycle" transform={MOTORCYCLE_PLACEMENT}>
+      <ellipse cx="26" cy="108.8" rx="29" ry="2" fill={C.shadow} opacity="0.22" />
+      <Wheel cx={7} />
+      <Wheel cx={46} />
+      {/* Front brake disc. */}
+      <circle cx="7" cy="99.5" r="3.6" fill="none" stroke={C.metal} strokeWidth="1" />
+
+      {/* Chopped rear fender + front fender stub. */}
+      <path d="M37.6 93.5 A9.8 9.8 0 0 1 55.2 95" stroke={INK} strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <path d="M0.5 93.2 A9.4 9.4 0 0 1 12.4 91.6" stroke={INK} strokeWidth="2" fill="none" strokeLinecap="round" />
+
+      {/* Frame: backbone, downtube, swingarm. */}
+      <path d="M15 74 L23 78 L42 81 L46 99.5" stroke={INK} strokeWidth="2" fill="none" strokeLinejoin="round" />
+      <path d="M15.5 75 L19.5 98.5 L30 99.5 L46 99.5" stroke={INK} strokeWidth="2" fill="none" strokeLinejoin="round" />
+      {/* Twin rear shocks (coil hint). */}
+      <path d="M41 81.5 L45 97" stroke={C.metal} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M41.6 84 l1.6 -0.4 M42.2 86.4 l1.6 -0.4 M42.8 88.8 l1.6 -0.4 M43.4 91.2 l1.6 -0.4" stroke={C.metalDark} strokeWidth="0.7" />
+
+      {/* Raked fork with rubber gaiters on the lower legs. */}
+      <path d="M7 99.5 L14.5 73.5" stroke={C.metal} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M8.6 93.8 L11.2 84.8" stroke={INK} strokeWidth="3.4" strokeLinecap="round" />
+      <path d="M9 91.6 l1.4 0.4 M9.6 89.4 l1.4 0.4 M10.2 87.2 l1.4 0.4" stroke={TEE_LINE} strokeWidth="0.6" />
+
+      {/* V-twin: blacked-out cylinders with bright fin edges, crankcase, round air cleaner. */}
+      <ellipse cx="26.5" cy="96" rx="7.4" ry="4.4" fill={C.metalDark} stroke={INK} strokeWidth="0.8" />
+      <g transform="rotate(-22 23 87)">
+        <rect x="19.6" y="81" width="6.8" height="11" rx="1.2" fill={INK} />
+        <path d="M19.6 83 h6.8 M19.6 85.2 h6.8 M19.6 87.4 h6.8 M19.6 89.6 h6.8" stroke={C.metal} strokeWidth="0.6" />
+      </g>
+      <g transform="rotate(22 30 87)">
+        <rect x="26.6" y="81" width="6.8" height="11" rx="1.2" fill={INK} />
+        <path d="M26.6 83 h6.8 M26.6 85.2 h6.8 M26.6 87.4 h6.8 M26.6 89.6 h6.8" stroke={C.metal} strokeWidth="0.6" />
+      </g>
+      <circle cx="31.6" cy="89.6" r="3.1" fill={C.metal} stroke={C.metalDark} strokeWidth="0.8" />
+      <circle cx="31.6" cy="89.6" r="1.2" fill={C.metalDark} />
+      {/* Battery box / oil tank under the seat. */}
+      <rect x="34.6" y="82" width="5.4" height="7.4" rx="1" fill={INK} stroke={TEE_LINE} strokeWidth="0.5" />
+
+      {/* Staggered shotgun pipes, slash-cut ends. */}
+      {[
+        "M21 92.5 C21.5 101 27 101.4 36 101.4 L54.5 99.6",
+        "M29 93.5 C29.8 103 33 103.8 40 103.8 L54.5 102.6",
+      ].map((d) => (
+        <g key={d}>
+          <path d={d} stroke={C.metalDark} strokeWidth="2.8" fill="none" strokeLinecap="round" />
+          <path d={d} stroke={C.metalLight} strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        </g>
+      ))}
+
+      {/* Peanut tank (matte black, one thin stripe) + solo seat. */}
+      <path d="M16.6 77.2 C17 73.2 22 72.2 27.2 73 C30.8 73.6 32.4 75.8 31.8 78 C27 79.8 21 80.2 16.6 77.2 Z" fill={INK} />
+      <path d="M19 76.4 C22.5 75.2 26.5 75.2 30 76.2" stroke={C.orange} strokeWidth="0.9" fill="none" strokeLinecap="round" />
+      <path d="M31.4 77.6 C34.4 76.2 39.2 76.6 42.8 79.4 L42.2 81.2 L31.8 80.6 Z" fill={C.leatherDark} />
+
+      {/* Low drag bars + grip, round mirror, round headlight. */}
+      <path d="M14.5 73.5 L15.5 70.5 L10.5 70 L9 70.4" stroke={C.metalDark} strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 70.4 L11 70.2" stroke={INK} strokeWidth="2" strokeLinecap="round" />
+      <path d="M14.8 70.6 L13.6 65.6" stroke={C.metalDark} strokeWidth="0.8" />
+      <circle cx="13.4" cy="64.8" r="1.4" fill={INK} stroke={C.metal} strokeWidth="0.5" />
+      <circle cx="11" cy="75.6" r="3.2" fill={INK} />
+      <circle cx="10.5" cy="75.6" r="2.2" fill={C.yellowLight} stroke={C.metalDark} strokeWidth="0.6" />
+    </g>
+  );
+}
+
+/**
+ * One kickflip, take-off to landing (seconds; matches
+ * `ASSISTANT_TIMING.kickflip`). He crouches, pops, the board flips once
+ * around its long axis under him (`scaleY` 1 → −1 → 1 reads as the flip from
+ * the side) and he lands back on it.
+ */
+const KICKFLIP: Transition = { duration: 1.2, ease: "easeInOut", times: [0, 0.15, 0.35, 0.6, 0.85, 1] };
+const KICKFLIP_BODY = { y: [0, 2, -18, -18, 0, 0], rotate: [0, 0, -4, 4, 0, 0] };
+const KICKFLIP_BOARD = { y: [0, 0, -15, -15, 0, 0], scaleY: [1, 1, -1, 1, 1, 1], rotate: [0, 0, -6, 6, 0, 0] };
+
+/** A skateboard under his feet; `kickflipping` flips it once (animated only). */
+function Skateboard({ kickflipping }: { kickflipping: boolean }) {
   return (
     <g data-accessory="skateboard">
+      {/* The shadow stays on the ground while the board is in the air. */}
       <ellipse cx="58" cy="110.4" rx="25" ry="1.6" fill={C.shadow} opacity="0.22" />
+      <motion.g
+        data-kickflip={kickflipping || undefined}
+        animate={kickflipping ? KICKFLIP_BOARD : { y: 0, scaleY: 1, rotate: 0 }}
+        transition={kickflipping ? KICKFLIP : { duration: 0.15 }}
+        style={{ originX: "50%", originY: "50%" }}
+      >
       {/* Trucks + wheels. */}
       <rect x="41.5" y="105.4" width="8" height="1.6" rx="0.8" fill={C.metalDark} />
       <rect x="66.5" y="105.4" width="8" height="1.6" rx="0.8" fill={C.metalDark} />
@@ -123,6 +206,7 @@ function Skateboard() {
         fill="none"
         strokeLinecap="round"
       />
+      </motion.g>
     </g>
   );
 }
@@ -134,8 +218,9 @@ function Skateboard() {
  * shorts, tattooed legs, grey socks.
  * He rides a skateboard with his custom motorcycle parked beside him, all on
  * the same 96×112 box as the video. Idle = gentle bob + blink,
- * talking = mouth moves, dancing = sway, hop and waving arms. Under reduced
- * motion it renders one static frame (a music note marks a dance).
+ * talking = mouth moves, dancing = sway, hop and waving arms, kickflipping =
+ * one jump while the board flips under him. Under reduced motion it renders
+ * one static frame (a music note marks a dance, a tilted board a kickflip).
  * On a desktop he also follows the cursor (`gaze`: eyes + head tilt) and makes
  * a face about it (`expression`: curious / happy / sleepy / surprised).
  */
@@ -143,7 +228,8 @@ export function PlaceholderCharacter({ state, reducedMotion, gaze, expression = 
   const animate = !reducedMotion;
   const dancing = state === "dancing";
   const talking = state === "talking";
-  const face: CharacterExpression = animate ? expression : "neutral";
+  const kickflipping = state === "kickflipping" && animate;
+  const face: CharacterExpression = !animate ? "neutral" : kickflipping ? "surprised" : expression;
   const look = FACES[face];
 
   // Without a gaze source he looks straight ahead.
@@ -155,19 +241,38 @@ export function PlaceholderCharacter({ state, reducedMotion, gaze, expression = 
 
   const body = !animate
     ? undefined
+    : kickflipping
+      ? KICKFLIP_BODY
+      : dancing
+        ? { y: [0, -7, 0, -7, 0], rotate: [-6, 0, 6, 0, -6] }
+        : { y: [0, -1.5, 0], rotate: 0 };
+  const bodyTransition: Transition = kickflipping
+    ? KICKFLIP
     : dancing
-      ? { y: [0, -7, 0, -7, 0], rotate: [-6, 0, 6, 0, -6] }
-      : { y: [0, -1.5, 0], rotate: 0 };
-  const bodyTransition: Transition = dancing ? { ...LOOP, duration: 1.1 } : { ...LOOP, duration: 3 };
+      ? { ...LOOP, duration: 1.1 }
+      : { ...LOOP, duration: 3 };
 
-  const leftArm = animate && dancing ? { rotate: [10, 150, 110, 150, 10] } : { rotate: 0 };
-  const rightArm = animate && dancing ? { rotate: [-150, -10, -150, -110, -150] } : { rotate: 0 };
-  const armTransition: Transition = { ...LOOP, duration: 1.1 };
+  // Kickflip: arms out for balance while he's in the air.
+  const leftArm = !animate
+    ? { rotate: 0 }
+    : kickflipping
+      ? { rotate: [0, 0, 70, 70, 0, 0] }
+      : dancing
+        ? { rotate: [10, 150, 110, 150, 10] }
+        : { rotate: 0 };
+  const rightArm = !animate
+    ? { rotate: 0 }
+    : kickflipping
+      ? { rotate: [0, 0, -70, -70, 0, 0] }
+      : dancing
+        ? { rotate: [-150, -10, -150, -110, -150] }
+        : { rotate: 0 };
+  const armTransition: Transition = kickflipping ? KICKFLIP : { ...LOOP, duration: 1.1 };
 
   return (
     <svg viewBox="0 0 96 112" className="size-full overflow-visible" aria-hidden focusable="false">
       <Motorcycle />
-      <Skateboard />
+      <Skateboard kickflipping={kickflipping} />
 
       <g transform={CHARACTER_PLACEMENT}>
         <motion.g
@@ -342,6 +447,17 @@ export function PlaceholderCharacter({ state, reducedMotion, gaze, expression = 
           <path d="M78 19.5 V9 l6 -1.6 V17" stroke={C.outline} strokeWidth="1.6" fill="none" />
           <circle cx="76.5" cy="19.5" r="2" fill={C.outline} />
           <circle cx="82.5" cy="17" r="2" fill={C.outline} />
+        </g>
+      )}
+      {/* Reduced motion: a static tilted board says "kickflip" instead of movement. */}
+      {state === "kickflipping" && !animate && (
+        <g data-kickflip-indicator>
+          <circle cx="80" cy="14" r="10" fill={C.paper} stroke={C.outline} strokeWidth="1" />
+          <g transform="rotate(-20 80 14)">
+            <path d="M72.5 12.5 Q73.2 14.2 75 14.2 H85 Q86.8 14.2 87.5 12.5" stroke={C.red} strokeWidth="2" fill="none" strokeLinecap="round" />
+            <circle cx="76" cy="16.6" r="1.3" fill={C.yellow} stroke={C.yellowDark} strokeWidth="0.5" />
+            <circle cx="84" cy="16.6" r="1.3" fill={C.yellow} stroke={C.yellowDark} strokeWidth="0.5" />
+          </g>
         </g>
       )}
     </svg>

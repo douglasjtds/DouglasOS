@@ -95,6 +95,52 @@ describe("assistantStore", () => {
     expect(useAssistantStore.getState()).toMatchObject({ state: "idle", queue: [] });
   });
 
+  it("kickflip() cuts a click dance short, lands, then says the after-kickflip line", () => {
+    vi.useFakeTimers();
+    useAssistantStore.getState().dance({ durationMs: 3500 });
+    useAssistantStore.getState().kickflip({ durationMs: 1200 });
+    expect(useAssistantStore.getState()).toMatchObject({ visible: true, state: "kickflipping" });
+    vi.advanceTimersByTime(1199);
+    expect(useAssistantStore.getState().state).toBe("kickflipping");
+    vi.advanceTimersByTime(1);
+    const s = useAssistantStore.getState();
+    expect(s.state).toBe("talking");
+    expect(s.queue.map((m) => m.id)).toEqual(["afterKickflip"]);
+    // The cancelled dance timer never fires its own line.
+    vi.advanceTimersByTime(5000);
+    expect(useAssistantStore.getState().queue.map((m) => m.id)).toEqual(["afterKickflip"]);
+  });
+
+  it("kickflip() mid music-dance goes back to dancing, silently", () => {
+    vi.useFakeTimers();
+    useAssistantStore.getState().dance();
+    useAssistantStore.getState().kickflip({ durationMs: 1200 });
+    vi.advanceTimersByTime(1200);
+    expect(useAssistantStore.getState()).toMatchObject({ state: "dancing", queue: [] });
+  });
+
+  it("the music stopping mid-kickflip means no dance after landing", () => {
+    vi.useFakeTimers();
+    useAssistantStore.getState().dance();
+    useAssistantStore.getState().kickflip({ durationMs: 1200 });
+    useAssistantStore.getState().stopDance();
+    expect(useAssistantStore.getState().state).toBe("kickflipping");
+    vi.advanceTimersByTime(1200);
+    const s = useAssistantStore.getState();
+    expect(s.state).toBe("talking");
+    expect(s.queue.map((m) => m.id)).toEqual(["afterKickflip"]);
+  });
+
+  it("kickflip() does nothing after dismiss, and a dismiss mid-air cancels the landing line", () => {
+    vi.useFakeTimers();
+    useAssistantStore.getState().kickflip({ durationMs: 1200 });
+    useAssistantStore.getState().dismiss();
+    vi.advanceTimersByTime(1200);
+    expect(useAssistantStore.getState()).toMatchObject({ state: "idle", queue: [] });
+    useAssistantStore.getState().kickflip({ durationMs: 1200 });
+    expect(useAssistantStore.getState().state).toBe("idle");
+  });
+
   it("lines said while dancing wait until the dance ends", () => {
     const { dance, say } = useAssistantStore.getState();
     dance();

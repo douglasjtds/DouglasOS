@@ -192,7 +192,7 @@ describe("StartMenu", () => {
     // Help, Achievements, then Run… (stage 7) closes the places column.
     expect(ids.slice(-3)).toEqual(["help", "achievements", "run"]);
     const item = screen.getByRole("menuitem", { name: /Achievements/ });
-    expect(item.querySelector("[data-egg-counter]")).toHaveTextContent("1/12");
+    expect(item.querySelector("[data-egg-counter]")).toHaveTextContent("1/13");
     await userEvent.click(item);
     expect(useWindowStore.getState().windows.achievements).toBeDefined();
   });

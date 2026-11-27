@@ -215,7 +215,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 - separator
 - **Display Properties** — opens the `display` app.
 - **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
-- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/12` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
+- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/13` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
 - **Run…** — *(stage 7 — done)* opens the Run dialog (last item of the places column, so CV/Contact keep their spots; also on phones). **Items appear only when their stage ships — no dead entries.**
 
 ### Run… and the command palette *(stage 7 — done)*
@@ -419,7 +419,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ## 13. mini Douglas assistant *(stage 5)*
 
-**Purpose:** a scripted desktop companion — tips, CV/Contact/project shortcuts and an offline "ask me something" search — with personality (he dances when clicked). No LLM, no network, no backend. Never blocks the golden rule: every bubble offers CV/Contact in one click, and he never covers what a recruiter needs.
+**Purpose:** a scripted desktop companion — tips, CV/Contact/project shortcuts and an offline "ask me something" search — with personality (he dances when clicked, and kickflips his skateboard when clicked several times quickly). No LLM, no network, no backend. Never blocks the golden rule: every bubble offers CV/Contact in one click, and he never covers what a recruiter needs.
 
 ### Pieces
 | Piece | Where | Notes |
@@ -437,6 +437,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 ### Public API for later stages
 - `say(message)` — queue a line. (Stage 6 uses `replace()` for the rescue lines — a direct reaction takes the bubble — and `say()` for the bin window's comment; see [Recycle Bin](#recycle-bin-stage-6--done).) Dropped after "Not now" and when a line with the same `id` is already queued. Lines said during a dance wait until it ends.
 - `dance(options?)` / `stopDance(options?)` — stage 8 calls `dance()` (no duration) when music starts and `stopDance()` when it stops; `stopDance` says the "Phew!" line unless `{ quiet: true }`. A click uses `dance({ durationMs: 3500 })`.
+- `kickflip({ durationMs })` — one kickflip (state `kickflipping`, ~1.2s; bubble hidden, cuts a click dance short). On landing he says "Landed it!" with the standard shortcuts — or, if he was dancing to the music, goes back to dancing silently (unless `stopDance()` came mid-air). Lines said during the kickflip wait until he lands.
 - Also: `show()`, `replace(message)`, `closeMessage()`, `nextTip()`, `dismiss()`, `trigger(id, message?)` (once per session), `markFired(id)`.
 - Intents: `matchIntent(text)` → `IntentMatch { intent, score, projectSlug? }` or `IntentFallback { intent: "fallback", score: 0, suggestions }`; `rankIntents`, `normalizeText`, `tokenize`, `findProjectSlug`, `isFallback`, `INTENT_IDS`, `FALLBACK_SUGGESTIONS`. Intents: `cv`, `contact` (incl. hire/contratar), `projects` (+ slug from slug/brand/alias), `skills`/stack, `availability` (remote/location), `ai-workflow`, `experience`, `about`. EN + PT keywords, accent/case/punctuation-insensitive, stems by prefix (`contrat*`), phrases ("entrar em contato"); ties go to CV, then Contact.
 
@@ -447,7 +448,8 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ### Behavior
 - **Cursor gaze (desktop mouse only):** his eyes follow the cursor and his head tilts a little toward it (springs, no re-render per move); the cursor leaving the page sends his look back to center. He also makes a face about it, in this priority: **happy** (`^ ^` eyes, open smile, rosier cheeks) while the cursor is over him → **surprised** (big eyes, raised brows, "o" mouth) for ~1s when it zips past within ~320px (≥ 2.5 px/ms, 4s cooldown) → **sleepy** (half-closed lids, a floating "z") after 15s with no mouse/keyboard input — before the 30s "Still around?" trigger — waking on the next input → **curious** (raised brows, bigger eyes) when it's within ~200px → neutral. While talking he only goes happy/surprised; while dancing it's off. Off on phones (touch/pen input is ignored), under reduced motion, and with the recorded clips (placeholder-only). Purely decorative: no new clicks, no layout change. `data-expression` on the character wrapper exposes the current face.
-- **Click the character:** he dances ~3.5s (bubble hidden), then says "Phew!…" with the standard shortcuts. Under reduced motion: no dance, the click opens the "How can I help?" bubble. Clicking while he dances does nothing.
+- **Click the character:** he dances ~3.5s (bubble hidden), then says "Phew!…" with the standard shortcuts. Under reduced motion: no dance, the click opens the "How can I help?" bubble. Clicks while he dances only count toward the kickflip combo.
+- **Click him several times quickly ("Do a Kickflip!" easter egg):** 3 clicks within 1.5s (window from the first click) — he stops dancing and lands one kickflip: he pops, the skateboard flips once under him, he lands, then says "Landed it!"/"Acertei!" with the standard shortcuts (CV/Contact one click away). Clicks mid-kickflip do nothing. Phones: the same with quick taps. Under reduced motion: no trick, but the combo still counts the egg and he says the line (a static tilted board marks `kickflipping`). The recorded clips have no kickflip yet — the dance clip stands in.
 - **Shortcuts** (standard set): Show me a project → `openWindow("projects", { route: FEATURED_PROJECT_SLUG })`; I want to get in touch → Contact; Download the CV → `lib/download.ts` via `launch("resume")`; Show me another tip → `nextTip()`; Not now, thanks → `dismiss()` (gone for the session, focus moves to Start if it was in the bubble). Window/download shortcuts close the bubble.
 - **Search:** the text goes through `matchIntent`; the bubble is replaced by the intent's answer + its shortcuts (never auto-opens anything); unknown → an honest fallback with Projects / CV / Contact.
 - **Triggers** (each at most once per session, persisted in `douglasos-assistant`; none fires while a session screen is up; none moves focus):
@@ -455,7 +457,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
   2. first opening of My Projects — address-bar tip, 1.2s / 2.5s later (skipped if the Explorer was opened from his own shortcut);
   3. 30s desktop / 45s phone without pointer or keyboard input — "Still around?" with Download CV + Contact.
 - **Auto lines** close themselves after 15s unless hovered or focused inside; lines the visitor asked for stay until closed.
-- **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8).
+- **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8), a static tilted skateboard marks `kickflipping`.
 - **Performance:** the assistant chunk loads only after the desktop is up and the browser is idle (and not at all once dismissed); the videos only once he appears.
 
 ## 14. DouglasOS Messenger *(stage 5b)*
@@ -613,8 +615,8 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 | Piece | Where | Notes |
 |-------|-------|-------|
-| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (12), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
-| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/12" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
+| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (13), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
+| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/13" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
 | Store | `lib/store/easterEggStore.ts` | `found: Record<id, timestamp>`, `pending` (announcements still to show), `discover(id)` → `true` only the first time, `acknowledge(expected?)`, `reset()`; selectors `selectFoundCount` / `selectComplete`, hook `useEasterEggProgress()` → `{ count, total, complete }`. Persisted in **localStorage** `douglasos:easter-eggs` (version 1; `migrate` + `merge` both go through `sanitizeProgress`) |
 | Reward | `lib/easter-eggs/reward.ts` | `completionMessage()` (mini Douglas line `eggsComplete`: Download CV, Display Properties, Contact) and `deliverCompletionReward()` |
 | Toast | `components/os/taskbar/EasterEggToast.tsx` | Mounted last in `DesktopShell` |
@@ -627,7 +629,8 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 | Id | How it's found | Stage | Hook |
 |----|----------------|-------|------|
 | `protected-file` | `F2` on a desktop icon, or its menu → **Rename** (right-click / long-press) | 1 | `Desktop.tsx` (`showProtected`, from `onIconKeyDown` and the Rename item) — **wired** |
-| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 12/12) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 13/13) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `assistant-kickflip` | "Do a Kickflip!": click mini Douglas 3× within 1.5s — he kickflips instead of dancing (under reduced motion the combo still counts) | 5 | `Assistant.tsx` (`onCharacterClick`, combo branch) — **wired** |
 | `messenger-nudge` | "Nudge" in the Messenger (only a nudge that went out, not one refused by the cooldown) | 5b | `Conversation.tsx` (`nudge`) — **wired** |
 | `trash-rescue` | Throw one icon in the Recycle Bin (drag, `Delete`, context menu, long-press) | 6 | `desktopStore.trashIcons` — **wired** |
 | `trash-cleanup` | Throw several icons at once | 6 | `desktopStore.trashIcons` — **wired** |
@@ -641,7 +644,7 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 ### Integration — stage 7–10 hooks (wired at integration)
 
-`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 12/12):
+`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 13/13):
 
 | Stage | Hook (where) | Call |
 |-------|--------------|------|
@@ -657,15 +660,15 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ### Toast
 
-- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/12)" / "🎉 Easter egg encontrado! (4/12)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
-- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances (otherwise the slot rule would hide him mid-dance).
-- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/12".
+- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/13)" / "🎉 Easter egg encontrado! (4/13)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
+- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances or kickflips (otherwise the slot rule would hide him mid-dance).
+- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/13".
 - **Phones:** bottom sheet above the taskbar (full width, safe-area padding), like the other balloons; 44px targets.
 
 ### Achievements window
 
-- Start menu → right column, **below Help**, normal weight, with a muted `4/12` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
-- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 12" + a segmented progress bar (12 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
+- Start menu → right column, **below Help**, normal weight, with a muted `4/13` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
+- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 13" + a segmented progress bar (13 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
 - **Reset progress** (disabled at 0) opens an XP confirm message box ("Reset" / "Cancel", Cancel is the default and Esc). Reset forgets every egg and pending toast and re-locks the secret wallpaper (the desktop falls back to the default if it was in use; the choice itself is kept).
 
 ### Reward (all found)
