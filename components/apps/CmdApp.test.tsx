@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import CmdApp from "@/components/apps/CmdApp";
@@ -129,6 +129,44 @@ describe("CmdApp", () => {
     await userEvent.click(screen.getByRole("button", { name: "cv" }));
     expect(downloadSpy).toHaveBeenCalledWith("/resume.pdf", expect.any(String));
     expect(log()).toHaveTextContent("C:\\DouglasOS> cv");
+  });
+
+  it("keeps the visible mirror scrolled with a long line", async () => {
+    renderWithIntl(<CmdApp />);
+    const mirror = document.querySelector<HTMLElement>("[data-cmd-mirror]")!;
+    await userEvent.type(input(), `echo ${"x".repeat(120)}`);
+    expect(mirror).toHaveTextContent(`echo ${"x".repeat(120)}`);
+    // jsdom doesn't lay out: scroll the field as a browser would.
+    input().scrollLeft = 640;
+    fireEvent.scroll(input());
+    expect(mirror.scrollLeft).toBe(640);
+    input().scrollLeft = 120;
+    await userEvent.keyboard("{Home}");
+    expect(mirror.scrollLeft).toBe(120);
+  });
+
+  it("hands focus from the window frame to the prompt on desktop", () => {
+    renderWithIntl(
+      <div data-window="cmd" tabIndex={-1}>
+        <CmdApp />
+      </div>,
+    );
+    const frame = document.querySelector<HTMLElement>('[data-window="cmd"]')!;
+    input().blur();
+    frame.focus();
+    expect(input()).toHaveFocus();
+  });
+
+  it("leaves focus on the window frame on phones (no surprise keyboard)", () => {
+    mobile.value = true;
+    renderWithIntl(
+      <div data-window="cmd" tabIndex={-1}>
+        <CmdApp />
+      </div>,
+    );
+    const frame = document.querySelector<HTMLElement>('[data-window="cmd"]')!;
+    frame.focus();
+    expect(frame).toHaveFocus();
   });
 
   it("hides the chips on desktop", () => {

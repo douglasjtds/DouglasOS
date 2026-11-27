@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLauncherLabels } from "@/hooks/useLauncherLabels";
@@ -67,6 +67,8 @@ export default function CmdApp() {
   const mobile = useIsMobile();
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const mirrorRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const [screen, setScreen] = useState<Scrollback>(() => ({
     base: 0,
@@ -87,11 +89,33 @@ export default function CmdApp() {
     if (!mobile) inputRef.current?.focus({ preventScroll: true });
   }, [mobile]);
 
+  // The shell focuses the window frame (Run, palette, taskbar restore…), often
+  // after this app mounted: on desktop, hand that focus straight to the prompt.
+  useEffect(() => {
+    const frame = rootRef.current?.closest<HTMLElement>('[data-window="cmd"]');
+    if (!frame || mobile) return;
+    const onFocusIn = (e: FocusEvent) => {
+      if (e.target === frame) inputRef.current?.focus({ preventScroll: true });
+    };
+    frame.addEventListener("focusin", onFocusIn);
+    return () => frame.removeEventListener("focusin", onFocusIn);
+  }, [mobile]);
+
   // Keep the newest line in view after every run.
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [screen]);
+
+  /** Keep the visible mirror scrolled exactly like the (transparent) field. */
+  function syncMirror() {
+    const input = inputRef.current;
+    const mirror = mirrorRef.current;
+    if (input && mirror) mirror.scrollLeft = input.scrollLeft;
+  }
+
+  // After every edit or caret move the field may have scrolled: follow it.
+  useLayoutEffect(syncMirror, [value, caret]);
 
   function setLine(next: string) {
     setValue(next);
@@ -158,11 +182,11 @@ export default function CmdApp() {
   }
 
   const before = value.slice(0, caret);
-  const under = value.charAt(caret) || " ";
+  const under = value.charAt(caret);
   const after = value.slice(caret + 1);
 
   return (
-    <div data-cmd-app className="flex h-full min-h-0 flex-col bg-console-bg font-mono text-body text-console-text">
+    <div ref={rootRef} data-cmd-app className="flex h-full min-h-0 flex-col bg-console-bg font-mono text-body text-console-text">
       {/* Clicking anywhere on the console types at the prompt. */}
       <div
         ref={scrollRef}
@@ -185,13 +209,20 @@ export default function CmdApp() {
           </span>
           <span className="shrink-0 whitespace-pre"> </span>
           <div className="relative min-w-0 flex-1">
-            {/* Visible mirror of the field with the console caret. */}
-            <div aria-hidden className="overflow-hidden whitespace-pre text-console-prompt">
+            {/* Visible mirror of the field with the console caret. Both get a
+                1ch end padding (room for the caret past the last character), so
+                their scroll ranges match and `syncMirror` keeps them aligned. */}
+            <div
+              ref={mirrorRef}
+              aria-hidden
+              data-cmd-mirror
+              className="overflow-hidden whitespace-pre pr-[1ch] text-console-prompt"
+            >
               {before}
               <span className="relative">
                 {under}
                 {focused && (
-                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-console-prompt motion-safe:animate-caret-blink" />
+                  <span className="absolute bottom-0 left-0 h-0.5 w-[1ch] bg-console-prompt motion-safe:animate-caret-blink" />
                 )}
               </span>
               {after}
@@ -209,11 +240,16 @@ export default function CmdApp() {
                 setValue(e.target.value);
                 setCaret(e.target.selectionStart ?? e.target.value.length);
               }}
-              onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? value.length)}
+              onSelect={(e) => {
+                setCaret(e.currentTarget.selectionStart ?? value.length);
+                syncMirror();
+              }}
+              onScroll={syncMirror}
+              onKeyUp={syncMirror}
               onKeyDown={onKeyDown}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              className="absolute inset-0 w-full bg-transparent p-0 font-mono text-body text-transparent caret-transparent outline-none selection:bg-console-text selection:text-console-bg"
+              className="absolute inset-0 w-full bg-transparent p-0 pr-[1ch] font-mono text-body text-transparent caret-transparent outline-none selection:bg-console-text selection:text-console-bg"
             />
           </div>
         </div>
