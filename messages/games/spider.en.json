@@ -1,0 +1,31 @@
+{
+  "menu": {
+    "deal": "Deal a row",
+    "hint": "Hint",
+    "suits1": "1 suit (easy)",
+    "suits2": "2 suits (medium)",
+    "suits4": "4 suits (hard)"
+  },
+  "table": "Spider Solitaire table",
+  "column": "Column {column}",
+  "emptyColumn": "Column {column}, empty",
+  "cardInColumn": "{card}, column {column}",
+  "faceDown": "{count, plural, one {# face-down card} other {# face-down cards}}",
+  "stock": "Deal a row ({count} left)",
+  "stockEmpty": "No rows left to deal",
+  "completed": "Completed runs: {count} of 8",
+  "runs": "Runs: {count}/8",
+  "message": {
+    "selected": "{card} selected. Choose a column.",
+    "cantPickUp": "Only runs of one suit in descending order can be moved.",
+    "illegal": "That can't go there. Place it on a card one rank higher or an empty column.",
+    "noDestination": "There's nowhere to move that.",
+    "emptyColumn": "Fill every empty column before dealing a row.",
+    "noStock": "No rows left to deal.",
+    "noMovesDeal": "No moves available — deal a row.",
+    "noMoves": "No moves available.",
+    "hint": "Hint: move {card} to column {column}.",
+    "runCompleted": "Run completed!"
+  },
+  "wonMessage": "All 8 runs completed! Final score: {score}."
+}

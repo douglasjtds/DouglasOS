@@ -1,0 +1,36 @@
+{
+  "tableLabel": "Mesa de pinball",
+  "tableDescription": "Mesa Turno da Noite. Flipper esquerdo: Z ou Shift esquerdo. Flipper direito: barra, M ou Shift direito. Lançador: segure Espaço ou a seta para baixo e solte para lançar. Pausar: P ou Esc. No toque, pressione a metade esquerda ou direita da mesa.",
+  "score": "Pontos",
+  "ball": "Bola",
+  "highScore": "Recorde",
+  "ballOf": "{ball}/{total}",
+  "statusBall": "Bola {ball}/{total}",
+  "statusHigh": "Recorde: {score}",
+  "launch": "Lançar",
+  "launchHint": "Segure para carregar o lançador e solte para lançar",
+  "pause": "Pausar",
+  "resume": "Continuar",
+  "paused": "Pausado — clique ou pressione P para continuar",
+  "controls": "Controles",
+  "controlsTitle": "Controles do pinball",
+  "controlsIntro": "Turno da Noite: mantenha a bola acordada depois da meia-noite.",
+  "controlsList": {
+    "left": "Flipper esquerdo: Z ou Shift esquerdo",
+    "right": "Flipper direito: / , M ou Shift direito",
+    "plunger": "Lançador: segure Espaço ou seta para baixo e solte para lançar",
+    "pause": "Pausar ou continuar: P ou Esc",
+    "newGame": "Novo jogo: F2",
+    "touch": "Toque ou mouse: pressione a metade esquerda ou direita da mesa para acionar o flipper; segure Lançar para carregar o lançador"
+  },
+  "scoring": "Canecas de café 100 · teclas 250 · forme C-O-D-E para um bônus de 2.000 · luminária 500. Três bolas por jogo.",
+  "announce": {
+    "ballLost": "Bola perdida. Bola {ball} de {total}.",
+    "ballSaved": "Bola salva. Lance de novo.",
+    "bank": "C-O-D-E completo: bônus!",
+    "gameOver": "Fim de jogo. Pontuação final: {score}.",
+    "score": "Pontos: {score}"
+  },
+  "gameOverMessage": "Pontuação final: {score}.",
+  "newHighScore": "Novo recorde desta sessão!"
+}

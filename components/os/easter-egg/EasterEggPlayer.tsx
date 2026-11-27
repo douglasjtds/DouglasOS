@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { useDontOpenThisStore } from "@/lib/store/dontOpenThisStore";
 import { useAssistantStore } from "@/lib/store/assistantStore";
 import { runShellAction, type ShellAction } from "@/lib/assistant/actions";
@@ -48,7 +48,10 @@ export default function EasterEggPlayer({ egg }: { egg: EasterEggId }) {
     [finish],
   );
 
-  useEffect(() => {
+  // Layout effect, not a passive one: the Esc / click-outside listeners must
+  // exist as soon as the egg is on screen, and the focus to give back must be
+  // read before the egg's own effects move focus into it.
+  useLayoutEffect(() => {
     returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     function onKeyDown(e: KeyboardEvent) {
@@ -68,10 +71,14 @@ export default function EasterEggPlayer({ egg }: { egg: EasterEggId }) {
       window.removeEventListener("keydown", onKeyDown, true);
       window.removeEventListener("pointerdown", onPointerDown, true);
       const target = returnFocus.current;
-      // Give focus back unless the visitor already moved it somewhere useful.
-      if (target?.isConnected && (document.activeElement === document.body || !document.activeElement)) {
-        target.focus({ preventScroll: true });
-      }
+      // Layout cleanup runs before the egg leaves the DOM, while it still holds
+      // focus; check once it's gone. Give focus back unless the visitor already
+      // moved it somewhere useful.
+      queueMicrotask(() => {
+        if (target?.isConnected && (document.activeElement === document.body || !document.activeElement)) {
+          target.focus({ preventScroll: true });
+        }
+      });
     };
   }, [dismiss]);
 

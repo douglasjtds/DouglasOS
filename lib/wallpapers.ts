@@ -4,6 +4,7 @@
  */
 
 export const WALLPAPER_IDS = [
+  "green-meadow",
   "morning-waves",
   "dusk-hills",
   "blueprint",
@@ -13,8 +14,12 @@ export const WALLPAPER_IDS = [
 ] as const;
 export type WallpaperId = (typeof WALLPAPER_IDS)[number];
 
-/** Static, original artwork served from `public/wallpapers/`. */
+/**
+ * Static artwork served from `public/wallpapers/`: original illustrations,
+ * plus the default "Green Meadow", a CC0 photograph (see CREDITS.md there).
+ */
 export const WALLPAPER_IMAGES: Partial<Record<WallpaperId, string>> = {
+  "green-meadow": "/wallpapers/green-meadow.avif",
   "morning-waves": "/wallpapers/morning-waves.svg",
   "dusk-hills": "/wallpapers/dusk-hills.svg",
   blueprint: "/wallpapers/blueprint.svg",
@@ -41,7 +46,7 @@ export interface DisplaySettings {
 }
 
 export const DEFAULT_DISPLAY: DisplaySettings = {
-  wallpaper: "morning-waves",
+  wallpaper: "green-meadow",
   swatch: "navy",
 };
 
@@ -76,8 +81,8 @@ export function effectiveWallpaper(
 
 /**
  * Coerce persisted/unknown input back into valid settings. Retired ids (e.g.
- * the stage-1 default "morning-hills", replaced by "morning-waves") are simply
- * unknown here, so an old saved choice falls back to the current default.
+ * the stage-1 "morning-hills") are simply unknown here, so an old saved choice
+ * falls back to the current default ("green-meadow").
  */
 export function sanitizeDisplay(input: unknown): DisplaySettings {
   const raw = (input ?? {}) as Partial<Record<keyof DisplaySettings, unknown>>;

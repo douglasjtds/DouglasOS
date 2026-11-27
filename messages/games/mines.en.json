@@ -1,0 +1,36 @@
+{
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "expert": "Expert"
+  },
+  "marks": "Marks (?)",
+  "flagMode": "Flag mode",
+  "face": {
+    "idle": "New game",
+    "pressing": "New game",
+    "won": "You won. New game",
+    "lost": "Game over. New game"
+  },
+  "counter": "Mines left: {count}",
+  "timer": "Time: {seconds, plural, one {# second} other {# seconds}}",
+  "board": "Minefield, {rows} rows by {cols} columns, {mines} mines",
+  "cell": {
+    "hidden": "Row {row}, column {col}, hidden",
+    "flagged": "Row {row}, column {col}, flagged",
+    "question": "Row {row}, column {col}, question mark",
+    "empty": "Row {row}, column {col}, empty",
+    "number": "Row {row}, column {col}, {count, plural, one {# mine} other {# mines}} nearby",
+    "mine": "Row {row}, column {col}, mine",
+    "exploded": "Row {row}, column {col}, exploded mine",
+    "wrongFlag": "Row {row}, column {col}, wrong flag"
+  },
+  "status": {
+    "ready": "Click a cell to start. Right-click to flag.",
+    "readyTouch": "Tap a cell to start. Press and hold to flag.",
+    "playing": "Mines left: {count}",
+    "won": "Field cleared!",
+    "lost": "Boom! You hit a mine."
+  },
+  "wonMessage": "You cleared the field on {difficulty} in {seconds, plural, one {# second} other {# seconds}}."
+}

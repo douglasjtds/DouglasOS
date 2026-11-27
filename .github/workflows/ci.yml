@@ -16,14 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test:coverage
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run build
+      - run: pnpm run test:coverage
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -36,13 +37,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npm run test:e2e
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Some ubuntu-26.04 runner images ship a packages.microsoft.com apt source
+      # that answers 403 / "no longer signed", which aborts the `apt-get update`
+      # behind `--with-deps`. Playwright doesn't need it, so drop it first.
+      - name: Remove broken Microsoft apt source
+        run: |
+          files=$(grep -rlE 'packages\.microsoft\.com' /etc/apt/sources.list.d/ || true)
+          if [ -n "$files" ]; then echo "Removing: $files"; sudo rm -f $files; fi
+      - run: pnpm exec playwright install --with-deps
+      - run: pnpm run test:e2e
         env:
           CI: "1"
       - uses: actions/upload-artifact@v4
