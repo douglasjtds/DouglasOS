@@ -73,7 +73,7 @@
 
 | Feature | Why not included | When to reconsider |
 |---------|------------------|---------------------|
-| Functional terminal with commands | High complexity (parser, command logic, history) | v1.5 replaces it with **Run… + command palette** (stage 7), no shell emulation |
+| Functional terminal with commands | High complexity (parser, command logic, history) | v1.5 replaces it with **Run… + command palette** (stage 7), then adds a small, read-only **cmd.exe** window (stage 13) — a fake drive, no real shell, no writes |
 | Tic-tac-toe / games | Polish feature, not core differentiator | v1.5 brings Paint (stage 10) and a **Games** folder with six classics (stage 12) |
 | Easter eggs | Discoverability is wasted if base experience isn't solid | **v1.5** (recycle-bin jokes, "DON'T OPEN THIS.exe") — never blocking CV/contact |
 | AI Assistant chat (LLM) | Token cost, abuse risk, infrastructure needs | **Still out.** v1.5 ships *scripted* assistant + scripted messenger instead (no LLM, no backend) |
@@ -306,7 +306,7 @@ The MVP is ready to launch when:
 | AI chat with an LLM | Out (cost, abuse) | **Still out** (cost and abuse). The assistant and the messenger are **scripted** — no LLM, no backend |
 | Easter eggs, sound, games | Out of MVP, "v1.5" | **In v1.5**, but they never get in the way of the CV or contact. Sound only when the user starts it |
 | Solitaire / other games | — | **In v1.5 (stage 12)**: Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball — generic names, original art, no sound; All Programs ▸ Games + a desktop Games folder, never above the CTAs |
-| Terminal | v1.5 candidate | Replaced by **Run… + command palette** (stage 7) |
+| Terminal | v1.5 candidate | **Run… + command palette** (stage 7), then **cmd.exe** (stage 13): a read-only fake console over `C:\DouglasOS` (browse, read, open apps, download the CV) with hidden jokes — no real shell, no writes, no backend |
 
 ### Order of work
 
@@ -326,6 +326,7 @@ The MVP is ready to launch when:
 | 10 | Paint + easter egg | "DouglasOS Paint" + "DON'T OPEN THIS.exe" (short, reversible) |
 | 11 | Easter-egg counter | Discovery counter for the 12 eggs: tray toast "n/12", Achievements window (Start → below Help), reward line + secret wallpaper when all are found |
 | 12 | Games | All Programs ▸ **Games** + a desktop **Games** folder window with six classics built as original DouglasOS games: Mines, Solitaire (Klondike), FreeCell, Hearts, Spider Solitaire and an original 2D Pinball table. Pure engines in `lib/games/`, shared card kit, no sound |
+| 13 | cmd.exe | A Command Prompt window (All Programs ▸ Accessories + a desktop icon after Paint; `cmd`, `terminal`, `powershell`, `bash`… in Run… open it). Fake read-only drive `C:\DouglasOS`, a pure command engine in `lib/cmd/`, history/Tab completion, two new easter eggs (`cmd-sudo`, `cmd-format`; total 14). Never gates the CV or Contact (`cv` and `contact` are commands) |
 
 Later / future ideas: screen saver (not shipped in stage 1), per-app window menu/status bars, hand-tuned 16px icon variants, heavy 3D scene (v2).
 
@@ -361,6 +362,7 @@ A stage is done only when **all** of these hold:
 | 10 | Done — **DouglasOS Paint** (pencil, brush, eraser, bucket, line, rectangle; 28-color palette; 1–9px widths; bounded undo/redo; Save as PNG locally; Pointer Events for mouse/pen/touch; full-screen with touch-sized rows on phones) in the new All Programs ▸ **Accessories** folder, plus **"DON'T OPEN THIS.exe"**, a windowless launcher cycling three original eggs per session — A: a DouglasOS "404" blue screen (Luna blue, own copy, recovery = CV / Contact / desktop), B: the desktop icons run away and come back (visual only), C: "Access denied" with mini Douglas's sticky note — all under 5s, Esc/click to leave, static under reduced motion, CV + Contact in each. The same blue screen is now the site's real **localized 404** (HTTP 404, `/en/…` and `/pt/…`), whose "Talk to Douglas" opens Contact via `/{locale}#open=contact`. (Games were deferred here and came in stage 12) |
 | 11 | Done — **easter-egg discovery counter**: canonical registry of 12 eggs with stable ids (`lib/easter-eggs/registry.ts`), persisted store `douglasos:easter-eggs` (idempotent `discover()`, unknown ids dropped, pending-toast queue so an egg found on the real 404 page is announced on the next desktop load), XP tray toast "🎉 Easter egg found! (n/12)" through the balloon slot (yields to every other balloon; bottom sheet on phones), **Achievements** window from Start (below Help, muted `n/12` counter) with found/"???"+hint list and a confirmed Reset, reward when complete (mini Douglas line offering the CV again, or the toast's own balloon after "Not now") + secret "Golden Egg" wallpaper unlocked in Display Properties. Stage 1/5/5b/6 hooks wired; stage 7–10 calls listed in `DESKTOP-INTERFACE-SPEC.md` §15 for the integrator |
 | 12 | Done — **Games**: All Programs ▸ Games + a desktop Games folder window (click selects, double-click/Enter opens, one tap on phones), Run aliases, own icons; shared card kit (`lib/games/cards.ts`, seeded `rng.ts`, `PlayingCard`, `GameShell`), per-game copy in `messages/games/`. Six games with pure, unit-tested engines: **Mines** (3 levels, safe first click, flag by right-click/long-press, chord), **Solitaire** (draw 1/3, scoring, undo, finish), **FreeCell** (numbered deals, supermove, safe auto-moves, undo), **Hearts** (3 AIs, passing, moon, game to 100), **Spider Solitaire** (1/2/4 suits, deal row, hint, undo), **Pinball** (original "Night Shift" 2D canvas table, fixed-step physics, pauses when unfocused). No sound, no storage keys |
+| 13 | Done — **cmd.exe**: a console window (EN/PT) over a fictional `C:\DouglasOS` tree (About/Experience/Skills/How I Work With AI/Contact as `.txt`, `Projects\` case studies, `Games\*.exe`, `resume.pdf`). Commands: `help`, `dir`/`ls`, `cd`, `type`/`cat`, `tree`, `start`/`open`, `cv`, `contact`, `msg`, `whoami`, `ver`, `date`, `time`, `echo`, `cls`/`clear`, `exit`, plus hidden jokes (`sudo`, `format`, `hack`, `coffee`, `matrix`, write commands refused). ↑/↓ history, Tab completion, Esc clears, Ctrl+L clears; phones get chips (help, dir, cv, contact, cls). The pure engine (`lib/cmd/`) is unit-tested; Run… no longer has fun commands — `cmd` is a plain launcher alias that also finds the `run-cmd` egg. Two new eggs (`cmd-sudo`, `cmd-format`) bring the total to 14 |
 
 ---
 

@@ -514,6 +514,7 @@ Every animation has a static alternative:
 | `email` *(link)* | Blue-lined envelope with an orange "@" seal (distinct from `contact`'s beige envelope + card) |
 | `display` (stage 1) | Monitor showing a tiny "Morning Waves" wallpaper |
 | `paint` (stage 10) | Wooden artist's palette with paint blobs and a brush across it (`PaintIcons.tsx`) — never the classic program's icon |
+| `cmd` (stage 13) | Small black console window with a light `C:\>` prompt and a blinking-underscore cue — original drawing, never the classic program's icon |
 | `dont-open-this` (stage 10) | Program file sealed with diagonal caution tape + a red "!" badge (`PaintIcons.tsx`) |
 | All Programs folders (stages 8–10) | Plain yellow folder without documents for Entertainment (`MediaIcons.tsx` → `ProgramFolderIcon`), the same folder with a small gear for Accessories (`CameraIcons.tsx` → `AccessoriesFolderIcon`); both distinct from `projects` |
 | Later stages | Recycle bin (own wire-basket design), messenger (one buddy + speech bubble — not the original two-person icon), media player, camera (stage 9 — done: glossy round desk webcam with a blue lens and a green "on" light, `components/icons/CameraIcons.tsx`, plus a small yellow program-folder glyph for All Programs ▸ Accessories) |
@@ -723,6 +724,16 @@ Beyond the tables above, implementation needed a few extra tokens (all in `app/g
 | `--color-viewfinder` | `#1B1B1B` | Dark viewfinder behind the pixelated camera picture |
 
 The Retro Cam "DouglasOS" palette is not a new token set: it reuses 16 existing Luna color tokens, mirrored as hex in `lib/camera/palettes.ts` (canvas code can't read CSS variables) and kept in sync by a unit test that parses `app/globals.css`.
+
+### Tokens added in stage 13 (cmd.exe)
+
+| Token | Value | Why |
+|-------|-------|-----|
+| `--color-console-bg` | `#0c0c0c` | Console screen behind the cmd.exe output |
+| `--color-console-text` | `#c0c0c0` | Output text |
+| `--color-console-prompt` | `#f0f0f0` | The prompt line and typed text (brighter than output) |
+
+The console is the one dark surface in the light Luna theme and is monospace (`font-mono`, `text-body`). The caret is an underline block (`1ch` wide, 2px) that blinks via the `animate-caret-blink` utility (step-style, ~1s); under `prefers-reduced-motion: reduce` it stays solid (the animation is applied with `motion-safe:` and the global reset also covers it).
 
 ### Tokens added in stage 2 (mobile)
 

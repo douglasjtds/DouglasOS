@@ -216,7 +216,7 @@ export default function CmdApp() {
               ref={mirrorRef}
               aria-hidden
               data-cmd-mirror
-              className="overflow-hidden whitespace-pre pr-[1ch] text-console-prompt"
+              className="min-h-lh overflow-hidden whitespace-pre pr-[1ch] text-console-prompt"
             >
               {before}
               <span className="relative">
