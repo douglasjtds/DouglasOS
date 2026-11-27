@@ -732,9 +732,9 @@ A Command Prompt window: a read-only, fictional console. It is a way to browse t
 
 ### Where it lives
 
-- Registry id `cmd`, title/label from `apps.cmd` ("cmd.exe"), a window app with the `console` surface (black body, not the beige Luna one).
+- Registry id `cmd`, title from `apps.cmd.title` ("Command Prompt" on the desktop, Start menu and title bar), a window app with the `bare` surface (the app paints its own black console body instead of the beige Luna one). `apps.cmd.fileLabel` ("cmd.exe") exists in the messages but no code reads it yet; the file name only appears in copy and in the Run… aliases.
 - **All Programs ▸ Accessories** and a **desktop icon** in the fun group right after Paint (one more icon: 17 selectable on desktop; phones gain an icon row).
-- **Run… / palette:** `cmd`, `terminal`, `command prompt`, `powershell`, `bash`, `sh`, `zsh`, `prompt` open it (aliases of the launcher) and find the `run-cmd` egg.
+- **Run… / palette:** `cmd`, `terminal`, `command prompt`, `powershell`, `bash`, `sh`, `zsh`, `prompt` open it (aliases of the launcher). Only the Run… dialog discovers the `run-cmd` egg; the command palette does not.
 
 ### Pieces
 
@@ -742,7 +742,7 @@ A Command Prompt window: a read-only, fictional console. It is a way to browse t
 |-------|-------|-------|
 | Filesystem | `lib/cmd/filesystem.ts` | Pure tree of the fake drive; paths are case-insensitive, `\` or `/`, `.`/`..`, `C:\DouglasOS` as root |
 | Parser | `lib/cmd/parser.ts` | Tokenizer with quotes; aliases (`ls`, `cat`, `open`, `clear`) |
-| Engine | `lib/cmd/commands.ts` | `runCommand(line, ctx) → { output, cwd?, effects? }`; effects are `run` (open a launcher / download), `discover` (egg), `clear`, `close` — the UI applies them, the engine stays pure |
+| Engine | `lib/cmd/commands.ts` | `runCommand(line, ctx) → { output, cwd?, effects? }`; effects are `run` (open a launcher / download), `openUrl` (open a URL in a new tab; used by `msg`), `discover` (egg), `clear`, `close` — the UI applies them, the engine stays pure |
 | Content | `lib/cmd/content.ts` | Renders the portfolio apps as text from the same i18n messages (EN/PT) |
 | UI | `components/apps/CmdApp.tsx` | Scrollback (`role="log"`, polite), prompt line, chips |
 | Copy | `messages/*` → `apps.cmd` | Command output is localized; command names are not |
@@ -759,7 +759,7 @@ A Command Prompt window: a read-only, fictional console. It is a way to browse t
 | `dir` (`ls`) / `cd` / `tree` | List, change directory (the prompt shows the cwd), draw the tree |
 | `type` (`cat`) `<file>` | Print a text file (the app's content as text) |
 | `start` (`open`) `<name>` | Open a file as its app: `.txt` → the window, `resume.pdf` → downloads the CV, `<game>.exe` → the game, project → its case study in Explorer |
-| `cv` / `contact` / `msg` | Download the CV / open Contact / open Messenger |
+| `cv` / `contact` / `msg` | Download the CV / open Contact / open WhatsApp in a new tab with your text pre-filled (`wa.me`; the page sends nothing and needs text: `msg <text>`) |
 | `whoami`, `ver`, `date`, `time`, `echo <text>` | Small info commands |
 | `cls` (`clear`) / `exit` | Clear the screen / close the window |
 | Hidden jokes | `sudo …` (egg `cmd-sudo`), `format …` (egg `cmd-format`), `hack`, `coffee`, `matrix`, `rm -rf` and the write commands (`mkdir`, `md`, `del`, `rm`, `copy`, `move`, `ren`) are refused with a wink. Not listed in `help` |
@@ -769,7 +769,7 @@ Unknown input prints a localized "not recognized" line. Output is capped (scroll
 ### Keys & behavior
 
 - Opening focuses the prompt (desktop); when the shell focuses the window frame (Run, palette, taskbar restore) the frame hands focus to the prompt. Phones wait for a tap so the keyboard never pops up unasked.
-- `Enter` runs; `↑`/`↓` walk the history; `Tab` completes a command name or a path (`Shift+Tab` keeps its normal meaning and leaves the field); `Esc` clears the line; `Ctrl+L` clears the screen. `Esc` on an empty line still falls through to the shell's close-window confirmation.
+- `Enter` runs; `↑`/`↓` walk the history; `Tab` completes a command name or a path (`Shift+Tab` keeps its normal meaning and leaves the field); `Esc` clears the line; `Ctrl+L` clears the screen. `Esc` in the prompt never closes the window: the app always prevents its default, and global shortcuts are suspended while a text field has focus. Use `exit` or the title-bar button to close.
 - The real `<input>` is transparent; a visible mirror (monospace, console tokens) shows the text and the caret. Both scroll together, so a line wider than the field keeps its end visible (the mirror's `scrollLeft` follows the field's).
 
 ### Mobile

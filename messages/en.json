@@ -628,7 +628,7 @@
         "start": "Opens a file, app or game",
         "cv": "Downloads Douglas's CV",
         "contact": "Shows how to reach Douglas",
-        "msg": "Opens the messenger to write to Douglas",
+        "msg": "Opens WhatsApp with your message to Douglas",
         "whoami": "Tells you who you are here",
         "ver": "Shows the DouglasOS version",
         "date": "Shows today's date",
@@ -644,7 +644,6 @@
         "notFile": "“{path}” is a folder, not a file.",
         "binary": "{name} is a binary file. Try: start {name}",
         "usage": {
-          "cd": "Usage: cd [folder]",
           "type": "Usage: type [file]",
           "start": "Usage: start [file]",
           "msg": "Usage: msg [your message]"
@@ -663,9 +662,7 @@
         "rm": "Deleting things is not on the menu. Everything here is read-only.",
         "hack": "Hacking in progress... just kidding. Try contact instead.",
         "coffee": "Brewing... Error: the coffee machine is a cat, and it is asleep.",
-        "matrix": "Wake up. The portfolio has you.",
-        "exit": "Closing the window. See you around!",
-        "rmFail": "Access denied. The files are staying right where they are."
+        "matrix": "Wake up. The portfolio has you."
       },
       "dir": {
         "header": "Directory of {path}",
@@ -673,7 +670,7 @@
         "summaryDirs": "{count} folder(s)"
       },
       "msg": {
-        "opening": "Opening the messenger..."
+        "opening": "Opening WhatsApp..."
       },
       "start": {
         "opening": "Opening {name}..."

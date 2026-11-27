@@ -89,6 +89,8 @@ describe("runCommand", () => {
 
   it("cv and contact are one command away", () => {
     expect(run("cv").effects![0]).toEqual({ kind: "run", target: { kind: "launcher", id: "resume" } });
+    expect(run("cv").output).toEqual([en("apps.cmd.start.opening", { name: "resume.pdf" })]);
+    expect(run("contact").output).toEqual([en("apps.cmd.start.opening", { name: "contact.txt" })]);
     expect(run("CONTACT").effects![0]).toEqual({
       kind: "run",
       target: { kind: "launcher", id: "contact" },

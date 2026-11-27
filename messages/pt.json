@@ -628,7 +628,7 @@
         "start": "Abre um arquivo, app ou jogo",
         "cv": "Baixa o currículo do Douglas",
         "contact": "Mostra como falar com o Douglas",
-        "msg": "Abre o mensageiro para escrever ao Douglas",
+        "msg": "Abre o WhatsApp com a sua mensagem para o Douglas",
         "whoami": "Diz quem é você por aqui",
         "ver": "Mostra a versão do DouglasOS",
         "date": "Mostra a data de hoje",
@@ -644,7 +644,6 @@
         "notFile": "“{path}” é uma pasta, não um arquivo.",
         "binary": "{name} é um arquivo binário. Tente: start {name}",
         "usage": {
-          "cd": "Uso: cd [pasta]",
           "type": "Uso: type [arquivo]",
           "start": "Uso: start [arquivo]",
           "msg": "Uso: msg [sua mensagem]"
@@ -663,9 +662,7 @@
         "rm": "Apagar coisas não está no cardápio. Tudo aqui é somente leitura.",
         "hack": "Invasão em andamento... brincadeira. Tente contact.",
         "coffee": "Preparando... Erro: a cafeteira é um gato, e ele está dormindo.",
-        "matrix": "Acorde. O portfólio te pegou.",
-        "exit": "Fechando a janela. Até a próxima!",
-        "rmFail": "Acesso negado. Os arquivos ficam exatamente onde estão."
+        "matrix": "Acorde. O portfólio te pegou."
       },
       "dir": {
         "header": "Conteúdo de {path}",
@@ -673,7 +670,7 @@
         "summaryDirs": "{count} pasta(s)"
       },
       "msg": {
-        "opening": "Abrindo o mensageiro..."
+        "opening": "Abrindo o WhatsApp..."
       },
       "start": {
         "opening": "Abrindo {name}..."

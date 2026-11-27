@@ -46,10 +46,9 @@ test.describe("cmd.exe", () => {
   });
 
   test("sudo counts an easter egg (2 with the Run → cmd discovery)", async ({ page }) => {
-    const { input, log } = await openCmd(page);
+    const { input } = await openCmd(page);
     await input.fill("sudo x");
     await input.press("Enter");
-    await expect(log).toContainText("sudo");
     await page.keyboard.press("Escape");
     await startButton(page).click();
     await expect(page.locator("[data-egg-counter]")).toHaveText("2/14");

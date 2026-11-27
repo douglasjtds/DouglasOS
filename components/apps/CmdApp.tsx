@@ -198,7 +198,7 @@ export default function CmdApp() {
       >
         <div role="log" aria-live="polite">
           {screen.lines.map((line, i) => (
-            <div key={screen.base + i} className="min-h-[1lh] whitespace-pre-wrap break-words">
+            <div key={screen.base + i} className="min-h-lh whitespace-pre-wrap break-words">
               {line}
             </div>
           ))}

@@ -132,6 +132,7 @@ function type(argText: string, ctx: CmdContext): CmdResult {
   const { node } = target;
   if (node.type === "dir") return { output: [ctx.t("apps.cmd.errors.notFile", { path: argText })] };
   if (isBinary(node)) return { output: [ctx.t("apps.cmd.errors.binary", { name: node.name })] };
+  // `isBinary` already returned for resume/game; this only narrows the type for `renderFile`.
   if (node.source.kind === "resume" || node.source.kind === "game") return { output: [] };
   return { output: renderFile(node.source, ctx.t) };
 }
@@ -223,9 +224,9 @@ export function runCommand(line: string, ctx: CmdContext): CmdResult {
     case "start":
       return start(argText, ctx);
     case "cv":
-      return { output: [], effects: [launcher("resume")] };
+      return { output: [t("apps.cmd.start.opening", { name: "resume.pdf" })], effects: [launcher("resume")] };
     case "contact":
-      return { output: [], effects: [launcher("contact")] };
+      return { output: [t("apps.cmd.start.opening", { name: "contact.txt" })], effects: [launcher("contact")] };
     case "msg":
       return msg(argText, ctx);
     case "whoami":
