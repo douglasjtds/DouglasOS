@@ -40,9 +40,9 @@ describe("discoverEgg", () => {
   });
 
   it("queues the reward right after the last egg", () => {
-    const { progress } = discoverEgg(allButLast(), "real-404", 9999);
+    const { progress } = discoverEgg(allButLast(), "cmd-format", 9999);
     expect(isComplete(progress.found)).toBe(true);
-    expect(progress.pending).toEqual(["real-404", "complete"]);
+    expect(progress.pending).toEqual(["cmd-format", "complete"]);
   });
 
   it("doesn't queue the reward before the end", () => {
@@ -78,8 +78,8 @@ describe("sanitizeProgress", () => {
 
   it("keeps the reward pending only while everything is found", () => {
     expect(sanitizeProgress({ found: { "run-cmd": 1 }, pending: ["complete"] }).pending).toEqual([]);
-    const full = discoverEgg(allButLast(), "real-404", 2).progress;
-    expect(sanitizeProgress(full).pending).toEqual(["real-404", "complete"]);
+    const full = discoverEgg(allButLast(), "cmd-format", 2).progress;
+    expect(sanitizeProgress(full).pending).toEqual(["cmd-format", "complete"]);
   });
 
   it("survives garbage", () => {

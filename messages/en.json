@@ -1335,6 +1335,14 @@
       "real-404": {
         "title": "Off the map",
         "hint": "Not every address leads somewhere."
+      },
+      "cmd-sudo": {
+        "title": "Superuser wannabe",
+        "hint": "Ask the terminal for more power than a visitor gets."
+      },
+      "cmd-format": {
+        "title": "Clean slate",
+        "hint": "Some commands should stay on the shelf."
       }
     }
   }

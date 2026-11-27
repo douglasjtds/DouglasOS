@@ -1335,6 +1335,14 @@
       "real-404": {
         "title": "Fora do mapa",
         "hint": "Nem todo endereço leva a algum lugar."
+      },
+      "cmd-sudo": {
+        "title": "Aspirante a superusuário",
+        "hint": "Peça ao terminal mais poder do que um visitante tem."
+      },
+      "cmd-format": {
+        "title": "Tela em branco",
+        "hint": "Alguns comandos é melhor deixar na prateleira."
       }
     }
   }
