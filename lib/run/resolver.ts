@@ -9,24 +9,19 @@ import { actionsForIntent, type ShellAction } from "@/lib/assistant/actions";
  * pure resolver behind both, built on the same brain as mini Douglas and the
  * Messenger. Resolution order for a typed command:
  *
- * 1. A fun command (`cmd`, `terminal`…) → a light easter egg.
- * 2. A launcher by id, localized title or alias (`contact`, `cv`, `lixeira`,
- *    `resume.pdf`, `whatsapp.exe`…). Launchers come from the registry, so an
- *    app added by a later stage is runnable by its id and title right away.
- * 3. A project through the Explorer address resolver (`gasolinha`,
+ * 1. A launcher by id, localized title or alias (`contact`, `cv`, `lixeira`,
+ *    `resume.pdf`, `whatsapp.exe`, `cmd`, `terminal`…). Launchers come from
+ *    the registry, so an app added by a later stage is runnable by its id and
+ *    title right away.
+ * 2. A project through the Explorer address resolver (`gasolinha`,
  *    `C:\DouglasOS\Projects\poupensa`, `the wedding post.exe`…).
- * 4. A free-text question through the intent matcher (`hire me`, `quero o
+ * 3. A free-text question through the intent matcher (`hire me`, `quero o
  *    currículo`) when it's confident (score ≥ `MIN_INTENT_SCORE`).
- * 5. Otherwise: not found ("DouglasOS couldn't find '<x>'…").
+ * 4. Otherwise: not found ("DouglasOS couldn't find '<x>'…").
  */
 
 /** Something Run / the palette can execute. */
-export type RunTarget =
-  | { kind: "launcher"; id: LauncherId; route?: string }
-  | { kind: "command"; id: FunCommandId };
-
-/** Fun commands: harmless, never in the way of the CV/Contact. */
-export type FunCommandId = "cmd";
+export type RunTarget = { kind: "launcher"; id: LauncherId; route?: string };
 
 export type RunResolution =
   | { kind: "target"; target: RunTarget }
@@ -37,13 +32,13 @@ export type LauncherLabels = Partial<Record<LauncherId, string>>;
 
 /** One autocomplete entry. */
 export interface RunSuggestion {
-  /** Stable, unique key (`launcher:contact`, `project:gasolinha`, `command:cmd`). */
+  /** Stable, unique key (`launcher:contact`, `project:gasolinha`). */
   key: string;
   target: RunTarget;
   /** Text Run puts in its field; it resolves back to this same target. */
   command: string;
   /** What kind of thing it is (drives the hint and the icon). */
-  type: "app" | "download" | "link" | "project" | "command";
+  type: "app" | "download" | "link" | "project";
 }
 
 /** Intent matches below this score are too weak to act on (e.g. "code"). */
@@ -86,6 +81,7 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   "media-player": ["music", "player", "radio", "musica", "media player", "wmplayer"],
   camera: ["cam", "webcam", "camera", "retro cam", "camera retro"],
   paint: ["paint", "mspaint", "draw", "desenhar", "pbrush"],
+  cmd: ["command", "command prompt", "terminal", "bash", "sh", "zsh", "powershell", "prompt"],
   "dont-open-this": ["dontopen", "dont open this", "nao abra isso", "dont open", "nao abra"],
   games: ["jogos", "games", "game", "jogo", "play", "jogar"],
   mines: ["minas", "campo minado", "mine", "minefield", "winmine"],
@@ -94,11 +90,6 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   hearts: ["copas", "hearts", "mshearts"],
   spider: ["spider solitaire", "paciencia spider", "aranha", "spider"],
   pinball: ["pinball", "flipper", "fliperama"],
-};
-
-/** Fun commands and their names. */
-const FUN_COMMANDS: Record<FunCommandId, readonly string[]> = {
-  cmd: ["cmd", "command", "terminal", "bash", "sh", "zsh", "powershell"],
 };
 
 /** Launcher id → its suggestion type. */
@@ -141,7 +132,7 @@ function makeEntry(
 
 /**
  * Every runnable thing, in default order: launchers in registry order (CTA
- * order: About, CV, Contact…), then the case studies, then fun commands.
+ * order: About, CV, Contact…), then the case studies.
  */
 function buildEntries(labels: LauncherLabels): Entry[] {
   const launchers = LAUNCHERS.map((l) =>
@@ -160,10 +151,7 @@ function buildEntries(labels: LauncherLabels): Entry[] {
       [p.slug, p.name, ...p.aliases],
     ),
   );
-  const commands = (Object.keys(FUN_COMMANDS) as FunCommandId[]).map((id) =>
-    makeEntry(`command:${id}`, { kind: "command", id }, id, "command", FUN_COMMANDS[id]),
-  );
-  return [...launchers, ...projects, ...commands];
+  return [...launchers, ...projects];
 }
 
 /** Map a shared assistant action onto a Run target. */
@@ -185,10 +173,10 @@ export function resolveRun(input: string, labels: LauncherLabels = {}): RunResol
   if (!key) return null;
 
   const entries = buildEntries(labels);
-  const funOrLauncher = entries.find(
+  const launcher = entries.find(
     (e) => e.type !== "project" && e.keys.includes(key),
   );
-  if (funOrLauncher) return { kind: "target", target: funOrLauncher.target };
+  if (launcher) return { kind: "target", target: launcher.target };
 
   const address = resolveAddress(query);
   if (address.kind === "route") {
@@ -210,10 +198,7 @@ export function resolveRun(input: string, labels: LauncherLabels = {}): RunResol
 
 /** Two targets are the same thing to run. */
 export function sameTarget(a: RunTarget, b: RunTarget): boolean {
-  if (a.kind !== b.kind || a.id !== b.id) return false;
-  const routeA = a.kind === "launcher" ? a.route : undefined;
-  const routeB = b.kind === "launcher" ? b.route : undefined;
-  return (routeA ?? null) === (routeB ?? null);
+  return a.id === b.id && (a.route ?? null) === (b.route ?? null);
 }
 
 function matchScore(entry: Entry, key: string, words: string[]): number {
@@ -229,7 +214,7 @@ function matchScore(entry: Entry, key: string, words: string[]): number {
  * Autocomplete: entries whose names match the query (exact, then prefix,
  * then word-prefix, then substring), in default order on ties. If the query
  * is a question the intent matcher understands ("hire me"), its answer leads.
- * An empty query lists everything except the fun commands (palette default).
+ * An empty query lists everything (palette default).
  */
 export function searchRun(
   input: string,
@@ -239,7 +224,7 @@ export function searchRun(
   const entries = buildEntries(labels);
   const strip = ({ key, target, command, type }: Entry): RunSuggestion => ({ key, target, command, type });
   const key = runKey(input);
-  if (!key) return entries.filter((e) => e.type !== "command").slice(0, limit).map(strip);
+  if (!key) return entries.slice(0, limit).map(strip);
 
   const words = input
     .normalize("NFD")

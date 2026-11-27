@@ -857,18 +857,12 @@
       "app": "Program",
       "download": "Download",
       "link": "Link",
-      "project": "Project",
-      "command": "Command"
+      "project": "Project"
     },
     "notFound": {
       "title": "DouglasOS",
       "body": "DouglasOS couldn't find “{query}”. Check the spelling, or try “projects”, “cv” or “contact”.",
       "ok": "OK"
-    },
-    "cmd": {
-      "title": "DouglasOS Command Prompt",
-      "body": "No terminal in here: this Run box already does the job. Type “projects”, “cv” or “contact” and press Enter.",
-      "ok": "Got it"
     }
   },
   "palette": {

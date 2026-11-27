@@ -857,18 +857,12 @@
       "app": "Programa",
       "download": "Download",
       "link": "Link",
-      "project": "Projeto",
-      "command": "Comando"
+      "project": "Projeto"
     },
     "notFound": {
       "title": "DouglasOS",
       "body": "O DouglasOS não encontrou “{query}”. Confira a grafia ou tente “projetos”, “cv” ou “contato”.",
       "ok": "OK"
-    },
-    "cmd": {
-      "title": "Prompt de comando do DouglasOS",
-      "body": "Aqui não tem terminal: esta caixa Executar já faz o trabalho. Digite “projetos”, “cv” ou “contato” e aperte Enter.",
-      "ok": "Entendi"
     }
   },
   "palette": {

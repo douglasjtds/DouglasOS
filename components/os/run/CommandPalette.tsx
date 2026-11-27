@@ -21,8 +21,8 @@ const MAX_RESULTS = 40;
  * search box over the desktop with the same resolver as Run. The list is
  * always visible (everything with an empty query, CTA order), ↑/↓/Home/End
  * move the highlight, Enter or a click opens it, Esc (or Ctrl/Cmd+K again)
- * closes. No match → "DouglasOS couldn't find" with the usual hints. Fun
- * commands stay in Run. Lazy-loaded by `ShellDialogs` when it opens.
+ * closes. No match → "DouglasOS couldn't find" with the usual hints.
+ * Lazy-loaded by `ShellDialogs` when it opens.
  */
 export default function CommandPalette() {
   const t = useTranslations("palette");
@@ -35,9 +35,7 @@ export default function CommandPalette() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
 
-  const results: RunSuggestion[] = searchRun(query, labels, MAX_RESULTS).filter(
-    (s) => s.type !== "command",
-  );
+  const results: RunSuggestion[] = searchRun(query, labels, MAX_RESULTS);
   const current = Math.min(active, results.length - 1);
   const optionId = (i: number) => `${listId}-option-${i}`;
 
