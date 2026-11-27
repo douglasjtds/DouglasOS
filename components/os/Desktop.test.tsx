@@ -57,6 +57,7 @@ describe("Desktop icons", () => {
       "DouglasOS Media Player",
       "Retro Cam",
       "DouglasOS Paint",
+      "Command Prompt",
       "Games",
       "Recycle Bin",
     ]);
@@ -187,7 +188,7 @@ describe("Desktop: multi-select, lasso and the Recycle Bin (stage 6)", () => {
     renderWithIntl(<Desktop />);
     await userEvent.tab();
     await userEvent.keyboard("{Control>}a{/Control}");
-    expect(selected()).toHaveLength(16);
+    expect(selected()).toHaveLength(17);
     expect(selected()).not.toContain("recycle-bin");
     expect(icon("Recycle Bin")).toHaveAttribute("aria-selected", "false");
     await userEvent.keyboard("{Escape}");

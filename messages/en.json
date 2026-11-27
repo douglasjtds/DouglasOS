@@ -1008,6 +1008,10 @@
           "v1": "Deleting Paint before drawing anything? Every masterpiece starts blank. Restored.",
           "v2": "Paint stays: someone still has to draw me a mustache. Back on the desktop."
         },
+        "cmd": {
+          "v1": "Deleting the command prompt? It would just type undel and come right back. Restored.",
+          "v2": "cmd.exe stays: someone has to answer when you type help. Back on the desktop."
+        },
         "about": {
           "v1": "Throwing me away already? We just met. I put myself back on the desktop.",
           "v2": "Deleting the About page is a bold way to get to know someone. Restored.",

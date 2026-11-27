@@ -1008,6 +1008,10 @@
           "v1": "Apagar o Paint antes de desenhar alguma coisa? Toda obra-prima começa em branco. Restaurado.",
           "v2": "O Paint fica: alguém ainda vai ter que me desenhar um bigode. De volta ao desktop."
         },
+        "cmd": {
+          "v1": "Apagar o prompt de comando? Ele ia digitar undel e voltar na hora. Restaurado.",
+          "v2": "O cmd.exe fica: alguém precisa responder quando você digita help. De volta ao desktop."
+        },
         "about": {
           "v1": "Já vai me jogar fora? A gente acabou de se conhecer. Me coloquei de volta no desktop.",
           "v2": "Apagar o \"Sobre\" é um jeito ousado de conhecer alguém. Restaurado.",
