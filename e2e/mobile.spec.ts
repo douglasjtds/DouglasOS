@@ -122,8 +122,8 @@ test.describe("touch shell", () => {
     // All Programs is inline (no cascading submenu) and lists every launcher,
     // folder contents included (Accessories → Retro Cam, Paint and DON'T OPEN
     // THIS.exe, stages 9–10; Entertainment → Media Player, stage 8; Games → the
-    // six games, stage 12).
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(23);
+    // six games, stage 12; DouglasOS Web in the flat list, stage 13).
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(24);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 
