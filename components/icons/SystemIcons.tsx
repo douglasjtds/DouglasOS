@@ -1,11 +1,13 @@
 /**
- * DouglasOS brand mark, user avatar and system glyphs (Start menu places,
+ * DouglasOS brand mark, user avatar (a photo) and system glyphs (Start menu places,
  * dialog semantics). All original drawings — the brand mark is a glossy
  * rounded tile with a "D" monogram, never a flag or window-pane shape.
  */
 import type { ReactNode } from "react";
+import Image from "next/image";
 import { Svg } from "@/components/icons/AppIcons";
 import { ICON_COLORS as C, useSvgIds, type IconProps } from "@/components/icons/types";
+import { cn } from "@/lib/utils";
 
 /** The DouglasOS logo: Luna-blue rounded tile, white "D", green accent dot. */
 export function DouglasOSLogo(props: IconProps) {
@@ -40,36 +42,24 @@ export function DouglasOSLogo(props: IconProps) {
   );
 }
 
-/** Douglas's user picture: a framed tile with his initials (no photo yet). */
-export function UserAvatar(props: IconProps) {
-  const id = useSvgIds("bg");
+/**
+ * Douglas's user picture: a square crop of the About photo on a white mat,
+ * like a Luna user tile. Decorative (`alt=""`) — every caller names the user
+ * next to it. `priority` is for the logon screen, where it is above the fold.
+ */
+export function UserAvatar({ size = 48, className, priority }: IconProps & { priority?: boolean }) {
   return (
-    <Svg {...props}>
-      <defs>
-        <linearGradient id={id.bg} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ffd27a" />
-          <stop offset="0.5" stopColor="#f0954a" />
-          <stop offset="1" stopColor="#c4552a" />
-        </linearGradient>
-      </defs>
-      <rect x="1.5" y="1.5" width="45" height="45" rx="5" fill="#ffffff" stroke="#c9d6ea" strokeWidth="1" />
-      <rect x="4.5" y="4.5" width="39" height="39" rx="3" fill={`url(#${id.bg})`} />
-      <circle cx="24" cy="19" r="7.5" fill="#ffffff" opacity="0.35" />
-      <path d="M10 43.5c0-8 6.3-12.5 14-12.5s14 4.5 14 12.5z" fill="#ffffff" opacity="0.35" />
-      <text
-        x="24"
-        y="29"
-        textAnchor="middle"
-        fontFamily="Tahoma, Verdana, sans-serif"
-        fontSize="15"
-        fontWeight="700"
-        fill="#ffffff"
-        stroke="#8a3a17"
-        strokeWidth="0.6"
-      >
-        DT
-      </text>
-    </Svg>
+    <Image
+      src="/about/douglas-avatar.jpg"
+      alt=""
+      width={size}
+      height={size}
+      sizes={`${size}px`}
+      priority={priority}
+      data-user-avatar
+      className={cn("block shrink-0 rounded-control border-2 border-surface bg-surface object-cover", className)}
+      style={{ width: size, height: size }}
+    />
   );
 }
 
