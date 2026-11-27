@@ -62,7 +62,7 @@ export function LogonScreen() {
               className="flex items-center gap-4 rounded-balloon bg-logon-band p-3 pr-6 text-left shadow-balloon hover:bg-startmenu-header focus-inverse"
             >
               <span className="rounded-balloon border-2 border-hot">
-                <UserAvatar size={64} />
+                <UserAvatar size={64} priority />
               </span>
               <span className="flex flex-col">
                 <span className="text-logon text-text-inverse">Douglas</span>
