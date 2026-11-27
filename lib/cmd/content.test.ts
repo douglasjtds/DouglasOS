@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IntlMessageFormat } from "intl-messageformat";
+import { createTranslator } from "next-intl";
 import { renderFile } from "@/lib/cmd/content";
 import { en, pt } from "@/lib/cmd/testTranslator";
 import { PROJECTS } from "@/lib/content/projects";
@@ -86,13 +86,28 @@ describe("apps.cmd copy", () => {
 
 describe("apps.cmd ICU syntax", () => {
   for (const [locale, messages] of [["en", enMessages], ["pt", ptMessages]] as const) {
-    it(`every ${locale} apps.cmd string parses as ICU`, () => {
+    it(`every ${locale} apps.cmd string formats through next-intl`, () => {
+      const errors: string[] = [];
+      const t = createTranslator({
+        locale,
+        messages: messages as never,
+        onError: (e) => {
+          errors.push(e.message);
+        },
+        getMessageFallback: ({ key }) => `FALLBACK:${key}`,
+      }) as unknown as (key: string, values?: Record<string, unknown>) => string;
+      const values = { name: "n", path: "p", count: 2, title: "t", address: "a" };
       const flat = flatten((messages as { apps: { cmd: unknown } }).apps.cmd);
       expect(Object.keys(flat).length).toBeGreaterThan(0);
       for (const [key, value] of Object.entries(flat)) {
-        if (typeof value !== "string") continue;
-        expect(() => new IntlMessageFormat(value, locale), `${locale} apps.cmd.${key}`).not.toThrow();
+        const keys = Array.isArray(value) ? value.map((_, i) => `${key}.${i}`) : [key];
+        for (const k of keys) check(k);
       }
+      function check(key: string) {
+        const out = t(`apps.cmd.${key}`, values);
+        expect(out, `${locale} apps.cmd.${key}`).not.toMatch(/^FALLBACK:/);
+      }
+      expect(errors).toEqual([]);
     });
   }
 });
