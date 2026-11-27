@@ -24,6 +24,7 @@ import { MessengerIcon } from "@/components/icons/MessengerIcons";
 import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
 import { CameraIcon } from "@/components/icons/CameraIcons";
 import { DontOpenThisIcon, PaintIcon } from "@/components/icons/PaintIcons";
+import { BrowserAppIcon } from "@/components/icons/BrowserIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -33,6 +34,7 @@ export type AppId =
   | "skills"
   | "how-i-work-with-ai"
   | "contact"
+  | "browser"
   | "messenger"
   | "display"
   | "recycle-bin"
@@ -112,6 +114,11 @@ export interface WindowAppConfig {
    * pane (the Explorer's menu bar, toolbar, address bar and status bar).
    */
   surface?: "pane" | "dialog" | "bare";
+  /**
+   * Desktop group for an app outside All Programs folders: "fun" puts it
+   * with the folder apps (its own column/row after the links).
+   */
+  desktopGroup?: "fun";
   /** Present when the app has pages (see `AppRoutes`). */
   routes?: AppRoutes;
   /** Lazily-loaded window body so content never bloats the shell bundle. */
@@ -296,6 +303,20 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 520, height: 380 },
     Content: lazy(() => import("@/components/apps/RecycleBinApp")),
   },
+  // DouglasOS Web: a real (allowlisted) browser with tabs. Not restored after
+  // a reload, so no third-party iframe ever loads with the shell. First of the
+  // fun-apps desktop group (not in an All Programs folder: flat list).
+  {
+    id: "browser",
+    kind: "window",
+    icon: BrowserAppIcon,
+    onDesktop: true,
+    desktopGroup: "fun",
+    persistWindow: false,
+    surface: "bare",
+    defaultSize: { width: 920, height: 640 },
+    Content: lazy(() => import("@/components/apps/BrowserApp")),
+  },
   // DouglasOS Media Player (stage 8): Start → All Programs → Entertainment,
   // plus a desktop shortcut in the fun-apps group (after the links, so a
   // phone's first row stays About / CV / Contact).
@@ -374,8 +395,9 @@ export const LINK_LAUNCHERS: LinkConfig[] = LAUNCHERS.filter(
   (l): l is LinkConfig => l.kind === "link",
 );
 
-/** A desktop launcher that is a fun app (it lives in an All Programs folder). */
-const isFunApp = (l: LauncherConfig) => l.kind === "window" && Boolean(l.folder);
+/** A desktop launcher that is a fun app (in an All Programs folder, or opted in). */
+const isFunApp = (l: LauncherConfig) =>
+  l.kind === "window" && (Boolean(l.folder) || l.desktopGroup === "fun");
 
 /**
  * Desktop icons split into default-layout groups: the portfolio apps (+ CV)

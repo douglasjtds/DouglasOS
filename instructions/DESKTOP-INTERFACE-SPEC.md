@@ -680,6 +680,21 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ---
 
+## 21. DouglasOS Web *(stage 12 — done)*
+
+A working browser in the Luna-era style that only goes to Douglas's work. Desktop icon (first of the fun-apps group), Start → All Programs (flat list), Run/palette (`navegador`, `browser`, `internet`, `web`). Not restored after a reload, so no third-party iframe ever loads with the shell.
+
+- **Allowlist** (`lib/browser/sites.ts`): LinkedIn, GitHub, then every project with a public demo in `lib/content/projects.ts` (single source). Default tabs: **LinkedIn + gasolinha.com.br**.
+- **Rendering.** Sites that allow framing (checked with their response headers: no `X-Frame-Options`, no restrictive `frame-ancestors`) load live in a sandboxed iframe (`allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox`, never top navigation, `no-referrer`). **LinkedIn and GitHub refuse to be framed** (`X-Frame-Options: sameorigin` / `frame-ancestors 'none'`), so their tab is a *local* profile page in DouglasOS's look (About photo, name, headline, first summary paragraph — never the vendor's visuals or logo) with "Open the real LinkedIn/GitHub" (new tab, `noopener noreferrer`). A framed site that hasn't loaded after 15s shows a "taking a nap" note with "Open in a real tab".
+- **Chrome.** Menu bar (File: New tab, Close tab, Open in a real tab, Download CV, Contact, Close; Favorites: the allowlist), toolbar (Back, Forward, Refresh, Home, Open in a real tab), address bar + Go, tab strip (ARIA tablist, arrow/Home/End keys, close per tab, "+"), status bar ("Opening…" / "Done" / "Local page" / "Start page" / "Not on the list"). Closing the last tab closes the window.
+- **Address bar** accepts full URLs, bare hosts, paths and subdomains of allowed hosts, names and aliases (case/accent/punctuation-insensitive). `about:start` or an empty field → start page (the site tiles + CV/Contact). **Anything else → the "Okay, now that's a bit much, right?" page**: a browser inside a browser only goes to Douglas's projects; site tiles + CV/Contact.
+- **Tab limit**: 4 on desktop, 2 on phones; one more opens the "Too many tabs" message box (with Download CV).
+- **History limits.** Cross-origin iframes don't report clicks inside them, so the address bar shows what the browser opened and Back/Forward move through those pages only. Tabs that were shown stay mounted while hidden (switching back doesn't reload).
+- **Mobile**: full-screen window, one compact toolbar row (Back, Forward, address, "More" with Favorites + File items), 36px tab controls, horizontally scrolling tab strip.
+- **Reduced motion**: nothing animates (no throbber).
+
+---
+
 ## Layering (z-index policy)
 
 | Layer | z-index | Notes |

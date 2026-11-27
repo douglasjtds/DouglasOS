@@ -353,6 +353,83 @@
         }
       ]
     },
+    "browser": {
+      "title": "DouglasOS Web",
+      "description": "Browse Douglas's projects (and only them)",
+      "menuBar": "DouglasOS Web menu bar",
+      "menu": {
+        "file": "File",
+        "favorites": "Favorites",
+        "more": "More",
+        "newTab": "New tab",
+        "closeTab": "Close tab",
+        "openReal": "Open in a real tab",
+        "downloadCv": "Download CV",
+        "contact": "Contact Douglas",
+        "close": "Close"
+      },
+      "toolbar": {
+        "label": "Navigation",
+        "back": "Back",
+        "forward": "Forward",
+        "refresh": "Refresh",
+        "home": "Home",
+        "openReal": "Open this site in a real browser tab"
+      },
+      "address": "Address",
+      "go": "Go",
+      "tabs": {
+        "label": "Open tabs",
+        "newTab": "New tab",
+        "close": "Close {title}",
+        "home": "Start page",
+        "blocked": "Hmm…"
+      },
+      "status": {
+        "loading": "Opening {title}…",
+        "done": "Done",
+        "local": "Local page — {title} doesn't open inside other sites",
+        "home": "Start page",
+        "blocked": "Not on the list"
+      },
+      "frameTitle": "{title} (live site)",
+      "announce": "{title} opened",
+      "pages": {
+        "home": {
+          "heading": "Welcome to DouglasOS Web",
+          "intro": "A browser inside your browser. It only goes to one place: Douglas's work. Pick a site:",
+          "favorites": "Favorites"
+        },
+        "blocked": {
+          "heading": "Okay, now that's a bit much, right?",
+          "body": "You're using a browser inside a browser. Opening \"{query}\" in here would be one browser too many. In this one you get Douglas's projects — try one of these:",
+          "sites": "Sites this browser knows"
+        },
+        "local": {
+          "linkedin": {
+            "lead": "LinkedIn is shy: it doesn't let itself be opened inside other sites. Here's the short version of the profile:",
+            "button": "Open the real LinkedIn"
+          },
+          "github": {
+            "lead": "GitHub doesn't open inside other sites either. The code lives there; the live projects are in the Favorites menu:",
+            "button": "Open the real GitHub"
+          }
+        },
+        "slow": {
+          "heading": "This site is taking a nap",
+          "body": "{title} is taking a while to answer in here. It may load faster in a real tab.",
+          "button": "Open in a real tab"
+        },
+        "downloadCv": "Download CV",
+        "contact": "Contact Douglas"
+      },
+      "tooMany": {
+        "title": "Too many tabs",
+        "body": "{count} tabs inside a browser inside a browser? Let's not overdo it. Close one first — or just go straight to the CV.",
+        "ok": "Fair enough",
+        "downloadCv": "Download CV"
+      }
+    },
     "messenger": {
       "title": "DouglasOS Messenger",
       "description": "Chat with (scripted) Douglas"
@@ -909,6 +986,10 @@
         "cleanupWithCv": {
           "v1": "You threw out {count} icons, my CV included! Everything's back. Grab the CV now, before it takes another trip?",
           "v2": "Mass deletion, CV and all? I restored all {count}. The CV is one click away right below, just saying."
+        },
+        "browser": {
+          "v1": "Throwing the browser away? It only visits my projects, it's the most well-behaved browser ever. Restored.",
+          "v2": "No browser, no projects tour. I put it back on the desktop."
         }
       }
     }

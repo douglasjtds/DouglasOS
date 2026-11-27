@@ -353,6 +353,83 @@
         }
       ]
     },
+    "browser": {
+      "title": "DouglasOS Web",
+      "description": "Navegue pelos projetos do Douglas (e só por eles)",
+      "menuBar": "Barra de menus do DouglasOS Web",
+      "menu": {
+        "file": "Arquivo",
+        "favorites": "Favoritos",
+        "more": "Mais",
+        "newTab": "Nova aba",
+        "closeTab": "Fechar aba",
+        "openReal": "Abrir numa aba de verdade",
+        "downloadCv": "Baixar CV",
+        "contact": "Falar com o Douglas",
+        "close": "Fechar"
+      },
+      "toolbar": {
+        "label": "Navegação",
+        "back": "Voltar",
+        "forward": "Avançar",
+        "refresh": "Atualizar",
+        "home": "Página inicial",
+        "openReal": "Abrir este site numa aba de verdade do navegador"
+      },
+      "address": "Endereço",
+      "go": "Ir",
+      "tabs": {
+        "label": "Abas abertas",
+        "newTab": "Nova aba",
+        "close": "Fechar {title}",
+        "home": "Página inicial",
+        "blocked": "Hmm…"
+      },
+      "status": {
+        "loading": "Abrindo {title}…",
+        "done": "Concluído",
+        "local": "Página local — o {title} não abre dentro de outros sites",
+        "home": "Página inicial",
+        "blocked": "Fora da lista"
+      },
+      "frameTitle": "{title} (site ao vivo)",
+      "announce": "{title} aberto",
+      "pages": {
+        "home": {
+          "heading": "Bem-vindo ao DouglasOS Web",
+          "intro": "Um navegador dentro do seu navegador. Ele só vai a um lugar: o trabalho do Douglas. Escolha um site:",
+          "favorites": "Favoritos"
+        },
+        "blocked": {
+          "heading": "Opa, aí já é demais, né?",
+          "body": "Você está usando um navegador dentro do navegador. Abrir \"{query}\" aqui dentro seria navegador demais. Aqui você vê os projetos do Douglas — experimenta um destes:",
+          "sites": "Sites que este navegador conhece"
+        },
+        "local": {
+          "linkedin": {
+            "lead": "O LinkedIn é tímido: não deixa ser aberto dentro de outros sites. Aqui vai a versão curta do perfil:",
+            "button": "Abrir o LinkedIn de verdade"
+          },
+          "github": {
+            "lead": "O GitHub também não abre dentro de outros sites. O código mora lá; os projetos ao vivo estão no menu Favoritos:",
+            "button": "Abrir o GitHub de verdade"
+          }
+        },
+        "slow": {
+          "heading": "Este site está tirando um cochilo",
+          "body": "O {title} está demorando para responder aqui dentro. Numa aba de verdade ele pode abrir mais rápido.",
+          "button": "Abrir numa aba de verdade"
+        },
+        "downloadCv": "Baixar CV",
+        "contact": "Falar com o Douglas"
+      },
+      "tooMany": {
+        "title": "Abas demais",
+        "body": "{count} abas num navegador dentro do navegador? Vamos com calma. Feche uma primeiro — ou vá direto pro CV.",
+        "ok": "Justo",
+        "downloadCv": "Baixar CV"
+      }
+    },
     "messenger": {
       "title": "DouglasOS Messenger",
       "description": "Converse com o Douglas (roteirizado)"
@@ -909,6 +986,10 @@
         "cleanupWithCv": {
           "v1": "Você jogou fora {count} ícones, inclusive meu currículo! Tá tudo de volta. Baixa o CV agora, antes que ele dê outro passeio?",
           "v2": "Exclusão em massa, com currículo e tudo? Restaurei os {count}. O CV tá a um clique aqui embaixo, só dizendo."
+        },
+        "browser": {
+          "v1": "Jogando o navegador fora? Ele só visita meus projetos, é o navegador mais comportado do mundo. Restaurado.",
+          "v2": "Sem navegador, sem tour pelos projetos. Coloquei de volta na área de trabalho."
         }
       }
     }

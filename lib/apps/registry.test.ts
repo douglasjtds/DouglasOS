@@ -61,7 +61,7 @@ describe("registry: external shortcuts", () => {
 
   it("groups the desktop icons as apps first, then links, then fun apps", () => {
     expect([...DESKTOP_ICON_GROUPS.flat()].sort()).toEqual([...DESKTOP_ICON_IDS].sort());
-    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["media-player", "camera", "paint"]);
+    expect(DESKTOP_ICON_GROUPS[2]).toEqual(["browser", "media-player", "camera", "paint"]);
     expect(DESKTOP_ICON_GROUPS[1]).toEqual(LINK_LAUNCHERS.map((l) => l.id));
     expect(DESKTOP_ICON_GROUPS[0].slice(0, 3)).toEqual(["about", "resume", "contact"]);
   });

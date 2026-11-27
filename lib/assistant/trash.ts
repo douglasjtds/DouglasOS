@@ -19,6 +19,7 @@ export const TRASH_LINES: Record<DesktopIconId, { key: string; variants: number 
   experience: { key: "experience", variants: 2 },
   skills: { key: "skills", variants: 2 },
   "how-i-work-with-ai": { key: "aiWorkflow", variants: 2 },
+  browser: { key: "browser", variants: 2 },
   messenger: { key: "messenger", variants: 2 },
   linkedin: { key: "linkedin", variants: 2 },
   github: { key: "github", variants: 2 },
