@@ -668,6 +668,7 @@
         "rmFail": "Access denied. The files are staying right where they are."
       },
       "dir": {
+        "header": "Directory of {path}",
         "summaryFiles": "{count} file(s)",
         "summaryDirs": "{count} folder(s)"
       },

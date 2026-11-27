@@ -668,6 +668,7 @@
         "rmFail": "Acesso negado. Os arquivos ficam exatamente onde estão."
       },
       "dir": {
+        "header": "Conteúdo de {path}",
         "summaryFiles": "{count} arquivo(s)",
         "summaryDirs": "{count} pasta(s)"
       },

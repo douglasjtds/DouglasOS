@@ -35,9 +35,15 @@ describe("runCommand", () => {
 
   it("dir lists folders and files", () => {
     const out = run("dir").output;
-    expect(out[0]).toContain("Directory of C:\\DouglasOS");
+    expect(out[0]).toBe(en("apps.cmd.dir.header", { path: "C:\\DouglasOS" }));
     expect(out.join("\n")).toContain("<DIR>");
     expect(out.join("\n")).toContain("resume.pdf");
+  });
+
+  it("dir header follows the locale", () => {
+    const out = runCommand("dir", { cwd: [], t: pt, locale: "pt", now, labels: {} }).output;
+    expect(out[0]).toBe(pt("apps.cmd.dir.header", { path: "C:\\DouglasOS" }));
+    expect(out[0]).toContain("Conteúdo de");
   });
 
   it("tree draws the structure", () => {

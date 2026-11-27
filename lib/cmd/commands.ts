@@ -104,7 +104,7 @@ function dir(argText: string, ctx: CmdContext): CmdResult {
   const files = node.children.filter((c): c is FsFile => c.type === "file");
   return {
     output: [
-      `Directory of ${formatPath(path)}`,
+      ctx.t("apps.cmd.dir.header", { path: formatPath(path) }),
       "",
       ...dirs.map((d) => `${"<DIR>".padStart(8)}  ${d.name}`),
       ...files.map((f) => `${String(f.size).padStart(8)}  ${f.name}`),
