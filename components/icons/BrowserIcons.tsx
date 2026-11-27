@@ -87,3 +87,47 @@ export function CaseStudyIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/**
+ * DouglasOS Web (the `browser` app): a glossy blue globe with green land and
+ * white meridians, plus a small address-bar strip. Deliberately no orbit ring
+ * or letter mark, so it never reads as any vendor's browser logo.
+ */
+export function BrowserAppIcon(props: IconProps) {
+  const id = useSvgIds("sea", "clip");
+  return (
+    <Svg {...props}>
+      <defs>
+        <radialGradient id={id.sea} cx="0.35" cy="0.3" r="0.8">
+          <stop offset="0" stopColor={C.blueLight} />
+          <stop offset="0.65" stopColor={C.blue} />
+          <stop offset="1" stopColor={C.blueDark} />
+        </radialGradient>
+        <clipPath id={id.clip}>
+          <circle cx="24" cy="22" r="17" />
+        </clipPath>
+      </defs>
+      <ellipse cx="24" cy="44" rx="15" ry="2.5" fill={C.shadow} opacity={0.22} />
+      <circle cx="24" cy="22" r="17" fill={`url(#${id.sea})`} stroke={C.outline} strokeWidth="1.5" />
+      <g clipPath={`url(#${id.clip})`}>
+        <path
+          d="M9 15c4-3 8-2 10 1s-1 6 2 8 2 7-2 8-6-3-8-6-5-8-2-11zM27 8c5 0 9 2 11 6s-2 5-5 4-4 3-7 2-3-5-1-7-2-5 2-5zM30 27c3-1 7 0 8 3s-2 7-6 7-5-3-4-6z"
+          fill={C.green}
+          stroke={C.greenDark}
+          strokeWidth="1"
+        />
+        <path
+          d="M7 22h34M24 5v34M24 5c-7 5-7 29 0 34M24 5c7 5 7 29 0 34"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="1"
+          opacity="0.45"
+        />
+      </g>
+      <ellipse cx="19" cy="12" rx="8" ry="4" fill="#ffffff" opacity="0.35" />
+      <rect x="10" y="35" width="28" height="7" rx="2" fill={C.paper} stroke={C.outline} strokeWidth="1.2" />
+      <path d="M13 38.5h16" stroke={C.paperLine} strokeWidth="2" strokeLinecap="round" />
+      <circle cx="34" cy="38.5" r="1.8" fill={C.green} />
+    </Svg>
+  );
+}
