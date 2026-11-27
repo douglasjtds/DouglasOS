@@ -59,7 +59,9 @@ export default function ProjectsApp() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const paneRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const firstRender = useRef(true);
+  // The route the page effect last handled (not a "first render" flag: dev
+  // StrictMode re-runs effects on mount, which would read as a page change).
+  const focusedRoute = useRef(route);
   // A not-found action that moves focus (new page, Contact window) must not
   // have the dialog pull focus back to the address field on close.
   const keepFocus = useRef(false);
@@ -70,10 +72,8 @@ export default function ProjectsApp() {
     // Narrow fields (phones) would hide the slug: show the end of the path.
     const input = inputRef.current;
     if (input && document.activeElement !== input) input.scrollLeft = input.scrollWidth;
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
+    if (focusedRoute.current === route) return;
+    focusedRoute.current = route;
     if (paneRef.current) paneRef.current.scrollTop = 0;
     headingRef.current?.focus({ preventScroll: true });
   }, [route]);

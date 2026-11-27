@@ -7,13 +7,16 @@ import {
   loadYouTubeIframeApi,
   mapPlayerState,
   nextIndex,
+  randomStartIndex,
+  resetRandomStart,
   resetYouTubeApiLoader,
 } from "@/lib/media/youtube";
 import { YOUTUBE_EMBED_HOST, YOUTUBE_IFRAME_API_SRC, YOUTUBE_PLAYLIST_ID, youtubePlaylistUrl } from "@/lib/media/source";
 import type { SourceEvent } from "@/lib/media/types";
 import { createFakeYT, lastPlayer } from "@/test/fakeYouTube";
 
-function setup(options: { volume?: number; muted?: boolean } = {}) {
+function setup(options: { volume?: number; muted?: boolean; random?: () => number } = {}) {
+  resetRandomStart();
   const YT = createFakeYT();
   const container = document.createElement("div");
   const adapter = createYouTubeAdapter(YT, container, {
@@ -21,6 +24,7 @@ function setup(options: { volume?: number; muted?: boolean } = {}) {
     volume: options.volume ?? 50,
     muted: options.muted ?? false,
     origin: "http://localhost",
+    random: options.random ?? (() => 0),
   });
   const events: SourceEvent[] = [];
   adapter.onEvent((e) => events.push(e));
@@ -212,5 +216,78 @@ describe("loadYouTubeIframeApi", () => {
     const attempt = loadYouTubeIframeApi({ timeoutMs: 1000 });
     vi.advanceTimersByTime(1000);
     await expect(attempt).rejects.toThrow(/timed out/);
+  });
+});
+
+describe("randomStartIndex", () => {
+  it("stays inside the playlist", () => {
+    expect(randomStartIndex(0)).toBe(0);
+    expect(randomStartIndex(1, () => 0.9)).toBe(0);
+    expect(randomStartIndex(3, () => 0)).toBe(0);
+    expect(randomStartIndex(3, () => 0.5)).toBe(1);
+    expect(randomStartIndex(3, () => 0.999)).toBe(2);
+    expect(randomStartIndex(3, () => 1)).toBe(2);
+  });
+
+  it("never repeats the previous start when there's a choice", () => {
+    for (const r of [0, 0.3, 0.6, 0.99]) {
+      expect(randomStartIndex(3, () => r, 1)).not.toBe(1);
+      expect(randomStartIndex(2, () => r, 0)).toBe(1);
+    }
+    expect(randomStartIndex(1, () => 0, 0)).toBe(0);
+  });
+});
+
+describe("createYouTubeAdapter random start", () => {
+  it("re-cues the playlist at a random track on ready and reports it once cued", () => {
+    const { player, events } = setup({ random: () => 0.5 });
+    player.emitReady();
+    expect(player.calls).toContain("cue:1");
+    expect(events.filter((e) => e.type === "track")).toEqual([]);
+    player.emitState(YT_STATE.cued);
+    expect(events).toContainEqual({ type: "track", title: "Song B", position: { index: 1, total: 3 } });
+    expect(states(events)).toEqual(["ready", "ready"]);
+  });
+
+  it("does not re-cue when the pick is the current track, nor after later cues", () => {
+    const { player } = setup({ random: () => 0 });
+    player.emitReady();
+    player.emitState(YT_STATE.cued);
+    expect(player.calls.some((c) => c.startsWith("cue:"))).toBe(false);
+  });
+
+  it("starts a Play pressed while loading on the random track", () => {
+    const { adapter, player } = setup({ random: () => 0.9 });
+    adapter.play();
+    player.emitReady();
+    expect(player.calls.at(-1)).toBe("playAt:2");
+  });
+
+  it("never jumps once the visitor pressed Play", () => {
+    const { adapter, player } = setup({ random: () => 0.9 });
+    player.getPlaylist = () => [] as string[]; // playlist not known yet at ready
+    player.emitReady();
+    adapter.play();
+    player.getPlaylist = () => player.playlist;
+    player.emitState(YT_STATE.cued);
+    expect(player.calls.some((c) => c.startsWith("cue:"))).toBe(false);
+  });
+
+  it("picks a different start track on the next opening", () => {
+    const YT = createFakeYT();
+    resetRandomStart();
+    const open = () => {
+      createYouTubeAdapter(YT, document.createElement("div"), {
+        playlistId: YOUTUBE_PLAYLIST_ID,
+        volume: 50,
+        muted: false,
+        random: () => 0.5,
+      });
+      const player = lastPlayer();
+      player.emitReady();
+      return player.index;
+    };
+    const first = open();
+    expect(open()).not.toBe(first);
   });
 });
