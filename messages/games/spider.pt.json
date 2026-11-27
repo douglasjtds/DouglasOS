@@ -1,0 +1,31 @@
+{
+  "menu": {
+    "deal": "Distribuir uma fileira",
+    "hint": "Dica",
+    "suits1": "1 naipe (fácil)",
+    "suits2": "2 naipes (médio)",
+    "suits4": "4 naipes (difícil)"
+  },
+  "table": "Mesa da Paciência Spider",
+  "column": "Coluna {column}",
+  "emptyColumn": "Coluna {column}, vazia",
+  "cardInColumn": "{card}, coluna {column}",
+  "faceDown": "{count, plural, one {# carta virada para baixo} other {# cartas viradas para baixo}}",
+  "stock": "Distribuir uma fileira ({count} restantes)",
+  "stockEmpty": "Não há mais fileiras para distribuir",
+  "completed": "Sequências completas: {count} de 8",
+  "runs": "Sequências: {count}/8",
+  "message": {
+    "selected": "Selecionado: {card}. Escolha uma coluna.",
+    "cantPickUp": "Só sequências de um naipe em ordem decrescente podem ser movidas.",
+    "illegal": "Não dá para colocar aí. Use uma carta um valor acima ou uma coluna vazia.",
+    "noDestination": "Não há para onde mover isso.",
+    "emptyColumn": "Preencha todas as colunas vazias antes de distribuir uma fileira.",
+    "noStock": "Não há mais fileiras para distribuir.",
+    "noMovesDeal": "Nenhuma jogada disponível — distribua uma fileira.",
+    "noMoves": "Nenhuma jogada disponível.",
+    "hint": "Dica: mova {card} para a coluna {column}.",
+    "runCompleted": "Sequência completa!"
+  },
+  "wonMessage": "As 8 sequências foram completadas! Pontuação final: {score}."
+}

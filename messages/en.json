@@ -521,6 +521,86 @@
     "achievements": {
       "title": "Achievements",
       "description": "Easter eggs you've found"
+    },
+    "games": {
+      "title": "Games",
+      "description": "Classic card and puzzle games for a coffee break",
+      "heading": "Games",
+      "intro": "A few classics for a quick break. Your CV and contact are still one click away.",
+      "open": "Open",
+      "objects": "{count, plural, one {# object} other {# objects}}",
+      "menuBar": "Games folder menu bar",
+      "menu": {
+        "file": "File",
+        "open": "Open",
+        "close": "Close"
+      },
+      "common": {
+        "menuBar": "Game menu bar",
+        "game": "Game",
+        "newGame": "New game",
+        "undo": "Undo",
+        "options": "Options",
+        "help": "Help",
+        "exit": "Exit",
+        "playAgain": "Play again",
+        "close": "Close",
+        "won": "You won!",
+        "lost": "Game over",
+        "time": "Time: {seconds}",
+        "score": "Score: {score}",
+        "moves": "Moves: {moves}",
+        "cards": {
+          "name": "{rank} of {suit}",
+          "faceDown": "Face-down card",
+          "empty": "Empty pile",
+          "ranks": {
+            "1": "Ace",
+            "2": "Two",
+            "3": "Three",
+            "4": "Four",
+            "5": "Five",
+            "6": "Six",
+            "7": "Seven",
+            "8": "Eight",
+            "9": "Nine",
+            "10": "Ten",
+            "11": "Jack",
+            "12": "Queen",
+            "13": "King"
+          },
+          "suits": {
+            "spades": "spades",
+            "hearts": "hearts",
+            "diamonds": "diamonds",
+            "clubs": "clubs"
+          }
+        }
+      }
+    },
+    "mines": {
+      "title": "Mines",
+      "description": "Clear the field without hitting a mine"
+    },
+    "solitaire": {
+      "title": "Solitaire",
+      "description": "Build the four suits from Ace to King"
+    },
+    "freecell": {
+      "title": "FreeCell",
+      "description": "Every card face up — four free cells to work with"
+    },
+    "hearts": {
+      "title": "Hearts",
+      "description": "Dodge the hearts and the queen of spades"
+    },
+    "spider": {
+      "title": "Spider Solitaire",
+      "description": "Two decks, eight runs from King down to Ace"
+    },
+    "pinball": {
+      "title": "Pinball",
+      "description": "Flippers, bumpers and a high score to beat"
     }
   },
   "easterEgg": {
@@ -651,7 +731,8 @@
     "turnOff": "Turn Off",
     "folders": {
       "accessories": "Accessories",
-      "entertainment": "Entertainment"
+      "entertainment": "Entertainment",
+      "games": "Games"
     }
   },
   "boot": {
@@ -910,6 +991,10 @@
         "cleanupWithCv": {
           "v1": "You threw out {count} icons, my CV included! Everything's back. Grab the CV now, before it takes another trip?",
           "v2": "Mass deletion, CV and all? I restored all {count}. The CV is one click away right below, just saying."
+        },
+        "games": {
+          "v1": "Deleting the Games folder? Every portfolio needs a coffee break. Restored, decks and all.",
+          "v2": "The games stay: someone has to beat my Mines record. Back on the desktop."
         }
       }
     }

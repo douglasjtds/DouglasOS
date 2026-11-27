@@ -164,6 +164,39 @@
   /* Retro Cam (stage 9): the dark viewfinder behind the pixelated picture. */
   --color-viewfinder: #1b1b1b;
 
+  /* Games (stage 12): card table felt, original card faces and back, Mines
+     number colors and the Pinball table (canvas reads these via CSS vars). */
+  --color-felt: #1f7a3a;
+  --color-felt-highlight: #2f9a4e;
+  --color-felt-shadow: #145a29;
+  --color-card-face: #ffffff;
+  --color-card-edge: #4a4a4a;
+  --color-card-red: #c81e1e;
+  --color-card-black: #111111;
+  --color-card-back: #245ddb;
+  --color-card-back-accent: #8fb8ff;
+  --color-card-slot: rgb(255 255 255 / 0.28);
+  --color-card-selected: #f8b330;
+  --color-mines-1: #1f4fd6;
+  --color-mines-2: #1e7a1e;
+  --color-mines-3: #d11f1f;
+  --color-mines-4: #0a246a;
+  --color-mines-5: #8f2a10;
+  --color-mines-6: #1d7a7a;
+  --color-mines-7: #111111;
+  --color-mines-8: #6f7686;
+  --color-mines-display: #000000;
+  --color-mines-display-text: #ff3b1f;
+  --color-pinball-table: #0d1b4c;
+  --color-pinball-table-glow: #1b3a8f;
+  --color-pinball-wall: #8fb8ff;
+  --color-pinball-ball: #e8ebf2;
+  --color-pinball-flipper: #f2c230;
+  --color-pinball-bumper: #d8461f;
+  --color-pinball-bumper-lit: #ffd27a;
+  --color-pinball-target: #2fb52f;
+  --color-pinball-text: #d6e6ff;
+
   /* Fonts — system stacks only, never bundled */
   --font-sans: Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif;
   --font-title: "Trebuchet MS", Tahoma, Verdana, "DejaVu Sans", sans-serif;
@@ -220,6 +253,10 @@
   --spacing-push-button-w: 75px;
   --spacing-push-button-h: 23px;
   --spacing-touch-target: 44px;
+  --spacing-card-w: 71px;
+  --spacing-card-h: 96px;
+  --spacing-card-w-touch: 42px;
+  --spacing-card-h-touch: 58px;
 
   /* Radii */
   --radius-window: 8px;
@@ -229,6 +266,7 @@
   --radius-button: 3px;
   --radius-groupbox: 3px;
   --radius-balloon: 8px;
+  --radius-card: 5px;
   --radius-none: 0;
 
   /* Bevels & shadows (bevels are stacked inset shadows, never images) */
@@ -474,6 +512,21 @@
 }
 @utility bg-logon-gradient {
   background-image: var(--gradient-logon);
+}
+/* Games (stage 12): card-table felt and the original card back lattice. */
+@utility bg-felt-gradient {
+  background-image: radial-gradient(
+    ellipse at 50% 30%,
+    var(--color-felt-highlight) 0,
+    var(--color-felt) 55%,
+    var(--color-felt-shadow) 100%
+  );
+}
+@utility bg-card-back-pattern {
+  background-color: var(--color-card-back);
+  background-image:
+    repeating-linear-gradient(45deg, var(--color-card-back-accent) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-45deg, var(--color-card-back-accent) 0 1px, transparent 1px 6px);
 }
 @utility bg-logon-divider-gradient {
   background-image: var(--gradient-logon-divider);

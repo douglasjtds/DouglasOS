@@ -1,0 +1,19 @@
+{
+  "board": "Solitaire table",
+  "instructions": "Arrow keys move between piles and cards. Enter or Space picks up and drops cards, or turns over the stock. A sends a card to the foundations. Escape cancels.",
+  "drawOne": "Draw one",
+  "drawThree": "Draw three",
+  "stock": "Stock, {count, plural, one {# card} other {# cards}}. Turn over cards",
+  "stockRecycle": "Stock empty. Turn the waste back over",
+  "stockEmpty": "Stock, empty",
+  "waste": "Waste: {card}",
+  "wasteEmpty": "Waste, empty",
+  "foundation": "Foundation {n}: {card}",
+  "foundationEmpty": "Foundation {n}, empty",
+  "card": "{card}, column {n}",
+  "faceDown": "Column {n}: face-down card. Turn it over",
+  "columnEmpty": "Column {n}, empty",
+  "autoFinish": "Finish",
+  "autoFinishLabel": "Finish the game: move every card to the foundations",
+  "wonMessage": "All cards are home! Score: {score}. Time: {seconds} seconds. Deal again?"
+}
