@@ -1,0 +1,19 @@
+{
+  "board": "Mesa de Paciência",
+  "instructions": "As setas movem entre os montes e as cartas. Enter ou Espaço pega e solta cartas, ou vira o monte. A envia uma carta para as fundações. Esc cancela.",
+  "drawOne": "Virar uma",
+  "drawThree": "Virar três",
+  "stock": "Monte, {count, plural, one {# carta} other {# cartas}}. Virar cartas",
+  "stockRecycle": "Monte vazio. Devolver o descarte ao monte",
+  "stockEmpty": "Monte, vazio",
+  "waste": "Descarte: {card}",
+  "wasteEmpty": "Descarte, vazio",
+  "foundation": "Fundação {n}: {card}",
+  "foundationEmpty": "Fundação {n}, vazia",
+  "card": "{card}, coluna {n}",
+  "faceDown": "Coluna {n}: carta virada para baixo. Desvirar",
+  "columnEmpty": "Coluna {n}, vazia",
+  "autoFinish": "Concluir",
+  "autoFinishLabel": "Concluir o jogo: levar todas as cartas para as fundações",
+  "wonMessage": "Todas as cartas estão no lugar! Pontos: {score}. Tempo: {seconds} segundos. Jogar de novo?"
+}

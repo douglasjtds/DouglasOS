@@ -88,6 +88,13 @@ export const LAUNCHER_ALIASES: Partial<Record<LauncherId, readonly string[]>> = 
   camera: ["cam", "webcam", "camera", "retro cam", "camera retro"],
   paint: ["paint", "mspaint", "draw", "desenhar", "pbrush"],
   "dont-open-this": ["dontopen", "dont open this", "nao abra isso", "dont open", "nao abra"],
+  games: ["jogos", "games", "game", "jogo", "play", "jogar"],
+  mines: ["minas", "campo minado", "mine", "minefield", "winmine"],
+  solitaire: ["paciencia", "klondike", "sol", "cards", "cartas"],
+  freecell: ["free cell", "celulas livres"],
+  hearts: ["copas", "hearts", "mshearts"],
+  spider: ["spider solitaire", "paciencia spider", "aranha", "spider"],
+  pinball: ["pinball", "flipper", "fliperama"],
 };
 
 /** Fun commands and their names. */

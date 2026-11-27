@@ -105,6 +105,39 @@ describe("DON'T OPEN THIS.exe", () => {
     fireEvent.pointerDown(egg);
     expect(useDontOpenThisStore.getState().active).toBeNull();
   });
+
+  it("Esc works from the very first frame the egg is on screen", async () => {
+    // Fresh modules so the lazy chunk really loads, as on a first open: the
+    // egg must not be visible before its Esc listener exists.
+    vi.resetModules();
+    const { LazyEasterEgg: FreshEgg } = await import("@/components/os/easter-egg/LazyEasterEgg");
+    const { useDontOpenThisStore: freshStore } = await import("@/lib/store/dontOpenThisStore");
+    const { launch: freshLaunch } = await import("@/lib/apps/launch");
+
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector("[data-easter-egg]")) return;
+      observer.disconnect();
+      fireEvent.keyDown(document.body, { key: "Escape" });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    renderWithIntl(<FreshEgg />);
+    act(() => freshLaunch("dont-open-this"));
+    await vi.waitFor(() => expect(freshStore.getState().active).toBeNull());
+    observer.disconnect();
+  });
+
+  it("gives focus back to what was focused before the egg opened", async () => {
+    const previous = document.createElement("button");
+    document.body.appendChild(previous);
+    previous.focus();
+
+    await openEgg();
+    fireEvent.keyDown(document.body, { key: "Escape" });
+
+    await vi.waitFor(() => expect(document.activeElement).toBe(previous));
+    previous.remove();
+  });
 });
 
 describe("NotFoundPage", () => {

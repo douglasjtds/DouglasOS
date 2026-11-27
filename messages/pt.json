@@ -452,6 +452,7 @@
       "preview": "Prévia do papel de parede selecionado",
       "wallpaperLabel": "Papel de parede:",
       "wallpapers": {
+        "green-meadow": "Prado Verde",
         "morning-waves": "Ondas da Manhã",
         "dusk-hills": "Colinas ao Entardecer",
         "blueprint": "Planta Azul",
@@ -597,6 +598,86 @@
     "achievements": {
       "title": "Conquistas",
       "description": "Easter eggs que você encontrou"
+    },
+    "games": {
+      "title": "Jogos",
+      "description": "Jogos clássicos de cartas e lógica para uma pausa",
+      "heading": "Jogos",
+      "intro": "Alguns clássicos para uma pausa rápida. O CV e o contato continuam a um clique.",
+      "open": "Abrir",
+      "objects": "{count, plural, one {# objeto} other {# objetos}}",
+      "menuBar": "Barra de menus da pasta Jogos",
+      "menu": {
+        "file": "Arquivo",
+        "open": "Abrir",
+        "close": "Fechar"
+      },
+      "common": {
+        "menuBar": "Barra de menus do jogo",
+        "game": "Jogo",
+        "newGame": "Novo jogo",
+        "undo": "Desfazer",
+        "options": "Opções",
+        "help": "Ajuda",
+        "exit": "Sair",
+        "playAgain": "Jogar de novo",
+        "close": "Fechar",
+        "won": "Você venceu!",
+        "lost": "Fim de jogo",
+        "time": "Tempo: {seconds}",
+        "score": "Pontos: {score}",
+        "moves": "Jogadas: {moves}",
+        "cards": {
+          "name": "{rank} de {suit}",
+          "faceDown": "Carta virada para baixo",
+          "empty": "Pilha vazia",
+          "ranks": {
+            "1": "Ás",
+            "2": "Dois",
+            "3": "Três",
+            "4": "Quatro",
+            "5": "Cinco",
+            "6": "Seis",
+            "7": "Sete",
+            "8": "Oito",
+            "9": "Nove",
+            "10": "Dez",
+            "11": "Valete",
+            "12": "Dama",
+            "13": "Rei"
+          },
+          "suits": {
+            "spades": "espadas",
+            "hearts": "copas",
+            "diamonds": "ouros",
+            "clubs": "paus"
+          }
+        }
+      }
+    },
+    "mines": {
+      "title": "Campo Minado",
+      "description": "Limpe o campo sem pisar em uma mina"
+    },
+    "solitaire": {
+      "title": "Paciência",
+      "description": "Monte os quatro naipes do Ás ao Rei"
+    },
+    "freecell": {
+      "title": "FreeCell",
+      "description": "Todas as cartas abertas — e quatro células livres"
+    },
+    "hearts": {
+      "title": "Copas",
+      "description": "Fuja das copas e da dama de espadas"
+    },
+    "spider": {
+      "title": "Paciência Spider",
+      "description": "Dois baralhos, oito sequências do Rei ao Ás"
+    },
+    "pinball": {
+      "title": "Pinball",
+      "description": "Flippers, bumpers e um recorde para bater"
     }
   },
   "easterEgg": {
@@ -727,7 +808,8 @@
     "turnOff": "Desligar",
     "folders": {
       "accessories": "Acessórios",
-      "entertainment": "Entretenimento"
+      "entertainment": "Entretenimento",
+      "games": "Jogos"
     }
   },
   "boot": {
@@ -869,6 +951,10 @@
         "title": "Ufa!",
         "text": "Não dançava assim desde o dia em que um deploy passou de primeira. De volta ao trabalho: quer ver um projeto?"
       },
+      "afterKickflip": {
+        "title": "Acertei!",
+        "text": "Kickflip limpo, de primeira — tipo deploy na sexta que dá certo. Quer ver algo que eu construí?"
+      },
       "projectsTip": {
         "title": "Dica rápida",
         "text": "Esta janela é um navegador em miniatura. Digite o nome de um projeto, tipo “{project}”, na barra de endereço e aperte Enter."
@@ -990,6 +1076,10 @@
         "browser": {
           "v1": "Jogando o navegador fora? Ele só visita meus projetos, é o navegador mais comportado do mundo. Restaurado.",
           "v2": "Sem navegador, sem tour pelos projetos. Coloquei de volta na área de trabalho."
+        },
+        "games": {
+          "v1": "Apagando a pasta Jogos? Todo portfólio precisa de um cafezinho. Restaurada, com baralho e tudo.",
+          "v2": "Os jogos ficam: alguém precisa bater meu recorde no Campo Minado. De volta ao desktop."
         }
       }
     }
@@ -1214,6 +1304,10 @@
       "assistant-dance": {
         "title": "Pausa para dançar",
         "hint": "Alguém pequeno no desktop tem uns passinhos."
+      },
+      "assistant-kickflip": {
+        "title": "Do a Kickflip!",
+        "hint": "Tem skatista que só precisa de um empurrãozinho."
       },
       "messenger-nudge": {
         "title": "Chamar a atenção",

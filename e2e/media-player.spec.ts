@@ -25,10 +25,32 @@ async function openPlayer(page: Page) {
 const control = (page: Page, id: string) => windowById(page, "media-player").locator(`[data-media-control="${id}"]`);
 
 test.describe("DouglasOS Media Player", () => {
+  test("opens on a random track, and a different one every time it's reopened", async ({ page }) => {
+    await mockYouTube(page);
+    await gotoDesktop(page, "en");
+    const shownTrack = async () => {
+      const player = await openPlayer(page);
+      const title = player.locator("[data-media-title]");
+      await expect(title).toHaveText(/^Fake Track /);
+      // Let a pending random re-cue settle before reading the title.
+      await page.waitForTimeout(200);
+      const text = await title.textContent();
+      await player.getByRole("button", { name: "Close" }).click();
+      await expect(player).toHaveCount(0);
+      return text;
+    };
+    const first = await shownTrack();
+    const second = await shownTrack();
+    const third = await shownTrack();
+    expect(second).not.toBe(first);
+    expect(third).not.toBe(second);
+  });
+
   test("loads YouTube only on open → play shows the tray note and makes mini Douglas dance → stop, he speaks", async ({
     page,
   }) => {
-    const requested = await mockYouTube(page);
+    // Pin the random start track to the first one so the titles are predictable.
+    const requested = await mockYouTube(page, { cueIndex: 0 });
     await gotoDesktop(page, "en", { assistant: true });
     // Let the greeting play out so the bubble slot is free and predictable.
     await expect(assistantBubble(page)).toBeVisible({ timeout: 10_000 });

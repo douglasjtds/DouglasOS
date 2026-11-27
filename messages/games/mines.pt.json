@@ -1,0 +1,36 @@
+{
+  "difficulty": {
+    "beginner": "Iniciante",
+    "intermediate": "Intermediário",
+    "expert": "Avançado"
+  },
+  "marks": "Marcas (?)",
+  "flagMode": "Modo bandeira",
+  "face": {
+    "idle": "Novo jogo",
+    "pressing": "Novo jogo",
+    "won": "Você venceu. Novo jogo",
+    "lost": "Fim de jogo. Novo jogo"
+  },
+  "counter": "Minas restantes: {count}",
+  "timer": "Tempo: {seconds, plural, one {# segundo} other {# segundos}}",
+  "board": "Campo minado, {rows} linhas por {cols} colunas, {mines} minas",
+  "cell": {
+    "hidden": "Linha {row}, coluna {col}, fechada",
+    "flagged": "Linha {row}, coluna {col}, com bandeira",
+    "question": "Linha {row}, coluna {col}, interrogação",
+    "empty": "Linha {row}, coluna {col}, vazia",
+    "number": "Linha {row}, coluna {col}, {count, plural, one {# mina} other {# minas}} por perto",
+    "mine": "Linha {row}, coluna {col}, mina",
+    "exploded": "Linha {row}, coluna {col}, mina explodida",
+    "wrongFlag": "Linha {row}, coluna {col}, bandeira errada"
+  },
+  "status": {
+    "ready": "Clique em uma casa para começar. Botão direito marca bandeira.",
+    "readyTouch": "Toque em uma casa para começar. Segure para marcar bandeira.",
+    "playing": "Minas restantes: {count}",
+    "won": "Campo limpo!",
+    "lost": "Bum! Você pisou em uma mina."
+  },
+  "wonMessage": "Você limpou o campo no nível {difficulty} em {seconds, plural, one {# segundo} other {# segundos}}."
+}

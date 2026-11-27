@@ -4,6 +4,7 @@ import {
   assistantCharacter,
   desktopIcon,
   gotoDesktop,
+  hideNextDevIndicator,
   messengerTray,
   startButton,
   startItem,
@@ -24,6 +25,11 @@ async function taskbarTop(page: Page): Promise<number> {
 }
 
 test.describe("touch shell", () => {
+  // The boot test goes to the page itself (not through gotoDesktop).
+  test.beforeEach(async ({ page }) => {
+    await hideNextDevIndicator(page);
+  });
+
   test("boot → desktop → tap Contact opens it full screen → close → Start → Résumé downloads", async ({
     page,
   }) => {
@@ -115,8 +121,9 @@ test.describe("touch shell", () => {
     expect(box.height).toBeLessThanOrEqual(viewport.height * 0.85 + 1);
     // All Programs is inline (no cascading submenu) and lists every launcher,
     // folder contents included (Accessories → Retro Cam, Paint and DON'T OPEN
-    // THIS.exe, stages 9–10; Entertainment → Media Player, stage 8).
-    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(17);
+    // THIS.exe, stages 9–10; Entertainment → Media Player, stage 8; Games → the
+    // six games, stage 12).
+    await expect(page.locator("[data-all-programs] [data-program]")).toHaveCount(23);
     await expect(startItem(page, "resume")).toBeVisible();
   });
 

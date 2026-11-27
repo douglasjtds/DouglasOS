@@ -24,6 +24,7 @@ describe("easter egg registry", () => {
     expect(EASTER_EGG_IDS).toEqual([
       "protected-file",
       "assistant-dance",
+      "assistant-kickflip",
       "messenger-nudge",
       "trash-rescue",
       "trash-cleanup",
@@ -35,7 +36,7 @@ describe("easter egg registry", () => {
       "egg-scold",
       "real-404",
     ]);
-    expect(EASTER_EGG_TOTAL).toBe(12);
+    expect(EASTER_EGG_TOTAL).toBe(13);
   });
 
   it("has unique ids", () => {
@@ -47,6 +48,7 @@ describe("easter egg registry", () => {
     expect(byStage).toMatchObject({
       "protected-file": "1",
       "assistant-dance": "5",
+      "assistant-kickflip": "5",
       "messenger-nudge": "5b",
       "trash-rescue": "6",
       "trash-cleanup": "6",

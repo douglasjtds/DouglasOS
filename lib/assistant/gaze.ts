@@ -106,11 +106,12 @@ export interface ExpressionInput {
  * Which face to make. Priority: hover (happy) → a running surprise → nothing
  * for a while (sleepy, even with the cursor parked nearby) → cursor nearby
  * (curious) → neutral. While dancing he
- * keeps his dance face; while talking he can only light up or be startled —
+ * keeps his dance face, mid-kickflip he's all eyes; while talking he can only light up or be startled —
  * never dozes off or squints in the middle of a line.
  */
 export function pickExpression(input: ExpressionInput): CharacterExpression {
   if (input.state === "dancing") return "neutral";
+  if (input.state === "kickflipping") return "surprised";
   if (input.hovering) return "happy";
   if (input.surprised) return "surprised";
   if (input.state === "talking") return "neutral";

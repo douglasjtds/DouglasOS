@@ -17,6 +17,7 @@ import {
   type ProgramFolder,
 } from "@/lib/apps/registry";
 import { ProgramFolderIcon } from "@/components/icons/MediaIcons";
+import { GamesFolderIcon } from "@/components/icons/GameIcons";
 import {
   AllProgramsIcon,
   DouglasOSLogo,
@@ -57,6 +58,7 @@ const FOLDERS = PROGRAM_FOLDERS.map((id) => ({ id, programs: programsInFolder(id
 const FOLDER_ICONS: Record<ProgramFolder, IconComponent> = {
   accessories: AccessoriesFolderIcon,
   entertainment: ProgramFolderIcon,
+  games: GamesFolderIcon,
 };
 
 function FolderIcon({ folder }: { folder: ProgramFolder }) {

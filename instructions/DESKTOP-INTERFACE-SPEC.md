@@ -30,7 +30,7 @@
 │ Contact               │ status bar                                   │  │
 │                       └─────────────────────────────────────────────┘  │
 │ [icon]                                                                 │
-│ My Projects                         wallpaper ("Morning Waves")        │
+│ My Projects                         wallpaper ("Green Meadow")         │
 │ [icon] Experience                                                      │
 │ [icon] Skills                                                          │
 │ [icon] How I Work With AI                                              │
@@ -88,7 +88,7 @@ Layering, bottom → top: wallpaper → desktop icons → windows → assistant 
 **Purpose:** surface the launchers on a wallpaper, like a real desktop.
 
 ### Wallpaper
-- Default: static original "Morning Waves" (abstract blue ribbons + DouglasOS mark; replaced the stage-1 "Morning Hills", which read too close to the famous hill photograph). Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
+- Default: static "Green Meadow", a CC0 photo of rolling green hills under a blue sky (source in `public/wallpapers/CREDITS.md`). It replaced the abstract "Morning Waves", which stays as an option. Alternatives and the optional "DouglasOS 3D (animated)" are chosen in **Display Properties** ([§8](#8-display-properties-app)).
 - The solid `desktop` color paints first; the wallpaper never blocks interaction.
 
 ### Desktop icons
@@ -205,8 +205,8 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 **Left column (white):**
 - Pinned apps: **About Douglas**, **My Projects**, **How I Work With AI**, **Contact** (32px icons, bold name + optional one-line description in muted text).
-- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* — and **Entertainment ▸** — Media Player *(8 — done)*).
-- **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
+- Separator, then **All Programs ▸** opening a cascading submenu with every launcher (all apps, resume.pdf, then — after a separator — the external shortcuts *(stage 3, done)*; Messenger *(5b — done, after How I Work With AI)*; folders **Accessories ▸** — Retro Cam *(9 — done)*, DouglasOS Paint and "DON'T OPEN THIS.exe" *(10 — done)* —, **Entertainment ▸** — Media Player *(8 — done)* — and **Games ▸** — Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball *(12)*).
+- **Folders** *(stages 8–10 — done)*: a launcher (window app or windowless action) joins a folder with `folder: "accessories" | "entertainment" | "games"` in the registry — the single folder API; `PROGRAM_FOLDERS` sets the order, `folderOf()` / `programsInFolder()` read it, and empty folders aren't shown. Desktop: folders are cascading submenus at the top of All Programs (classic layout), then the programs, then — after a separator — the external shortcuts. Touch: each folder is a labelled inline section (folder icon + name, indented 44px items) at the top of the All Programs list. Folder items carry `data-program="<id>"` like every other entry (the submenu itself is `data-program-folder-menu="<folder>"`); fun apps live only there and never above the CTAs.
 
 **Right column (light blue):**
 - **My Projects ▸** *(stage 4 — done)* — a cascading submenu: **All projects** (the Explorer home), separator, then one entry per case study (16px page icon + brand name), each calling `launch("projects", { route })`. The pinned **My Projects** on the left still opens the window in one click. Touch: no submenu (no cascading menus on a phone, and three extra rows would push Résumé (CV) down) — the place opens the Explorer, whose home lists the projects.
@@ -215,7 +215,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 - separator
 - **Display Properties** — opens the `display` app.
 - **Help** — opens About Douglas (v1.5 has no separate help app; the assistant covers tips — [§13](#13-mini-douglas-assistant-stage-5)).
-- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/12` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
+- **Achievements** *(stage 11 — done)* — normal weight, with a muted `n/13` counter on the row; opens the Achievements window ([§20](#20-easter-eggs--achievements-stage-11--done)).
 - **Run…** — *(stage 7 — done)* opens the Run dialog (last item of the places column, so CV/Contact keep their spots; also on phones). **Items appear only when their stage ships — no dead entries.**
 
 ### Run… and the command palette *(stage 7 — done)*
@@ -283,7 +283,7 @@ One mechanism for both menus: `IconContextMenu` (Radix ContextMenu, items as dat
 
 New `display` window app (kind `"window"`), opened from the Start menu and the desktop context menu → Properties (stage 7 — done).
 
-- **Desktop tab:** a small monitor preview + a list of wallpapers: "Morning Waves" (default), "Dusk Hills", "Blueprint", the secret "Golden Egg" *(stage 11: "???" until every easter egg is found, [§20](#20-easter-eggs--achievements-stage-11--done))*, "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
+- **Desktop tab:** a small monitor preview + a list of wallpapers: "Green Meadow" (default), "Morning Waves", "Dusk Hills", "Blueprint", the secret "Golden Egg" *(stage 11: "???" until every easter egg is found, [§20](#20-easter-eggs--achievements-stage-11--done))*, "Solid color" (swatches), "DouglasOS 3D (animated)". `Apply` / `OK` / `Cancel` buttons, XP-style.
 - The 3D option is disabled with a reason when unavailable (reduced motion, Save-Data, mobile): "Animated wallpapers are off because your system prefers reduced motion."
 - **Screen Saver tab:** omitted in stage 1 (not cheap enough to do well; no dead tab). Listed as a future idea in `MVP-SCOPE.md`.
 - The choice persists locally in a new `displayStore` (`lib/store/displayStore.ts`, key `douglasos:display`; catalog + pure helpers in `lib/wallpapers.ts`). Solid colors are five fixed swatches (`--color-swatch-*` tokens).
@@ -419,7 +419,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ## 13. mini Douglas assistant *(stage 5)*
 
-**Purpose:** a scripted desktop companion — tips, CV/Contact/project shortcuts and an offline "ask me something" search — with personality (he dances when clicked). No LLM, no network, no backend. Never blocks the golden rule: every bubble offers CV/Contact in one click, and he never covers what a recruiter needs.
+**Purpose:** a scripted desktop companion — tips, CV/Contact/project shortcuts and an offline "ask me something" search — with personality (he dances when clicked, and kickflips his skateboard when clicked several times quickly). No LLM, no network, no backend. Never blocks the golden rule: every bubble offers CV/Contact in one click, and he never covers what a recruiter needs.
 
 ### Pieces
 | Piece | Where | Notes |
@@ -437,6 +437,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 ### Public API for later stages
 - `say(message)` — queue a line. (Stage 6 uses `replace()` for the rescue lines — a direct reaction takes the bubble — and `say()` for the bin window's comment; see [Recycle Bin](#recycle-bin-stage-6--done).) Dropped after "Not now" and when a line with the same `id` is already queued. Lines said during a dance wait until it ends.
 - `dance(options?)` / `stopDance(options?)` — stage 8 calls `dance()` (no duration) when music starts and `stopDance()` when it stops; `stopDance` says the "Phew!" line unless `{ quiet: true }`. A click uses `dance({ durationMs: 3500 })`.
+- `kickflip({ durationMs })` — one kickflip (state `kickflipping`, ~1.2s; bubble hidden, cuts a click dance short). On landing he says "Landed it!" with the standard shortcuts — or, if he was dancing to the music, goes back to dancing silently (unless `stopDance()` came mid-air). Lines said during the kickflip wait until he lands.
 - Also: `show()`, `replace(message)`, `closeMessage()`, `nextTip()`, `dismiss()`, `trigger(id, message?)` (once per session), `markFired(id)`.
 - Intents: `matchIntent(text)` → `IntentMatch { intent, score, projectSlug? }` or `IntentFallback { intent: "fallback", score: 0, suggestions }`; `rankIntents`, `normalizeText`, `tokenize`, `findProjectSlug`, `isFallback`, `INTENT_IDS`, `FALLBACK_SUGGESTIONS`. Intents: `cv`, `contact` (incl. hire/contratar), `projects` (+ slug from slug/brand/alias), `skills`/stack, `availability` (remote/location), `ai-workflow`, `experience`, `about`. EN + PT keywords, accent/case/punctuation-insensitive, stems by prefix (`contrat*`), phrases ("entrar em contato"); ties go to CV, then Contact.
 
@@ -447,7 +448,8 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
 
 ### Behavior
 - **Cursor gaze (desktop mouse only):** his eyes follow the cursor and his head tilts a little toward it (springs, no re-render per move); the cursor leaving the page sends his look back to center. He also makes a face about it, in this priority: **happy** (`^ ^` eyes, open smile, rosier cheeks) while the cursor is over him → **surprised** (big eyes, raised brows, "o" mouth) for ~1s when it zips past within ~320px (≥ 2.5 px/ms, 4s cooldown) → **sleepy** (half-closed lids, a floating "z") after 15s with no mouse/keyboard input — before the 30s "Still around?" trigger — waking on the next input → **curious** (raised brows, bigger eyes) when it's within ~200px → neutral. While talking he only goes happy/surprised; while dancing it's off. Off on phones (touch/pen input is ignored), under reduced motion, and with the recorded clips (placeholder-only). Purely decorative: no new clicks, no layout change. `data-expression` on the character wrapper exposes the current face.
-- **Click the character:** he dances ~3.5s (bubble hidden), then says "Phew!…" with the standard shortcuts. Under reduced motion: no dance, the click opens the "How can I help?" bubble. Clicking while he dances does nothing.
+- **Click the character:** he dances ~3.5s (bubble hidden), then says "Phew!…" with the standard shortcuts. Under reduced motion: no dance, the click opens the "How can I help?" bubble. Clicks while he dances only count toward the kickflip combo.
+- **Click him several times quickly ("Do a Kickflip!" easter egg):** 3 clicks within 1.5s (window from the first click) — he stops dancing and lands one kickflip: he pops, the skateboard flips once under him, he lands, then says "Landed it!"/"Acertei!" with the standard shortcuts (CV/Contact one click away). Clicks mid-kickflip do nothing. Phones: the same with quick taps. Under reduced motion: no trick, but the combo still counts the egg and he says the line (a static tilted board marks `kickflipping`). The recorded clips have no kickflip yet — the dance clip stands in.
 - **Shortcuts** (standard set): Show me a project → `openWindow("projects", { route: FEATURED_PROJECT_SLUG })`; I want to get in touch → Contact; Download the CV → `lib/download.ts` via `launch("resume")`; Show me another tip → `nextTip()`; Not now, thanks → `dismiss()` (gone for the session, focus moves to Start if it was in the bubble). Window/download shortcuts close the bubble.
 - **Search:** the text goes through `matchIntent`; the bubble is replaced by the intent's answer + its shortcuts (never auto-opens anything); unknown → an honest fallback with Projects / CV / Contact.
 - **Triggers** (each at most once per session, persisted in `douglasos-assistant`; none fires while a session screen is up; none moves focus):
@@ -455,7 +457,7 @@ One shell for every width: `ShellGate` always mounts `DesktopShell`, and compone
   2. first opening of My Projects — address-bar tip, 1.2s / 2.5s later (skipped if the Explorer was opened from his own shortcut);
   3. 30s desktop / 45s phone without pointer or keyboard input — "Still around?" with Download CV + Contact.
 - **Auto lines** close themselves after 15s unless hovered or focused inside; lines the visitor asked for stay until closed.
-- **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8).
+- **A11y:** the character is a real `button` ("mini Douglas, desktop assistant"); the bubble is a `section` labelled by its title, with the line in a `role="status"` `aria-live="polite"` paragraph; the field has a visible label; shortcuts are buttons in a labelled list. **Esc** closes the bubble (focus returns to the character if it was inside) before the window manager's Esc-closes-window. Auto appearance never steals focus. Reduced motion: still frame (poster), no bob/blink/dance; a static music note marks `dancing` (stage 8), a static tilted skateboard marks `kickflipping`.
 - **Performance:** the assistant chunk loads only after the desktop is up and the browser is idle (and not at all once dismissed); the videos only once he appears.
 
 ## 14. DouglasOS Messenger *(stage 5b)*
@@ -507,7 +509,7 @@ Full-screen window like every app; header compacts (icon-only Back and Contact, 
 
 ### Source (decision)
 A public, embeddable **YouTube playlist** through the official IFrame Player API. The id is one constant, `YOUTUBE_PLAYLIST_ID` in `lib/media/source.ts` (currently `PLdw3FCGShY-U`, a **third-party playlist** that its owner may change, reorder or delete at any time — swap the constant to change the music). Implemented behind a source adapter (`MediaSourceAdapter` in `lib/media/types.ts`: play / pause / stop / next / prev / setVolume / mute / getTrackTitle / onEvent / destroy), so a radio stream or local files can be added later as another adapter; only `lib/media/youtube.ts` ships.
-- **Privacy & loading:** embed host `https://www.youtube-nocookie.com`; the API script (`https://www.youtube.com/iframe_api`) is injected **only when the player window mounts**, never on page load. The window is not restored after a reload (`persistWindow: false` in the registry → dropped by `reconcilePersisted`), so a reload never loads YouTube on its own. The playlist is cued, not autoplayed. No CSP is configured in `next.config.ts`; if one is added it must allow `script-src https://www.youtube.com` and `frame-src https://www.youtube-nocookie.com`.
+- **Privacy & loading:** embed host `https://www.youtube-nocookie.com`; the API script (`https://www.youtube.com/iframe_api`) is injected **only when the player window mounts**, never on page load. The window is not restored after a reload (`persistWindow: false` in the registry → dropped by `reconcilePersisted`), so a reload never loads YouTube on its own. The playlist is cued at a **random track** each time the window opens (never the same track as the previous opening in the session; a Play pressed while loading starts on that random track too), not autoplayed; Next/Previous follow the playlist order from there. No CSP is configured in `next.config.ts`; if one is added it must allow `script-src https://www.youtube.com` and `frame-src https://www.youtube-nocookie.com`.
 - **YouTube's terms:** the player stays **visible**, at least 200 × 200 px (the window's "screen", `aspect-video`, `min-h/min-w 200px`), never hidden for audio-only and never covered by our skin. Hence **minimizing pauses** (and, on phones, switching to another full-screen window pauses): a hidden player may not keep playing. The status bar says why ("Paused: the video has to stay on screen to play."). Restoring does not auto-resume — Play is always the visitor's. The title shown is the one YouTube provides for the current video.
 - **Unplayable videos:** errors 101/150 (embedding disabled), 100 (removed/private) and 5 are skipped automatically to the next track (wrapping), with a short status line; when every track failed in a row (or error 2), an XP error message box offers **Open on YouTube** (`lib/openLink.ts`, new tab, `noopener noreferrer`) or OK. Same dialog if the API script can't load (network/15s timeout).
 
@@ -613,8 +615,8 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 | Piece | Where | Notes |
 |-------|-------|-------|
-| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (12), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
-| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/12" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
+| Registry | `lib/easter-eggs/registry.ts` | `EASTER_EGGS` (id + providing stage), `EasterEggId`, `EASTER_EGG_TOTAL` (13), `isEasterEggId`, `easterEggTitleKey` / `easterEggHintKey`. **Ids are a contract** (other stages call them; `localStorage` keeps them): never rename or reuse one |
+| Progress logic | `lib/easter-eggs/progress.ts` | Pure: `discoverEgg` (idempotent; queues the toast, plus `"complete"` after the last egg), `discoveryOrdinal` (the toast's "n/13" = count when *that* egg was found), `sanitizeProgress` (drops unknown ids, bad timestamps, orphan pending entries) |
 | Store | `lib/store/easterEggStore.ts` | `found: Record<id, timestamp>`, `pending` (announcements still to show), `discover(id)` → `true` only the first time, `acknowledge(expected?)`, `reset()`; selectors `selectFoundCount` / `selectComplete`, hook `useEasterEggProgress()` → `{ count, total, complete }`. Persisted in **localStorage** `douglasos:easter-eggs` (version 1; `migrate` + `merge` both go through `sanitizeProgress`) |
 | Reward | `lib/easter-eggs/reward.ts` | `completionMessage()` (mini Douglas line `eggsComplete`: Download CV, Display Properties, Contact) and `deliverCompletionReward()` |
 | Toast | `components/os/taskbar/EasterEggToast.tsx` | Mounted last in `DesktopShell` |
@@ -627,7 +629,8 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 | Id | How it's found | Stage | Hook |
 |----|----------------|-------|------|
 | `protected-file` | `F2` on a desktop icon, or its menu → **Rename** (right-click / long-press) | 1 | `Desktop.tsx` (`showProtected`, from `onIconKeyDown` and the Rename item) — **wired** |
-| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 12/12) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `assistant-dance` | Click mini Douglas (under reduced motion the click still counts, so every visitor can reach 13/13) | 5 | `Assistant.tsx` (`onCharacterClick`) — **wired** |
+| `assistant-kickflip` | "Do a Kickflip!": click mini Douglas 3× within 1.5s — he kickflips instead of dancing (under reduced motion the combo still counts) | 5 | `Assistant.tsx` (`onCharacterClick`, combo branch) — **wired** |
 | `messenger-nudge` | "Nudge" in the Messenger (only a nudge that went out, not one refused by the cooldown) | 5b | `Conversation.tsx` (`nudge`) — **wired** |
 | `trash-rescue` | Throw one icon in the Recycle Bin (drag, `Delete`, context menu, long-press) | 6 | `desktopStore.trashIcons` — **wired** |
 | `trash-cleanup` | Throw several icons at once | 6 | `desktopStore.trashIcons` — **wired** |
@@ -641,7 +644,7 @@ A discreet discovery counter for the jokes hidden across the shell: a tray toast
 
 ### Integration — stage 7–10 hooks (wired at integration)
 
-`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 12/12):
+`discover()` is idempotent and safe from anywhere (React or not, with or without the shell). Each hook has exactly one call, at the moment the joke actually plays (all **wired**; `protected-file` is also reachable without a keyboard through the icon menu's **Rename** item — desktop right-click and phone long-press — which shows the same F2 message box, so phone visitors can reach 13/13):
 
 | Stage | Hook (where) | Call |
 |-------|--------------|------|
@@ -657,15 +660,15 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ### Toast
 
-- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/12)" / "🎉 Easter egg encontrado! (4/12)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
-- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances (otherwise the slot rule would hide him mid-dance).
-- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/12".
+- XP tray balloon (`info` bg, `info-border`, `radius-balloon`, tail toward the tray): bold "🎉 Easter egg found! (4/13)" / "🎉 Easter egg encontrado! (4/13)", the egg's title, and a "See all achievements" link (opens the window). Close ×. Emoji is the only "icon" (original; no system asset).
+- **Balloon slot** owner `easterEgg`, which **yields**: any other owner goes ahead of it, even while it's on screen (it hides and comes back with a fresh timer once the slot frees up — `enqueueBalloon`). So the reaction that earned the egg (the rescue line, mini Douglas's bubble, the welcome balloon) always shows first, and two balloons are never on screen together. It also waits while the Start menu or a shell dialog is open (the `F2` message box that earned it) and while mini Douglas dances or kickflips (otherwise the slot rule would hide him mid-dance).
+- `role="status"`, `aria-live="polite"`, never takes focus; closes itself after 8s unless hovered/focused. Several discoveries queue and show one after another, each with its own "n/13".
 - **Phones:** bottom sheet above the taskbar (full width, safe-area padding), like the other balloons; 44px targets.
 
 ### Achievements window
 
-- Start menu → right column, **below Help**, normal weight, with a muted `4/12` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
-- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 12" + a segmented progress bar (12 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
+- Start menu → right column, **below Help**, normal weight, with a muted `4/13` counter on the same row (no extra row, no badge). Phones: same item in the places list (opens full screen). No desktop icon and not in All Programs, to stay discreet; the toast's link also opens it.
+- Property-sheet body (`surface: "dialog"`): 32px trophy + "Easter eggs found: 4 of 13" + a segmented progress bar (13 blocks, `progress` token, `role="progressbar"`), then a group box with the list in registry order: found → trophy, bold title, "Found on {date}" (`Intl.DateTimeFormat`, locale-aware); missing → grey "?" icon, "???" and the egg's vague hint. When complete: "All found! The secret wallpaper is unlocked." + a link to Display Properties.
 - **Reset progress** (disabled at 0) opens an XP confirm message box ("Reset" / "Cancel", Cancel is the default and Esc). Reset forgets every egg and pending toast and re-locks the secret wallpaper (the desktop falls back to the default if it was in use; the choice itself is kept).
 
 ### Reward (all found)
@@ -680,7 +683,46 @@ Import: `import { useEasterEggStore } from "@/lib/store/easterEggStore";`. Nothi
 
 ---
 
-## 21. DouglasOS Web *(stage 12 — done)*
+## 21. Games *(stage 12 — done)*
+
+Six classics as original DouglasOS games: generic names (EN Mines, Solitaire, FreeCell, Hearts, Spider Solitaire, Pinball; PT Campo Minado, Paciência, FreeCell, Copas, Paciência Spider, Pinball), original icons, card faces/back and pinball table, **no sound**, no verbatim text from any original game. Fun only: they never cover, delay or gate the CV or Contact.
+
+### Where they live
+
+- **Start → All Programs ▸ Games ▸** — the six games (`folder: "games"`, `onDesktop: false`).
+- **Desktop "Games" folder** (`games`, fun-apps icon group, `inAllPrograms: false`): a folder window with a large-icon view of the games. Desktop: click selects, double-click / Enter opens, arrows move the selection, status bar shows "6 objects" or the selected game's description. Touch: one tap opens.
+- **Run…** / palette: ids, titles and EN/PT aliases (`lib/run/resolver.ts`).
+
+### Pieces
+
+| Piece | Where | Notes |
+|-------|-------|-------|
+| Registry | `lib/apps/registry.tsx` | `GAME_IDS`, `GameId`, `isGameId`; each game is a `surface: "bare"` window app |
+| Seeded RNG | `lib/games/rng.ts` | `createRng(seed)` (mulberry32), `shuffle`, `randomSeed` — engines take an `Rng`, tests are deterministic |
+| Cards | `lib/games/cards.ts` | suits, ranks, colors, `createDeck({ decks, suits })` (Spider's 1/2/4 suits), `shuffledDeck` |
+| Card UI | `components/apps/games/shared/PlayingCard.tsx` | `PlayingCard` (face / lattice back, selected outline), `CardSlot`, `useCardLabel` ("Queen of hearts"); size from the `card-w`/`card-h` tokens (touch variants under 768px), overridable per table with `--card-w` / `--card-h` |
+| Frame | `components/apps/games/shared/GameShell.tsx` | menu bar from data (`useStandardGameMenu`: New game F2, Undo Ctrl+Z, options, Exit), play area, status cells; `GameOverDialog` (XP message box, Play again / Close) |
+| Copy | `messages/games/<id>.{en,pt}.json` → `games.<id>` | merged in `messages/index.ts`; titles stay in `apps.<id>`, shared strings in `apps.games.common` |
+| Engines | `lib/games/<id>/` | pure, unit-tested; the UI only renders state and dispatches moves |
+
+### Common rules
+
+- Keyboard-complete (menus, every move reachable without a mouse), visible focus, accessible names for cards and cells, a polite status region for score/time.
+- Cards move by **click/tap to select, then click/tap the destination** (works everywhere); drag with Pointer Events where it helps on desktop.
+- Reduced motion: deal/win animations become instant; Pinball stays playable (motion is the game, the player starts it).
+- Mobile: the window is full-screen; boards fit a portrait phone (cards shrink via the touch tokens), touch targets stay usable, press-and-hold = right-click where a game needs it (Mines flag).
+- No persistence beyond the window session unless a game documents it (no storage keys by default).
+
+### The games
+
+- **Mines** — beginner 9×9/10, intermediate 16×16/40, expert 30×16/99; first click is always safe; flag (right-click / long-press), chord on numbers; mine counter, timer, original face button = new game.
+- **Solitaire (Klondike)** — draw 1 or 3, unlimited redeals, double-click sends a card to its foundation, undo, standard scoring, auto-complete when all cards are face up.
+- **FreeCell** — numbered deals (seeded), four free cells, supermove limit `(freeCells + 1) × 2^emptyColumns`, undo, safe auto-moves to the foundations.
+- **Hearts** — you vs three simple AIs; passing left/right/across/hold; 2♣ leads, no points on the first trick, hearts broken; shooting the moon; game ends at 100.
+- **Spider Solitaire** — 1, 2 or 4 suits; deal a row (not with an empty column); completed King→Ace runs leave the table; undo; score.
+- **Pinball** — an original 2D table on a `<canvas>` (own theme, not any existing table), fixed-timestep physics in a pure engine; launcher, two flippers (Z and / keys, or left/right halves of the table on touch), bumpers and targets, 3 balls, score; pauses when the window is minimized, unfocused or the tab is hidden.
+
+## 22. DouglasOS Web *(stage 13 — done)*
 
 A working browser in the Luna-era style that only goes to Douglas's work. Desktop icon (first of the fun-apps group), Start → All Programs (flat list), Run/palette (`navegador`, `browser`, `internet`, `web`). Not restored after a reload, so no third-party iframe ever loads with the shell.
 
@@ -781,5 +823,6 @@ Stage 6 adds no storage key: selection, drag, rescue state and line rotation liv
 | 9 | Retro Cam (pixelated webcam, local-only, All Programs → Accessories, §16) — **done** |
 | 10 | DouglasOS Paint + "DON'T OPEN THIS.exe" (three eggs in turn) + the localized 404 blue screen, All Programs ▸ Accessories (§17–§19) — **done** |
 | 11 | Easter-egg counter: registry + store, tray toast, Achievements window, reward + secret wallpaper (§20) — **done** (stage 7–10 hooks pending, see §20 → Integration) |
+| 12 | Games: All Programs ▸ Games, desktop Games folder, six original games (§21) — **done** |
 
 Every stage updates this document (and `MVP-SCOPE.md` when status changes).

@@ -25,6 +25,15 @@ import { MediaPlayerIcon } from "@/components/icons/MediaIcons";
 import { CameraIcon } from "@/components/icons/CameraIcons";
 import { DontOpenThisIcon, PaintIcon } from "@/components/icons/PaintIcons";
 import { BrowserAppIcon } from "@/components/icons/BrowserIcons";
+import {
+  FreeCellIcon,
+  GamesFolderIcon,
+  HeartsIcon,
+  MinesIcon,
+  PinballIcon,
+  SolitaireIcon,
+  SpiderIcon,
+} from "@/components/icons/GameIcons";
 
 /** Apps that open as windows. `resume` is intentionally excluded (download). */
 export type AppId =
@@ -41,7 +50,16 @@ export type AppId =
   | "media-player"
   | "camera"
   | "paint"
-  | "achievements";
+  | "achievements"
+  | "games"
+  | GameId;
+
+/**
+ * The classic games (stage 12), listed in All Programs ▸ Games and in the
+ * desktop "Games" folder window — never as desktop icons of their own.
+ */
+export const GAME_IDS = ["mines", "solitaire", "freecell", "hearts", "spider", "pinball"] as const;
+export type GameId = (typeof GAME_IDS)[number];
 
 /**
  * External shortcuts (stage 3). These ids are stable on purpose: they are the
@@ -75,7 +93,7 @@ export interface AppRoutes {
  */
 export type DesktopIconId = Exclude<
   LauncherId,
-  "display" | "recycle-bin" | "achievements" | ActionId
+  "display" | "recycle-bin" | "achievements" | ActionId | GameId
 >;
 
 /**
@@ -86,7 +104,7 @@ export type DesktopIconId = Exclude<
  * (see `programsInFolder`). This is the single folder API: stages 8, 9 and 10
  * each prototyped one, and they were unified on `folder` at integration.
  */
-export const PROGRAM_FOLDERS = ["accessories", "entertainment"] as const;
+export const PROGRAM_FOLDERS = ["accessories", "entertainment", "games"] as const;
 export type ProgramFolder = (typeof PROGRAM_FOLDERS)[number];
 /** Alias kept for stage 9/10 call sites. */
 export type ProgramFolderId = ProgramFolder;
@@ -377,7 +395,84 @@ export const LAUNCHERS: LauncherConfig[] = [
     defaultSize: { width: 440, height: 520 },
     Content: lazy(() => import("@/components/apps/AchievementsApp")),
   },
+  // Games (stage 12): a desktop folder window listing the games (it is not in
+  // All Programs — the Games ▸ folder there lists the games themselves).
+  {
+    id: "games",
+    kind: "window",
+    icon: GamesFolderIcon,
+    onDesktop: true,
+    desktopGroup: "fun",
+    inAllPrograms: false,
+    surface: "bare",
+    defaultSize: { width: 520, height: 400 },
+    Content: lazy(() => import("@/components/apps/GamesFolderApp")),
+  },
+  {
+    id: "mines",
+    kind: "window",
+    icon: MinesIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 340, height: 420 },
+    Content: lazy(() => import("@/components/apps/games/MinesApp")),
+  },
+  {
+    id: "solitaire",
+    kind: "window",
+    icon: SolitaireIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 720, height: 560 },
+    Content: lazy(() => import("@/components/apps/games/SolitaireApp")),
+  },
+  {
+    id: "freecell",
+    kind: "window",
+    icon: FreeCellIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 720, height: 560 },
+    Content: lazy(() => import("@/components/apps/games/FreeCellApp")),
+  },
+  {
+    id: "hearts",
+    kind: "window",
+    icon: HeartsIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 720, height: 580 },
+    Content: lazy(() => import("@/components/apps/games/HeartsApp")),
+  },
+  {
+    id: "spider",
+    kind: "window",
+    icon: SpiderIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 780, height: 580 },
+    Content: lazy(() => import("@/components/apps/games/SpiderApp")),
+  },
+  {
+    id: "pinball",
+    kind: "window",
+    icon: PinballIcon,
+    onDesktop: false,
+    folder: "games",
+    surface: "bare",
+    defaultSize: { width: 460, height: 640 },
+    Content: lazy(() => import("@/components/apps/games/PinballApp")),
+  },
 ];
+
+export function isGameId(id: string): id is GameId {
+  return (GAME_IDS as readonly string[]).includes(id);
+}
 
 export const WINDOW_APPS: WindowAppConfig[] = LAUNCHERS.filter(
   (l): l is WindowAppConfig => l.kind === "window",
@@ -395,7 +490,7 @@ export const LINK_LAUNCHERS: LinkConfig[] = LAUNCHERS.filter(
   (l): l is LinkConfig => l.kind === "link",
 );
 
-/** A desktop launcher that is a fun app (in an All Programs folder, or opted in). */
+/** A desktop launcher that is a fun app (in an All Programs folder, or opted in via desktopGroup). */
 const isFunApp = (l: LauncherConfig) =>
   l.kind === "window" && (Boolean(l.folder) || l.desktopGroup === "fun");
 
