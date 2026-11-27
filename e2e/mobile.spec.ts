@@ -4,6 +4,7 @@ import {
   assistantCharacter,
   desktopIcon,
   gotoDesktop,
+  hideNextDevIndicator,
   messengerTray,
   startButton,
   startItem,
@@ -24,6 +25,11 @@ async function taskbarTop(page: Page): Promise<number> {
 }
 
 test.describe("touch shell", () => {
+  // The boot test goes to the page itself (not through gotoDesktop).
+  test.beforeEach(async ({ page }) => {
+    await hideNextDevIndicator(page);
+  });
+
   test("boot → desktop → tap Contact opens it full screen → close → Start → Résumé downloads", async ({
     page,
   }) => {

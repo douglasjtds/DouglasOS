@@ -51,6 +51,10 @@ export class FakePlayer implements YTPlayer {
     this.calls.push(`playAt:${index}`);
     this.index = index;
   }
+  cuePlaylist({ index = 0 }: { list: string; listType: "playlist"; index?: number }) {
+    this.calls.push(`cue:${index}`);
+    this.index = index;
+  }
   setVolume(volume: number) {
     this.calls.push(`volume:${volume}`);
   }
